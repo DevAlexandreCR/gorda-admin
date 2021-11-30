@@ -31,11 +31,11 @@
                   <form role="form">
                     <label>Email</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                      <input type="email" class="form-control" placeholder="Email" v-model="email" aria-label="Email" aria-describedby="email-addon">
                     </div>
                     <label>Password</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                      <input type="email" class="form-control" placeholder="Password" v-model="Password" aria-label="Password" aria-describedby="password-addon">
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
@@ -60,10 +60,12 @@
 </main>
 </template>
 <script>
+
 export default {
   name: 'Login',
-  inject: ['appName']
+  inject: ['appName'],
 }
+
 </script>
 
 
