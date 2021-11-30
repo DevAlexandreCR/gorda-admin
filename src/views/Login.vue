@@ -2,21 +2,17 @@
   <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
       <div class="col-12">
-        <!-- Navbar -->
         <nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
           <div class="container-fluid">
-            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="">
-              Whatsapp-Bot
-            </a>
+            <router-link :to="{ name: 'home' }" tag="a" class="navbar-brand font-weight-bolder ms-lg-0 ms-3 ">{{ appName }}</router-link>
             <div class="collapse navbar-collapse ps" id="navigation">
               <ul class="navbar-nav mx-auto">
               </ul>
               <ul class="navbar-nav d-lg-block d-none">
               </ul>
-            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+            </div>
           </div>
         </nav>
-        <!-- End Navbar -->
       </div>
     </div>
   </div>
@@ -54,32 +50,21 @@
             </div>
             <div class="col-md-7">
               <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <img class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" src="../assets/abstract_crystal-49244.jpg" alt="">
+                <img class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" src="../assets/img/abstract_crystal-49244.jpg" alt="">
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-<div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></main>
-
-<footer class="footer py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-8 mx-auto text-center mt-1">
-          <p class="mb-0 text-secondary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-            Copyright © </font></font>
-            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2021 
-          </font></font></p>
-        </div>
-      </div>
-    </div>
-  </footer>
+</main>
 </template>
-
-<style scoped>
-
-</style>
+<script>
+export default {
+  name: 'Login',
+  inject: ['appName']
+}
+</script>
 
 
 
