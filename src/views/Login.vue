@@ -59,11 +59,13 @@
     </section>
 </main>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: 'Login',
   inject: ['appName']
-}
+})
 </script>
 
 
