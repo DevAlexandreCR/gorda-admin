@@ -1,21 +1,13 @@
 <template>
-<div class="row">
-  
-<SideBar></SideBar>
-  
-  
-    <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
-      <h1>Hola</h1>
-<router-view></router-view>
-    </main>
-  </div>
-  
-
+  <SideBar></SideBar>
+  <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
+    <router-view></router-view>
+  </main>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import SideBar from '@/components/SideBar.vue'; // @ is an alias to /src
+import {Options, Vue} from 'vue-class-component';
+import SideBar from '@/components/SideBar.vue';
 
 
 @Options({
@@ -23,5 +15,6 @@ import SideBar from '@/components/SideBar.vue'; // @ is an alias to /src
     SideBar,
   },
 })
-export default class Home extends Vue {}
+export default class Dashboard extends Vue {
+}
 </script>

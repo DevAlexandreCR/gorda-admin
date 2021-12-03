@@ -1,7 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {createRouter, createWebHistory, RouteRecordRaw, RouterOptions} from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
-import HelloWorld from '../components/HelloWorld.vue'
-
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,8 +8,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     children: [
       {
-        path: 'Main',
-        component: HelloWorld
+        path: '/',
+        name: 'main',
+        component: () => import('../components/HelloWorld.vue')
+      },
+      {
+        path: 'users',
+        name: 'users',
+        component: () => import('../views/Users.vue')
       }
     ]
   },
@@ -27,8 +31,7 @@ const routes: Array<RouteRecordRaw> = [
   }
 ]
 
-/* eslint-disable @typescript-eslint/no-explicit-any*/
-const router = createRouter(<any>{
+const router = createRouter(<RouterOptions>{
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
