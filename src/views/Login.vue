@@ -2,15 +2,13 @@
   <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
       <div class="col-12">
-        <nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+        <nav
+            class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
           <div class="container-fluid">
-            <router-link :to="{ name: 'home' }" tag="a" class="navbar-brand font-weight-bolder ms-lg-0 ms-3 ">{{ appName }}</router-link>
-            <div class="collapse navbar-collapse ps" id="navigation">
-              <ul class="navbar-nav mx-auto">
-              </ul>
-              <ul class="navbar-nav d-lg-block d-none">
-              </ul>
-            </div>
+            <router-link :to="{ name: 'home' }" tag="a" class="navbar-brand font-weight-bolder ms-lg-0 ms-3 ">{{
+                appName
+              }}
+            </router-link>
           </div>
         </nav>
       </div>
@@ -28,43 +26,84 @@
                   <p class="mb-0">Ingrese su correo electrónico y contraseña para iniciar sesión</p>
                 </div>
                 <div class="card-body">
-                  <form role="form">
+                  <Form @submit="login" :validation-schema="schema">
                     <label>Email</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                      <Field type="email" class="form-control" v-model="email" name="email"
+                             placeholder="Email" aria-label="Email" aria-describedby="email-addon"/>
+                      <ErrorMessage name="email"/>
                     </div>
                     <label>Password</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                      <Field type="password" v-model="pass" name="pass" class="form-control" placeholder="Password"
+                             aria-label="Password" aria-describedby="password-addon"/>
+                      <ErrorMessage name="pass"/>
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
                       <label class="form-check-label" for="rememberMe">Recuérdame</label>
                     </div>
                     <div class="text-center">
-                      <button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0">Iniciar sesión</button>
+                      <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Iniciar sesión</button>
                     </div>
-                  </form>
+                  </Form>
                 </div>
               </div>
             </div>
             <div class="col-md-7">
               <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <img class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" src="../assets/img/abstract_crystal-49244.jpg" alt="">
+                <img class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
+                     src="../assets/img/abstract_crystal-49244.jpg" alt="">
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-</main>
+  </main>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import {defineComponent, inject} from 'vue'
+import AuthService from '@/services/AuthService'
+import {Auth, UserCredential} from 'firebase/auth'
+import {ErrorMessage, Field, Form, useField} from 'vee-validate'
+import * as yup from 'yup'
+import router from '@/router'
 
 export default defineComponent({
   name: 'Login',
-  inject: ['appName']
+  inject: ['appName'],
+  components: {
+    Form,
+    Field,
+    ErrorMessage
+  },
+  setup() {
+    const auth: Auth = <Auth>inject('auth')
+    const authService = new AuthService(auth)
+    const schema = yup.object().shape({
+      email: yup.string().required().email(),
+      pass: yup.string().required().min(6),
+    })
+
+    const {value: email} = useField('email')
+    const {value: pass} = useField('pass')
+
+    const login = (values: { email: string, pass: string }): void => {
+      authService.login(values.email, values.pass).then((credential: UserCredential) => {
+        router.push({name: 'home'})
+      }).catch((e) => {
+        console.log(e.message)
+      })
+    }
+
+    return {
+      email,
+      pass,
+      schema,
+      login
+    }
+  }
 })
 </script>
 

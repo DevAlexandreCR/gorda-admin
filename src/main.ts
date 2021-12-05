@@ -1,9 +1,11 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
-import './services/firebase'
+import firebase from './plugins/firebase'
+
 
 createApp(App)
-    .use(router)
-    .provide('appName', process.env.VUE_APP_TITLE)
-    .mount('#app')
+  .use(router)
+  .use(firebase)
+  .provide('appName', process.env.VUE_APP_TITLE)
+  .mount('#app')
