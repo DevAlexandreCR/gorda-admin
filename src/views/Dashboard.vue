@@ -1,6 +1,6 @@
 <template>
   <SideBar></SideBar>
-  <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
+  <main class="bg-dark main-content position-relative  border-radius-lg">
     <router-view></router-view>
   </main>
 </template>

@@ -1,4 +1,5 @@
 <template>
+
   <div class="hello">
     <h1>{{ msg }}</h1>
     <button class="btn btn-primary" type="button">Button</button>

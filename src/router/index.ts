@@ -29,6 +29,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Usuario',
     component: () => import('../views/Users.vue')
   }
+  ,
+  {
+    path: '/Dash',
+    name: 'Hist',
+    component: () => import('../components/Hist.vue')
+  }
 ]
 
 const router = createRouter(<RouterOptions>{

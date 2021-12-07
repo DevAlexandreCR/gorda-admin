@@ -1,0 +1,72 @@
+.font-weight-bold{
+    position: relative;
+    left: 10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+
+#navbtn {
+    z-index: 1;
+    position: fixed;
+    color: rgb(0, 255, 98);
+    cursor: pointer;
+    left: 380px;
+    font-size: 15px;
+    margin: 5px 0;
+    transition: 0.5s;
+    transition-property: color;
+}
+
+
+label #navbtn:hover {
+    color: #19B3D3;
+}
+
+#checkbox {
+    display: none;
+}
+
+#checkbox:checked ~ .sidenav a span {
+    display: none;
+}
+
+#checkbox:checked ~ .simple-text {
+    display: none;
+}
+
+#checkbox:checked ~ .sidenav   a  span{
+    visibility: hidden;
+    font-size: 20px;
+}
+
+
+#checkbox:checked ~ .sidenav {
+    transition-duration: 0.1s;
+    left: -38px;
+    width: 95px;
+    transition-property: opacity, left;
+    
+}
+
+
+
+
+
+#checkbox:checked ~ .main-content {
+    transition-duration: 9s, 3s;
+    right: 190px;
+}
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
