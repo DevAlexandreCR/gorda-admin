@@ -1,22 +1,14 @@
 import {createRouter, createWebHistory, RouterOptions} from 'vue-router'
-import Home from '../views/Home.vue'
-
-const routes: Array<any> = [
-  {
-    path: '/',
-    name: 'home',
-    component: Home
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/Login.vue')
-  },
-]
+import authGuard from '@/router/guards/AuthGuard'
+import routes from '@/router/routes'
 
 const router = createRouter(<RouterOptions>{
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  authGuard(to, from, next)
 })
 
 export default router

@@ -21,6 +21,10 @@
           <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
+                  <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                  <span class="alert-text"><strong>Upss!</strong> Usuario o contraseña incorrectos!</span>
+                </div>
                 <div class="card-header pb-0 text-left bg-transparent">
                   <h3 class="font-weight-bolder text-info text-gradient">Bienvenido</h3>
                   <p class="mb-0">Ingrese su correo electrónico y contraseña para iniciar sesión</p>
@@ -63,12 +67,10 @@
   </main>
 </template>
 <script lang="ts">
-import {defineComponent, inject} from 'vue'
+import {defineComponent, ref} from 'vue'
 import AuthService from '@/services/AuthService'
-import {Auth, UserCredential} from 'firebase/auth'
 import {ErrorMessage, Field, Form, useField} from 'vee-validate'
 import * as yup from 'yup'
-import router from '@/router'
 
 export default defineComponent({
   name: 'Login',
@@ -79,25 +81,25 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
-    const auth: Auth = <Auth>inject('auth')
-    const authService = new AuthService(auth)
     const schema = yup.object().shape({
       email: yup.string().required().email(),
       pass: yup.string().required().min(6),
     })
 
+    let error = ref(false)
+
     const {value: email} = useField('email')
     const {value: pass} = useField('pass')
 
-    const login = (values: { email: string, pass: string }): void => {
-      authService.login(values.email, values.pass).then((credential: UserCredential) => {
-        router.push({name: 'home'})
-      }).catch((e) => {
+    const login = async (values: { email: string, pass: string }): Promise<void> => {
+      await AuthService.login(values.email, values.pass).catch(e => {
         console.log(e.message)
+        error.value = true
       })
     }
 
     return {
+      error,
       email,
       pass,
       schema,
