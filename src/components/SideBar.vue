@@ -1,12 +1,8 @@
 <template>
-<input type="checkbox" id="checkbox">
-    <aside class="sidenav bg-info navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
-        <label for="checkbox">
-          <i id="navbtn" class="fa fa-bars" aria-hidden="true"></i>
-        </label>
+  <aside class="sidenav navbar navbar-vertical bg-light navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
    <div class="sidenav-header">
-      <a class="navbar-brand  m-0">
-        <img src="../assets/img/bruce-mars.jpg" width="30" height="60" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo"> 
+      <a class="navbar-brand m-0">
+        <img src="../assets/img/logo.png" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
         <span class="ms-1 font-weight-bold">Dashboard</span>
       </a>
     </div>
@@ -14,7 +10,7 @@
     <div class="collapse navbar-collapse w-auto max-height-vh-100 h-100 ps ps--active-y" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/">
+          <a class="nav-link active" href="/">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg id="ico" width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>shop </title>
@@ -57,6 +53,12 @@
   </div>
 </aside>
 </template>
+<script lang="ts">
+import {Vue} from 'vue-class-component'
+
+export default class Dashboard extends Vue {
+}
+</script>
 
 
 
