@@ -1,5 +1,5 @@
 import {getDatabase} from 'firebase/database'
-import {Firebase} from '../services/Firebase'
+import {Firebase} from '@/services/Firebase'
 
 export default {
   install: (app) => {
