@@ -16,7 +16,7 @@ class AuthService {
   onAuthStateChanged(): void {
     onAuthStateChanged(this.auth, async (user: User | null) => {
       if (user) {
-        await router.push({name: 'home'})
+        await router.push({name: 'dashboard'})
       } else {
         await router.push({name: 'login'})
       }
