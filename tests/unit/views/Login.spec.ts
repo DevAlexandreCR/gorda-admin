@@ -1,7 +1,7 @@
 import {mount, VueWrapper} from '@vue/test-utils'
 import Login from '@/views/Login.vue'
 import router from '@/router'
-import firebase from '@/plugins/trans'
+import i18n from '@/plugins/i18n'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 
 describe('Login.vue', () => {
@@ -15,7 +15,7 @@ describe('Login.vue', () => {
           ErrorMessage
         },
         global: {
-          plugins: [router, firebase],
+          plugins: [router, i18n],
           provide: {
             'appName': 'test'
           }
