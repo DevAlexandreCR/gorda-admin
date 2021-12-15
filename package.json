@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
+    "lint-check": "vue-cli-service lint --no-fix --ignore-path .eslintignore src/",
     "build:dev": "vue-cli-service build --mode development",
     "build:watch": "vue-cli-service build --mode development --watch --no-clean",
     "i18n:report": "vue-cli-service i18n:report --src \\\\\\\"./src/**/*.?(js|vue)\\\\\\\" --locales \\\\\\\"src/locales/**/*.json\\\\\\\"",
