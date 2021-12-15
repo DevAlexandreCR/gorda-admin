@@ -53,26 +53,12 @@
       </ul>
   </div>
 </aside>
-<p>{{ $t("message.hello") }}</p>
 </template>
 <script lang="ts">
-import {defineComponent} from 'vue'
-import { inject } from 'vue'
+import {Vue} from 'vue-class-component'
 
-
-export default defineComponent({
-  name: 'Login',
-  inject: ['$i18n'],
-
-  setup() {
-    const trans = inject('trans')
-
-    return {
-      trans
-    }
-  }
-  
-})
+export default class Dashboard extends Vue {
+}
 </script>
 
 
