@@ -4,6 +4,10 @@
 name: Node.js CI
 
 on:
+  workflow_dispatch:
+    inputs: 
+      name: 
+        description: 'Run manually'
   push:
     branches: [ '*/*' ]
   pull_request:
