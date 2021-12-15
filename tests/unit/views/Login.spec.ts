@@ -1,7 +1,7 @@
 import {mount, VueWrapper} from '@vue/test-utils'
 import Login from '@/views/Login.vue'
 import router from '@/router'
-import firebase from '@/plugins/firebase'
+import firebase from '@/plugins/trans'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 
 describe('Login.vue', () => {

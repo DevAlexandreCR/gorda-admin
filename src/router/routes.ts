@@ -5,9 +5,9 @@ const routes: Array<any> = [
     component: () => import('../views/Dashboard.vue'),
     children: [
       {
-        path: '/',
+        path: '/main',
         name: 'main',
-        component: () => import('../components/HelloWorld.vue')
+        component: () => import('../views/Main.vue')
       },
       {
         path: 'users',
