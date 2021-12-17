@@ -5,16 +5,6 @@ import NavBar from '@/components/NavBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 
-// jest.mock('firebase/auth' , () => {
-//   return {
-//     getAuth: jest.fn().mockReturnValue({
-//       Auth: {
-//         currentUser: { email: 'example@gmail.com', uid: 1, emailVerified: true }
-//       }
-//     })
-//   }
-// })
-
 describe('Dashboard.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
