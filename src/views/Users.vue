@@ -1,7 +1,7 @@
 <template>
 <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100 ps ps--active-y">
     <div class="container-fluid">
-      <img class="page-header min-height-300 border-radius-xl mt-4" src="../assets/img/abstract_crystal-49244.jpg">
+      <img class="page-header min-height-300 border-radius-xl mt-4" src="../assets/img/abstract_crystal-49244.jpg" alt="Crystal">
       <div class="card card-body blur shadow-blur mx-4 mt-n6 overflow-hidden">
         <div class="row gx-4">
           <div class="col-auto">
