@@ -39,6 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          projectBaseDir: src/
           fetch-depth: 0
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
