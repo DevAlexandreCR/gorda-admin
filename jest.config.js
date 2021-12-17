@@ -4,5 +4,9 @@ module.exports = {
     '^.+\\.vue$': 'vue-jest'
   },
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.{js,vue,ts}']
+  collectCoverageFrom: [
+    'src/**/*.{js,vue,ts}',
+    '!src/assets/**',
+    '!src/vendor/**'
+  ]
 }
