@@ -6,7 +6,8 @@ name: Node.js CI
 on:
   workflow_dispatch:
     inputs: 
-      name: 
+      name:
+        required: false
         description: 'Run manually'
   push:
     branches: [ '*/*' ]
@@ -15,9 +16,7 @@ on:
 
 jobs:
   eslint:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x]
