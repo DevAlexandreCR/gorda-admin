@@ -23,7 +23,6 @@ describe('Dashboard.vue', () => {
       })
     await router.isReady()
   })
-
   it('an user can show dashboard', async () => {
     const fn = jest.spyOn(wrapper.vm, 'nothing');
     wrapper.vm.nothing()
