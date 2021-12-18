@@ -5,8 +5,9 @@ name: Node.js CI
 
 on:
   workflow_dispatch:
-    inputs: 
-      name: 
+    inputs:
+      name:
+        required: false
         description: 'Run manually'
   push:
     branches: [ '*/*' ]
@@ -15,9 +16,7 @@ on:
 
 jobs:
   eslint:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x]
@@ -31,7 +30,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run lint-check
-    - run: npm test:unit
+    - run: npm run test:unit
     env:
       CI: true
   sonarcloud:
@@ -43,6 +42,15 @@ jobs:
           fetch-depth: 0
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=devalexandrecr
+            -Dsonar.projectKey=DevAlexandreCR_admin-driver
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sources=src/
+            -Dsonar.test.exclusions=tests/**
+            -Dsonar.tests=tests/
+            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
