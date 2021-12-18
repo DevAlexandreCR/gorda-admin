@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   workflow_dispatch:
-    inputs: 
+    inputs:
       name:
         required: false
         description: 'Run manually'
@@ -41,6 +41,14 @@ jobs:
         with:
           projectBaseDir: src/
           fetch-depth: 0
+          args: >
+            -Dsonar.organization=devalexandrecr
+            -Dsonar.projectKey=DevAlexandreCR_admin-driver
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sources=src/
+            -Dsonar.test.exclusions=tests/**
+            -Dsonar.tests=tests/
+            -Dsonar.verbose=true
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
