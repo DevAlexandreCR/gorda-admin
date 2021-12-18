@@ -30,7 +30,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run lint-check
-    - run: npm run test:unit
+    - run: npm run test:unit -- --coverage
     env:
       CI: true
   sonarcloud:

@@ -346,7 +346,7 @@ if (iconSidenav) {
 }
 
 function toggleSidenav() {
-  if (body.classList.contains(className)) {
+  if (body && body.classList.contains(className)) {
     body.classList.remove(className);
     setTimeout(function() {
       sidenav.classList.remove('bg-white');
@@ -359,7 +359,6 @@ function toggleSidenav() {
     sidenav.classList.add('bg-white');
     sidenav.classList.remove('bg-transparent');
     sidenav.classList.add('sidenav-closed')
-    iconSidenav.classList.remove('d-none');
   }
 }
 
