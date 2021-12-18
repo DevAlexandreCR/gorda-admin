@@ -10,7 +10,6 @@ on:
         required: false
         description: 'Run manually'
   push:
-    branches: [ '*/*' ]
   pull_request:
     branches: [ develop, master ]
 
