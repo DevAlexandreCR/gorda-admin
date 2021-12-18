@@ -26,6 +26,23 @@ export default class Dashboard extends Vue {
     console.log('nothing')
     console.log('nothing')
     console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
   }
 
   mounted(): void {
