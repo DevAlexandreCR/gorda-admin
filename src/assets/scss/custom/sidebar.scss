@@ -1,0 +1,24 @@
+.sidenav-closed {
+  &.sidenav {
+    transform: translateX(-($navbar-vertical-open-width + 1.5));
+  }
+
+  &.fixed-start + .main-content {
+    margin-left: 0!important;
+  }
+}
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+

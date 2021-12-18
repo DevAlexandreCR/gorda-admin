@@ -4,7 +4,9 @@ import routes from '@/router/routes'
 
 const router = createRouter(<RouterOptions>{
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  linkExactActiveClass: "active",
+  linkActiveClass: "active",
 })
 
 router.beforeEach((to, from, next) => {
