@@ -24,6 +24,13 @@ describe('Dashboard.vue', () => {
     await router.isReady()
   })
   it('an user can show dashboard', async () => {
-    expect(wrapper.html()).toContain('users')
+    const nav = wrapper.findComponent(NavBar)
+    const bar = wrapper.findComponent(SideBar)
+
+    expect(nav.exists()).toBeTruthy()
+    expect(bar.exists()).toBeTruthy()
+    expect(wrapper.html()).toContain('Dashboard')
+    expect(wrapper.html()).toContain('Users')
+
   })
 })
