@@ -18,8 +18,6 @@ import NavBar from '@/components/NavBar.vue'
   },
 })
 export default class Dashboard extends Vue {
-  collapsed = false
-
   mounted(): void {
     require('@/vendor/js/soft-ui-dashboard')
   }

@@ -23,7 +23,6 @@ describe('Dashboard.vue', () => {
       })
     await router.isReady()
   })
-
   it('an user can show dashboard', async () => {
     expect(wrapper.html()).toContain('users')
   })

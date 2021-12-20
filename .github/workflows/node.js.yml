@@ -10,12 +10,12 @@ on:
         required: false
         description: 'Run manually'
   push:
-    branches: [ '*/*' ]
-  pull_request:
     branches: [ develop ]
+  pull_request:
+    branches: [ develop, master ]
 
 jobs:
-  eslint:
+  eslint-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +31,10 @@ jobs:
     - run: npm ci
     - run: npm run lint-check
     - run: npm run test:unit
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     env:
       CI: true
   sonarcloud:
@@ -42,15 +46,6 @@ jobs:
           fetch-depth: 0
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=devalexandrecr
-            -Dsonar.projectKey=DevAlexandreCR_admin-driver
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.sources=src/
-            -Dsonar.test.exclusions=tests/**
-            -Dsonar.tests=tests/
-            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
