@@ -4,15 +4,7 @@ codecov:
 coverage:
   precision: 2
   round: down
-  range: "78...100"
-
-parsers:
-  gcov:
-    branch_detection:
-      conditional: yes
-      loop: yes
-      method: no
-      macro: no
+  range: "80...100"
 
 comment:
   layout: "reach,diff,flags,files,footer"
