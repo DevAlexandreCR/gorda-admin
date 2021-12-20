@@ -18,6 +18,33 @@ import NavBar from '@/components/NavBar.vue'
   },
 })
 export default class Dashboard extends Vue {
+  collapsed = false
+
+  nothing() {
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+    console.log('nothing')
+  }
+
   mounted(): void {
     require('@/vendor/js/soft-ui-dashboard')
   }
