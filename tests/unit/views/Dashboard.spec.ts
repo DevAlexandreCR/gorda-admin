@@ -6,17 +6,10 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
+import UserInterface from '../../mocks/entities/UserInterface'
 
 describe('Dashboard.vue', () => {
-  AuthService.currentUser = new User({
-    id: 'id',
-    name: 'Admin',
-    email: 'admin@admin.com',
-    roles: {
-      admin: true,
-      operator: false
-    }
-  })
+  AuthService.currentUser = new User(UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
