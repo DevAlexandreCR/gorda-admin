@@ -3,7 +3,7 @@ import firebaseConfig from '../../firebase.config'
 import {connectAuthEmulator, getAuth} from 'firebase/auth'
 import {connectDatabaseEmulator, getDatabase} from 'firebase/database'
 
-export class Firebase {
+export default class Firebase {
 
   private static app: FirebaseApp;
 

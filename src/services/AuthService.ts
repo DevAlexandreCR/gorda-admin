@@ -1,27 +1,32 @@
-import {Auth, getAuth, onAuthStateChanged, signInWithEmailAndPassword, User, UserCredential} from 'firebase/auth'
-import {Firebase} from '@/services/Firebase'
+import {Auth, getAuth, onAuthStateChanged, signInWithEmailAndPassword, User as UserFB, UserCredential} from 'firebase/auth'
+import Firebase from '@/services/Firebase'
+import User from '@/models/User'
+import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
 
-class AuthService {
-  constructor() {
-    this.onAuthStateChanged()
+export default class AuthService {
+  public static currentUser: User
+  public static auth: Auth = getAuth(Firebase.getInstance())
+
+  public static login(email: string, pass: string): Promise<UserCredential> {
+    return signInWithEmailAndPassword(AuthService.auth, email, pass)
   }
 
-  private auth: Auth = getAuth(Firebase.getInstance())
-
-  login(email: string, pass: string): Promise<UserCredential> {
-    return signInWithEmailAndPassword(this.auth, email, pass)
-  }
-
-  onAuthStateChanged(): void {
-    onAuthStateChanged(this.auth, async (user: User | null) => {
-      if (user) {
-        await router.push({name: 'main'})
+  public static onAuthStateChanged(path: string): void {
+    onAuthStateChanged(AuthService.auth, async (userFB: UserFB | null) => {
+      if (userFB) {
+        const user = await UserRepository.getUser(userFB.uid)?? {}
+        if(user) {
+          this.currentUser = new User(user)
+        }
+        await router.push(path.includes('login') ? {name: 'main'} : path)
       } else {
         await router.push({name: 'login'})
       }
     })
   }
-}
 
-export default new AuthService()
+  public static getCurrentUser(): User {
+    return AuthService.currentUser
+  }
+}
