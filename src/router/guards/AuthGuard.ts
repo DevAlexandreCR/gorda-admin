@@ -3,6 +3,5 @@ import AuthService from '@/services/AuthService'
 
 export default function authGuard (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext): void {
   if (to.name !== 'login' && !AuthService.auth.currentUser) next({ name: 'login' })
-  else if (to.name === 'login' && AuthService.auth.currentUser) next({ name: 'main' })
-  next()
+  else next()
 }
