@@ -4,8 +4,19 @@ import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
+import AuthService from '@/services/AuthService'
+import User from '@/models/User'
 
 describe('Dashboard.vue', () => {
+  AuthService.currentUser = new User({
+    id: 'id',
+    name: 'Admin',
+    email: 'admin@admin.com',
+    roles: {
+      admin: true,
+      operator: false
+    }
+  })
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
