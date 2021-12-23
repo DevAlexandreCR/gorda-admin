@@ -1,7 +1,6 @@
 import Dashboard from '@/views/Dashboard.vue'
 import Main from '@/views/Main.vue'
 import Users from '@/views/Users.vue'
-import Login from '@/views/Login.vue'
 
 const routes: Array<any> = [
   {
@@ -24,7 +23,7 @@ const routes: Array<any> = [
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: () => import('../views/Login.vue')
   }
 ]
 

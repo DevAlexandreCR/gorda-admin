@@ -67,46 +67,37 @@
   </main>
 </template>
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
 import AuthService from '@/services/AuthService'
-import {ErrorMessage, Field, Form, useField} from 'vee-validate'
+import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as yup from 'yup'
+import {Options, Vue} from 'vue-class-component'
 
-export default defineComponent({
-  name: 'Login',
+@Options({
   inject: ['appName'],
   components: {
     Form,
     Field,
     ErrorMessage
   },
-  setup() {
-    const schema = yup.object().shape({
-      email: yup.string().required().email(),
-      pass: yup.string().required().min(6),
-    })
-
-    let error = ref(false)
-
-    const {value: email} = useField('email')
-    const {value: pass} = useField('pass')
-
-    const login = async (values: { email: string, pass: string }): Promise<void> => {
-      await AuthService.login(values.email, values.pass).catch(e => {
-        console.log(e.message)
-        error.value = true
-      })
-    }
-
-    return {
-      error,
-      email,
-      pass,
-      schema,
-      login
-    }
-  }
 })
+
+export default class Login extends Vue {
+  error = false
+  email = ''
+  pass = ''
+
+  readonly schema = yup.object().shape({
+    email: yup.string().required().email(),
+    pass: yup.string().required().min(6),
+  })
+
+  async login(): Promise<void> {
+    await AuthService.login(this.email, this.pass).catch(e => {
+      console.log(e.message)
+      this.error = true
+    })
+  }
+}
 </script>
 
 
