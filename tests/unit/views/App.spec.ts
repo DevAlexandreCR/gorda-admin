@@ -21,6 +21,7 @@ describe('App.vue', () => {
   })
 
   it('auth listener is called when App is mounted', async () => {
+    expect(wrapper.findComponent(App).exists()).toBeTruthy()
     expect(listener).toBeCalled()
   })
 })

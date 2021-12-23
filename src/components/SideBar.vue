@@ -59,7 +59,7 @@ import {Vue} from 'vue-class-component'
 import AuthService from '@/services/AuthService'
 
 export default class SideBar extends Vue {
-  isAdmin: boolean = AuthService.currentUser.isAdmin()
+  isAdmin: boolean = AuthService.getCurrentUser().isAdmin()
 }
 </script>
 
