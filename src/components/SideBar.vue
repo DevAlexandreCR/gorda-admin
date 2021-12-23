@@ -30,7 +30,7 @@
           </router-link>
         </li>
   <li class="nav-item">
-          <router-link :to="{ name: 'users'}" tag="a" class="nav-link">
+          <router-link :to="{ name: 'users'}" tag="a" class="nav-link" v-if="isAdmin">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 46 42" xmlns="http://www.w3.org/2000/svg" >
                 <title>customer-support</title>
@@ -55,11 +55,12 @@
 </aside>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {Vue} from 'vue-class-component'
+import AuthService from '@/services/AuthService'
 
-export default defineComponent({
-  name: 'Sidebar'
-})
+export default class SideBar extends Vue {
+  isAdmin: boolean = AuthService.getCurrentUser().isAdmin()
+}
 </script>
 
 
