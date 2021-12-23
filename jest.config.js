@@ -7,6 +7,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{js,vue,ts}',
     '!src/assets/**',
-    '!src/vendor/**'
+    '!src/vendor/**',
+    '!src/main.ts'
   ]
 }
