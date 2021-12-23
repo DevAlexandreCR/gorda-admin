@@ -1,30 +1,30 @@
+import Dashboard from '@/views/Dashboard.vue'
+import Main from '@/views/Main.vue'
+import Users from '@/views/Users.vue'
+import Login from '@/views/Login.vue'
+
 const routes: Array<any> = [
   {
     path: '/',
     name: 'dashboard',
-    component: () => import('../views/Dashboard.vue'),
+    component: Dashboard,
     children: [
       {
         path: '/main',
         name: 'main',
-        component: () => import('../views/Main.vue')
+        component: Main
       },
       {
         path: 'users',
         name: 'users',
-        component: () => import('../views/Users.vue')
+        component: Users
       }
     ]
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login.vue')
-  },
-  {
-    path: '/dash',
-    name: 'hist',
-    component: () => import('../components/Hist.vue')
+    component: Login
   }
 ]
 
