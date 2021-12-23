@@ -1,10 +1,10 @@
 <template>
   <aside class="sidenav navbar navbar-vertical bg-light navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
    <div class="sidenav-header">
-      <a class="navbar-brand m-0">
-        <img src="../assets/img/logo.png" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
-        <span class="ms-1 font-weight-bold">Dashboard</span>
-      </a>
+     <router-link class="navbar-brand m-0" tag="a" :to="{name: 'profile'}">
+       <img src="../assets/img/logo.png" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
+       <span class="ms-1 font-weight-bold">{{ user.name }}</span>
+     </router-link>
     </div>
     <hr class="horizontal bg-dark dark mt-0">
     <div class="collapse navbar-collapse w-auto max-height-vh-100 h-100 ps ps--active-y" id="sidenav-collapse-main">
@@ -57,9 +57,11 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import AuthService from '@/services/AuthService'
+import User from '@/models/User'
 
 export default class SideBar extends Vue {
-  isAdmin: boolean = AuthService.getCurrentUser().isAdmin()
+  user: User = AuthService.getCurrentUser()
+  isAdmin: boolean = this.user.isAdmin()
 }
 </script>
 

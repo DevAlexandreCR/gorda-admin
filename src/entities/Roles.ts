@@ -1,4 +1,4 @@
 export interface Roles {
-  admin: boolean
-  operator: boolean
+  admin?: boolean
+  operator?: boolean
 }
