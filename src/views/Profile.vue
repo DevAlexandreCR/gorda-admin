@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-md-4 text-end">
                   <a href="javascript:;">
-                    <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Profile"></i>
+                    <em class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Profile"></em>
                   </a>
                 </div>
               </div>
