@@ -1,6 +1,7 @@
 import Dashboard from '@/views/Dashboard.vue'
 import Main from '@/views/Main.vue'
 import Users from '@/views/Users.vue'
+import Profile from '@/views/Profile.vue'
 
 const routes: Array<any> = [
   {
@@ -17,6 +18,11 @@ const routes: Array<any> = [
         path: 'users',
         name: 'users',
         component: Users
+      },
+      {
+        path: 'profile',
+        name: 'profile',
+        component: Profile
       }
     ]
   },
