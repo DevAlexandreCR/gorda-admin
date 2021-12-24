@@ -8,6 +8,11 @@ class UserRepository{
     const snapshot: DataSnapshot = await get(child(DBService.dbUsers(), id))
     return <User>snapshot.val()
   }
+
+  async getAll(): Promise<Array<User>> {
+    const snapshot: DataSnapshot = await get(DBService.dbUsers())
+    return <Array<User>>snapshot.val()
+  }
 }
 
 export default new UserRepository()
