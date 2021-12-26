@@ -6,7 +6,9 @@ export default {
     phone: 'Phone',
     roles: 'Roles',
     admin: 'Administrator',
-    operator: 'Operator'
+    operator: 'Operator',
+    role: 'Role',
+    status: 'Status'
   },
   platform_settings: 'Platform Settings'
 }
