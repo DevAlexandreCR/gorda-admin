@@ -41,9 +41,9 @@
                 <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
               </td>
               <td class="align-middle">
-                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                  Edit
-                </a>
+                <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="text-secondary font-weight-bold text-xs" data-original-title="Edit user">
+                  {{ $t('common.actions.edit') }}
+                </router-link>
               </td>
             </tr>
             </tbody>
@@ -57,10 +57,10 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
-import {User} from '@/entities/User'
+import {UserInterface} from '@/entities/UserInterface'
 
 export default class Index extends Vue {
-  users: Array<User> = []
+  users: Array<UserInterface> = []
 
   created(): void {
     UserRepository.getAll().then(users => {

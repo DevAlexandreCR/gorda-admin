@@ -1,4 +1,4 @@
-import {User as UserInterface} from '@/entities/User'
+import {UserInterface} from '@/entities/UserInterface'
 import {Roles} from '@/entities/Roles'
 
 export default class User {

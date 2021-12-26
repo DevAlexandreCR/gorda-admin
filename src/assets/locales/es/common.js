@@ -6,5 +6,9 @@ export default {
   },
   models: {
     users: 'Usuario | Usuarios'
+  },
+  actions: {
+    submit: 'Enviar',
+    edit: 'Editar'
   }
 }

@@ -6,5 +6,9 @@ export default {
   },
   models: {
     users: 'User | Users'
+  },
+  actions: {
+    submit: 'Submit',
+    edit: 'Edit'
   }
 }

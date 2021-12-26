@@ -10,5 +10,8 @@ export default {
     role: 'Role',
     status: 'Status'
   },
-  platform_settings: 'Platform Settings'
+  platform_settings: 'Platform Settings',
+  forms: {
+    edit: 'Edit user information'
+  }
 }

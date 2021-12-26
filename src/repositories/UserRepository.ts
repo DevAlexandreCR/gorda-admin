@@ -1,17 +1,17 @@
 import {get, child, DataSnapshot} from 'firebase/database'
 import DBService from '@/services/DBService'
-import {User} from '@/entities/User'
+import {UserInterface} from '@/entities/UserInterface'
 
 class UserRepository{
 
-  async getUser(id: string): Promise<User> {
+  async getUser(id: string): Promise<UserInterface> {
     const snapshot: DataSnapshot = await get(child(DBService.dbUsers(), id))
-    return <User>snapshot.val()
+    return <UserInterface>snapshot.val()
   }
 
-  async getAll(): Promise<Array<User>> {
+  async getAll(): Promise<Array<UserInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbUsers())
-    return <Array<User>>snapshot.val()
+    return <Array<UserInterface>>snapshot.val()
   }
 }
 
