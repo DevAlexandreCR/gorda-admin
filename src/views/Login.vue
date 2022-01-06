@@ -23,7 +23,7 @@
               <div class="card card-plain mt-8">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
                   <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-                  <span class="alert-text">{{ $t('users.alert') }}</span>
+                  <span class="alert-text"><strong>{{ $t('users.upss') }}</strong>{{ $t('users.alert') }}</span>
                 </div>
                 <div class="card-header pb-0 text-left bg-transpaXrent">
                   <h3 class="font-weight-bolder text-info text-gradient">{{ $t('users.welcome') }}</h3>

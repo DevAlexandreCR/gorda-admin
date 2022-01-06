@@ -7,6 +7,7 @@ export default {
   remindme: 'Recuérdame',
   login: 'Iniciar Seccion',
   alert: 'Usuario o contraseña incorrectos!',
+  upss: 'Upss!',
   fields: {
     name: 'Nombre',
     email: 'Correo electrónico',

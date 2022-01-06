@@ -7,6 +7,7 @@ export default {
   remindme: 'Remind me',
   login: 'Log in',
   alert: 'Incorrect username or password!',
+  upss: 'Upss!',
   fields: {
     name: 'Name',
     email: 'E-Mail Address',
