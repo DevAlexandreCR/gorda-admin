@@ -6,6 +6,7 @@ export default {
   required: 'email is a required field',
   remindme: 'Remind me',
   login: 'Log in',
+  alert: 'Incorrect username or password!',
   fields: {
     name: 'Name',
     email: 'E-Mail Address',

@@ -22,10 +22,10 @@
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
-                  <span class="alert-icon"><i class="ni ni-like-2"></i>hola</span>
-                  <span class="alert-text"><strong>Upss!</strong> Usuario o contraseña incorrectos!</span>
+                  <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                  <span class="alert-text">{{ $t('users.alert') }}</span>
                 </div>
-                <div class="card-header pb-0 text-left bg-transparent">
+                <div class="card-header pb-0 text-left bg-transpaXrent">
                   <h3 class="font-weight-bolder text-info text-gradient">{{ $t('users.welcome') }}</h3>
                   <p class="mb-0">{{ $t('users.enter') }}</p>
                 </div>

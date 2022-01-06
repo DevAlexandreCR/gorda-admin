@@ -6,6 +6,7 @@ export default {
   pass: 'Contraseña debe tener al menos 8 caracteres',
   remindme: 'Recuérdame',
   login: 'Iniciar Seccion',
+  alert: 'Usuario o contraseña incorrectos!',
   fields: {
     name: 'Nombre',
     email: 'Correo electrónico',
