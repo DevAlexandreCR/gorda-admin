@@ -9,5 +9,6 @@ module.exports = {
     '!src/assets/**',
     '!src/vendor/**',
     '!src/main.ts'
-  ]
+  ],
+  setupFiles: ['<rootDir>/tests/testSetup.ts'],
 }
