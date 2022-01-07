@@ -1,11 +1,11 @@
 import {Roles} from '@/entities/Roles'
 
 class UserInterface {
-  id: string = 'id'
-  name: string = 'Admin'
-  email: string = 'admin@admin.com'
-  phone: string = '310374656'
-  photoUrl: string = 'https://fakeUrl.com'
+  id = 'id'
+  name = 'Admin'
+  email = 'admin@admin.com'
+  phone = '310374656'
+  photoUrl = 'https://fakeUrl.com'
   roles: Roles =  {
     admin: true,
     operator: false
