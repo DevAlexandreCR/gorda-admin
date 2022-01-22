@@ -14,26 +14,26 @@
             </div>
             <div class="col-md-7">
               <div class="form-group">
-                <label class="form-control-label" for="name">{{ $t('users.fields.name') }}</label>
+                <label>{{ $t('users.fields.name') }}</label>
                 <div class="input-group">
-                  <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')" id="name" v-model="user.name" aria-label="Name" aria-describedby="name-addon" />
+                  <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')" v-model="user.name" id="name" aria-label="Name" aria-describedby="name-addon" />
                     <ErrorMessage name="name"/>
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-control-label" for="email">{{ $t('users.fields.email') }}</label>
+                <label>{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" class="form-control" id="email" :placeholder="$t('common.placeholders.email')" v-model="user.email" aria-label="Email" aria-describedby="email-addon" />
                   <ErrorMessage name="email"/>
               </div>
               <div class="form-group">
-                <label class="form-control-label" for="phone">{{ $t('users.fields.phone') }}</label>
+                <label>{{ $t('users.fields.phone') }}</label>
                 <div class="input-group">
                   <Field name="phone" type="phone" class="form-control" :placeholder=" $t('common.placeholders.phone')" id="phone" v-model="user.phone" aria-label="Phone" aria-describedby="phone-addon"/>
                     <ErrorMessage name="phone"/>
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-control-label w-101" for="email">{{ $t('users.fields.role') }}:</label>
+                <label>{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
                   <Field class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator"/>
                   <label class="custom-control-label" for="customRadio0">{{ $t('users.fields.operator') }}</label>
@@ -60,9 +60,18 @@
 </template>
 
 <script lang="ts">
-import {Vue} from 'vue-class-component'
+import {Options, Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
+import {ErrorMessage, Field, Form} from 'vee-validate'
+
+@Options({
+  components: {
+    Form,
+    Field,
+    ErrorMessage
+  },
+})
 
 export default class Edit extends Vue {
   user: User = new User({})
