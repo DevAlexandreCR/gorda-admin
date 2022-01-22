@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-4" v-if="user">
-    <form @submit.prevent="updateUser">
+    <Form @submit="updateUser">
       <div class="card w-75 mx-auto">
         <div class="card-header text-center text-capitalize">
           <h6>{{ $t('users.forms.edit') }}</h6>
@@ -13,35 +13,38 @@
               </div>
             </div>
             <div class="col-md-7">
-              <div class="form-group">
-                <label class="form-control-label" for="name">{{ $t('users.fields.name') }}</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" :placeholder=" $t('common.placeholders.name')" id="name" v-model="user.name">
+              
+                <label>{{ $t('users.fields.name') }}</label>
+                <div class="mb-3">
+                  <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')" id="name" v-model="user.name" aria-label="Name" aria-describedby="name-addon" />
+                    <ErrorMessage name="name"/>
                 </div>
-              </div>
+              
               <div class="form-group">
                 <label class="form-control-label" for="email">{{ $t('users.fields.email') }}</label>
-                <input type="email" class="form-control" id="email" :placeholder="$t('common.placeholders.email')" v-model="user.email">
+                <Field name="email" type="email" class="form-control" id="email" :placeholder="$t('common.placeholders.email')" v-model="user.email" aria-label="Email" aria-describedby="email-addon" />
+                  <ErrorMessage name="email"/>
               </div>
               <div class="form-group">
                 <label class="form-control-label" for="phone">{{ $t('users.fields.phone') }}</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" :placeholder=" $t('common.placeholders.phone')" id="phone" v-model="user.phone">
+                  <Field name="phone" type="phone" class="form-control" :placeholder=" $t('common.placeholders.phone')" id="phone" v-model="user.phone" aria-label="Phone" aria-describedby="phone-addon"/>
+                    <ErrorMessage name="phone"/>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-control-label w-101" for="email">{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
-                  <input class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator">
+                  <Field class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator"/>
                   <label class="custom-control-label" for="customRadio0">{{ $t('users.fields.operator') }}</label>
                 </div>
                 <div class="form-check d-inline-block ms-3">
-                  <input class="form-check-input" type="radio" name="role" @change="assignRole" id="customRadio1" :checked="user.roles?.admin">
+                  <Field class="form-check-input" type="radio" name="role" @change="assignRole" id="customRadio1" :checked="user.roles?.admin"/>
                   <label class="custom-control-label" for="customRadio1">{{ $t('users.fields.admin') }}</label>
                 </div>
               </div>
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable">
+                <Field class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable"/>
                 <label class="form-check-label" for="flexSwitchCheckDefault">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</label>
               </div>
             </div>
@@ -52,7 +55,7 @@
           <button class="btn btn-info" type="submit">{{ $t('common.actions.submit') }}</button>
         </div>
       </div>
-    </form>
+    </Form>
   </div>
 </template>
 
