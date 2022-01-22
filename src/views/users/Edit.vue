@@ -35,16 +35,16 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
-                  <Field class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator"/>
+                  <v-field class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator"></v-field>
                   <label class="custom-control-label" for="customRadio0">{{ $t('users.fields.operator') }}</label>
                 </div>
                 <div class="form-check d-inline-block ms-3">
-                  <Field class="form-check-input" type="radio" name="role" @change="assignRole" id="customRadio1" :checked="user.roles?.admin"/>
+                  <v-field class="form-check-input" type="radio" name="role" @change="assignRole" id="customRadio1" :checked="user.roles?.admin"></v-field>
                   <label class="custom-control-label" for="customRadio1">{{ $t('users.fields.admin') }}</label>
                 </div>
               </div>
               <div class="form-check form-switch">
-                <Field class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable"/>
+                <v-field class="form-check-input" name="Enable" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable"></v-field>
                 <label class="form-check-label" for="flexSwitchCheckDefault">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</label>
               </div>
             </div>
