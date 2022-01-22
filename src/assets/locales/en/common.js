@@ -10,5 +10,11 @@ export default {
   actions: {
     submit: 'Submit',
     edit: 'Edit'
+  },
+  messages: {
+    updated: 'Resource updated successfully',
+    created: 'Resource created successfully',
+    deleted: 'Resource deleted successfully',
+    error: 'Something went wrong!'
   }
 }

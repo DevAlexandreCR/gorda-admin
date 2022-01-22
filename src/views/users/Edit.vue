@@ -64,6 +64,7 @@ import {Options, Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
+import Swal from 'sweetalert2'
 
 @Options({
   components: {
@@ -78,34 +79,18 @@ export default class Edit extends Vue {
 
   updateUser(): void {
     UserRepository.update(this.user).then(() => {
-      console.log('sss')
+      Swal.fire({
+        icon: 'success',
+        title: this.$t('common.messages.updated'),
+        showConfirmButton: false,
+        timer: 1500
+      })
     }).catch(e => {
-      console.log(e)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        title: this.$t('common.messages.error'),
+        text: e.message,
+      })
     })
   }
-
-  onEnable(): void {
-    this.user.enabled_at = this.user.isEnabled() ? undefined : new Date().toLocaleDateString()
-  }
-
-  assignRole(): void {
-    if (this.user.roles?.admin) {
-      this.user.roles = {
-        operator: true,
-        admin: false
-      }
-    } else {
-      this.user.roles = {
-        operator: false,
-        admin: true
-      }
-      }
-  }
-
-  created(): void {
-    UserRepository.getUser(this.$route.params.id as string).then(user => {
-      this.user = new User(user)
-    })
-  }
-}
-</script>

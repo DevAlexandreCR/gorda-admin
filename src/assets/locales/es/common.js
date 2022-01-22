@@ -10,5 +10,11 @@ export default {
   actions: {
     submit: 'Enviar',
     edit: 'Editar'
+  },
+  messages: {
+    updated: 'Recurso actualizado correctamente',
+    created: 'Recurso creado correctamente',
+    deleted: 'Recurso eliminado correctamente',
+    error: 'Algo salió mal!'
   }
 }
