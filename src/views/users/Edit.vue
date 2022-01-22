@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-4" v-if="user">
-    <Form @submit="updateUser">
+    <Form @submit="updateUser" :validation-schema="schema">
       <div class="card w-75 mx-auto">
         <div class="card-header text-center text-capitalize">
           <h6>{{ $t('users.forms.edit') }}</h6>
@@ -35,17 +35,19 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
-                  <v-field class="form-check-input" type="radio" @change="assignRole" name="role" id="customRadio0" :checked="user.roles?.operator"></v-field>
-                  <label class="custom-control-label" for="customRadio0">{{ $t('users.fields.operator') }}</label>
+                  <Field class="form-check-input" type="checkbox" @change="assignRole" name="role" id="customRadio0" :value="user.roles?.operator"/>
+                  <label class="custom-control-label">{{ $t('users.fields.operator') }}</label>
                 </div>
                 <div class="form-check d-inline-block ms-3">
-                  <v-field class="form-check-input" type="radio" name="role" @change="assignRole" id="customRadio1" :checked="user.roles?.admin"></v-field>
-                  <label class="custom-control-label" for="customRadio1">{{ $t('users.fields.admin') }}</label>
+                  <Field class="form-check-input" type="checkbox" name="role" @change="assignRole" id="customRadio1" :value="user.roles?.admin"/>
+                  <label class="custom-control-label">{{ $t('users.fields.admin') }}</label>
                 </div>
+                <ErrorMessage name="role"/>
               </div>
               <div class="form-check form-switch">
-                <v-field class="form-check-input" name="Enable" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable"></v-field>
-                <label class="form-check-label" for="flexSwitchCheckDefault">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</label>
+                <Field class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" :checked="!!user.enabled_at" @change="onEnable"/>
+                <label class="form-check-label">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</label>
+                <ErrorMessage name="enable"/>
               </div>
             </div>
           </div>
@@ -65,6 +67,7 @@ import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Swal from 'sweetalert2'
+import * as yup from 'yup'
 
 @Options({
   components: {
@@ -76,6 +79,15 @@ import Swal from 'sweetalert2'
 
 export default class Edit extends Vue {
   user: User = new User({})
+  admin: boolean = false
+
+  readonly schema = yup.object().shape({
+    name: yup.string().required().min(3),
+    email: yup.string().required().email(),
+    phone: yup.string().required().min(8),
+    role: yup.array(),
+    enabled_at: yup.string().required()
+  })
 
   updateUser(): void {
     UserRepository.update(this.user).then(() => {
@@ -94,3 +106,31 @@ export default class Edit extends Vue {
       })
     })
   }
+
+  onEnable(): void {
+    this.user.enabled_at = this.user.isEnabled() ? null : new Date().toLocaleDateString()
+  }
+
+  assignRole(): void {
+    console.log(this.user.roles)
+    // if (this.admin) {
+    //   this.user.roles = {
+    //     operator: true,
+    //     admin: false
+    //   }
+    // } else {
+    //   this.user.roles = {
+    //     operator: false,
+    //     admin: true
+    //   }
+    //   }
+  }
+
+  created(): void {
+    UserRepository.getUser(this.$route.params.id as string).then(user => {
+      this.user = new User(user)
+      this.admin = this.user.roles?.admin
+    })
+  }
+}
+</script>
