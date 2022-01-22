@@ -65,7 +65,11 @@ export default class Edit extends Vue {
   user: User = new User({})
 
   updateUser(): void {
-    console.log(this.user)
+    UserRepository.update(this.user).then(() => {
+      console.log('sss')
+    }).catch(e => {
+      console.log(e)
+    })
   }
 
   onEnable(): void {
