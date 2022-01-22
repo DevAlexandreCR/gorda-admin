@@ -7,7 +7,7 @@ import UserEdit from '@/views/users/Edit.vue'
 
 const routes: Array<any> = [
   {
-    path: '/dashboard',
+    path: '/',
     name: 'dashboard',
     redirect: {name: 'main'},
     component: Dashboard,
