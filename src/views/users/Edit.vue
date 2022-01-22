@@ -13,13 +13,13 @@
               </div>
             </div>
             <div class="col-md-7">
-              
-                <label>{{ $t('users.fields.name') }}</label>
-                <div class="mb-3">
+              <div class="form-group">
+                <label class="form-control-label" for="name">{{ $t('users.fields.name') }}</label>
+                <div class="input-group">
                   <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')" id="name" v-model="user.name" aria-label="Name" aria-describedby="name-addon" />
                     <ErrorMessage name="name"/>
                 </div>
-              
+              </div>
               <div class="form-group">
                 <label class="form-control-label" for="email">{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" class="form-control" id="email" :placeholder="$t('common.placeholders.email')" v-model="user.email" aria-label="Email" aria-describedby="email-addon" />
@@ -60,9 +60,19 @@
 </template>
 
 <script lang="ts">
-import {Vue} from 'vue-class-component'
+import {Options, Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
+import {ErrorMessage, Field, Form} from 'vee-validate'
+
+@Options({
+  inject: ['appName'],
+  components: {
+    Form,
+    Field,
+    ErrorMessage
+  },
+})
 
 export default class Edit extends Vue {
   user: User = new User({})
