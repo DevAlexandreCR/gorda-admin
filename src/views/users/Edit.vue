@@ -60,13 +60,19 @@
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
+import Swal from 'sweetalert2'
 
 export default class Edit extends Vue {
   user: User = new User({})
 
   updateUser(): void {
     UserRepository.update(this.user).then(() => {
-      console.log('sss')
+      Swal.fire({
+        icon: 'success',
+        title: 'Your work has been saved',
+        showConfirmButton: false,
+        timer: 1500
+      })
     }).catch(e => {
       console.log(e)
     })
