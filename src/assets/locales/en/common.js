@@ -9,7 +9,8 @@ export default {
   },
   actions: {
     submit: 'Submit',
-    edit: 'Edit'
+    edit: 'Edit',
+    close: 'Close'
   },
   messages: {
     updated: 'Resource updated successfully',

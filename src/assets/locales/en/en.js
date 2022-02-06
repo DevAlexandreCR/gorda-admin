@@ -1,5 +1,6 @@
 import users from './users'
 import common from './common'
+import validations from '@/assets/locales/en/validations'
 
 export default {
   routes: {
@@ -7,5 +8,6 @@ export default {
     users: 'Users',
   },
   users: users,
-  common: common
+  common: common,
+  validations: validations
 }

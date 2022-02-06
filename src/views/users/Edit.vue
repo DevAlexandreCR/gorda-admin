@@ -62,21 +62,24 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.upload') }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Default file input example</label>
-              <input class="form-control" type="file" id="formFile" accept="image/*"/>
+          <Form @submit="uploadImg" :validation-schema="schemaImg">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">{{ $t('users.forms.select_img') }}</label>
+                <Field name="photo" class="form-control" type="file" id="formFile"/>
+                <ErrorMessage name="photo"/>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn bg-gradient-primary">Save changes</button>
-          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">{{ $t('common.actions.close') }}</button>
+              <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            </div>
+          </Form>
         </div>
       </div>
     </div>
@@ -90,6 +93,7 @@ import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
+import CustomValidator from '@/assets/validatiions/validators'
 
 @Options({
   components: {
@@ -108,6 +112,24 @@ export default class Edit extends Vue {
     phone: yup.string().required().min(8),
     role: yup.array()
   })
+
+  readonly schemaImg = yup.object().shape({
+    photo: yup.mixed().required().test(
+        'size',
+        'validations.size',
+        CustomValidator.size
+    ).test(
+        'image',
+        'validations.image',
+        CustomValidator.image
+    )
+  })
+
+  uploadImg(): void {
+    console.log('ssssss')
+    this.user.photoUrl = 'https://pikwizard.com/photos/businesspeople-having-a-discussion-in-office--a86da0235b6aa56b6fcf84a54f8b1c55-m.jpg'
+    this.updateUser()
+  }
 
   updateUser(): void {
     UserRepository.update(this.user).then(() => {

@@ -21,6 +21,8 @@ export default {
   },
   platform_settings: 'Platform Settings',
   forms: {
-    edit: 'Edit user information'
+    edit: 'Edit user information',
+    upload: 'Upload photo profile',
+    select_img: 'Choose image from files'
   }
 }

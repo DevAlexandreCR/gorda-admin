@@ -9,7 +9,8 @@ export default {
   },
   actions: {
     submit: 'Enviar',
-    edit: 'Editar'
+    edit: 'Editar',
+    close: 'Cerrar'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
