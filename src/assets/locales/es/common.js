@@ -17,5 +17,10 @@ export default {
     created: 'Recurso creado correctamente',
     deleted: 'Recurso eliminado correctamente',
     error: 'Algo salió mal!'
+  },
+  placeholders: {
+    name: 'Ingrese el nombre',
+    email: 'Ingrese el email',
+    phone: 'Ingrese el teléfono'
   }
 }
