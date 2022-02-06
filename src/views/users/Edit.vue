@@ -105,6 +105,7 @@ import CustomValidator from '@/assets/validatiions/validators'
 
 export default class Edit extends Vue {
   user: User = new User({})
+  schemaImg: yup.ObjectSchema<any>
 
   readonly schema = yup.object().shape({
     name: yup.string().required().min(3),
@@ -113,20 +114,21 @@ export default class Edit extends Vue {
     role: yup.array()
   })
 
-  readonly schemaImg = yup.object().shape({
-    photo: yup.mixed().required().test(
-        'size',
-        'validations.size',
-        CustomValidator.size
-    ).test(
-        'image',
-        'validations.image',
-        CustomValidator.image
-    )
-  })
+  mounted() {
+    this.schemaImg = yup.object().shape({
+      photo: yup.mixed().required().test(
+          'size',
+          this.$t('validations.size'),
+          CustomValidator.size
+      ).test(
+          'image',
+          this.$t('validations.image'),
+          CustomValidator.image
+      )
+    })
+  }
 
   uploadImg(): void {
-    console.log('ssssss')
     this.user.photoUrl = 'https://pikwizard.com/photos/businesspeople-having-a-discussion-in-office--a86da0235b6aa56b6fcf84a54f8b1c55-m.jpg'
     this.updateUser()
   }
