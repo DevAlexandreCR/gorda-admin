@@ -26,7 +26,7 @@ describe('Login.vue', () => {
   })
   it('show alert when try login without credentials', async () => {
     await wrapper.vm.login({email: '', pass: ''})
-    expect(wrapper.text()).toContain('Usuario o contraseña incorrectos!')
+    expect(wrapper.text()).toContain('users.alert')
     expect(wrapper.vm.error).toBeTruthy()
   })
 })

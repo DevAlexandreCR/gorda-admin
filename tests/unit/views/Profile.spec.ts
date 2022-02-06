@@ -24,6 +24,7 @@ describe('Profile.vue', () => {
     expect(wrapper.html()).toContain(AuthService.currentUser.name)
     expect(wrapper.html()).toContain(AuthService.currentUser.email)
     expect(wrapper.html()).toContain(AuthService.currentUser.phone)
-    expect(wrapper.html()).toContain('Administrator')
+    expect(wrapper.html()).toContain('users.fields.admin')
+    expect(wrapper.html()).not.toContain('users.fields.operator')
   })
 })

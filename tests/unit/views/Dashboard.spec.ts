@@ -33,8 +33,8 @@ describe('Dashboard.vue', () => {
 
     expect(nav.exists()).toBeTruthy()
     expect(bar.exists()).toBeTruthy()
-    expect(wrapper.html()).toContain('Dashboard')
-    expect(wrapper.html()).toContain('Users')
+    expect(wrapper.html()).toContain('routes.dashboard')
+    expect(wrapper.html()).toContain('routes.users')
 
   })
 })
