@@ -71,7 +71,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">{{ $t('users.forms.select_img') }}</label>
-                <Field name="photo" class="form-control" type="file" id="formFile"/>
+                <Field name="photo" class="form-control" type="file" accept="image/*" id="formFile"/>
                 <ErrorMessage name="photo"/>
               </div>
             </div>
@@ -94,6 +94,7 @@ import {ErrorMessage, Field, Form} from 'vee-validate'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
+import * as bootstrap from 'bootstrap'
 
 @Options({
   components: {
@@ -114,22 +115,22 @@ export default class Edit extends Vue {
     role: yup.array()
   })
 
-  mounted() {
+  mounted(): void {
     this.schemaImg = yup.object().shape({
       photo: yup.mixed().required().test(
-          'size',
-          this.$t('validations.size'),
-          CustomValidator.size
+        'size',
+        this.$t('validations.size'),
+        CustomValidator.size
       ).test(
-          'image',
-          this.$t('validations.image'),
-          CustomValidator.image
+        'image',
+        this.$t('validations.image'),
+        CustomValidator.image
       )
     })
   }
 
   uploadImg(): void {
-    this.user.photoUrl = 'https://pikwizard.com/photos/businesspeople-having-a-discussion-in-office--a86da0235b6aa56b6fcf84a54f8b1c55-m.jpg'
+    this.user.photoUrl = 'https://pikwizard.com/photos/bartender-using-digital-tablet-at-bar-counter--a361e80af7d4b9251e40327f13609eb5-m.jpg'
     this.updateUser()
   }
 
@@ -141,6 +142,9 @@ export default class Edit extends Vue {
         showConfirmButton: false,
         timer: 1500
       })
+      const modal = document.getElementById('imgModal')
+      const modalImg = bootstrap.Modal.getOrCreateInstance(modal?? '')
+      modalImg.hide()
     }).catch(e => {
       Swal.fire({
         icon: 'error',
@@ -157,11 +161,13 @@ export default class Edit extends Vue {
 
   assignRole(e: Event): void {
     const target = e.target as HTMLInputElement
-    if (target.value === 'operator') {
-      this.user.roles!.operator = target.checked
-    } else {
-      this.user.roles!.admin = target.checked
+    if (this.user.roles !== undefined) {
+      if (target.value === 'operator') {
+        this.user.roles.operator = target.checked
+      } else {
+        this.user.roles.admin = target.checked
       }
+    }
   }
 
   created(): void {
