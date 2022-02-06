@@ -65,7 +65,7 @@
               <h6 class="text-uppercase text-body text-xs font-weight-bolder">{{ $t('users.fields.roles') }}</h6>
               <ul class="list-group">
                 <li v-for="(value, role) in user.roles" class="list-group-item border-0 px-0" :key="role">
-                  <div class="d-flex px-2 py-1">
+                  <div class="d-flex px-2 py-1"  v-if="value">
                     <div>
                       <em class="fas fa-tools fa-1x me-2"></em>
                     </div>
