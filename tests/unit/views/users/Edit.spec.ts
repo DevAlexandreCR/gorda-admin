@@ -39,4 +39,25 @@ describe('Edit.vue', () => {
     expect(form.exists()).toBeTruthy()
     expect(error.exists()).toBeTruthy()
   })
+
+  it('an user can edit edit user details ', async () => {
+    const updatedUser = {
+      name: 'new Name',
+      email: 'new_email@email.com',
+      phone: '31000000000'
+    }
+    await wrapper.vm.$nextTick()
+    const inputName = wrapper.find('#name')
+    await inputName.setValue(updatedUser.name)
+    const inputEmail = wrapper.find('#email')
+    await inputEmail.setValue(updatedUser.email)
+    const inputPhone = wrapper.find('#phone')
+    await inputPhone.setValue(updatedUser.phone)
+    const button =  wrapper.find('button[type="submit"]')
+    await button.trigger('submit')
+
+    expect(wrapper.vm.user.name).toBe(updatedUser.name)
+    expect(wrapper.vm.user.email).toBe(updatedUser.email)
+    expect(wrapper.vm.user.phone).toBe(updatedUser.phone)
+  })
 })
