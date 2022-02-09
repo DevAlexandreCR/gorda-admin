@@ -34,11 +34,11 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
-                  <input class="form-check-input" type="checkbox" @change="assignRole" name="role" id="customRadio0" :value="'operator'" :checked="user.roles.operator"/>
+                  <input class="form-check-input" type="checkbox" @change="assignRole" name="role" id="operator" :value="'operator'" :checked="user.roles.operator"/>
                   <label class="custom-control-label">{{ $t('users.fields.operator') }}</label>
                 </div>
                 <div class="form-check d-inline-block ms-3">
-                  <input class="form-check-input" type="checkbox" name="role" @change="assignRole" id="customRadio1" :value="'admin'" :checked="user.roles.admin"/>
+                  <input class="form-check-input" type="checkbox" name="role" @change="assignRole" id="admin" :value="'admin'" :checked="user.roles.admin"/>
                   <label class="custom-control-label">{{ $t('users.fields.admin') }}</label>
                 </div>
                 <ErrorMessage name="role"/>
