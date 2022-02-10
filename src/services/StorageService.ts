@@ -10,9 +10,9 @@ class StorageService {
   }
 
   /* istanbul ignore next */
-  async uploadFile(ref: StorageReference, file: File): Promise<string> {
-    await uploadBytes(ref, file)
-    return getDownloadURL(ref)
+  async uploadFile(reference: StorageReference, file: File): Promise<string> {
+    await uploadBytes(reference, file)
+    return getDownloadURL(reference)
   }
 }
 
