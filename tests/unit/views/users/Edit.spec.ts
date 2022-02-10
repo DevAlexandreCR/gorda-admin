@@ -10,9 +10,12 @@ import Edit from '@/views/users/Edit.vue'
 import {flushPromises} from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
+import StorageService from '@/services/StorageService'
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
+StorageService.stAdminProfileImages = jest.fn().mockImplementation()
+StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
 describe('Edit.vue', () => {
   AuthService.currentUser = new User(UserInterface)
@@ -110,7 +113,8 @@ describe('Edit.vue', () => {
   it('an user can edit urlPhoto', async () => {
     await wrapper.vm.$nextTick()
     const updateUser = spyOn(wrapper.vm,'updateUser')
-    wrapper.vm.uploadImg()
+    await wrapper.vm.uploadImg()
     expect(updateUser).toBeCalled()
+    expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
   })
 })

@@ -71,7 +71,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">{{ $t('users.forms.select_img') }}</label>
-                <Field name="photo" class="form-control" type="file" accept="image/*" id="formFile"/>
+                <Field name="photo" class="form-control" type="file" accept="image/*" v-model="image" id="formFile"/>
                 <ErrorMessage name="photo"/>
               </div>
             </div>
@@ -95,6 +95,7 @@ import Swal from 'sweetalert2'
 import * as yup from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
 import * as bootstrap from 'bootstrap'
+import StorageService from '@/services/StorageService'
 
 @Options({
   components: {
@@ -107,6 +108,7 @@ import * as bootstrap from 'bootstrap'
 export default class Edit extends Vue {
   user: User = new User({})
   schemaImg: yup.ObjectSchema<any>
+  image: File[] = []
 
   readonly schema = yup.object().shape({
     name: yup.string().required().min(3),
@@ -130,8 +132,11 @@ export default class Edit extends Vue {
   }
 
   uploadImg(): void {
-    this.user.photoUrl = 'https://pikwizard.com/photos/bartender-using-digital-tablet-at-bar-counter--a361e80af7d4b9251e40327f13609eb5-m.jpg'
-    this.updateUser()
+    const ref = StorageService.stAdminProfileImages(this.user.id!, this.image[0]?.name)
+    StorageService.uploadFile(ref, this.image[0]).then(url => {
+      this.user.photoUrl = url
+      this.updateUser()
+    })
   }
 
   updateUser(): void {
