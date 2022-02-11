@@ -17,5 +17,10 @@ export default {
     admin: 'Administrador', 
     operator: 'Operador'
   },
-  platform_settings: 'Configuraciones'
+  platform_settings: 'Configuraciones',
+  forms: {
+    edit: 'Editar información del usuario',
+    upload: 'Subir foto de perfil',
+    select_img: 'Seleccione una imagen del archivo'
+  }
 }

@@ -18,6 +18,10 @@
       "webpack-env",
       "jest"
     ],
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types/"
+    ],
     "paths": {
       "@/*": [
         "src/*"

@@ -3,13 +3,7 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "public": "dist",
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -25,6 +19,15 @@
     },
     "ui": {
       "enabled": true
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "storage": {
+      "port": 9199
     }
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

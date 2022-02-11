@@ -10,7 +10,7 @@
     <div class="collapse navbar-collapse w-auto max-height-vh-100 h-100 ps ps--active-y" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <router-link :to="{ name: 'main'}" tag="a" class="nav-link">
+          <router-link :to="{ name: 'dashboard'}" tag="a" :class="$router.currentRoute.value.path.includes('/dashboard/main') ? 'nav-link active': 'nav-link'">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg id="ico" width="12px" height="12px" viewBox="0 0 45 40" xmlns="http://www.w3.org/2000/svg">
                 <title>shop </title>
@@ -30,7 +30,7 @@
           </router-link>
         </li>
   <li class="nav-item">
-          <router-link :to="{ name: 'users'}" tag="a" class="nav-link" v-if="isAdmin">
+          <router-link :to="{ name: 'users'}" tag="a" :class="$router.currentRoute.value.path.includes('/dashboard/users/') ? 'nav-link active': 'nav-link'" v-if="isAdmin">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 46 42" xmlns="http://www.w3.org/2000/svg" >
                 <title>customer-support</title>

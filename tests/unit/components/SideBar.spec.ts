@@ -21,6 +21,6 @@ describe('SideBar.vue', () => {
 
   it('an user can show buttons to users and dashboard', async () => {
     expect(wrapper.find('#sidenav-main').exists()).toBeTruthy()
-    expect(wrapper.html()).toContain('routes.users')
+    expect(wrapper.html()).toContain(wrapper.vm.$t('routes.users'))
   })
 })

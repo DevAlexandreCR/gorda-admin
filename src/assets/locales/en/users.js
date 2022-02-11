@@ -15,7 +15,14 @@ export default {
     phone: 'Phone',
     roles: 'Roles',
     admin: 'Administrator',
-    operator: 'Operator'
+    operator: 'Operator',
+    role: 'Role',
+    status: 'Status'
   },
-  platform_settings: 'Platform Settings'
+  platform_settings: 'Platform Settings',
+  forms: {
+    edit: 'Edit user information',
+    upload: 'Upload photo profile',
+    select_img: 'Choose image from files'
+  }
 }
