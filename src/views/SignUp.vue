@@ -101,6 +101,7 @@ export default class SignUp extends Vue {
   user: User = new User({})
   pass = ''
   schema: yup.ObjectSchema<any>
+  error = false
 
   created(): void {
     this.schema = yup.object().shape({
@@ -127,6 +128,7 @@ export default class SignUp extends Vue {
         title: this.$t('common.messages.error'),
         text: e.message,
       })
+      this.error = true
     })
   }
 }
