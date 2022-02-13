@@ -4,7 +4,6 @@ import {UserInterface} from '@/entities/UserInterface'
 import AuthService from '@/services/AuthService'
 import dayjs from 'dayjs'
 import StorageService from '@/services/StorageService'
-import {Roles} from '@/entities/Roles'
 
 class UserRepository{
 

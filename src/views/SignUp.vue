@@ -102,7 +102,7 @@ export default class SignUp extends Vue {
   pass = ''
   schema: yup.ObjectSchema<any>
 
-  created() {
+  created(): void {
     this.schema = yup.object().shape({
       name: yup.string().required().min(3),
       email: yup.string().required().email(),
