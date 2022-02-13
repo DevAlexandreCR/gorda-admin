@@ -20,12 +20,12 @@
         <div class="container">
           <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-              <div class="card card-plain mt-8">
+              <div class="card mt-8">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
                   <span class="alert-icon"><i class="ni ni-like-2"></i></span>
                   <span class="alert-text"><strong>{{ $t('users.upss') }}</strong>{{ $t('users.alert') }}</span>
                 </div>
-                <div class="card-header pb-0 text-left bg-transpaXrent">
+                <div class="card-header pb-0 text-left">
                   <h3 class="font-weight-bolder text-info text-gradient">{{ $t('users.welcome') }}</h3>
                   <p class="mb-0">{{ $t('users.enter') }}</p>
                 </div>
@@ -51,6 +51,12 @@
                       <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">{{ $t('users.login') }}</button>
                     </div>
                   </Form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    {{ $t('users.no_account') }}
+                    <router-link :to="{name: 'sign-up'}" tag="a" class="text-info text-gradient font-weight-bold">{{ $t('users.signUp') }}</router-link>
+                  </p>
                 </div>
               </div>
             </div>

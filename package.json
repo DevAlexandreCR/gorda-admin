@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
     "firebase": "^9.5.0",
     "sweetalert2": "^11.3.6",
     "vee-validate": "^4.5.6",

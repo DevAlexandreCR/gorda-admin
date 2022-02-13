@@ -14,6 +14,12 @@ class StorageService {
     await uploadBytes(reference, file)
     return getDownloadURL(reference)
   }
+
+  /* istanbul ignore next */
+  async getDownloadUrl(path: string): Promise<string> {
+    const reference = ref(this.storage, path)
+    return getDownloadURL(reference)
+  }
 }
 
 export default new StorageService()
