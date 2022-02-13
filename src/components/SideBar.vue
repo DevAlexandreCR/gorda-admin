@@ -57,7 +57,7 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" @click="signOut" href="">
+          <a class="nav-link" @click="signOut" href="" id="signOut">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <em class="fas fa-sign-out-alt"></em>

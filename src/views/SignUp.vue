@@ -22,7 +22,7 @@
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card my-7">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
-                  <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                  <span class="alert-icon"><em class="ni ni-like-2"></em></span>
                   <span class="alert-text"><strong>{{ $t('users.upss') }}</strong>{{ $t('users.alert') }}</span>
                 </div>
                 <div class="card-header pb-0 text-left">
