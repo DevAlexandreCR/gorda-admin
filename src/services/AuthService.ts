@@ -1,4 +1,4 @@
-import {Auth, getAuth, onAuthStateChanged, signInWithEmailAndPassword, User as UserFB, UserCredential} from 'firebase/auth'
+import {Auth, getAuth, onAuthStateChanged, signInWithEmailAndPassword, User as UserFB, UserCredential, createUserWithEmailAndPassword, signOut} from 'firebase/auth'
 import Firebase from '@/services/Firebase'
 import User from '@/models/User'
 import UserRepository from '@/repositories/UserRepository'
@@ -28,5 +28,13 @@ export default class AuthService {
 
   public static getCurrentUser(): User {
     return AuthService.currentUser
+  }
+
+  public static createUser(email: string, password: string): Promise<UserCredential> {
+    return createUserWithEmailAndPassword(AuthService.auth, email, password)
+  }
+
+  public static logOut(): Promise<void> {
+    return signOut(AuthService.auth)
   }
 }

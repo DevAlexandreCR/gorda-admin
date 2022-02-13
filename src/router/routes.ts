@@ -1,7 +1,7 @@
 import Dashboard from '@/views/Dashboard.vue'
 import Main from '@/views/Main.vue'
 import Users from '@/views/users/Users.vue'
-import Profile from '@/views/Profile.vue'
+import Profile from '@/views/users/Profile.vue'
 import UsersIndex from '@/views/users/Index.vue'
 import UserEdit from '@/views/users/Edit.vue'
 
@@ -46,6 +46,11 @@ const routes: Array<any> = [
     path: '/login',
     name: 'login',
     component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/sign-up',
+    name: 'sign-up',
+    component: () => import('../views/SignUp.vue')
   }
 ]
 

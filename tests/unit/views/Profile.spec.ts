@@ -4,7 +4,7 @@ import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
 import UserInterface from '../../mocks/entities/UserInterface'
-import Profile from '@/views/Profile.vue'
+import Profile from '@/views/users/Profile.vue'
 
 describe('Profile.vue', () => {
   AuthService.currentUser = new User(UserInterface)

@@ -10,7 +10,8 @@ export default {
   actions: {
     submit: 'Submit',
     edit: 'Edit',
-    close: 'Close'
+    close: 'Close',
+    create: 'Create'
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -21,6 +22,8 @@ export default {
   placeholders: {
     name: 'Enter name',
     email: 'Enter email',
-    phone: 'Enter phone'
+    phone: 'Enter phone',
+    password: 'Password',
+    confirm_password: 'Confirm password'
   }
 }
