@@ -6,6 +6,7 @@ export interface ServiceInterface {
   end_address: string|null
   phone: string
   name: string
+  comment: string|null
   amount: number|null
   driver_id: string|null
   client_id: string|null

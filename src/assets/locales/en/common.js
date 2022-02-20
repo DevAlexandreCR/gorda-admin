@@ -24,6 +24,8 @@ export default {
     email: 'Enter email',
     phone: 'Enter phone',
     password: 'Password',
-    confirm_password: 'Confirm password'
+    confirm_password: 'Confirm password',
+    address: 'Enter Address',
+    comment: 'Enter comment'
   }
 }

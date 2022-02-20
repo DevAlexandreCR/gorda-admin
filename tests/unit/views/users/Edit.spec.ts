@@ -73,7 +73,7 @@ describe('Edit.vue', () => {
       expect(wrapper.vm.user.email).toBe(updatedUser.email)
       expect(wrapper.vm.user.phone).toBe(updatedUser.phone)
 
-    });
+    })
   })
 
   it('show error when update function fails', async () => {
@@ -89,7 +89,7 @@ describe('Edit.vue', () => {
         title: wrapper.vm.$t('common.messages.error'),
         text: 'New Error',
       })
-    });
+    })
   })
 
   it('user can enable or disable user', async () => {

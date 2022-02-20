@@ -24,6 +24,8 @@ export default {
     email: 'Ingrese el email',
     phone: 'Ingrese el teléfono',
     password: 'Contraseña',
-    confirm_password: 'Confirmar contraseña'
+    confirm_password: 'Confirmar contraseña',
+    address: 'Ingrese la dirección',
+    comment: 'Ingrese un comentario (opcional)'
   }
 }
