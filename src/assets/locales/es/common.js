@@ -26,6 +26,7 @@ export default {
     password: 'Contraseña',
     confirm_password: 'Confirmar contraseña',
     address: 'Ingrese la dirección',
-    comment: 'Ingrese un comentario (opcional)'
+    comment: 'Ingrese un comentario (opcional)',
+    map: 'Mapa'
   }
 }

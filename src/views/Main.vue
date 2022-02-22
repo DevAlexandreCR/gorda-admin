@@ -1,14 +1,16 @@
-<template class="py4">
-  <create-service></create-service>
+<template>
+  <div class="container-fluid">
+    <tabs></tabs>
+  </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
-import CreateService from '@/components/services/CreateService.vue'
+import Tabs from '@/components/services/Tabs.vue'
 
 @Options({
   components: {
-    CreateService,
+    Tabs
   },
 })
 

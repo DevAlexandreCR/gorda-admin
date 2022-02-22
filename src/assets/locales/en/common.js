@@ -26,6 +26,7 @@ export default {
     password: 'Password',
     confirm_password: 'Confirm password',
     address: 'Enter Address',
-    comment: 'Enter comment'
+    comment: 'Enter comment',
+    map: 'Map'
   }
 }
