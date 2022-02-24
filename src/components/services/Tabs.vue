@@ -16,7 +16,7 @@
   <div class="tab-content pt-2" id="myTabContent">
     <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
       <create-service></create-service>
-      <services-table></services-table>
+      <services-table :services="pendingServices"></services-table>
     </div>
     <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">...</div>
     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">...</div>
@@ -28,6 +28,9 @@
 import {Options, Vue} from 'vue-class-component'
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
+import {ServiceInterface} from '@/entities/ServiceInterface'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import {DataSnapshot} from 'firebase/database'
 
 @Options({
   components: {
@@ -37,5 +40,17 @@ import ServicesTable from '@/components/services/ServicesTable.vue'
 })
 
 export default class Tabs extends Vue {
+  pendingServices: Array<ServiceInterface> = []
+
+  onServiceAdded(data: DataSnapshot): void{
+    this.pendingServices.push(data.val() as ServiceInterface)
+  }
+
+  onServiceChanged(data: DataSnapshot): void{
+    console.log(data.val())
+  }
+  mounted(): void {
+    ServiceRepository.serviceListener(this.onServiceAdded, this.onServiceChanged)
+  }
 }
 </script>

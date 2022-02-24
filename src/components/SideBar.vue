@@ -84,7 +84,6 @@ export default class SideBar extends Vue {
 
   mounted (): void {
     this.user = AuthService.getCurrentUser()
-    console.log(this.user.isAdmin())
     this.isAdmin = this.user.isAdmin()
   }
 }

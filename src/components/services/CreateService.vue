@@ -48,11 +48,11 @@
 import {Vue, Options} from 'vue-class-component'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import {ServiceInterface} from '@/entities/ServiceInterface'
-import dayjs from 'dayjs'
 import * as yup from 'yup'
+import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import Swal from 'sweetalert2'
-import {Constants} from '@/constants/Constants'
+import dayjs from 'dayjs'
 
 @Options({
   components: {
@@ -63,7 +63,7 @@ import {Constants} from '@/constants/Constants'
 })
 
 export default class CreateService extends Vue {
-  services: Array<Partial<ServiceInterface>> = [{ created_at: dayjs(new Date()).format() }]
+  services: Array<Partial<Service>> = [new Service()]
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
@@ -72,13 +72,17 @@ export default class CreateService extends Vue {
   })
 
   createService(values: ServiceInterface): void {
-    values.status = Constants.SERVICE_STATUS_PENDING
+    values.created_at = dayjs().unix()
+    values.status = Service.STATUS_PENDING
+    values.comment = values.comment ?? null
     ServiceRepository.create(values).then(() => {
       Swal.fire({
         icon: 'success',
         title: this.$t('common.messages.created'),
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
+        toast: true,
+        position: 'top-right'
       })
     }).catch(e => {
       Swal.fire({
@@ -91,7 +95,7 @@ export default class CreateService extends Vue {
 
   add(): void {
     if (this.services.length < 5) {
-      this.services.push({created_at: dayjs(new Date()).format()})
+      this.services.push(new Service())
     }
   }
 

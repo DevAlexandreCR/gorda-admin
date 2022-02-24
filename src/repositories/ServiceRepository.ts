@@ -1,4 +1,4 @@
-import {get, child, DataSnapshot, set, ref, push, ThenableReference} from 'firebase/database'
+import {get, child, DataSnapshot, set, ref, push, onChildAdded, onChildChanged} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/entities/ServiceInterface'
 
@@ -21,9 +21,16 @@ class ServiceRepository {
     return set(ref(DBService.db, 'services/' + service.id), service);
   }
 
+  serviceListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void): void {
+    onChildAdded(DBService.dbServices(), added)
+    onChildChanged(DBService.dbServices(), changed)
+  }
+
   /* istanbul ignore next */
-  async create(service: ServiceInterface): Promise<ThenableReference> {
-    return push(DBService.dbServices(), service);
+  async create(service: ServiceInterface): Promise<void> {
+    const res = await push(DBService.dbServices(), service)
+    service.id = res.key
+    return await this.update(service);
   }
 }
 

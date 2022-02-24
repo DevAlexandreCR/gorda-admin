@@ -3,13 +3,21 @@
     <table class="table table-sm table-borderless">
       <caption hidden></caption>
       <thead>
-      <th>Hora</th>
-      <th>Numero</th>
+      <th>{{ $t('services.fields.hour') }}</th>
+      <th>{{ $t('services.fields.status') }}</th>
+      <th>{{ $t('services.fields.start_address') }}</th>
+      <th>{{ $t('services.fields.phone') }}</th>
+      <th>{{ $t('services.fields.name') }}</th>
+      <th></th>
       </thead>
       <tbody>
-      <tr>
-        <td>10-09:00</td>
-        <td>3103794656</td>
+      <tr v-for="service of services" :key="service.id">
+        <td>{{ service.created_at }}</td>
+        <td>{{ service.status }}</td>
+        <td>{{ service.start_address }}</td>
+        <td>{{ service.phone }}</td>
+        <td>{{ service.name }}</td>
+        <td>actions</td>
       </tr>
       </tbody>
     </table>
@@ -18,7 +26,16 @@
 
 <script lang="ts">
 import {Vue} from 'vue-class-component'
+import {ServiceInterface} from '@/entities/ServiceInterface'
 
-export default class ServicesTable extends Vue {
+class Props {
+  services: Array<ServiceInterface>
+}
+
+export default class ServicesTable extends Vue.with(Props) {
+
+  mounted(): void {
+    console.log(this.services)
+  }
 }
 </script>

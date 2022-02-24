@@ -19,7 +19,7 @@ export default class AuthService {
       if (userFB) {
         const user = await UserRepository.getUser(userFB.uid)?? {}
         if(user) {
-          this.currentUser = Object.assign(this.currentUser, user)
+          Object.assign(this.currentUser, user)
         }
         await router.push(path.includes('login') ? {name: 'main'} : path)
       } else {

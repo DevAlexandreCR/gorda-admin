@@ -1,26 +1,23 @@
 import {ServiceInterface} from '@/entities/ServiceInterface'
+import dayjs from 'dayjs'
 
-export default class Service {
+export default class Service implements ServiceInterface {
   id: string
   status: string
   start_address: string
-  end_address: string|null
+  end_address: string | null
   phone: string
   name: string
-  amount: number|null
-  driver_id: string|null
-  client_id: string|null
-  created_at: string
+  amount: number | null
+  driver_id: string | null
+  client_id: string | null
+  created_at: number
+  comment: string | null
 
-  constructor(service: ServiceInterface) {
-    this.id = service.id
-    this.name = service.name
-    this.phone = service.phone
-    this.amount = service.amount
-    this.start_address = service.start_address
-    this.end_address = service.end_address
-    this.driver_id = service.driver_id
-    this.client_id = service.client_id
-    this.created_at = service.created_at
+  static readonly STATUS_PENDING = 'pending'
+
+  constructor() {
+    this.created_at = dayjs().unix()
+    this.status = Service.STATUS_PENDING
   }
 }
