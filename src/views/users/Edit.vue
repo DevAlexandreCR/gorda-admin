@@ -96,6 +96,7 @@ import * as yup from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
 import * as bootstrap from 'bootstrap'
 import StorageService from '@/services/StorageService'
+import dayjs from 'dayjs'
 
 @Options({
   components: {
@@ -106,7 +107,7 @@ import StorageService from '@/services/StorageService'
 })
 
 export default class Edit extends Vue {
-  user: User = new User({})
+  user: User = new User()
   schemaImg: yup.ObjectSchema<any>
   image: File[] = []
 
@@ -161,12 +162,12 @@ export default class Edit extends Vue {
 
   onEnable(e: Event): void {
     const target = e.target as HTMLInputElement
-    this.user.enabled_at = target.checked ? new Date().toLocaleDateString() : ''
+    this.user.enabled_at = target.checked ? dayjs().unix() : null
   }
 
   assignRole(e: Event): void {
     const target = e.target as HTMLInputElement
-    if (this.user.roles !== undefined) {
+    if (this.user.roles) {
       if (target.value === 'operator') {
         this.user.roles.operator = target.checked
       } else {
@@ -177,7 +178,7 @@ export default class Edit extends Vue {
 
   created(): void {
     UserRepository.getUser(this.$route.params.id as string).then(user => {
-      this.user = new User(user)
+      this.user = user as User
       this.user.photoUrl = this.user.photoUrl?? '../../assets/img/logo.png'
     })
   }

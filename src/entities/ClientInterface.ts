@@ -4,5 +4,5 @@ export interface ClientInterface {
   name: string
   phone: string
   email: string|null
-  created_at: string
+  created_at: number
 }

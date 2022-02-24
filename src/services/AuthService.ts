@@ -5,7 +5,7 @@ import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
 
 export default class AuthService {
-  public static currentUser: User
+  public static currentUser: User =  new User()
   public static auth: Auth = getAuth(Firebase.getInstance())
 
   /* istanbul ignore next */
@@ -19,7 +19,7 @@ export default class AuthService {
       if (userFB) {
         const user = await UserRepository.getUser(userFB.uid)?? {}
         if(user) {
-          this.currentUser = new User(user)
+          this.currentUser = Object.assign(this.currentUser, user)
         }
         await router.push(path.includes('login') ? {name: 'main'} : path)
       } else {
@@ -30,7 +30,7 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static getCurrentUser(): User {
-    return AuthService.currentUser
+    return AuthService.currentUser as User
   }
 
   /* istanbul ignore next */
