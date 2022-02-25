@@ -21,8 +21,8 @@
         <div class="col col-sm">
           <div class="form-group">
             <div class="input-group">
-              <Field type="address" class="form-control" :placeholder="$t('common.placeholders.address')" name="address" v-model="service.start_address"/>
-              <ErrorMessage name="address"/>
+              <Field type="address" class="form-control" :placeholder="$t('common.placeholders.address')" name="start_address" v-model="service.start_address"/>
+              <ErrorMessage name="start_address"/>
             </div>
           </div>
         </div>
@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
-import {ErrorMessage, Field, Form} from 'vee-validate'
+import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
 import {ServiceInterface} from '@/entities/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
@@ -67,11 +67,12 @@ export default class CreateService extends Vue {
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
-    address: yup.string().required(),
+    start_address: yup.string().required(),
     comment: yup.string().min(5)
   })
 
-  createService(values: ServiceInterface): void {
+  createService(values: ServiceInterface, event: FormActions<any>): void {
+    event.resetForm()
     values.created_at = dayjs().unix()
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null

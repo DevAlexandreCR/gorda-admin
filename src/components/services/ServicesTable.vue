@@ -12,7 +12,7 @@
       </thead>
       <tbody>
       <tr v-for="service of services" :key="service.id">
-        <td>{{ service.created_at }}</td>
+        <td>{{ format(service.created_at) }}</td>
         <td>{{ service.status }}</td>
         <td>{{ service.start_address }}</td>
         <td>{{ service.phone }}</td>
@@ -27,6 +27,7 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import {ServiceInterface} from '@/entities/ServiceInterface'
+import DateHelper from '@/helpers/DateHelper'
 
 class Props {
   services: Array<ServiceInterface>
@@ -34,8 +35,8 @@ class Props {
 
 export default class ServicesTable extends Vue.with(Props) {
 
-  mounted(): void {
-    console.log(this.services)
+  format(unix: number): string {
+    return DateHelper.unixToDate(unix, 'HH:mm:ss')
   }
 }
 </script>
