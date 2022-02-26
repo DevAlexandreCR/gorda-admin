@@ -2,5 +2,8 @@
   "rules": {
     ".read": "now < 1641099600000",  // 2022-1-2
     ".write": "now < 1641099600000",  // 2022-1-2
+    "services": {
+      ".indexOn": "created_at"
+    }
   }
 }

@@ -31,6 +31,8 @@ import ServicesTable from '@/components/services/ServicesTable.vue'
 import {ServiceInterface} from '@/entities/ServiceInterface'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {DataSnapshot} from 'firebase/database'
+import dayjs from 'dayjs'
+import Service from '@/models/Service'
 
 @Options({
   components: {
@@ -41,16 +43,21 @@ import {DataSnapshot} from 'firebase/database'
 
 export default class Tabs extends Vue {
   pendingServices: Array<ServiceInterface> = []
+  inProgressServices: Array<ServiceInterface> = []
 
   onServiceAdded(data: DataSnapshot): void{
+    data.forEach(snapshot => {
+      console.log(snapshot)
+    })
     this.pendingServices.push(data.val() as ServiceInterface)
   }
 
-  onServiceChanged(data: DataSnapshot): void{
-    console.log(data.val())
+  onServiceChanged(data: DataSnapshot): void {
+    const service = new Service()
+    Object.assign(service, data.val())
   }
   mounted(): void {
-    ServiceRepository.serviceListener(this.onServiceAdded, this.onServiceChanged)
+    ServiceRepository.pendingListener(this.onServiceAdded, this.onServiceChanged, dayjs().subtract(1, 'day').unix())
   }
 }
 </script>

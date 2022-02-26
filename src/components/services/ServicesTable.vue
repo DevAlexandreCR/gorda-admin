@@ -36,7 +36,7 @@ class Props {
 export default class ServicesTable extends Vue.with(Props) {
 
   format(unix: number): string {
-    return DateHelper.unixToDate(unix, 'HH:mm:ss')
+    return DateHelper.unixToDate(unix, 'YYYY-MM-DD HH:mm:ss')
   }
 }
 </script>

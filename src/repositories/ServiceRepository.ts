@@ -1,6 +1,7 @@
-import {get, child, DataSnapshot, set, ref, push, onChildAdded, onChildChanged} from 'firebase/database'
+import {get, child, DataSnapshot, set, ref, push, onChildAdded, onChildChanged, query, equalTo, orderByChild, startAfter} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/entities/ServiceInterface'
+import Service from '@/models/Service'
 
 class ServiceRepository {
 
@@ -21,8 +22,13 @@ class ServiceRepository {
     return set(ref(DBService.db, 'services/' + service.id), service);
   }
 
-  serviceListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void): void {
-    onChildAdded(DBService.dbServices(), added)
+  pendingListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void, startAt: number): void {
+    onChildAdded(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAt, 'created_at')), added)
+    onChildChanged(DBService.dbServices(), changed)
+  }
+
+  inProgressListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void, startAt: number): void {
+    onChildAdded(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAt, 'created_at')), added)
     onChildChanged(DBService.dbServices(), changed)
   }
 
