@@ -178,7 +178,7 @@ export default class Edit extends Vue {
 
   created(): void {
     UserRepository.getUser(this.$route.params.id as string).then(user => {
-      this.user = user as User
+      Object.assign(this.user, user)
       this.user.photoUrl = this.user.photoUrl?? '../../assets/img/logo.png'
     })
   }
