@@ -1,7 +1,6 @@
 import {get, child, DataSnapshot, set, ref, push, onChildAdded, onChildChanged, query, startAfter, orderByChild} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/entities/ServiceInterface'
-import Service from '@/models/Service'
 
 class ServiceRepository {
 
