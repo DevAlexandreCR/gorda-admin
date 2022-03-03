@@ -46,18 +46,16 @@ export default class Tabs extends Vue {
   inProgressServices: Array<ServiceInterface> = []
 
   onServiceAdded(data: DataSnapshot): void{
-    data.forEach(snapshot => {
-      console.log(snapshot)
-    })
     this.pendingServices.push(data.val() as ServiceInterface)
   }
 
   onServiceChanged(data: DataSnapshot): void {
     const service = new Service()
     Object.assign(service, data.val())
+    console.log(service)
   }
   mounted(): void {
-    ServiceRepository.pendingListener(this.onServiceAdded, this.onServiceChanged, dayjs().subtract(1, 'day').unix())
+    ServiceRepository.serviceListener(this.onServiceAdded, this.onServiceChanged, dayjs().subtract(1, 'day').unix())
   }
 }
 </script>
