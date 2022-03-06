@@ -35,7 +35,7 @@ class ServiceRepository {
   async create(service: ServiceInterface): Promise<void> {
     const res = await push(DBService.dbServices(), service)
     service.id = res.key
-    return await this.update(service);
+    return this.update(service);
   }
 }
 

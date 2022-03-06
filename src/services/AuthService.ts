@@ -30,7 +30,7 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static getCurrentUser(): User {
-    return AuthService.currentUser as User
+    return AuthService.currentUser
   }
 
   /* istanbul ignore next */
