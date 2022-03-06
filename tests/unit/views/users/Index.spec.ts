@@ -10,7 +10,8 @@ import UserRepository from '@/repositories/UserRepository'
 UserRepository.getAll = jest.fn().mockResolvedValue([UserInterface])
 
 describe('Index.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Index,
