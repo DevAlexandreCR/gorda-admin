@@ -9,7 +9,8 @@ export default {
     start_address: 'Dir inicial',
     end_address: 'Dir final',
     phone: 'Teléfono',
-    name: 'Nombre'
+    name: 'Nombre',
+    driver: 'Conductor'
   },
   history: 'Historial'
 }

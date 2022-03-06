@@ -9,7 +9,8 @@ export default {
     start_address: 'Start address',
     end_address: 'End address',
     phone: 'Phone',
-    name: 'Name'
+    name: 'Name',
+    driver: 'Driver'
   },
   history: 'History'
 }

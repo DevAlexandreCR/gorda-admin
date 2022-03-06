@@ -51,8 +51,8 @@ import {ServiceInterface} from '@/entities/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
+import ToastService from "@/services/ToastService";
 
 @Options({
   components: {
@@ -77,20 +77,9 @@ export default class CreateService extends Vue {
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null
     ServiceRepository.create(values).then(() => {
-      Swal.fire({
-        icon: 'success',
-        title: this.$t('common.messages.created'),
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-        position: 'top-right'
-      })
+      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.updated'))
     }).catch(e => {
-      Swal.fire({
-        icon: 'error',
-        title: this.$t('common.messages.error'),
-        text: e.message,
-      })
+      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
     })
   }
 

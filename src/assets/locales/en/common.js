@@ -11,7 +11,11 @@ export default {
     submit: 'Submit',
     edit: 'Edit',
     close: 'Close',
-    create: 'Create'
+    create: 'Create',
+    cancel: 'Cancel',
+    release: 'Release',
+    assign: 'Assign',
+    terminate: 'Terminate'
   },
   messages: {
     updated: 'Resource updated successfully',

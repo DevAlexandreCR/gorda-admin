@@ -11,7 +11,11 @@ export default {
     submit: 'Enviar',
     edit: 'Editar',
     close: 'Cerrar',
-    create: 'Crear'
+    create: 'Crear',
+    cancel: 'Cancelar',
+    release: 'Liberar',
+    assign: 'Asignar',
+    terminate: 'Terminar'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',

@@ -21,6 +21,11 @@ class ServiceRepository {
     return set(ref(DBService.db, 'services/' + service.id), service);
   }
 
+  /* istanbul ignore next */
+  updateStatus(serviceId: string, status: string): Promise<void> {
+    return set(ref(DBService.db, 'services/' + serviceId + '/status'), status);
+  }
+
   serviceListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void, startAtl: number): void {
     onChildAdded(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl, 'created_at')), added)
     onChildChanged(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl, 'created_at')), changed)
