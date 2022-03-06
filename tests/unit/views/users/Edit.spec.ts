@@ -11,6 +11,7 @@ import {flushPromises} from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import StorageService from '@/services/StorageService'
+import dayjs from "dayjs";
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
@@ -18,7 +19,8 @@ StorageService.stAdminProfileImages = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
 describe('Edit.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   const div = document.createElement('div')
   div.id = 'root'
@@ -95,9 +97,9 @@ describe('Edit.vue', () => {
   it('user can enable or disable user', async () => {
     const enable =  wrapper.find('input[name="enable"]')
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBe(new Date().toLocaleDateString())
+    expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBe('')
+    expect(wrapper.vm.user.enabled_at).toBeNull()
   })
 
   it('user can assign role to user', async () => {
