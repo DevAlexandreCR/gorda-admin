@@ -15,6 +15,9 @@ export default class Service implements ServiceInterface {
   comment: string | null
 
   static readonly STATUS_PENDING = 'pending'
+  static readonly STATUS_IN_PROGRESS = 'in_progress'
+  static readonly STATUS_TERMINATED = 'terminated'
+  static readonly STATUS_CANCELED = 'canceled'
 
   constructor() {
     this.created_at = dayjs().unix()
