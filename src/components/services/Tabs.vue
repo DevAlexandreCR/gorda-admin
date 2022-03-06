@@ -99,7 +99,7 @@ export default class Tabs extends Vue {
         this.pendingServices = this.pendingServices.filter(serv => {
           return serv.id !== service.id
         })
-        this.historyServices.filter(serv => {
+        this.historyServices.find(serv => {
           if (serv.id === service.id) {
             serv.status = service.status
           }
