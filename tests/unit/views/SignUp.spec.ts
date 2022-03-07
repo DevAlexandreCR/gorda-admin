@@ -9,7 +9,7 @@ import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import SignUp from '@/views/SignUp.vue'
 import StorageService from '@/services/StorageService'
-import UserInterface from '../../mocks/entities/UserInterface'
+import UserInterface from '../../mocks/entities/UserMock'
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)

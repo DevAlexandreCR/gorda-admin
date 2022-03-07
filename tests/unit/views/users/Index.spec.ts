@@ -3,7 +3,7 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
-import UserInterface from '../../../mocks/entities/UserInterface'
+import UserInterface from '../../../mocks/entities/UserMock'
 import Index from '@/views/users/Index.vue'
 import UserRepository from '@/repositories/UserRepository'
 

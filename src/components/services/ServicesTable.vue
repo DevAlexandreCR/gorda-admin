@@ -24,7 +24,8 @@
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1" data-bs-toggle="tooltip" v-if="service.isPending()" data-bs-placement="top" :title="$t('common.actions.assign')">
+            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1" data-bs-toggle="tooltip" v-if="service.isPending()"
+              data-bs-placement="top" :title="$t('common.actions.assign')">
               <em class="fas fa-car"></em></button>
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1" v-if="service.isinProgress()" @click="release(service)"
               data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
@@ -57,7 +58,7 @@ class Props {
 export default class ServicesTable extends Vue.with(Props) {
 
   format(unix: number): string {
-    return DateHelper.unixToDate(unix, 'YYYY-MM-DD HH:mm:ss')
+    return DateHelper.unixToDate(unix, 'MM-DD HH:mm:ss')
   }
 
   cancel(service: Service): void {

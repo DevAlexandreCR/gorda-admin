@@ -3,7 +3,7 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
-import UserInterface from '../../../mocks/entities/UserInterface'
+import UserInterface from '../../../mocks/entities/UserMock'
 import UserRepository from '@/repositories/UserRepository'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Edit from '@/views/users/Edit.vue'
@@ -97,9 +97,9 @@ describe('Edit.vue', () => {
   it('user can enable or disable user', async () => {
     const enable =  wrapper.find('input[name="enable"]')
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
-    await enable.trigger('click')
     expect(wrapper.vm.user.enabled_at).toBeNull()
+    await enable.trigger('click')
+    expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
   })
 
   it('user can assign role to user', async () => {
