@@ -8,7 +8,8 @@ import UserInterface from '../../mocks/entities/UserInterface'
 
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   const div = document.createElement('div')
   div.id = 'root'
   document.body.appendChild(div)

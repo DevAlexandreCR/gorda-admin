@@ -9,7 +9,8 @@ import User from '@/models/User'
 import UserInterface from '../../mocks/entities/UserInterface'
 
 describe('Dashboard.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
