@@ -77,7 +77,7 @@ export default class CreateService extends Vue {
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null
     ServiceRepository.create(values).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.updated'))
+      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
     }).catch(e => {
       ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
     })

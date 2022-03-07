@@ -88,7 +88,7 @@ describe('CreateService.vue', () => {
     const comment = 'New comment to service'
     await wrapper.find('input[name="phone"]').setValue(phone)
     await wrapper.find('input[name="name"]').setValue(name)
-    await wrapper.find('input[name="address"]').setValue(address)
+    await wrapper.find('input[name="start_address"]').setValue(address)
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -96,9 +96,12 @@ describe('CreateService.vue', () => {
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'success',
+        position: 'top-right',
         title: wrapper.vm.$t('common.messages.created'),
         showConfirmButton: false,
-        timer: 1500
+        text: undefined,
+        timer: 1500,
+        toast:true
       })
     })
     jest.resetAllMocks()
@@ -111,7 +114,7 @@ describe('CreateService.vue', () => {
 
     await wrapper.find('input[name="phone"]').setValue('3100000000')
     await wrapper.find('input[name="name"]').setValue('Name User')
-    await wrapper.find('input[name="address"]').setValue('CR 1 1-1')
+    await wrapper.find('input[name="start_address"]').setValue('CR 1 1-1')
     await wrapper.find('input[name="comment"]').setValue('New comment to service')
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -120,7 +123,11 @@ describe('CreateService.vue', () => {
       expect(swal).toBeCalledWith({
         icon: 'error',
         title: wrapper.vm.$t('common.messages.error'),
+        showConfirmButton: false,
         text: 'New Error',
+        position: 'top-right',
+        timer: 1500,
+        toast: true
       })
     })
   })

@@ -7,7 +7,8 @@ import UserInterface from '../../mocks/entities/UserInterface'
 import Profile from '@/views/users/Profile.vue'
 
 describe('Profile.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Profile,
