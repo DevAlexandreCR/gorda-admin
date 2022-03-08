@@ -49,7 +49,7 @@ describe('SignUp.vue', () => {
   })
 
   it('an guest user can signup', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     AuthService.createUser = jest.fn().mockResolvedValue({
       user: { uuid: '1'}
     })
@@ -83,7 +83,7 @@ describe('SignUp.vue', () => {
   })
 
   it('show error when create function fails', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     UserRepository.create = jest.fn().mockRejectedValue(new Error('New Error while create'))
     wrapper.vm.createUser()
     await flushPromises()

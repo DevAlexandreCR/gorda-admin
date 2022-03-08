@@ -5,7 +5,7 @@ import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
 
 export default class AuthService {
-  public static currentUser: User =  new User()
+  public static currentUser: User
   public static auth: Auth = getAuth(Firebase.getInstance())
 
   /* istanbul ignore next */

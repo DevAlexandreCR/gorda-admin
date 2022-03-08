@@ -79,7 +79,7 @@ describe('Edit.vue', () => {
   })
 
   it('show error when update function fails', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     UserRepository.update = jest.fn().mockRejectedValue(new Error('New Error'))
     const button =  wrapper.find('button[type="submit"]')
     await button.trigger('click')
@@ -114,7 +114,7 @@ describe('Edit.vue', () => {
 
   it('an user can edit urlPhoto', async () => {
     await wrapper.vm.$nextTick()
-    const updateUser = spyOn(wrapper.vm,'updateUser')
+    const updateUser = jest.spyOn(wrapper.vm,'updateUser')
     await wrapper.vm.uploadImg()
     expect(updateUser).toBeCalled()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')

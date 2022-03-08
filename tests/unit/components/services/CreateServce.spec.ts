@@ -80,7 +80,7 @@ describe('CreateService.vue', () => {
 
   it('an user can create a new service', async () => {
     ServiceRepository.create = jest.fn().mockResolvedValue('success')
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     await wrapper.vm.$nextTick()
     const phone = '3100000000'
     const name = 'Name User'
@@ -109,7 +109,7 @@ describe('CreateService.vue', () => {
 
   it('show alert when error', async () => {
     ServiceRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     await wrapper.vm.$nextTick()
 
     await wrapper.find('input[name="phone"]').setValue('3100000000')
