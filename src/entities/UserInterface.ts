@@ -6,7 +6,10 @@ export interface UserInterface {
   email?: string
   phone?: string
   photoUrl?: string
-  enabled_at?: string
-  created_at?: string
+  enabled_at: number|null
+  created_at: number
   roles?: Roles
+
+  isAdmin(): boolean
+  isEnabled(): boolean
 }

@@ -100,8 +100,7 @@ export default class Login extends Vue {
   })
 
   async login(): Promise<void> {
-    await AuthService.login(this.email, this.pass).catch(e => {
-      console.log(e.message)
+    await AuthService.login(this.email, this.pass).catch(() => {
       this.error = true
     })
   }

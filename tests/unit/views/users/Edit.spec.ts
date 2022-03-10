@@ -3,7 +3,7 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
-import UserInterface from '../../../mocks/entities/UserInterface'
+import UserInterface from '../../../mocks/entities/UserMock'
 import UserRepository from '@/repositories/UserRepository'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Edit from '@/views/users/Edit.vue'
@@ -11,6 +11,7 @@ import {flushPromises} from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import StorageService from '@/services/StorageService'
+import dayjs from "dayjs";
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
@@ -18,7 +19,8 @@ StorageService.stAdminProfileImages = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
 describe('Edit.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   const div = document.createElement('div')
   div.id = 'root'
@@ -73,11 +75,11 @@ describe('Edit.vue', () => {
       expect(wrapper.vm.user.email).toBe(updatedUser.email)
       expect(wrapper.vm.user.phone).toBe(updatedUser.phone)
 
-    });
+    })
   })
 
   it('show error when update function fails', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     UserRepository.update = jest.fn().mockRejectedValue(new Error('New Error'))
     const button =  wrapper.find('button[type="submit"]')
     await button.trigger('click')
@@ -89,15 +91,15 @@ describe('Edit.vue', () => {
         title: wrapper.vm.$t('common.messages.error'),
         text: 'New Error',
       })
-    });
+    })
   })
 
   it('user can enable or disable user', async () => {
     const enable =  wrapper.find('input[name="enable"]')
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBe(new Date().toLocaleDateString())
+    expect(wrapper.vm.user.enabled_at).toBeNull()
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBe('')
+    expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
   })
 
   it('user can assign role to user', async () => {
@@ -112,7 +114,7 @@ describe('Edit.vue', () => {
 
   it('an user can edit urlPhoto', async () => {
     await wrapper.vm.$nextTick()
-    const updateUser = spyOn(wrapper.vm,'updateUser')
+    const updateUser = jest.spyOn(wrapper.vm,'updateUser')
     await wrapper.vm.uploadImg()
     expect(updateUser).toBeCalled()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')

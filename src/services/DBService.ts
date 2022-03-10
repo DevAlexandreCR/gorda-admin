@@ -8,6 +8,11 @@ class DBService {
   public dbUsers(): DatabaseReference {
     return ref(this.db, 'users/')
   }
+
+  /* istanbul ignore next */
+  public dbServices(): DatabaseReference {
+    return ref(this.db, 'services/')
+  }
 }
 
 export default new DBService()

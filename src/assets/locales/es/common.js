@@ -11,7 +11,11 @@ export default {
     submit: 'Enviar',
     edit: 'Editar',
     close: 'Cerrar',
-    create: 'Crear'
+    create: 'Crear',
+    cancel: 'Cancelar',
+    release: 'Liberar',
+    assign: 'Asignar',
+    terminate: 'Terminar'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -24,6 +28,9 @@ export default {
     email: 'Ingrese el email',
     phone: 'Ingrese el teléfono',
     password: 'Contraseña',
-    confirm_password: 'Confirmar contraseña'
+    confirm_password: 'Confirmar contraseña',
+    address: 'Ingrese la dirección',
+    comment: 'Ingrese un comentario (opcional)',
+    map: 'Mapa'
   }
 }

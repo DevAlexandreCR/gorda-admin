@@ -11,7 +11,11 @@ export default {
     submit: 'Submit',
     edit: 'Edit',
     close: 'Close',
-    create: 'Create'
+    create: 'Create',
+    cancel: 'Cancel',
+    release: 'Release',
+    assign: 'Assign',
+    terminate: 'Terminate'
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -24,6 +28,9 @@ export default {
     email: 'Enter email',
     phone: 'Enter phone',
     password: 'Password',
-    confirm_password: 'Confirm password'
+    confirm_password: 'Confirm password',
+    address: 'Enter Address',
+    comment: 'Enter comment',
+    map: 'Map'
   }
 }

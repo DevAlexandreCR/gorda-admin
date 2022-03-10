@@ -75,11 +75,16 @@ import AuthService from '@/services/AuthService'
 import User from '@/models/User'
 
 export default class SideBar extends Vue {
-  user: User = AuthService.getCurrentUser()
-  isAdmin: boolean = this.user.isAdmin()
+  user: User = new User()
+  isAdmin = false
 
   signOut(): void {
     AuthService.logOut()
+  }
+
+  mounted (): void {
+    this.user = AuthService.getCurrentUser()
+    this.isAdmin = this.user.isAdmin()
   }
 }
 </script>

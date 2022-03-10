@@ -98,7 +98,7 @@ import * as yup from 'yup'
 })
 
 export default class SignUp extends Vue {
-  user: User = new User({})
+  user: User = new User()
   pass = ''
   schema: yup.ObjectSchema<any>
   error = false

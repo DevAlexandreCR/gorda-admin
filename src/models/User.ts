@@ -1,29 +1,18 @@
 import {UserInterface} from '@/entities/UserInterface'
 import {Roles} from '@/entities/Roles'
 
-export default class User {
+export default class User implements UserInterface {
   id?: string
   name?: string
   email?: string
   phone?: string
   photoUrl?: string
-  enabled_at?: string
-  created_at?: string
-  roles?: Roles
-
-  constructor(user: UserInterface) {
-    this.id = user.id
-    this.name = user.name
-    this.email = user.email
-    this.phone = user.phone
-    this.photoUrl = user.photoUrl
-    this.roles = user.roles
-    this.enabled_at = user.enabled_at
-    this.created_at = user.created_at
-  }
+  enabled_at: number|null
+  created_at: number
+  roles: Roles
 
   isAdmin(): boolean {
-    return this.roles?.admin ?? false
+    return this.roles.admin ?? false
   }
 
   isEnabled(): boolean {

@@ -3,11 +3,12 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
-import UserInterface from '../../mocks/entities/UserInterface'
+import UserInterface from '../../mocks/entities/UserMock'
 import Profile from '@/views/users/Profile.vue'
 
 describe('Profile.vue', () => {
-  AuthService.currentUser = new User(UserInterface)
+  AuthService.currentUser = new User()
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Profile,

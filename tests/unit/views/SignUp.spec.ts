@@ -9,7 +9,7 @@ import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import SignUp from '@/views/SignUp.vue'
 import StorageService from '@/services/StorageService'
-import UserInterface from '../../mocks/entities/UserInterface'
+import UserInterface from '../../mocks/entities/UserMock'
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
@@ -49,7 +49,7 @@ describe('SignUp.vue', () => {
   })
 
   it('an guest user can signup', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     AuthService.createUser = jest.fn().mockResolvedValue({
       user: { uuid: '1'}
     })
@@ -83,7 +83,7 @@ describe('SignUp.vue', () => {
   })
 
   it('show error when create function fails', async () => {
-    const swal = spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal,'fire')
     UserRepository.create = jest.fn().mockRejectedValue(new Error('New Error while create'))
     wrapper.vm.createUser()
     await flushPromises()

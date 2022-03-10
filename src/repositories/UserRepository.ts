@@ -4,19 +4,20 @@ import {UserInterface} from '@/entities/UserInterface'
 import AuthService from '@/services/AuthService'
 import dayjs from 'dayjs'
 import StorageService from '@/services/StorageService'
+import User from '@/models/User'
 
 class UserRepository{
 
   /* istanbul ignore next */
-  async getUser(id: string): Promise<UserInterface> {
+  async getUser(id: string): Promise<User> {
     const snapshot: DataSnapshot = await get(child(DBService.dbUsers(), id))
-    return <UserInterface>snapshot.val()
+    return <User>snapshot.val()
   }
 
   /* istanbul ignore next */
-  async getAll(): Promise<Array<UserInterface>> {
+  async getAll(): Promise<Array<User>> {
     const snapshot: DataSnapshot = await get(DBService.dbUsers())
-    return <Array<UserInterface>>snapshot.val()
+    return <Array<User>>snapshot.val()
   }
 
   /* istanbul ignore next */
@@ -27,10 +28,9 @@ class UserRepository{
   async create(user: UserInterface, password: string): Promise<void> {
     await AuthService.createUser(user.email as string, password).then(async userCredential => {
       user.id = userCredential.user.uid
-      const now = new Date()
-      user.created_at = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
+      user.created_at = dayjs().unix()
       user.photoUrl = await StorageService.getDownloadUrl('images/app/default_user.png')
-      user.enabled_at = ''
+      user.enabled_at = null
       user.roles = {
         admin: false,
         operator: false

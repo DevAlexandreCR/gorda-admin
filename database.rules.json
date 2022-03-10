@@ -1,6 +1,11 @@
 {
   "rules": {
-    ".read": "now < 1641099600000",  // 2022-1-2
-    ".write": "now < 1641099600000",  // 2022-1-2
+    ".read": true,
+    ".write": true,
+    "services": {
+      "$uid": {
+        ".indexOn": "created_at"
+      }
+    }
   }
 }
