@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import Service from "@/models/Service";
 
-class ServiceMock {
+class ServiceMock extends Service {
   id = 'id'
   status = Service.STATUS_PENDING
   start_address = 'Barrio Berlin'
