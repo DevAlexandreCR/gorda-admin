@@ -1,5 +1,4 @@
-{
-	"neighborhoods": [
+[
 	{"name":"Barrio El MODELO","location":{"lat":2.4463512,"lng":-76.60763949999999}},
 	{"name":"Loma Linda","location":{"lat":2.449012,"lng":-76.6049945}},
 	{"name":"Prados Norte","location":{"lat":2.4499268,"lng":-76.6008841}},
@@ -163,5 +162,4 @@
 	{"name":"Barrio La Sombrilla","location":{"lat":2.4505773,"lng":-76.6261924}},
 	{"name":"Barrio Carlos primero","location":{"lat":2.453061399999999,"lng":-76.6295562}},
 	{"name":"Hospital Maria Occidente","location":{"lat":2.456830399999999,"lng":-76.63254739999999}}
-     ]
-}
+]

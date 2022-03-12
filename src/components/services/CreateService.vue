@@ -21,7 +21,7 @@
         <div class="col col-sm">
           <div class="form-group">
             <div class="input-group">
-              <Field type="address" class="form-control" :placeholder="$t('common.placeholders.address')" name="start_address" v-model="service.start_address"/>
+              <AutoComplete :fieldName="'start_address'" :Elements="neighborhoods" :search-term="ass"/>
               <ErrorMessage name="start_address"/>
             </div>
           </div>
@@ -53,21 +53,36 @@ import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
+import locations from '../../../src/assets/location/neighborhoods.json';
+import AutoComplete from '@/components/AutoComplete.vue'
+
 
 @Options({
   components: {
     Form,
     Field,
-    ErrorMessage
+    ErrorMessage,
+    AutoComplete
   },
 })
 
+
 export default class CreateService extends Vue {
+
+  neighborhoods: Array<any> = []
+  
+
+  mounted(): void {
+    locations.forEach(loc => {
+      this.neighborhoods.push(loc.name)
+    })
+  }
+
   services: Array<Partial<Service>> = [new Service()]
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
-    start_address: yup.string().required(),
+    start_address: yup.string(),
     comment: yup.string().min(5)
   })
 
