@@ -7,6 +7,7 @@ export default {
   routes: {
     dashboard: 'Dashboard',
     users: 'Usuarios',
+    drivers: 'Conductores'
   },
   users: users,
   common: common,

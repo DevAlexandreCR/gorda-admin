@@ -1,9 +1,11 @@
 import Dashboard from '@/views/Dashboard.vue'
 import Main from '@/views/Main.vue'
 import Users from '@/views/users/Users.vue'
+import Drivers from '@/views/drivers/Drivers.vue'
 import Profile from '@/views/users/Profile.vue'
 import UsersIndex from '@/views/users/Index.vue'
 import UserEdit from '@/views/users/Edit.vue'
+import DriverCreate from '@/views/drivers/Create.vue'
 
 const routes: Array<any> = [
   {
@@ -32,6 +34,27 @@ const routes: Array<any> = [
             path: '/dashboard/users/:id/edit',
             name: 'users.edit',
             component: UserEdit
+          }
+        ]
+      },
+      {
+        path: '/dashboard/drivers',
+        name: 'drivers',
+        redirect: {name: 'drivers.create'},
+        component: Drivers,
+        children: [
+          {
+            path: '/dashboard/drivers/index/',
+            name: 'drivers.index',
+          },
+          {
+            path: '/dashboard/drivers/:id/edit',
+            name: 'drivers.edit',
+          },
+          {
+            path: '/dashboard/drivers/create',
+            name: 'drivers.create',
+            component: DriverCreate
           }
         ]
       },

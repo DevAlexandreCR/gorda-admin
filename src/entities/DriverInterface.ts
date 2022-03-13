@@ -11,6 +11,6 @@ export interface DriverInterface {
     model: string
     photoUrl: string
   }
-  enabled_at: string|null
+  enabled_at: number|null
   created_at: string
 }
