@@ -49,7 +49,7 @@ import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
-import locations from '../../../src/assets/location/neighborhoods.json';
+import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 
 

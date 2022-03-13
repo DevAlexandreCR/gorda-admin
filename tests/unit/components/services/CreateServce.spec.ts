@@ -6,6 +6,7 @@ import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
 import ServiceRepository from '@/repositories/ServiceRepository'
+import AutoComplete from "@/components/AutoComplete.vue";
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
@@ -19,7 +20,8 @@ describe('CreateService.vue', () => {
         components: {
           Form,
           Field,
-          ErrorMessage
+          ErrorMessage,
+          AutoComplete
         },
         global: {
           plugins: [router, i18n],

@@ -4,7 +4,7 @@
       <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
              @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
     </div>
-    <ul v-if="foundElements.length > 0"
+    <ul v-if="foundElements.length > 2"
         class="list-group autocomplete-list shadow-sm w-100">
       <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
           class="list-group-item">
