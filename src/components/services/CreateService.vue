@@ -6,31 +6,29 @@
           <div class="form-group">
             <div class="input-group">
               <Field type="phone" class="form-control" :placeholder="$t('common.placeholders.phone')" name="phone" v-model="service.phone"/>
-              <ErrorMessage name="phone"/>
             </div>
           </div>
+          <ErrorMessage name="phone"/>
         </div>
         <div class="col col-sm">
           <div class="form-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
-              <ErrorMessage name="name"/>
           </div>
+          <ErrorMessage name="name"/>
         </div>
         <div class="col col-sm">
           <div class="form-group">
-            <div class="input-group">
-              <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
-              <ErrorMessage name="start_address"/>
-            </div>
+            <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
           </div>
+          <ErrorMessage name="start_address"/>
         </div>
         <div class="col col-sm">
           <div class="form-group">
             <div class="input-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.comment')" name="comment" v-model="service.comment"/>
-              <ErrorMessage name="comment"/>
             </div>
           </div>
+          <ErrorMessage name="comment"/>
         </div>
         <div class="col col-sm">
           <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>

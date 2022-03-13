@@ -1,20 +1,17 @@
 <template>
-<div class="col col-sm">
-<div class="max-w-xs relative space-y-3">
-<div class="col col-sm">
-  <div class="form-group">
-    <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement" @keyup="searchElements" :placeholder="placeholder" class="form-control"/>
+  <div class="relative">
+    <div class="form-group mb-1">
+      <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
+             @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
     </div>
-</div>
-  <div class="row">
-    <ul v-if="foundElements.length > 0" class="w-full rounded text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 ">
-      <li v-for="element in foundElements" :key="element" @click="selectElement(element)" class="cursor-pointer hover:bg-gray-100 p-1">
+    <ul v-if="foundElements.length > 0"
+        class="list-group autocomplete-list shadow-sm w-100">
+      <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
+          class="list-group-item">
         {{ element }}
-        </li>
-      </ul>
-    </div>
+      </li>
+    </ul>
   </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -33,7 +30,7 @@ class Props {
     Field
   }
 })
-export default class AutoComplete  extends Vue.with(Props){
+export default class AutoComplete extends Vue.with(Props) {
 
   selectedElement = ''
   foundElements: Array<any> = []
