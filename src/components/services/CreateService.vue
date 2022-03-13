@@ -21,7 +21,7 @@
         <div class="col col-sm">
           <div class="form-group">
             <div class="input-group">
-              <AutoComplete :fieldName="'start_address'" :Elements="neighborhoods" :search-term="ass"/>
+              <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address"/>
               <ErrorMessage name="start_address"/>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default class CreateService extends Vue {
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
-    start_address: yup.string(),
+    start_address: yup.string().required(),
     comment: yup.string().min(5)
   })
 
