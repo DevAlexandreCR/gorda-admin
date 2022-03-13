@@ -30,7 +30,7 @@ describe('CreateService.vue', () => {
       })
     await router.isReady()
   })
-  it('an user can inputs to add service', async () => {
+  it('an user can show inputs to add service', async () => {
     await wrapper.vm.$nextTick()
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
