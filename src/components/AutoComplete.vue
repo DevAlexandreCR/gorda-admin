@@ -1,19 +1,12 @@
 <template>
-  <div class="bg-gray-50 min-w-screen min-h-screen flex justify-center items-center">
-    <div class="max-w-xs relative space-y-3">
-               
-      <div class="form-group">
-            <div class="input-group">
-              <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement" @keyup="searchElements" placeholder="Type here..." class="form-control "/>
-            </div>
-         </div>
+    <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement" @keyup="searchElements" :placeholder="placeholder" class="form-control"/>
+  <div class="row">
+    <ul v-if="foundElements.length > 0" class="w-full rounded text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 ">
+      <li v-for="element in foundElements" :key="element" @click="selectElement(element)" class="cursor-pointer hover:bg-gray-100 p-1">
+        {{ element }}
+      </li>
+    </ul>
 
-      <ul v-if="foundElements.length > 0" class="w-full rounded text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 ">
-        <li v-for="element in foundElements" :key="element" @click="selectElement(element)" class="cursor-pointer hover:bg-gray-100 p-1">
-          {{ element }}
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
@@ -25,6 +18,7 @@ import {Field} from 'vee-validate'
 class Props {
   elements: Array<any>
   fieldName: string
+  placeholder: string
 }
 
 @Options({

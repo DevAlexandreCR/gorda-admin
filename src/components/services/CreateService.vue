@@ -12,16 +12,14 @@
         </div>
         <div class="col col-sm">
           <div class="form-group">
-            <div class="input-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
               <ErrorMessage name="name"/>
-            </div>
           </div>
         </div>
         <div class="col col-sm">
           <div class="form-group">
             <div class="input-group">
-              <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address"/>
+              <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
               <ErrorMessage name="start_address"/>
             </div>
           </div>
