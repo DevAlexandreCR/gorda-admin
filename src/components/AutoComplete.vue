@@ -1,13 +1,20 @@
 <template>
+<div class="col col-sm">
+<div class="max-w-xs relative space-y-3">
+<div class="col col-sm">
+  <div class="form-group">
     <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement" @keyup="searchElements" :placeholder="placeholder" class="form-control"/>
+    </div>
+</div>
   <div class="row">
     <ul v-if="foundElements.length > 0" class="w-full rounded text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 ">
       <li v-for="element in foundElements" :key="element" @click="selectElement(element)" class="cursor-pointer hover:bg-gray-100 p-1">
         {{ element }}
-      </li>
-    </ul>
-
+        </li>
+      </ul>
+    </div>
   </div>
+</div>
 </template>
 
 <script lang="ts">
