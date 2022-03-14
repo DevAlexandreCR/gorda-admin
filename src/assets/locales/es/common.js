@@ -32,5 +32,8 @@ export default {
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
     map: 'Mapa'
+  },
+  forms: {
+    select_img: 'Choose image from files'
   }
 }

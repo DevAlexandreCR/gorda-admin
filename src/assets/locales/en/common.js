@@ -32,5 +32,8 @@ export default {
     address: 'Enter Address',
     comment: 'Enter comment',
     map: 'Map'
+  },
+  forms: {
+    select_img: 'Choose image from files'
   }
 }

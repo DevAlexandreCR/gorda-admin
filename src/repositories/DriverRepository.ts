@@ -1,4 +1,4 @@
-import {get, child, DataSnapshot, set, ref} from 'firebase/database'
+import {get, child, DataSnapshot, set, ref, push} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from "@/entities/DriverInterface";
 
@@ -21,8 +21,10 @@ class DriverRepository {
     return set(ref(DBService.db, 'drivers/' + driver.id), driver)
   }
   
-  async create(driver: DriverInterface): Promise<void> {
-    return set(ref(DBService.db, 'drivers/' + driver.id), driver)
+  /* istanbul ignore next */
+  async create(driver: DriverInterface): Promise<string> {
+    const res = await push(DBService.dbDrivers(), driver)
+    return res.key as string
   }
 }
 

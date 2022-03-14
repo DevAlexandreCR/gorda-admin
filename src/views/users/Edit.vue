@@ -133,7 +133,7 @@ export default class Edit extends Vue {
   }
 
   uploadImg(): void {
-    const ref = StorageService.stAdminProfileImages(this.user.id?? '', this.image[0]?.name)
+    const ref = StorageService.getStorageReference(StorageService.profilePath, this.user.id?? '', this.image[0]?.name)
     StorageService.uploadFile(ref, this.image[0]).then(url => {
       this.user.photoUrl = url
       this.updateUser()
