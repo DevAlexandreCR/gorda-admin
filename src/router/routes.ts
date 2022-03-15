@@ -6,6 +6,7 @@ import Profile from '@/views/users/Profile.vue'
 import UsersIndex from '@/views/users/Index.vue'
 import UserEdit from '@/views/users/Edit.vue'
 import DriverCreate from '@/views/drivers/Create.vue'
+import DriverIndex from '@/views/drivers/Index.vue'
 
 const routes: Array<any> = [
   {
@@ -40,12 +41,13 @@ const routes: Array<any> = [
       {
         path: '/dashboard/drivers',
         name: 'drivers',
-        redirect: {name: 'drivers.create'},
+        redirect: {name: 'drivers.index'},
         component: Drivers,
         children: [
           {
             path: '/dashboard/drivers/index/',
             name: 'drivers.index',
+            component: DriverIndex
           },
           {
             path: '/dashboard/drivers/:id/edit',

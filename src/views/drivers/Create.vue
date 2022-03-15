@@ -9,10 +9,10 @@
           <div class="row">
             <div class="col-md-6">
               <div class="card-header text-center text-capitalize">
-                <h6>{{ $t('drivers.create') }}</h6>
+                <h6>{{ $t('drivers.forms.create_driver') }}</h6>
               </div>
                 <div class="form-group">
-                  <label class="form-label">{{ $t('common.forms.select_img') }}</label>
+                  <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
                   <Field name="photoUrl" class="form-control" type="file" accept="image/*" v-model="imageDriver" id="formFileDriver"/>
                   <ErrorMessage name="photoUrl"/>
                 </div>
@@ -64,23 +64,30 @@
             </div>
             <div class="col-md-6">
               <div class="card-header text-center text-capitalize">
-                <h6>{{ $t('drivers.create.vehicle') }}</h6>
+                <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
-                <Field name="brand" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')"
+                <Field name="brand" type="text" class="form-control" :placeholder=" $t('drivers.placeholders.brand')"
                        v-model="driver.vehicle.brand" id="brand" aria-label="Brand" aria-describedby="brand-addon"/>
                 <ErrorMessage name="brand"/>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
                 <Field name="model" type="text" class="form-control" id="model"
-                       :placeholder="$t('common.placeholders.email')" v-model="driver.vehicle.model" aria-label="Model"
+                       :placeholder="$t('drivers.placeholders.model')" v-model="driver.vehicle.model" aria-label="Model"
                        aria-describedby="model-addon"/>
                 <ErrorMessage name="model"/>
               </div>
               <div class="form-group">
-                <label class="form-label">{{ $t('common.forms.select_img') }}</label>
+                <label>{{ $t('drivers.vehicle.plate') }}</label>
+                <Field name="plate" type="text" class="form-control" id="plate"
+                       :placeholder="$t('drivers.placeholders.plate')" v-model="driver.vehicle.plate" aria-label="Plate"
+                       aria-describedby="plate-addon"/>
+                <ErrorMessage name="plate"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
                 <Field name="photoVehicleUrl" class="form-control" type="file" accept="image/*" v-model="imageVehicle" id="formFileVehicle"/>
                 <ErrorMessage name="photoVehicleUrl"/>
               </div>
@@ -132,6 +139,7 @@ export default class Create extends Vue {
       docType: yup.mixed().oneOf(Constants.DOC_TYPES).required(),
       document: yup.string().required().min(6).max(10),
       brand: yup.string().required().min(3),
+      plate: yup.string().required().min(3),
       model: yup.string().required().min(3),
       photoUrl: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required(),
       photoVehicleUrl: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required()
@@ -144,6 +152,7 @@ export default class Create extends Vue {
   }
 
   createDriver(values: DriverInterface, event: FormActions<any>): void {
+    console.log(this.driver)
     DriverRepository.create(this.driver).then((id) => {
       this.driver.id = id
       this.uploadImg(StorageService.driverPath, this.imageDriver[0]).then(url => {

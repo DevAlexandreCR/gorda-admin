@@ -7,14 +7,30 @@ export default {
     phone: 'Teléfono',
     status: 'Estado',
     doc_type: 'Tipo doc',
-    document: 'Documento'
+    document: 'Documento',
+    vehicle: 'Vehículo',
+    plate: 'Placa'
   },
   forms: {
-    edit: 'Edit driver information',
-    upload: 'Upload photo profile'
+    edit: 'Editar información del conductor',
+    create: 'Formulario de creación del conductor',
+    create_vehicle: 'Información del vehículo',
+    create_driver: 'Información del conductor',
+    upload: 'Cargar foto de perfil',
+    upload_vehicle: 'Cargar foto del vehículo'
   },
   vehicle: {
     brand: 'Marca',
-    model: 'Modelo'
+    model: 'Modelo',
+    plate: 'Placas'
+  },
+  placeholders: {
+    docType: 'Tipo de documento',
+    document: 'ingrese número de documento',
+    brand: 'Ingrese marca del vehículo',
+    model: 'Ingrese modelo del vehículo',
+    plate: 'ingrese el número de placa',
+    photo: 'Seleccione foto de perfil',
+    photo_vehicle: 'Seleccione foto del vehículo'
   }
 }

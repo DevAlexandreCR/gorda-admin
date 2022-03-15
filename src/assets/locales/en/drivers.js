@@ -7,14 +7,32 @@ export default {
     phone: 'Phone',
     status: 'Status',
     doc_type: 'Doc type',
-    document: 'Document'
+    document: 'Document',
+    vehicle: 'Vehicle',
+    plate: 'Licence number'
   },
   forms: {
-    edit: 'Edit user information',
-    upload: 'Upload photo profile'
+    edit: 'Edit driver information',
+    create: 'Create driver information',
+    create_vehicle: 'Vehicle information',
+    create_driver: 'Driver information',
+    upload: 'Upload photo profile',
+    upload_vehicle: 'Upload photo vehicle'
   },
   vehicle: {
     brand: 'Brand',
-    model: 'Model'
+    model: 'Model',
+    plate: 'Licence plate number'
+  },
+  placeholders: {
+    password: 'Password',
+    confirm_password: 'Confirm password',
+    docType: 'Document Type',
+    document: 'Enter Document number',
+    brand: 'Enter car brand',
+    model: 'Enter car model',
+    plate: 'Enter licence plate number',
+    photo: 'Choose photo profile',
+    photo_vehicle: 'Choose photo vehicle'
   }
 }

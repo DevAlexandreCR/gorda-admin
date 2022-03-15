@@ -2,10 +2,14 @@ export default {
   fields: {
     status: 'Estado',
     enabled: 'Habilitado',
-    disabled: 'Inhabilitado'
+    disabled: 'Inhabilitado',
+    name: 'Nombre',
+    email: 'Correo electrónico',
+    phone: 'Teléfono'
   },
   models: {
-    users: 'Usuario | Usuarios'
+    users: 'Usuario | Usuarios',
+    drivers: 'Conductor | Conductores'
   },
   actions: {
     submit: 'Enviar',

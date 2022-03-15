@@ -20,11 +20,11 @@ class CustomValidator {
   }
 
   image(files?: [File]): boolean {
-    let valid = true
+    let valid = false
     if (files) {
       files.map(file => {
-        if (!['image/jpeg', 'image/png'].includes(file.type)) {
-          valid = false
+        if (['image/jpeg', 'image/png'].includes(file.type)) {
+          valid = true
         }
       })
     }

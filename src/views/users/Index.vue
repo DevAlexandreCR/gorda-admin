@@ -39,7 +39,7 @@
                 <span class="badge badge-sm bg-gradient-success">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
-                <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
+                <span class="text-secondary text-xs font-weight-bold">{{ format(user.created_at) }}</span>
               </td>
               <td class="align-middle">
                 <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="text-secondary font-weight-bold text-xs" data-original-title="Edit user">
@@ -59,6 +59,8 @@
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import {UserInterface} from '@/entities/UserInterface'
+import dayjs from 'dayjs'
+import DateHelper from "@/helpers/DateHelper";
 
 export default class Index extends Vue {
   users: Array<UserInterface> = []
@@ -67,6 +69,10 @@ export default class Index extends Vue {
     UserRepository.getAll().then(users => {
       this.users = users
     })
+  }
+
+  format(unix: number): string {
+    return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
   }
 }
 </script>
