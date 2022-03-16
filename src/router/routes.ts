@@ -7,6 +7,7 @@ import UsersIndex from '@/views/users/Index.vue'
 import UserEdit from '@/views/users/Edit.vue'
 import DriverCreate from '@/views/drivers/Create.vue'
 import DriverIndex from '@/views/drivers/Index.vue'
+import DriverEdit from '@/views/drivers/Edit.vue'
 
 const routes: Array<any> = [
   {
@@ -52,6 +53,7 @@ const routes: Array<any> = [
           {
             path: '/dashboard/drivers/:id/edit',
             name: 'drivers.edit',
+            component: DriverEdit
           },
           {
             path: '/dashboard/drivers/create',
