@@ -2,39 +2,35 @@
   <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
     <Form @submit="createService" :validation-schema="schema">
       <div class="row">
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
             <div class="input-group">
               <Field type="phone" class="form-control" :placeholder="$t('common.placeholders.phone')" name="phone" v-model="service.phone"/>
-              <ErrorMessage name="phone"/>
             </div>
           </div>
+          <ErrorMessage name="phone"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
-            <div class="input-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
-              <ErrorMessage name="name"/>
-            </div>
           </div>
+          <ErrorMessage name="name"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
-            <div class="input-group">
-              <Field type="address" class="form-control" :placeholder="$t('common.placeholders.address')" name="start_address" v-model="service.start_address"/>
-              <ErrorMessage name="start_address"/>
-            </div>
+            <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
           </div>
+          <ErrorMessage name="start_address"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
             <div class="input-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.comment')" name="comment" v-model="service.comment"/>
-              <ErrorMessage name="comment"/>
             </div>
           </div>
+          <ErrorMessage name="comment"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
           <button class="btn btn-info ms-2" type="button" @click="add()"><em class="fas fa-plus"></em></button>
           <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)"><em class="fas fa-trash"></em></button>
@@ -53,16 +49,31 @@ import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
+import locations from '../../../src/assets/location/neighborhoods.json'
+import AutoComplete from '@/components/AutoComplete.vue'
+
 
 @Options({
   components: {
     Form,
     Field,
-    ErrorMessage
+    ErrorMessage,
+    AutoComplete
   },
 })
 
+
 export default class CreateService extends Vue {
+
+  neighborhoods: Array<any> = []
+  
+
+  mounted(): void {
+    locations.forEach(loc => {
+      this.neighborhoods.push(loc.name)
+    })
+  }
+
   services: Array<Partial<Service>> = [new Service()]
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
