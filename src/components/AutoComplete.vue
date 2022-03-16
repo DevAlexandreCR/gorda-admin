@@ -1,17 +1,15 @@
 <template>
-  <div class="relative">
-    <div class="form-group mb-1">
-      <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
-             @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
-    </div>
-    <ul v-if="foundElements.length > 2"
-        class="list-group autocomplete-list shadow-sm w-100">
-      <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
-          class="list-group-item">
-        {{ element }}
-      </li>
-    </ul>
+  <div class="form-group mb-1">
+    <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
+            @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
   </div>
+  <ul v-if="foundElements.length > 0"
+      class="list-group autocomplete-list shadow-sm">
+    <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
+        class="list-group-item">
+      {{ element }}
+    </li>
+  </ul>
 </template>
 
 <script lang="ts">
@@ -48,10 +46,12 @@ export default class AutoComplete extends Vue.with(Props) {
           matches++
           return element
         }
-      })
+      }) 
+    } else {
+      this.foundElements = []
     }
   }
-
+  
   selectElement(element: string): void {
     this.selectedElement = element
     this.searchElement = element

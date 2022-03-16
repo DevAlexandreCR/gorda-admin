@@ -2,7 +2,7 @@
   <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
     <Form @submit="createService" :validation-schema="schema">
       <div class="row">
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
             <div class="input-group">
               <Field type="phone" class="form-control" :placeholder="$t('common.placeholders.phone')" name="phone" v-model="service.phone"/>
@@ -10,19 +10,19 @@
           </div>
           <ErrorMessage name="phone"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
           </div>
           <ErrorMessage name="name"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
             <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
           </div>
           <ErrorMessage name="start_address"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <div class="form-group">
             <div class="input-group">
               <Field type="text" class="form-control" :placeholder="$t('common.placeholders.comment')" name="comment" v-model="service.comment"/>
@@ -30,7 +30,7 @@
           </div>
           <ErrorMessage name="comment"/>
         </div>
-        <div class="col col-sm">
+        <div class="col-12 col-md">
           <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
           <button class="btn btn-info ms-2" type="button" @click="add()"><em class="fas fa-plus"></em></button>
           <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)"><em class="fas fa-trash"></em></button>
