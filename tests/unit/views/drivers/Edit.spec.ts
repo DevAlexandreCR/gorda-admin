@@ -8,9 +8,6 @@ import router from '@/router'
 
 describe('Edit.vue', () => {
     let wrapper: VueWrapper<any>
-    const div = document.createElement('div')
-    div.id = 'root'
-    document.body.appendChild(div)
     
     beforeEach(() => {
       wrapper = mount(Edit, {
