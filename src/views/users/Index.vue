@@ -59,7 +59,6 @@
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import {UserInterface} from '@/entities/UserInterface'
-import dayjs from 'dayjs'
 import DateHelper from "@/helpers/DateHelper";
 
 export default class Index extends Vue {

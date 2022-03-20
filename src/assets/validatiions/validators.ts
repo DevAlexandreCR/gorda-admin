@@ -1,5 +1,4 @@
 import * as yup from 'yup'
-import i18n from "@/plugins/i18n";
 
 class CustomValidator {
   isImage(image: string, size: string): yup.BaseSchema {
