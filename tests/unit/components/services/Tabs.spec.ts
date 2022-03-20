@@ -12,9 +12,6 @@ import Swal from 'sweetalert2'
 
 describe('Tabs.vue', () => {
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = shallowMount(Tabs,
       {

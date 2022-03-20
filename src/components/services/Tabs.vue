@@ -1,40 +1,42 @@
 <template>
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
-        role="tab" aria-controls="pending" aria-selected="true">{{ $t('services.statuses.pending') }}
-        <span class="badge badge-circle bg-danger" v-show="pendingServices.length > 0">{{pendingServices.length}}</span>
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
-        role="tab" aria-controls="progress" aria-selected="false">{{ $t('services.statuses.in_progress') }}
-        <span class="badge badge-circle bg-success" v-show="inProgressServices.length > 0">{{inProgressServices.length}}</span>
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
-        aria-controls="history" aria-selected="false">{{ $t('services.history') }}
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#map" type="button" role="tab"
-        aria-controls="map" aria-selected="false">{{ $t('common.placeholders.map') }}
-      </button>
-    </li>
-  </ul>
-  <div class="tab-content pt-2" id="myTabContent">
-    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-      <create-service></create-service>
-      <services-table :services="pendingServices" @cancelService="cancel"></services-table>
+  <div class="container-fluid">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
+                role="tab" aria-controls="pending" aria-selected="true">{{ $t('services.statuses.pending') }}
+          <span class="badge badge-circle bg-danger" v-show="pendingServices.length > 0">{{pendingServices.length}}</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
+                role="tab" aria-controls="progress" aria-selected="false">{{ $t('services.statuses.in_progress') }}
+          <span class="badge badge-circle bg-success" v-show="inProgressServices.length > 0">{{inProgressServices.length}}</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
+                aria-controls="history" aria-selected="false">{{ $t('services.history') }}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#map" type="button" role="tab"
+                aria-controls="map" aria-selected="false">{{ $t('common.placeholders.map') }}
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content pt-2" id="myTabContent">
+      <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+        <create-service></create-service>
+        <services-table :services="pendingServices" @cancelService="cancel"></services-table>
+      </div>
+      <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
+        <services-table :services="inProgressServices" @cancelService="cancel" @endService="end" @releaseService="release"></services-table>
+      </div>
+      <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+        <services-table :isHistory="true" :services="historyServices"></services-table>
+      </div>
+      <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
     </div>
-    <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-      <services-table :services="inProgressServices" @cancelService="cancel" @endService="end" @releaseService="release"></services-table>
-    </div>
-    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-      <services-table :isHistory="true" :services="historyServices"></services-table>
-    </div>
-    <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
   </div>
 </template>
 
