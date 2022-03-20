@@ -11,12 +11,10 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_driver') }}</h6>
               </div>
-              <div class="card-header p-0 mx-3 mt-3 z-index-1">
-                <img :src="this.driver.photoUrl" class="img-fluid border-radius-lg w-25" alt="profile_photo">
-                <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img bottom-2" type="button" data-bs-toggle="modal" data-bs-target="#image-driver">
+                <img :src="this.driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+                <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal" data-bs-target="#image-driver">
                   <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
                 </button>
-              </div>
                 <div class="form-group">
                   <label>{{ $t('users.fields.name') }}</label>
                   <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')"
@@ -56,7 +54,7 @@
                   </div>
                 </div>
                 <div class="form-check form-switch">
-                  <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" @change="onEnable"/>
+                  <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()" id="flexSwitchCheckDefault" @change="onEnable"/>
                   <label class="form-check-label">{{
                       $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
                     }}</label>
@@ -67,14 +65,10 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
-              <div class="form-group">
-                <div class="card-header p-0 mx-3 mt-3 z-index-1">
-                  <img :src="this.driver.vehicle.photoUrl" class="img-fluid border-radius-lg w-25" alt="profile_photo">
-                  <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img" type="button" data-bs-toggle="modal" data-bs-target="#image-vehicle">
-                    <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
-                  </button>
-                </div>
-              </div>
+              <img :src="this.driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal" data-bs-target="#image-vehicle">
+                <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
+              </button>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
                 <Field name="brand" type="text" class="form-control" :placeholder=" $t('drivers.placeholders.brand')"

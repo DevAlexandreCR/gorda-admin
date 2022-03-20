@@ -42,8 +42,8 @@
                 <span class="text-secondary text-xs font-weight-bold">{{ format(user.created_at) }}</span>
               </td>
               <td class="align-middle">
-                <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="text-secondary font-weight-bold text-xs" data-original-title="Edit user">
-                  {{ $t('common.actions.edit') }}
+                <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="btn btn-sm btn-dark btn-rounded px-2 py-1 mb-1" data-original-title="Edit user">
+                  <em class="fas fa-pencil"></em>
                 </router-link>
               </td>
             </tr>
