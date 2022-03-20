@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 <div class="form-check form-switch">
-                  <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" @change="onEnable"/>
+                  <input class="form-check-input" name="enable" type="checkbox" id="enableDriver" @change="onEnable"/>
                   <label class="form-check-label">{{
                       $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
                     }}</label>
@@ -152,7 +152,6 @@ export default class Create extends Vue {
   }
 
   createDriver(values: DriverInterface, event: FormActions<any>): void {
-    console.log(this.driver)
     DriverRepository.create(this.driver).then((id) => {
       this.driver.id = id
       this.uploadImg(StorageService.driverPath, this.imageDriver[0]).then(url => {
