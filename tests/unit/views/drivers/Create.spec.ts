@@ -1,5 +1,5 @@
 import {VueWrapper, mount} from '@vue/test-utils'
-import Create from "@/views/drivers/create.vue"
+import Create from "@/views/drivers/Create.vue"
 import {Field, Form, ErrorMessage} from 'vee-validate'
 import i18n from '@/plugins/i18n'
 
