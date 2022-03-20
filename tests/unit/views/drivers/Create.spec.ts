@@ -60,7 +60,7 @@ describe('Create.vue', () => {
     const file = new File([new Blob(['file contents'], {type: 'image/jpeg'})], 'image')
     wrapper.vm.imageDriver.push(file)
     wrapper.vm.imageVehicle.push(file)
-    await wrapper.vm.createDriver(new Driver(), { resetForm: () => {}})
+    await wrapper.vm.createDriver(new Driver(), { resetForm: () => null })
     
     await waitForExpect(() => {
       expect(success).toHaveBeenCalledTimes(1)
