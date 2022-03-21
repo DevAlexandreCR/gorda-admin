@@ -124,7 +124,7 @@ import ImageLoader from '@/components/ImageLoader.vue'
   },
 })
 
-export default class Create extends Vue {
+export default class Edit extends Vue {
   driver: Driver = new Driver()
   types: Array<any> = Constants.DOC_TYPES
   readonly driverEvent = 'image-driver-loaded'

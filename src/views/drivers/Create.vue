@@ -156,8 +156,8 @@ export default class Create extends Vue {
       this.driver.id = id
       this.uploadImg(StorageService.driverPath, this.imageDriver[0]).then(url => {
         this.driver.photoUrl = url
-        this.uploadImg(StorageService.vehiclePath, this.imageVehicle[0]).then(url => {
-          this.driver.vehicle.photoUrl = url
+        this.uploadImg(StorageService.vehiclePath, this.imageVehicle[0]).then(urlPhotoVehicle => {
+          this.driver.vehicle.photoUrl = urlPhotoVehicle
           DriverRepository.update(this.driver)
           ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
           event.resetForm()
