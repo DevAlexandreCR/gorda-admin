@@ -50,10 +50,10 @@ class Props {
   },
 })
 export default class ImageLoader extends Vue.with(Props) {
-  image: File[]
+  image: File[] = []
   schemaImg: yup.ObjectSchema<any> = yup.object().shape({})
 
-  created(): void {
+  mounted(): void {
     this.schemaImg = yup.object().shape({
       image: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required()
     })

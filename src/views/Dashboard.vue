@@ -1,9 +1,11 @@
 <template>
-  <SideBar ></SideBar>
-  <main  class="main-content mt-1 border-radius-lg " id="main">
-    <NavBar/>
-    <router-view class="mt-4 ms-2"></router-view>
-  </main>
+  <div>
+    <SideBar ></SideBar>
+    <main  class="main-content mt-1 border-radius-lg " id="main">
+      <NavBar/>
+      <router-view class="mt-4 ms-2"></router-view>
+    </main>
+  </div>
 </template>
 
 <script lang="ts">
