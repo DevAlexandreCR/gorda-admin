@@ -105,7 +105,6 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
-import CustomValidator from "@/assets/validatiions/validators";
 import StorageService from "@/services/StorageService"
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as yup from 'yup'
@@ -127,7 +126,6 @@ import ImageLoader from '@/components/ImageLoader.vue'
 
 export default class Create extends Vue {
   driver: Driver = new Driver()
-  schemaImg: yup.ObjectSchema<any>
   types: Array<any> = Constants.DOC_TYPES
   readonly driverEvent = 'image-driver-loaded'
   readonly vehicleEvent = 'image-vehicle-loaded'
@@ -145,9 +143,6 @@ export default class Create extends Vue {
   })
 
   created (): void {
-    this.schemaImg = yup.object().shape({
-      image: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required()
-    })
     DriverRepository.getDriver(this.$route.params.id as string).then(driver => {
       Object.assign(this.driver, driver)
     })

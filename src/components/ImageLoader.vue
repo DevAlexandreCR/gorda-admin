@@ -60,7 +60,6 @@ export default class ImageLoader extends Vue.with(Props) {
   }
 
   uploadImg(): void {
-    console.log('jjj')
     const ref = StorageService.getStorageReference(this.path, this.resourceId, this.image[0]?.name)
     StorageService.uploadFile(ref, this.image[0]).then(url => {
       this.$emit(this.event, url)
