@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid">
-    <div class="card mb-4">
+  <div class="card mb-4">
       <div class="card-header pb-0">
         <h6>{{ $t('common.models.users', 2) }}</h6>
       </div>
@@ -39,11 +38,11 @@
                 <span class="badge badge-sm bg-gradient-success">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
-                <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
+                <span class="text-secondary text-xs font-weight-bold">{{ format(user.created_at) }}</span>
               </td>
               <td class="align-middle">
-                <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="text-secondary font-weight-bold text-xs" data-original-title="Edit user">
-                  {{ $t('common.actions.edit') }}
+                <router-link :to="{ name: 'users.edit', params: {id: user.id}}" tag="a" class="btn btn-sm btn-dark btn-rounded px-2 py-1 mb-1" data-original-title="Edit user">
+                  <em class="fas fa-pencil"></em>
                 </router-link>
               </td>
             </tr>
@@ -52,13 +51,13 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import {UserInterface} from '@/entities/UserInterface'
+import DateHelper from "@/helpers/DateHelper";
 
 export default class Index extends Vue {
   users: Array<UserInterface> = []
@@ -67,6 +66,10 @@ export default class Index extends Vue {
     UserRepository.getAll().then(users => {
       this.users = users
     })
+  }
+
+  format(unix: number): string {
+    return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
   }
 }
 </script>

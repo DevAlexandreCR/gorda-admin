@@ -2,14 +2,15 @@
   <div class="form-group mb-1">
     <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
             @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
+
+    <ul v-if="foundElements.length > 0"
+        class="list-group autocomplete-list shadow-sm">
+      <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
+          class="list-group-item">
+        {{ element }}
+      </li>
+    </ul>
   </div>
-  <ul v-if="foundElements.length > 0"
-      class="list-group autocomplete-list shadow-sm">
-    <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
-        class="list-group-item">
-      {{ element }}
-    </li>
-  </ul>
 </template>
 
 <script lang="ts">

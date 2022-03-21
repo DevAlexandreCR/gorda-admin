@@ -1,16 +1,14 @@
+import {VehicleInterface} from "@/entities/VehicleInterface";
+
 export interface DriverInterface {
-  id: string
+  id: string|null
   name: string
   email: string
   phone: string
   docType: string
   document: string
   photoUrl: string|null
-  vehicle: {
-    brand: string
-    model: string
-    photoUrl: string
-  }
-  enabled_at: string|null
-  created_at: string
+  vehicle: VehicleInterface
+  enabled_at: number|null
+  created_at: number
 }

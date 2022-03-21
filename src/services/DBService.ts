@@ -13,6 +13,11 @@ class DBService {
   public dbServices(): DatabaseReference {
     return ref(this.db, 'services/')
   }
+  
+  /* istanbul ignore next */
+  public dbDrivers(): DatabaseReference {
+    return ref(this.db, 'drivers/')
+  }
 }
 
 export default new DBService()

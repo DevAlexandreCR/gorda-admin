@@ -3,10 +3,13 @@ import {FirebaseStorage, getDownloadURL, getStorage, ref, StorageReference, uplo
 
 class StorageService {
   public storage: FirebaseStorage = getStorage(Firebase.getInstance())
+  public profilePath = 'images/admin/profile'
+  public driverPath = 'images/drivers/profile'
+  public vehiclePath = 'images/drivers/vehicles'
 
   /* istanbul ignore next */
-  stAdminProfileImages(id: string, name: string): StorageReference {
-    return ref(this.storage, `images/admin/profile/${id}/${name}`)
+  getStorageReference(path: string, id: string, name: string): StorageReference {
+    return ref(this.storage, `${path}/${id}/${name}`)
   }
 
   /* istanbul ignore next */

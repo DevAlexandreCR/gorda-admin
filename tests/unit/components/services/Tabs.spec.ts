@@ -1,4 +1,4 @@
-import {shallowMount, VueWrapper, mount, flushPromises} from '@vue/test-utils'
+import {shallowMount, VueWrapper, mount} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import Tabs from "@/components/services/Tabs.vue"
@@ -7,15 +7,11 @@ import ServicesTable from "@/components/services/ServicesTable.vue"
 import {DataSnapshot} from "../../../mocks/firebase/FirebaseMock"
 import ServiceMock from "../../../mocks/entities/ServiceMock";
 import Service from "@/models/Service";
-import waitForExpect from 'wait-for-expect'
 import ServiceRepository from "@/repositories/ServiceRepository";
 import Swal from 'sweetalert2'
 
 describe('Tabs.vue', () => {
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = shallowMount(Tabs,
       {

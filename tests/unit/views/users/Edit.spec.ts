@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
-StorageService.stAdminProfileImages = jest.fn().mockImplementation()
+StorageService.getStorageReference = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
 describe('Edit.vue', () => {

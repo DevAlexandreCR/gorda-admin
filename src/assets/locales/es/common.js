@@ -2,10 +2,14 @@ export default {
   fields: {
     status: 'Estado',
     enabled: 'Habilitado',
-    disabled: 'Inhabilitado'
+    disabled: 'Inhabilitado',
+    name: 'Nombre',
+    email: 'Correo electrónico',
+    phone: 'Teléfono'
   },
   models: {
-    users: 'Usuario | Usuarios'
+    users: 'Usuario | Usuarios',
+    drivers: 'Conductor | Conductores'
   },
   actions: {
     submit: 'Enviar',
@@ -32,5 +36,8 @@ export default {
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
     map: 'Mapa'
+  },
+  forms: {
+    select_img: 'Choose image from files'
   }
 }
