@@ -85,8 +85,8 @@ import {Options, Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
-import Swal from 'sweetalert2'
 import * as yup from 'yup'
+import ToastService from "@/services/ToastService";
 
 @Options({
   inject: ['appName'],
@@ -116,18 +116,9 @@ export default class SignUp extends Vue {
 
   createUser(): void {
     UserRepository.create(this.user, this.pass).then(() => {
-      Swal.fire({
-        icon: 'success',
-        title: this.$t('common.messages.created'),
-        showConfirmButton: false,
-        timer: 1500
-      })
+      ToastService.toast('success', this.$t('common.messages.created'))
     }).catch(e => {
-      Swal.fire({
-        icon: 'error',
-        title: this.$t('common.messages.error'),
-        text: e.message,
-      })
+      ToastService.toast('error', this.$t('common.messages.error'), e.message)
       this.error = true
     })
   }

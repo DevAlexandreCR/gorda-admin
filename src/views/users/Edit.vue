@@ -120,15 +120,7 @@ export default class Edit extends Vue {
 
   mounted(): void {
     this.schemaImg = yup.object().shape({
-      photo: yup.mixed().required().test(
-        'size',
-        this.$t('validations.size'),
-        CustomValidator.size
-      ).test(
-        'image',
-        this.$t('validations.image'),
-        CustomValidator.image
-      )
+      photo: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required()
     })
   }
 

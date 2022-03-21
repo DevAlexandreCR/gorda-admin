@@ -77,7 +77,9 @@ describe('SignUp.vue', () => {
         icon: 'success',
         showConfirmButton: false,
         timer: 1500,
-        title: wrapper.vm.$t('common.messages.created')
+        title: wrapper.vm.$t('common.messages.created'),
+        toast: true,
+        position: 'top-right'
       })
     });
   })
@@ -92,6 +94,10 @@ describe('SignUp.vue', () => {
         icon: 'error',
         title: wrapper.vm.$t('common.messages.error'),
         text: 'New Error while create',
+        position: 'top-right',
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true
       })
     });
   })

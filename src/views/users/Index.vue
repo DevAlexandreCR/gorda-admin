@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid">
-    <div class="card mb-4">
+  <div class="card mb-4">
       <div class="card-header pb-0">
         <h6>{{ $t('common.models.users', 2) }}</h6>
       </div>
@@ -52,7 +51,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
