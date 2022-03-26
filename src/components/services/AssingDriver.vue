@@ -8,7 +8,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <input type="text" class="form-control" placeholder="DriverAutoComplete" aria-label="Username" aria-describedby="basic-addon1">
+       <AutoComplete :elements="VehicleInterface"/>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -24,6 +24,8 @@
 import {Vue, Options} from 'vue-class-component'
 import {Field} from 'vee-validate'
 import AutoComplete from '@/components/AutoComplete.vue'
+import DriverInterface from '@/entities/DriverInterface'
+import DriverRepository from '@/repositories/DriverRepository'
 
 @Options({
   components: {
@@ -31,17 +33,27 @@ import AutoComplete from '@/components/AutoComplete.vue'
     Field
   }
 })
-export default class AssingDriver extends Vue {
 
+export default class AssingDriver extends Vue {
+  VehicleInterface: Array<any> = []
   serviceId: string
 
-  mounted(): void {
-     var drivermodal = document.getElementById('drivermodal')
-       drivermodal?.addEventListener('show.bs.modal', event  => {
-         this.serviceId = event.relatedTarget.id
+  mounted():  void {
+
+  var drivermodal = document.getElementById('drivermodal')
+    drivermodal?.addEventListener('show.bs.modal', event  => {
+      this.serviceId = event.relatedTarget.id
          console.log(this.serviceId)
-        })
-    }
+    const vehicle = DriverRepository
+      DriverInterface.forEach(vehicle => {
+        console.log(this.serviceId)
+      this.VehicleInterface.push(vehicle)
+      console.log(this.VehicleInterface)
+    })
+    })
+  }
 }
+
+
 
 </script>
