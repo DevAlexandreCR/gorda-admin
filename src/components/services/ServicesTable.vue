@@ -24,8 +24,8 @@
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1" data-bs-toggle="tooltip" v-if="service.isPending()"
-              data-bs-placement="top" :title="$t('common.actions.assign')">
+            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1" v-if="service.isPending()" 
+              data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#drivermodal">
               <em class="fas fa-car"></em></button>
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1" v-if="service.isinProgress()" @click="release(service)"
               data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
@@ -48,7 +48,7 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import DateHelper from '@/helpers/DateHelper'
-import Service from "@/models/Service";
+import Service from "@/models/Service"
 
 class Props {
   services: Array<Service>

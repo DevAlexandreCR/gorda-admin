@@ -37,6 +37,7 @@
       </div>
       <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
     </div>
+    <AssingDriver/>
   </div>
 </template>
 
@@ -50,11 +51,13 @@ import {DataSnapshot} from 'firebase/database'
 import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from "@/services/ToastService";
+import AssingDriver from '@/components/services/AssingDriver.vue'
 
 @Options({
   components: {
     CreateService,
-    ServicesTable
+    ServicesTable,
+    AssingDriver
   },
 })
 
