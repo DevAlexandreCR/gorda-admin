@@ -1,22 +1,22 @@
 <template>
-<!-- Modal -->
-<div class="modal fade" id="drivermodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="AssingModalLabel">Services</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-       <AutoComplete :elements="VehicleInterface"/>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+  <!-- Modal -->
+  <div class="modal fade" id="driverModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AssignModalLabel">Services</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <AutoComplete :elements="plates"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 
@@ -24,8 +24,8 @@
 import {Vue, Options} from 'vue-class-component'
 import {Field} from 'vee-validate'
 import AutoComplete from '@/components/AutoComplete.vue'
-import DriverInterface from '@/entities/DriverInterface'
 import DriverRepository from '@/repositories/DriverRepository'
+import {DriverInterface} from "@/entities/DriverInterface";
 
 @Options({
   components: {
@@ -34,26 +34,25 @@ import DriverRepository from '@/repositories/DriverRepository'
   }
 })
 
-export default class AssingDriver extends Vue {
-  VehicleInterface: Array<any> = []
+export default class AssignDriver extends Vue {
+  plates: Array<string> = []
   serviceId: string
 
-  mounted():  void {
-
-  var drivermodal = document.getElementById('drivermodal')
-    drivermodal?.addEventListener('show.bs.modal', event  => {
+  mounted(): void {
+    const driverModal = document.getElementById('driverModal');
+    driverModal?.addEventListener('show.bs.modal', (event: any) => {
       this.serviceId = event.relatedTarget.id
-         console.log(this.serviceId)
-    const vehicle = DriverRepository
-      DriverInterface.forEach(vehicle => {
-        console.log(this.serviceId)
-      this.VehicleInterface.push(vehicle)
-      console.log(this.VehicleInterface)
-    })
+      console.log(this.serviceId)
+      DriverRepository.getAll().then(drivers => {
+        Object.values(drivers).forEach(driver => {
+          console.log(driver)
+          this.plates.push(driver.vehicle.plate)
+          console.log(this.plates)
+        })
+      })
     })
   }
 }
-
 
 
 </script>
