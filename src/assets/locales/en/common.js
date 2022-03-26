@@ -39,5 +39,9 @@ export default {
   },
   forms: {
     select_img: 'Choose image from files'
+  },
+  chatBot: {
+    connected: 'Connected',
+    disconnected: 'Disconnected'
   }
 }

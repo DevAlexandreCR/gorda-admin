@@ -52,6 +52,21 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link :to="{ name: 'connection'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-brands fa-whatsapp"></em>
+            </div>
+            <span class="nav-link-text ms-1 position-relative">{{ wpClientReady ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
+
+            <span v-if="wpClientReady" class="position-absolute p-2 ms-2 bg-success border border-light rounded-circle"></span>
+            <span  v-else class="position-absolute p-2 ms-2 bg-danger border border-light rounded-circle"></span>
+            </span>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" @click="signOut" href="" id="signOut">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -68,10 +83,12 @@
 import {Vue} from 'vue-class-component'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
+import SocketClient from "@/services/SocketClient";
 
 export default class SideBar extends Vue {
   user: User = new User()
   isAdmin = false
+  wpClientReady = false
 
   signOut(): void {
     AuthService.logOut()
@@ -80,6 +97,10 @@ export default class SideBar extends Vue {
   mounted (): void {
     this.user = AuthService.getCurrentUser()
     this.isAdmin = this.user.isAdmin()
+    SocketClient.initClient()
+    SocketClient.onReady().then(ready => {
+      this.wpClientReady = ready
+    })
   }
 }
 </script>
