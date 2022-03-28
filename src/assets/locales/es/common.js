@@ -42,6 +42,9 @@ export default {
   },
   chatBot: {
     connected: 'Conectado',
-    disconnected: 'Desconectado'
+    disconnected: 'Desconectado',
+    disconnect: 'Desconectar',
+    connect: 'Conectar',
+    reset: 'Reiniciar'
   }
 }

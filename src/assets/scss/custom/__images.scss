@@ -3,3 +3,17 @@
   width: 100%;
   height: 15rem;
 }
+
+@keyframes circle--animation {
+  0%, 25% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.circle {
+  animation: 1s ease-in-out infinite both circle--animation;
+}

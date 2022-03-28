@@ -59,9 +59,9 @@
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <em class="fa-brands fa-whatsapp"></em>
             </div>
-            <span class="nav-link-text ms-1 position-relative">{{ wpClientReady ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
+            <span class="nav-link-text ms-1 position-relative">{{ connectionState ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
 
-            <span v-if="wpClientReady" class="position-absolute p-2 ms-2 bg-success border border-light rounded-circle"></span>
+            <span v-if="connectionState" class="position-absolute p-2 ms-2 bg-success border border-light rounded-circle"></span>
             <span  v-else class="position-absolute p-2 ms-2 bg-danger border border-light rounded-circle"></span>
             </span>
           </router-link>
@@ -79,30 +79,32 @@
   </div>
 </aside>
 </template>
-<script lang="ts">
-import {Vue} from 'vue-class-component'
+<script setup lang="ts">
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
-import SocketClient from "@/services/SocketClient";
+import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
+import {onMounted, ref, Ref} from "vue";
+import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 
-export default class SideBar extends Vue {
-  user: User = new User()
-  isAdmin = false
-  wpClientReady = false
+let user: Ref<User> = ref(new User())
+let isAdmin: Ref<boolean> = ref(false)
+let connectionState: Ref<boolean> = ref(false)
 
-  signOut(): void {
-    AuthService.logOut()
-  }
-
-  mounted (): void {
-    this.user = AuthService.getCurrentUser()
-    this.isAdmin = this.user.isAdmin()
-    SocketClient.initClient()
-    SocketClient.onReady().then(ready => {
-      this.wpClientReady = ready
-    })
-  }
+function signOut(): void {
+  AuthService.logOut()
 }
+
+const onUpdate = (socket: WhatsAppClient): void => {
+  connectionState.value = socket.isConnected()
+}
+
+onMounted(async () => {
+  user.value = AuthService.getCurrentUser()
+  isAdmin.value = user.value.isAdmin()
+  const socket = WhatsAppClient.getInstance()
+  const observer = new ClientObserver(onUpdate)
+  socket.attach(observer)
+})
 </script>
 
 
