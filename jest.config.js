@@ -10,5 +10,5 @@ module.exports = {
     '!src/vendor/**',
     '!src/main.ts'
   ],
-  setupFiles: ['<rootDir>/tests/testSetup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/testSetup.ts'],
 }
