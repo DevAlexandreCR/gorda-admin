@@ -12,7 +12,9 @@ export default class WhatsAppClient implements WPSubject {
   private observers: WPObserver[] = []
   
   constructor() {
-    this.socket = io(process.env.VUE_APP_WP_CLIENT_API_URL as string)
+    const url = process.env.VUE_APP_WP_CLIENT_API_URL as string
+    const port = process.env.VUE_APP_WP_CLIENT_API_PORT
+    this.socket = io( url + ':' + port )
     this.onQRCode()
     this.getState()
     this.onReady()
