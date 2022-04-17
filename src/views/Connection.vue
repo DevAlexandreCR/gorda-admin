@@ -61,6 +61,7 @@ function destroy() {
 const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = false
   qr.value = socket.qr
+  console.log(socket.state)
   if (qr.value) QRCode.toCanvas(document.getElementById('canvas'), qr.value as string, (e) => {console.log(e)})
   connected.value = socket.isConnected()
 }
