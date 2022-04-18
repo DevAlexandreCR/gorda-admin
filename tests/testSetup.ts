@@ -32,7 +32,7 @@ let client: WhatsAppClient
 beforeAll((done) => {
   const httpServer = createServer()
   socket = new Server(httpServer)
-  httpServer.listen(process.env.VUE_APP_WP_CLIENT_API_PORT,() => {
+  httpServer.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
     client = WhatsAppClient.getInstance()
     socket.on('connection', () => {
       done()
