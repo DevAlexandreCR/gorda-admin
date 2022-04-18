@@ -3,6 +3,9 @@ import SideBar from '@/components/SideBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
+import {socket} from '../../testSetup'
+import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
+import waitForExpect from 'wait-for-expect'
 
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
@@ -28,5 +31,14 @@ describe('SideBar.vue', () => {
     const btn = wrapper.find('#signOut')
     await btn.trigger('click')
     expect(logout).toBeCalled()
+  })
+  
+  it('must change state to connected', async () => {
+    socket.emit(WhatsApp.EVENT_CHANGE_STATE, WhatsApp.STATUS_CONNECTED)
+    await wrapper.vm.$nextTick()
+    
+    await waitForExpect(() => {
+      expect(wrapper.vm.connectionState).toBeTruthy()
+    })
   })
 })

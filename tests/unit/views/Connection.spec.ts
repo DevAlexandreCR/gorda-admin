@@ -1,9 +1,10 @@
-import {flushPromises, mount, shallowMount, VueWrapper} from '@vue/test-utils'
+import {shallowMount, VueWrapper} from '@vue/test-utils'
 import Connection from '@/views/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
+import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -14,7 +15,7 @@ describe('Connection.vue', () => {
         attachTo: '#root',
         global: {
           plugins: [router, i18n]
-        },
+        }
       })
     await router.isReady()
   })
@@ -30,10 +31,10 @@ describe('Connection.vue', () => {
     await wrapper.vm.$nextTick()
     await wrapper.find('.btn-secondary').trigger('click')
     expect(wrapper.vm.qr).toBeNull()
-
+    
     await wrapper.find('.btn-danger').trigger('click')
     expect(wrapper.vm.qr).toBeNull()
-
+    
     wrapper.vm.connected = false
     await wrapper.vm.$nextTick()
     await wrapper.find('.btn-primary').trigger('click')
@@ -42,10 +43,10 @@ describe('Connection.vue', () => {
   })
   
   test('set qr when io emit event qr', async () => {
-    socket.emit('qr', 'fake-qr')
+    socket.emit(WhatsApp.EVENT_QR_CODE, 'fake-qr')
     await wrapper.vm.$nextTick()
     await waitForExpect(() => {
-      // expect(wrapper.vm.connecting).toBeFalsy()
+      expect(wrapper.vm.connecting).toBeFalsy()
       expect(wrapper.vm.qr).toBe('fake-qr')
     })
   })
