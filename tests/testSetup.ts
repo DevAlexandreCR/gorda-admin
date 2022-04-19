@@ -1,7 +1,7 @@
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
 import UserMock from './mocks/entities/UserMock'
-import {createServer} from 'http'
+import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 
@@ -28,23 +28,21 @@ document.body.appendChild(div)
 AuthService.currentUser = Object.assign(new User(), UserMock)
 
 let socket: Server
-let client: WhatsAppClient
-beforeAll((done) => {
-  const httpServer = createServer()
-  socket = new Server(httpServer)
-  httpServer.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
-    client = WhatsAppClient.getInstance()
+let server: httpServer
+
+function openServer(done: Function): void{
+  server = createServer()
+  socket = new Server(server)
+  WhatsAppClient.getInstance()
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
     socket.on('connection', () => {
       done()
     })
   })
-})
-
-afterAll(() => {
-  socket.close()
-})
+}
 
 export {
   socket,
-  client
+  server,
+  openServer
 }

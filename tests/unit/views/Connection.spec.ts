@@ -2,7 +2,7 @@ import {shallowMount, VueWrapper} from '@vue/test-utils'
 import Connection from '@/views/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import {socket} from '../../testSetup'
+import {openServer, server, socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 
@@ -18,6 +18,15 @@ describe('Connection.vue', () => {
         }
       })
     await router.isReady()
+  })
+  
+  beforeAll((done) => {
+    openServer(done)
+  })
+  
+  afterAll(() => {
+    server.close()
+    socket.close()
   })
   
   test('connected var is initialized when mounted', async () => {

@@ -60,7 +60,6 @@ export default class WhatsAppClient implements WPSubject {
   
   onChangeState(): void {
     this.socket.on(WhatsApp.EVENT_CHANGE_STATE, (message) => {
-      console.log(message)
       this.state = message
       this.notify()
     })
