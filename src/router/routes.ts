@@ -8,6 +8,7 @@ import UserEdit from '@/views/users/Edit.vue'
 import DriverCreate from '@/views/drivers/Create.vue'
 import DriverIndex from '@/views/drivers/Index.vue'
 import DriverEdit from '@/views/drivers/Edit.vue'
+import Connection from '@/views/Connection.vue'
 
 const routes: Array<any> = [
   {
@@ -66,6 +67,11 @@ const routes: Array<any> = [
         path: 'profile',
         name: 'profile',
         component: Profile
+      },
+      {
+        path: 'dashboard/connection',
+        name: 'connection',
+        component: Connection
       }
     ]
   },

@@ -3,6 +3,7 @@ import Firebase from '@/services/Firebase'
 import User from '@/models/User'
 import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
+import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 
 export default class AuthService {
   public static currentUser: User
@@ -41,6 +42,9 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static logOut(): Promise<void> {
-    return signOut(AuthService.auth)
+    return signOut(AuthService.auth).then(() => {
+      const wpClient = WhatsAppClient.getInstance()
+      wpClient.disconnectSocket()
+    })
   }
 }

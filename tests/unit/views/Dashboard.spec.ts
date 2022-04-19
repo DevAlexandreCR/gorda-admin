@@ -15,10 +15,6 @@ describe('Dashboard.vue', () => {
   beforeEach(async () => {
     wrapper = mount(Dashboard,
       {
-        components: {
-          SideBar,
-          NavBar
-        },
         global: {
           plugins: [router, i18n],
           provide: {
