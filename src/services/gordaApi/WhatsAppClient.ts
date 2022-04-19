@@ -20,6 +20,7 @@ export default class WhatsAppClient implements WPSubject {
     this.onReady()
     this.onChangeState()
     this.onDisconnected()
+    this.onAuthenticationFailure()
   }
   
   public static getInstance(): WhatsAppClient {

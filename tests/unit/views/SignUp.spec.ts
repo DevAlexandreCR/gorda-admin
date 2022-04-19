@@ -23,11 +23,6 @@ describe('SignUp.vue', () => {
     wrapper = mount(SignUp,
       {
         attachTo: '#root',
-        components: {
-          Form,
-          Field,
-          ErrorMessage
-        },
         global: {
           plugins: [router, i18n],
           provide: {
