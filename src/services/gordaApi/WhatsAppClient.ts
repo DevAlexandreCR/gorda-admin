@@ -67,7 +67,7 @@ export default class WhatsAppClient implements WPSubject {
   }
   
   onAuthenticationFailure(): void {
-    this.socket.on(WhatsApp.EVENT_AUTH_FAILURE, (message) => {
+    this.socket.on(WhatsApp.EVENT_AUTH_FAILURE, () => {
       this.state = WhatsApp.STATUS_DISCONNECTED
       this.notify()
     })
