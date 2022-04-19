@@ -28,6 +28,7 @@ describe('SideBar.vue', () => {
   afterEach(() => {
     server.close()
     socket.close()
+    wrapper.unmount()
   })
   
   it('an user can show buttons to users and dashboard', async () => {

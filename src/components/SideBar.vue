@@ -83,12 +83,14 @@
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
 import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
-import {onMounted, ref, Ref} from "vue";
+import {onMounted, onUnmounted, ref, Ref} from 'vue'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 
 let user: Ref<User> = ref(new User())
 let isAdmin: Ref<boolean> = ref(false)
 let connectionState: Ref<boolean> = ref(false)
+let socket: WhatsAppClient
+let observer: ClientObserver
 
 function signOut(): void {
   AuthService.logOut()
@@ -101,9 +103,13 @@ const onUpdate = (socket: WhatsAppClient): void => {
 onMounted(async () => {
   user.value = AuthService.getCurrentUser()
   isAdmin.value = user.value.isAdmin()
-  const socket = WhatsAppClient.getInstance()
-  const observer = new ClientObserver(onUpdate)
+  socket = WhatsAppClient.getInstance()
+  observer = new ClientObserver(onUpdate)
   socket.attach(observer)
+})
+
+onUnmounted(() => {
+  socket.detach(observer)
 })
 </script>
 
