@@ -1,4 +1,4 @@
-import {ServiceInterface} from '@/entities/ServiceInterface'
+import {ServiceInterface} from '@/types/ServiceInterface'
 import dayjs from 'dayjs'
 
 export default class Service implements ServiceInterface {

@@ -5,9 +5,9 @@
 
     <ul v-if="foundElements.length > 0"
         class="list-group autocomplete-list shadow-sm">
-      <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
+      <li v-for="element in foundElements" :key="element.id" @click="selectElement(element)"
           class="list-group-item">
-        {{ element }}
+        {{ element.value }}
       </li>
     </ul>
   </div>
@@ -17,9 +17,10 @@
 
 import {Options, Vue} from 'vue-class-component'
 import {Field} from 'vee-validate'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
 
 class Props {
-  elements: Array<any>
+  elements: Array<AutoCompleteType>
   fieldName: string
   placeholder: string
 }
@@ -32,7 +33,7 @@ class Props {
 export default class AutoComplete extends Vue.with(Props) {
 
   selectedElement = ''
-  foundElements: Array<any> = []
+  foundElements: Array<AutoCompleteType> = []
   searchElement = ''
 
   onChange(): void {
@@ -43,7 +44,7 @@ export default class AutoComplete extends Vue.with(Props) {
     let matches = 0
     if (this.searchElement.length > 2) {
       this.foundElements = this.elements.filter(element => {
-        if (element.toLowerCase().includes(this.searchElement.toLowerCase()) && matches < 5) {
+        if (element.value.toLowerCase().includes(this.searchElement.toLowerCase()) && matches < 5) {
           matches++
           return element
         }
@@ -53,9 +54,9 @@ export default class AutoComplete extends Vue.with(Props) {
     }
   }
   
-  selectElement(element: string): void {
-    this.selectedElement = element
-    this.searchElement = element
+  selectElement(element: AutoCompleteType): void {
+    this.selectedElement = element.value
+    this.searchElement = element.value
     this.foundElements = []
   }
 }

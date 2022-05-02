@@ -1,4 +1,4 @@
-import {VehicleInterface} from "@/entities/VehicleInterface";
+import {VehicleInterface} from "@/types/VehicleInterface";
 
 export interface DriverInterface {
   id: string|null

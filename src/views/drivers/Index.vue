@@ -72,7 +72,7 @@
 
 <script lang="ts">
 import {Vue} from 'vue-class-component'
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 import DriverRepository from '@/repositories/DriverRepository';
 import DateHelper from "@/helpers/DateHelper";
 

@@ -1,4 +1,4 @@
-import {ClientInterface} from '@/entities/ClientInterface'
+import {ClientInterface} from '@/types/ClientInterface'
 
 export default class Client implements ClientInterface {
   id: string

@@ -1,6 +1,6 @@
 import {get, child, DataSnapshot, set, ref, push} from 'firebase/database'
 import DBService from '@/services/DBService'
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 
 class DriverRepository {
   

@@ -1,6 +1,6 @@
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 import Vehicle from "@/models/Vehicle";
-import {VehicleInterface} from "@/entities/VehicleInterface";
+import {VehicleInterface} from "@/types/VehicleInterface";
 import dayjs from 'dayjs'
 
 export default class Driver implements DriverInterface {

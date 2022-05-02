@@ -1,4 +1,4 @@
-import {ServiceInterface} from "@/entities/ServiceInterface";
+import {ServiceInterface} from "@/types/ServiceInterface";
 
 export class DataSnapshot {
   service: ServiceInterface

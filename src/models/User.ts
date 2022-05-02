@@ -1,5 +1,5 @@
-import {UserInterface} from '@/entities/UserInterface'
-import {Roles} from '@/entities/Roles'
+import {UserInterface} from '@/types/UserInterface'
+import {Roles} from '@/types/Roles'
 
 export default class User implements UserInterface {
   id?: string

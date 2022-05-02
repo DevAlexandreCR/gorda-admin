@@ -5,11 +5,9 @@ import NavBar from '@/components/NavBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
-import User from '@/models/User'
 import UserInterface from '../../mocks/entities/UserMock'
 
 describe('Dashboard.vue', () => {
-  AuthService.currentUser = new User()
   Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {

@@ -45,7 +45,7 @@
 import {Options, Vue} from 'vue-class-component'
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import {ServiceInterface} from '@/entities/ServiceInterface'
+import {ServiceInterface} from '@/types/ServiceInterface'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {DataSnapshot} from 'firebase/database'
 import dayjs from 'dayjs'

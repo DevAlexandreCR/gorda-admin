@@ -1,6 +1,6 @@
 import {get, child, DataSnapshot, set, ref} from 'firebase/database'
 import DBService from '@/services/DBService'
-import {UserInterface} from '@/entities/UserInterface'
+import {UserInterface} from '@/types/UserInterface'
 import AuthService from '@/services/AuthService'
 import dayjs from 'dayjs'
 import StorageService from '@/services/StorageService'

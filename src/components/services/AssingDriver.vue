@@ -25,7 +25,7 @@ import {Vue, Options} from 'vue-class-component'
 import {Field} from 'vee-validate'
 import AutoComplete from '@/components/AutoComplete.vue'
 import DriverRepository from '@/repositories/DriverRepository'
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 
 @Options({
   components: {
