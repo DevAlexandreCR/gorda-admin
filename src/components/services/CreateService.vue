@@ -93,6 +93,7 @@ export default class CreateService extends Vue {
     values.created_at = dayjs().unix()
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null
+    values.client_id = '57' + values.phone + '@c.us'
     ServiceRepository.create(values).then(() => {
       ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
     }).catch(e => {

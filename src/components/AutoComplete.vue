@@ -55,6 +55,7 @@ export default class AutoComplete extends Vue.with(Props) {
   }
   
   selectElement(element: AutoCompleteType): void {
+    this.$emit('selected', element)
     this.selectedElement = element.value
     this.searchElement = element.value
     this.foundElements = []

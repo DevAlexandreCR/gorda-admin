@@ -13,7 +13,7 @@ class DriverRepository {
   /* istanbul ignore next */
   async getAll(): Promise<Array<DriverInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbDrivers())
-    return <Array<DriverInterface>>snapshot.val()
+    return <Array<DriverInterface>>Object.values(snapshot.val())
   }
   
   /* istanbul ignore next */

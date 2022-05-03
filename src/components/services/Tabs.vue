@@ -37,7 +37,7 @@
       </div>
       <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
     </div>
-    <AssignDriver/>
+    <AssignDriver :drivers="drivers"/>
   </div>
 </template>
 
@@ -52,12 +52,14 @@ import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from "@/services/ToastService";
 import AssignDriver from '@/components/services/AssingDriver.vue'
+import Driver from '@/models/Driver'
+import DriverRepository from '@/repositories/DriverRepository'
 
 @Options({
   components: {
     CreateService,
     ServicesTable,
-    AssignDriver: AssignDriver
+    AssignDriver
   },
 })
 
@@ -65,6 +67,7 @@ export default class Tabs extends Vue {
   pendingServices: Array<ServiceInterface> = []
   inProgressServices: Array<ServiceInterface> = []
   historyServices: Array<ServiceInterface> = []
+  drivers: Array<Driver> = []
 
   onServiceAdded(data: DataSnapshot): void {
     const service = new Service()
@@ -109,8 +112,15 @@ export default class Tabs extends Vue {
     }
   }
 
-  mounted(): void {
+  created(): void {
     ServiceRepository.serviceListener(this.onServiceAdded, this.onServiceChanged, dayjs().subtract(1, 'day').unix())
+    DriverRepository.getAll().then(dbDrivers => {
+      dbDrivers.forEach(driver => {
+        const driverTmp = new Driver()
+        Object.assign(driverTmp, driver)
+        this.drivers.push(driverTmp)
+      })
+    })
   }
 
   cancel(serviceId: string): void {
