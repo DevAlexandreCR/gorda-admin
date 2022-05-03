@@ -29,11 +29,6 @@ describe('Edit.vue', () => {
     wrapper = mount(Edit,
       {
         attachTo: '#root',
-        components: {
-          Form,
-          Field,
-          ErrorMessage
-        },
         global: {
           plugins: [router, i18n],
           provide: {
