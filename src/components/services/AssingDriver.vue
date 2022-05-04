@@ -27,11 +27,11 @@ import {defineProps, onMounted, ref, Ref, watch} from 'vue'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import Driver from '@/models/Driver'
-import {Modal} from 'bootstrap'
 import ToastService from '@/services/ToastService'
 import {useI18n} from 'vue-i18n'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
+import {Modal} from 'bootstrap'
 
 const props = defineProps<{
   drivers: Array<Driver>
@@ -39,7 +39,7 @@ const props = defineProps<{
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 let service: Service = new Service()
 let driverId: string
-let driverModal: Modal | null
+let driverModal: Modal
 const {t} = useI18n()
 
 watch(props.drivers, (drivers: Array<Driver>) => {
@@ -49,8 +49,9 @@ watch(props.drivers, (drivers: Array<Driver>) => {
 })
 
 onMounted(() => {
-  driverModal = document.getElementById('driverModal')
-  driverModal?.addEventListener('show.bs.modal', (event: any) => {
+  const element = document.getElementById('driverModal') as HTMLElement;
+  driverModal = new Modal(element)
+  element.addEventListener('show.bs.modal', (event: any) => {
     const serviceId = event.relatedTarget.id
     if (serviceId) {
       ServiceRepository.getService(serviceId).then(dbService => {
@@ -69,7 +70,7 @@ const assignDriver = (): void => {
   service.status = Service.STATUS_IN_PROGRESS
   service.update(service).then(() => {
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
-    driverModal?.close()
+    driverModal?.hide()
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
