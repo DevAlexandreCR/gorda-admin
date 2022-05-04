@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SideBar ></SideBar>
+    <SideBar></SideBar>
     <main  class="main-content mt-1 border-radius-lg " id="main">
       <NavBar/>
       <router-view class="mt-4 ms-2"></router-view>
@@ -8,20 +8,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import {Options, Vue} from 'vue-class-component'
+<script setup lang="ts">
 import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
+import {onMounted} from 'vue'
 
-@Options({
-  components: {
-    SideBar,
-    NavBar
-  },
+onMounted((): void => {
+  require('@/vendor/js/soft-ui-dashboard')
 })
-export default class Dashboard extends Vue {
-  mounted(): void {
-    require('@/vendor/js/soft-ui-dashboard')
-  }
-}
 </script>
