@@ -6,6 +6,7 @@ import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {DataSnapshot} from './mocks/firebase/FirebaseMock'
 import ServiceMock from './mocks/entities/ServiceMock'
+import {startAfter} from 'firebase/database'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -24,7 +25,13 @@ jest.mock('firebase/database', () => {
   return {
     getDatabase: jest.fn(),
     connectDatabaseEmulator: jest.fn(),
-    get: jest.fn()
+    get: jest.fn(),
+    ref: jest.fn(),
+    orderByChild: jest.fn(),
+    startAfter: jest.fn(),
+    query: jest.fn(),
+    onChildAdded: jest.fn(),
+    onChildChanged: jest.fn(),
     // get: jest.fn().mockResolvedValue(snapshot)
   }
 })
