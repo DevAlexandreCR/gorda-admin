@@ -25,7 +25,7 @@ jest.mock('firebase/database', () => {
   return {
     getDatabase: jest.fn(),
     connectDatabaseEmulator: jest.fn(),
-    get: jest.fn(),
+    get: jest.fn().mockResolvedValue({val: () => {}}),
     ref: jest.fn(),
     orderByChild: jest.fn(),
     startAfter: jest.fn(),
