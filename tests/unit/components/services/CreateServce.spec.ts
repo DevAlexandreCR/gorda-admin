@@ -6,23 +6,13 @@ import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import AutoComplete from "@/components/AutoComplete.vue";
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = mount(CreateService,
       {
         attachTo: '#root',
-        components: {
-          Form,
-          Field,
-          ErrorMessage,
-          AutoComplete
-        },
         global: {
           plugins: [router, i18n],
           provide: {
