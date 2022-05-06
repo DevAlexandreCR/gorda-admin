@@ -16,8 +16,8 @@ jest.mock('firebase/auth', () => {
     })
   }
 })
-jest.mock('firebase/database')
-jest.mock('firebase/storage')
+// jest.mock('firebase/database')
+// jest.mock('firebase/storage')
 jest.mock('qrcode')
 
 
