@@ -32,6 +32,7 @@ jest.mock('firebase/database', () => {
     query: jest.fn(),
     onChildAdded: jest.fn(),
     onChildChanged: jest.fn(),
+    set: jest.fn(),
     // get: jest.fn().mockResolvedValue(snapshot)
   }
 })
