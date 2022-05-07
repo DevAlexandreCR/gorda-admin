@@ -70,23 +70,21 @@
   </div>
 </template>
 
-<script lang="ts">
-import {Vue} from 'vue-class-component'
+<script setup lang="ts">
 import {DriverInterface} from "@/types/DriverInterface";
 import DriverRepository from '@/repositories/DriverRepository';
 import DateHelper from "@/helpers/DateHelper";
+import {onBeforeMount, Ref, ref} from 'vue'
 
-export default class Index extends Vue {
-  drivers: Array<DriverInterface> = []
+const drivers: Ref<Array<DriverInterface>> = ref([])
 
-  created(): void {
-    DriverRepository.getAll().then(drivers => {
-      this.drivers = drivers
-    })
-  }
+onBeforeMount((): void => {
+  DriverRepository.getAll().then(driversDB => {
+    drivers.value = driversDB
+  })
+})
 
-  format(unix: number): string {
-    return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
-  }
+function format(unix: number): string {
+  return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
 }
 </script>

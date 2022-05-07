@@ -22,7 +22,7 @@ describe('Index.vue', () => {
     await router.isReady()
   })
   it('an user can show users list', async () => {
-    wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
     expect(wrapper.html()).toContain(DriverMock.name)
     expect(wrapper.html()).toContain(DriverMock.email)
     expect(wrapper.html()).toContain(DriverMock.photoUrl)
