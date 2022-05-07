@@ -48,8 +48,8 @@ watch(props.drivers, (drivers: Array<Driver>) => {
 
 onMounted(() => {
   const element = document.getElementById('driverModal') as HTMLElement;
-  driverModal = new Modal(element)
-  element.addEventListener('show.bs.modal', (event: any) => {
+  if (element) driverModal = new Modal(element)
+  element?.addEventListener('show.bs.modal', (event: any) => {
     const serviceId = event.relatedTarget.id
     if (serviceId) {
       ServiceRepository.getService(serviceId).then(dbService => {
