@@ -37,12 +37,11 @@
       </div>
       <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
     </div>
-    <AssignDriver :drivers="drivers"/>
+    <AssignDriver :drivers="drivers"></AssignDriver>
   </div>
 </template>
 
-<script lang="ts">
-import {Options, Vue} from 'vue-class-component'
+<script setup lang="ts">
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
 import {ServiceInterface} from '@/types/ServiceInterface'
@@ -54,97 +53,90 @@ import ToastService from "@/services/ToastService";
 import AssignDriver from '@/components/services/AssingDriver.vue'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
+import {onBeforeMount} from 'vue'
+import {useI18n} from 'vue-i18n'
+const {t} = useI18n()
 
-@Options({
-  components: {
-    CreateService,
-    ServicesTable,
-    AssignDriver
-  },
-})
+  let pendingServices: Array<ServiceInterface> = []
+  let inProgressServices: Array<ServiceInterface> = []
+  let historyServices: Array<ServiceInterface> = []
+  const drivers: Array<Driver> = []
 
-export default class Tabs extends Vue {
-  pendingServices: Array<ServiceInterface> = []
-  inProgressServices: Array<ServiceInterface> = []
-  historyServices: Array<ServiceInterface> = []
-  drivers: Array<Driver> = []
-
-  onServiceAdded(data: DataSnapshot): void {
+  function onServiceAdded(data: DataSnapshot): void {
     const service = new Service()
     Object.assign(service, data.val())
     service.id = data.key as string
-    this.historyServices.unshift(service)
-    this.setServiceOnChange(service)
+    historyServices.unshift(service)
+    setServiceOnChange(service)
   }
 
-  onServiceChanged(data: DataSnapshot): void {
+  function onServiceChanged(data: DataSnapshot): void {
     const service = new Service()
     Object.assign(service, data.val())
-    this.setServiceOnChange(service)
+    setServiceOnChange(service)
   }
 
-  setServiceOnChange(service: Service): void {
+  function setServiceOnChange(service: Service): void {
     switch (service.status) {
       case Service.STATUS_PENDING:
-        this.pendingServices = this.pendingServices.filter(serv => {
+        pendingServices = pendingServices.filter(serv => {
           return serv.id !== service.id
         })
-        this.inProgressServices = this.inProgressServices.filter(serv => {
+        inProgressServices = inProgressServices.filter(serv => {
           return serv.id !== service.id
         })
-        this.pendingServices.unshift(service)
+        pendingServices.unshift(service)
         break
       case Service.STATUS_IN_PROGRESS:
-        this.inProgressServices.unshift(service)
-        this.pendingServices = this.pendingServices.filter(serv => {
+        inProgressServices.unshift(service)
+        pendingServices = pendingServices.filter(serv => {
           return serv.id !== service.id
         })
         break
       default:
-        this.inProgressServices = this.inProgressServices.filter(serv => {
+        inProgressServices = inProgressServices.filter(serv => {
           return serv.id !== service.id
         })
-        this.pendingServices = this.pendingServices.filter(serv => {
+        pendingServices = pendingServices.filter(serv => {
           return serv.id !== service.id
         })
-        this.historyServices[this.historyServices.findIndex(serv => serv.id === service.id)].status = service.status
+        historyServices[historyServices.findIndex(serv => serv.id === service.id)].status = service.status
         break
     }
   }
 
-  created(): void {
-    ServiceRepository.serviceListener(this.onServiceAdded, this.onServiceChanged, dayjs().subtract(1, 'day').unix())
+  onBeforeMount((): void => {
+    ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().subtract(1, 'day').unix())
     DriverRepository.getAll().then(dbDrivers => {
       dbDrivers.forEach(driver => {
         const driverTmp = new Driver()
         Object.assign(driverTmp, driver)
-        this.drivers.push(driverTmp)
+        drivers.push(driverTmp)
       })
     })
-  }
+  })
 
-  cancel(serviceId: string): void {
+  function cancel(serviceId: string): void {
     ServiceRepository.updateStatus(serviceId, Service.STATUS_CANCELED).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.updated'))
+      ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     }).catch(e => {
-      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
+      ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
     })
   }
 
-  release(serviceId: string): void {
+  function release(serviceId: string): void {
     ServiceRepository.updateStatus(serviceId, Service.STATUS_PENDING).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.updated'))
+      ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     }).catch(e => {
-      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
+      ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
     })
   }
 
-  end(serviceId: string): void {
+  function end(serviceId: string): void {
     ServiceRepository.updateStatus(serviceId, Service.STATUS_TERMINATED).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.updated'))
+      ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     }).catch(e => {
-      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
+      ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
     })
   }
-}
 </script>

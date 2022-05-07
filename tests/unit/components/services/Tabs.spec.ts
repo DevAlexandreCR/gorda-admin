@@ -4,7 +4,6 @@ import i18n from '@/plugins/i18n'
 import Tabs from '@/components/services/Tabs.vue'
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import AssignDriver from '@/components/services/AssingDriver.vue'
 import {DataSnapshot} from '../../../mocks/firebase/FirebaseMock'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
 import Service from '@/models/Service'
@@ -17,11 +16,6 @@ describe('Tabs.vue', () => {
     wrapper = shallowMount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable,
-          AssignDriver
-        },
         global: {
           plugins: [router, i18n],
           provide: {
@@ -86,10 +80,6 @@ describe('Tabs.vue', () => {
     wrapper = mount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable
-        },
         global: {
           plugins: [router, i18n],
           provide: {
@@ -117,10 +107,6 @@ describe('Tabs.vue', () => {
     wrapper = mount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable
-        },
         global: {
           plugins: [router, i18n],
           provide: {
