@@ -10,15 +10,12 @@ describe('AutoComplete.vue', () => {
   div.id = 'root'
   document.body.appendChild(div)
   locations.forEach(loc => {
-    neighborhoods.push(loc.name)
+    neighborhoods.push({id: Math.random().toString(), value: loc.name})
   })
   
   beforeEach(() => {
     wrapper = mount(AutoComplete, {
       attachTo: '#root',
-      components: {
-        Field
-      },
       props: {
         elements: neighborhoods,
         placeholder: 'placeholder autocomplete',
