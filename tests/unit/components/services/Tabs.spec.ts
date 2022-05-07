@@ -1,4 +1,4 @@
-import {mount, shallowMount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, mount, shallowMount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import Tabs from '@/components/services/Tabs.vue'
@@ -88,7 +88,7 @@ describe('Tabs.vue', () => {
         }
       })
     await wrapper.vm.$nextTick()
-    
+    await flushPromises()
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
     await wrapper.vm.$nextTick()
@@ -114,6 +114,7 @@ describe('Tabs.vue', () => {
           }
         }
       })
+    await flushPromises()
     await wrapper.vm.$nextTick()
     
     const tables = wrapper.findAllComponents(ServicesTable)

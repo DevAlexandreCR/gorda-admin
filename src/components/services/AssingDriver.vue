@@ -33,9 +33,7 @@ import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {Modal} from 'bootstrap'
 
-const props = defineProps<{
-  drivers: Array<Driver>
-}>()
+const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 let service: Service = new Service()
 let driverId: string
