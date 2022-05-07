@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, onMounted, ref, Ref, watch} from 'vue'
+import {onMounted, ref, Ref, watch} from 'vue'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import Driver from '@/models/Driver'
