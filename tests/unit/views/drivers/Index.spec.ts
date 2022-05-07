@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {shallowMount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import Index from '@/views/drivers/Index.vue'
@@ -10,7 +10,7 @@ DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
 describe('Index.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
-    wrapper = mount(Index,
+    wrapper = shallowMount(Index,
       {
         global: {
           plugins: [router, i18n],
