@@ -36,7 +36,7 @@ describe('AutoComplete.vue', () => {
   it('an user can show the list when write more than twice', async () => {
     await wrapper.vm.$nextTick()
     const input = wrapper.findComponent(Field)
-    input.setValue('san')
+    await input.setValue('san')
     await input.trigger('keyup', {
       keyCode: 72
     })
