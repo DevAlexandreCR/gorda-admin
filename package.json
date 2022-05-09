@@ -6,6 +6,7 @@
     "serve": "run-s build:dev watch",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit --coverage",
+    "test:watch": "vue-cli-service test:unit --watchAll",
     "lint": "vue-cli-service lint",
     "build:dev": "vue-cli-service build --mode development",
     "build:watch": "vue-cli-service build --mode development --watch --no-clean",

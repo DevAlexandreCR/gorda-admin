@@ -4,11 +4,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="AssignModalLabel">Services</h5>
+          <h5 class="modal-title" id="AssignModalLabel">{{ $t('common.actions.assign') }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <AutoComplete :elements="plates" @selected="onDriverSelected"/>
+          <auto-complete :elements="plates" @selected="onDriverSelected" :placeholder="$t('drivers.placeholders.plate')" :fieldName="'field'"/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
@@ -41,6 +41,7 @@ let driverModal: Modal
 const {t} = useI18n()
 
 watch(props.drivers, (drivers: Array<Driver>) => {
+  console.log('sdffffffffff')
   drivers.forEach(driver => {
     if (driver.id) plates.value.push({id: driver.id, value: driver.vehicle.plate})
   })

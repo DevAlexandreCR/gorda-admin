@@ -1,7 +1,7 @@
 <template>
   <div class="form-group mb-1">
     <Field type="text" id="search" :name="fieldName ?? 'field'" @input="onChange" v-model="searchElement"
-      @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="off"
+           @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="off"
     />
 
     <ul v-if="foundElements.length > 0"
@@ -14,52 +14,50 @@
   </div>
 </template>
 
-<script lang="ts">
-
-import {Options, Vue} from 'vue-class-component'
+<script setup lang="ts">
 import {Field} from 'vee-validate'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {onMounted, ref, Ref} from 'vue'
 
-class Props {
+interface Props {
   elements: Array<AutoCompleteType>
   fieldName: string
   placeholder: string
 }
 
-@Options({
-  components: {
-    Field
-  }
+const props = defineProps<Props>()
+
+let selectedElement = ''
+const foundElements: Ref<Array<AutoCompleteType>> = ref([])
+const searchElement: Ref<string> = ref('')
+const emit = defineEmits(['on-change', 'selected'])
+
+function onChange(): void {
+  emit('on-change', searchElement.value)
+}
+
+onMounted(() => {
+  console.log(props.elements)
 })
-export default class AutoComplete extends Vue.with(Props) {
 
-  selectedElement = ''
-  foundElements: Array<AutoCompleteType> = []
-  searchElement = ''
+function searchElements(): void {
+  let matches = 0
+  if (searchElement.value.length > 2) {
+    foundElements.value = props.elements.filter(element => {
+      if (element.value.toLowerCase().includes(searchElement.value.toLowerCase()) && matches < 5) {
+        matches++
+        return element
+      }
+    })
+  } else {
+    foundElements.value = []
+  }
+}
 
-  onChange(): void {
-    this.$emit('on-change', this.searchElement)
-  }
-
-  searchElements(): void {
-    let matches = 0
-    if (this.searchElement.length > 2) {
-      this.foundElements = this.elements.filter(element => {
-        if (element.value.toLowerCase().includes(this.searchElement.toLowerCase()) && matches < 5) {
-          matches++
-          return element
-        }
-      }) 
-    } else {
-      this.foundElements = []
-    }
-  }
-  
-  selectElement(element: AutoCompleteType): void {
-    this.$emit('selected', element)
-    this.selectedElement = element.value
-    this.searchElement = element.value
-    this.foundElements = []
-  }
+function selectElement(element: AutoCompleteType): void {
+  emit('selected', element)
+  selectedElement = element.value
+  searchElement.value = element.value
+  foundElements.value = []
 }
 </script>

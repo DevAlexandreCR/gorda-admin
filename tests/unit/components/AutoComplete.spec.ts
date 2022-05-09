@@ -65,14 +65,13 @@ describe('AutoComplete.vue', () => {
     expect(items.length).toBe(5)
     
     await items.at(0)?.trigger('click')
-    expect(wrapper.vm.selectedElement.toLowerCase()).toContain('san')
     expect(wrapper.vm.foundElements.length).toBe(0)
   })
 
   it('the user after seeing the list deletes what it contains inside it will return 0', async () => {
     await wrapper.vm.$nextTick()
     const input = wrapper.findComponent(Field)
-    input.setValue('sa')
+    await input.setValue('sa')
     await input.trigger('keyup', {
       keyCode: 72
     })

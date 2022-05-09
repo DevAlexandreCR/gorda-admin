@@ -18,9 +18,7 @@ jest.mock('firebase/auth', () => {
     })
   }
 })
-const snapshot = new DataSnapshot(ServiceMock)
 jest.mock('firebase/database', () => {
-  // console.log(snapshot)
   return {
     getDatabase: jest.fn(),
     connectDatabaseEmulator: jest.fn(),
@@ -32,7 +30,7 @@ jest.mock('firebase/database', () => {
     onChildAdded: jest.fn(),
     onChildChanged: jest.fn(),
     set: jest.fn(),
-    // get: jest.fn().mockResolvedValue(snapshot)
+    child: jest.fn()
   }
 })
 jest.mock('firebase/storage')
