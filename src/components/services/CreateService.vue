@@ -74,7 +74,7 @@ export default class CreateService extends Vue {
   mounted(): void {
     locations.forEach(loc => {
       this.neighborhoods.push({
-        id: window.crypto.getRandomValues(new Uint8Array(10)).toString(),
+        id: '0',
         value: loc.name
       })
     })
