@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, Ref, watch} from 'vue'
+import {onMounted, ref, Ref, watchEffect} from 'vue'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import Driver from '@/models/Driver'
@@ -40,9 +40,8 @@ let driverId: string
 let driverModal: Modal
 const {t} = useI18n()
 
-watch(props.drivers, (drivers: Array<Driver>) => {
-  console.log('sdffffffffff')
-  drivers.forEach(driver => {
+watchEffect(async () => {
+  props.drivers.forEach(driver => {
     if (driver.id) plates.value.push({id: driver.id, value: driver.vehicle.plate})
   })
 })

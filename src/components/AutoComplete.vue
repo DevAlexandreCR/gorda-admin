@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import {Field} from 'vee-validate'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
-import {onMounted, ref, Ref} from 'vue'
+import {ref, Ref} from 'vue'
 
 interface Props {
   elements: Array<AutoCompleteType>
@@ -35,10 +35,6 @@ const emit = defineEmits(['on-change', 'selected'])
 function onChange(): void {
   emit('on-change', searchElement.value)
 }
-
-onMounted(() => {
-  console.log(props.elements)
-})
 
 function searchElements(): void {
   let matches = 0
