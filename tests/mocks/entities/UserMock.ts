@@ -1,4 +1,4 @@
-import {Roles} from '@/entities/Roles'
+import {Roles} from '@/types/Roles'
 import dayjs from "dayjs";
 
 class UserMock {

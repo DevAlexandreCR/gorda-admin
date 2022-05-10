@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import Vehicle from "@/models/Vehicle";
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 
 class DriverMock implements DriverInterface{
   id = 'id'

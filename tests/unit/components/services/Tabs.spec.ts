@@ -1,13 +1,13 @@
-import {shallowMount, VueWrapper, mount} from '@vue/test-utils'
+import {flushPromises, mount, shallowMount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import Tabs from "@/components/services/Tabs.vue"
-import CreateService from "@/components/services/CreateService.vue"
-import ServicesTable from "@/components/services/ServicesTable.vue"
-import {DataSnapshot} from "../../../mocks/firebase/FirebaseMock"
-import ServiceMock from "../../../mocks/entities/ServiceMock";
-import Service from "@/models/Service";
-import ServiceRepository from "@/repositories/ServiceRepository";
+import Tabs from '@/components/services/Tabs.vue'
+import CreateService from '@/components/services/CreateService.vue'
+import ServicesTable from '@/components/services/ServicesTable.vue'
+import {DataSnapshot} from '../../../mocks/firebase/FirebaseMock'
+import ServiceMock from '../../../mocks/entities/ServiceMock'
+import Service from '@/models/Service'
+import ServiceRepository from '@/repositories/ServiceRepository'
 import Swal from 'sweetalert2'
 
 describe('Tabs.vue', () => {
@@ -16,16 +16,12 @@ describe('Tabs.vue', () => {
     wrapper = shallowMount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable
-        },
         global: {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
           }
-        },
+        }
       })
     await router.isReady()
   })
@@ -59,7 +55,7 @@ describe('Tabs.vue', () => {
     const snapshot = new DataSnapshot(ServiceMock)
     wrapper.vm.pendingServices.push(snapshot)
     snapshot.service.status = Service.STATUS_IN_PROGRESS
-  
+    
     await wrapper.vm.onServiceChanged(snapshot)
     
     expect(wrapper.vm.inProgressServices.length).toBe(1)
@@ -71,10 +67,10 @@ describe('Tabs.vue', () => {
     snapshot.service.status = Service.STATUS_IN_PROGRESS
     wrapper.vm.inProgressServices.push(snapshot.service)
     wrapper.vm.historyServices.push(snapshot.service)
-  
+    
     snapshot.service.status = Service.STATUS_TERMINATED
     await wrapper.vm.onServiceChanged(snapshot)
-  
+    
     expect(wrapper.vm.historyServices.length).toBe(1)
   })
   
@@ -84,19 +80,15 @@ describe('Tabs.vue', () => {
     wrapper = mount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable
-        },
         global: {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
           }
-        },
+        }
       })
     await wrapper.vm.$nextTick()
-  
+    await flushPromises()
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
     await wrapper.vm.$nextTick()
@@ -115,17 +107,14 @@ describe('Tabs.vue', () => {
     wrapper = mount(Tabs,
       {
         attachTo: '#root',
-        components: {
-          CreateService,
-          ServicesTable
-        },
         global: {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
           }
-        },
+        }
       })
+    await flushPromises()
     await wrapper.vm.$nextTick()
     
     const tables = wrapper.findAllComponents(ServicesTable)

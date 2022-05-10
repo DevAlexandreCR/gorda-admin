@@ -4,6 +4,8 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
+import {DataSnapshot} from './mocks/firebase/FirebaseMock'
+import ServiceMock from './mocks/entities/ServiceMock'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -16,7 +18,21 @@ jest.mock('firebase/auth', () => {
     })
   }
 })
-jest.mock('firebase/database')
+jest.mock('firebase/database', () => {
+  return {
+    getDatabase: jest.fn(),
+    connectDatabaseEmulator: jest.fn(),
+    get: jest.fn().mockResolvedValue({val: () => {return {}}}),
+    ref: jest.fn(),
+    orderByChild: jest.fn(),
+    startAfter: jest.fn(),
+    query: jest.fn(),
+    onChildAdded: jest.fn(),
+    onChildChanged: jest.fn(),
+    set: jest.fn(),
+    child: jest.fn()
+  }
+})
 jest.mock('firebase/storage')
 jest.mock('qrcode')
 

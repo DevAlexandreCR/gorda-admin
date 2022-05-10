@@ -1,4 +1,4 @@
-import {shallowMount} from '@vue/test-utils'
+import {flushPromises, shallowMount} from '@vue/test-utils'
 import ImageLoader from "@/components/ImageLoader.vue"
 import {Field, Form, ErrorMessage} from 'vee-validate'
 import StorageService from "@/services/StorageService";
@@ -28,6 +28,7 @@ describe('ImageLoader', () => {
       },
     })
     
+    await flushPromises()
     await wrapper.vm.uploadImg()
     
     expect(wrapper.emitted().event).toEqual([['urlFake.com']])

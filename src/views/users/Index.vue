@@ -56,7 +56,7 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import UserRepository from '@/repositories/UserRepository'
-import {UserInterface} from '@/entities/UserInterface'
+import {UserInterface} from '@/types/UserInterface'
 import DateHelper from "@/helpers/DateHelper";
 
 export default class Index extends Vue {

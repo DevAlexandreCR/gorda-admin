@@ -1,4 +1,4 @@
-import {VehicleInterface} from "@/entities/VehicleInterface";
+import {VehicleInterface} from "@/types/VehicleInterface";
 
 export default class Vehicle implements VehicleInterface {
   brand: string

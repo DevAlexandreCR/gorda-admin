@@ -45,7 +45,7 @@
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
-import {ServiceInterface} from '@/entities/ServiceInterface'
+import {ServiceInterface} from '@/types/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
@@ -53,6 +53,7 @@ import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
 
 
 @Options({
@@ -67,12 +68,15 @@ import AutoComplete from '@/components/AutoComplete.vue'
 
 export default class CreateService extends Vue {
 
-  neighborhoods: Array<any> = []
+  neighborhoods: Array<AutoCompleteType> = []
   
 
   mounted(): void {
     locations.forEach(loc => {
-      this.neighborhoods.push(loc.name)
+      this.neighborhoods.push({
+        id: '0',
+        value: loc.name
+      })
     })
   }
 
@@ -89,6 +93,7 @@ export default class CreateService extends Vue {
     values.created_at = dayjs().unix()
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null
+    values.client_id = '57' + values.phone + '@c.us'
     ServiceRepository.create(values).then(() => {
       ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
     }).catch(e => {

@@ -1,62 +1,59 @@
 <template>
   <div class="form-group mb-1">
-    <Field type="text" id="search" :name="fieldName" @input="onChange" v-model="searchElement"
-            @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"/>
+    <Field type="text" id="search" :name="fieldName ?? 'field'" @input="onChange" v-model="searchElement"
+           @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="off"
+    />
 
     <ul v-if="foundElements.length > 0"
         class="list-group autocomplete-list shadow-sm">
-      <li v-for="element in foundElements" :key="element" @click="selectElement(element)"
+      <li v-for="element in foundElements" :key="element.id" @click="selectElement(element)"
           class="list-group-item">
-        {{ element }}
+        {{ element.value }}
       </li>
     </ul>
   </div>
 </template>
 
-<script lang="ts">
-
-import {Options, Vue} from 'vue-class-component'
+<script setup lang="ts">
 import {Field} from 'vee-validate'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {ref, Ref} from 'vue'
 
-class Props {
-  elements: Array<any>
+interface Props {
+  elements: Array<AutoCompleteType>
   fieldName: string
   placeholder: string
 }
 
-@Options({
-  components: {
-    Field
-  }
-})
-export default class AutoComplete extends Vue.with(Props) {
+const props = defineProps<Props>()
 
-  selectedElement = ''
-  foundElements: Array<any> = []
-  searchElement = ''
+let selectedElement = ''
+const foundElements: Ref<Array<AutoCompleteType>> = ref([])
+const searchElement: Ref<string> = ref('')
+const emit = defineEmits(['on-change', 'selected'])
 
-  onChange(): void {
-    this.$emit('on-change', this.searchElement)
-  }
+function onChange(): void {
+  emit('on-change', searchElement.value)
+}
 
-  searchElements(): void {
-    let matches = 0
-    if (this.searchElement.length > 2) {
-      this.foundElements = this.elements.filter(element => {
-        if (element.toLowerCase().includes(this.searchElement.toLowerCase()) && matches < 5) {
-          matches++
-          return element
-        }
-      }) 
-    } else {
-      this.foundElements = []
-    }
+function searchElements(): void {
+  let matches = 0
+  if (searchElement.value.length > 2) {
+    foundElements.value = props.elements.filter(element => {
+      if (element.value.toLowerCase().includes(searchElement.value.toLowerCase()) && matches < 5) {
+        matches++
+        return element
+      }
+    })
+  } else {
+    foundElements.value = []
   }
-  
-  selectElement(element: string): void {
-    this.selectedElement = element
-    this.searchElement = element
-    this.foundElements = []
-  }
+}
+
+function selectElement(element: AutoCompleteType): void {
+  emit('selected', element)
+  selectedElement = element.value
+  searchElement.value = element.value
+  foundElements.value = []
 }
 </script>

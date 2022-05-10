@@ -114,7 +114,7 @@ import Driver from "@/models/Driver";
 import DriverRepository from '@/repositories/DriverRepository'
 import {Constants} from "@/constants/Constants";
 import ToastService from "@/services/ToastService";
-import {DriverInterface} from "@/entities/DriverInterface";
+import {DriverInterface} from "@/types/DriverInterface";
 
 @Options({
   components: {

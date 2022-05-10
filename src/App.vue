@@ -3,15 +3,13 @@
     <router-view/>
   </div>
 </template>
-<script lang="ts">
-import {Vue} from 'vue-class-component'
+<script setup lang="ts">
 import AuthService from '@/services/AuthService'
+import {onMounted} from 'vue'
 
-export default class App extends Vue {
-  mounted(): void {
-    AuthService.onAuthStateChanged(location.pathname)
-  }
-}
+onMounted((): void => {
+  AuthService.onAuthStateChanged(location.pathname)
+})
 </script>
 
 <style lang="scss">

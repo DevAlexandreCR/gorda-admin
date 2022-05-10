@@ -1,5 +1,6 @@
-import {ServiceInterface} from '@/entities/ServiceInterface'
+import {ServiceInterface} from '@/types/ServiceInterface'
 import dayjs from 'dayjs'
+import ServiceRepository from '@/repositories/ServiceRepository'
 
 export default class Service implements ServiceInterface {
   id: string
@@ -26,6 +27,10 @@ export default class Service implements ServiceInterface {
   constructor() {
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
+    this.end_address = null
+    this.amount = null
+    this.comment = null
+    this.driver_id = null
   }
 
   isPending(): boolean {
@@ -34,5 +39,10 @@ export default class Service implements ServiceInterface {
 
   isinProgress(): boolean {
     return this.status === Service.STATUS_IN_PROGRESS
+  }
+  
+  async update(data: ServiceInterface): Promise<Service> {
+    await ServiceRepository.update(data)
+    return this
   }
 }

@@ -6,6 +6,9 @@
       "$uid": {
         ".indexOn": "created_at"
       }
+    },
+    "sessions": {
+      ".indexOn": ["chat_id", "created_at"]
     }
   }
 }

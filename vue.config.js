@@ -6,7 +6,7 @@ module.exports = {
       localeDir: 'locales',
       enableLegacy: false,
       runtimeOnly: false,
-      compositionOnly: false,
+      compositionOnly: true,
       fullInstall: true
     }
   }

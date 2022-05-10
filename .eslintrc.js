@@ -1,7 +1,8 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    'vue/setup-compiler-macros': true
   },
   plugins: ['@typescript-eslint'],
   'extends': [
@@ -11,7 +12,8 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended'
   ],
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
+    sourceType: 'module',
     parser: require.resolve('@typescript-eslint/parser'),
     extraFileExtensions: ['.vue'],
     ecmaFeatures: {
@@ -21,7 +23,9 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    'vue/no-deprecated-router-link-tag-prop': 'off',
+    'vue/multi-word-component-names': 'off'
   },
   overrides: [
     {
