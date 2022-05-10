@@ -1,4 +1,4 @@
-import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
+import {mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AssignDriver from '@/components/services/AssingDriver.vue'
@@ -6,6 +6,8 @@ import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick, render} from 'vue'
 import AutoComplete from '@/components/AutoComplete.vue'
 import Driver from '@/models/Driver'
+import Swal from 'sweetalert2'
+import waitForExpect from 'wait-for-expect'
 
 describe('AssignDriver.vue', () => {
   let wrapper: VueWrapper<any>
@@ -43,9 +45,7 @@ describe('AssignDriver.vue', () => {
   })
   
   it('should fill plates with river given', async () => {
-    await wrapper.setProps(wrapper.vm.props)
-    await wrapper.vm.$forceUpdate()
-    await wrapper.vm.$nextTick()
+    await nextTick()
     await button.click()
     const input = wrapper.find('input')
     await input.setValue('HEM')
@@ -54,5 +54,28 @@ describe('AssignDriver.vue', () => {
     })
     await nextTick()
     expect(wrapper.text()).toContain('HEM390')
+  })
+  
+  it('should assign driver when click in button', async () => {
+    const swal = jest.spyOn(Swal,'fire')
+    await nextTick()
+    await button.click()
+    const input = wrapper.find('input')
+    await input.setValue('HEM')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    await nextTick()
+    await wrapper.find('li').trigger('click')
+    await wrapper.find('.btn-primary').trigger('click')
+    expect(swal).toBeCalledWith({
+      icon: 'success',
+      position: 'top-right',
+      title: wrapper.vm.$t('common.messages.updated'),
+      showConfirmButton: false,
+      text: undefined,
+      timer: 1500,
+      toast:true
+    })
   })
 })
