@@ -34,7 +34,7 @@ describe('ServicesTable.vue', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
     expect(wrapper.html()).toContain(service.status)
-    expect(wrapper.html()).toContain(service.start_loc)
+    expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
     expect(wrapper.html()).toContain(service.name)
     expect(wrapper.html()).toContain(service.driver_id)
