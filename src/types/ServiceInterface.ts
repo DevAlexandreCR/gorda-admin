@@ -1,8 +1,10 @@
+import {LocationType} from '@/types/LocationType'
+
 export interface ServiceInterface {
   id: string | null
   status: string
-  start_address: string
-  end_address: string | null
+  start_loc: LocationType
+  end_loc: LocationType | null
   phone: string
   name: string
   comment: string | null

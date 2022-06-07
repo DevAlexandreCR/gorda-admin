@@ -19,7 +19,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'start_address'" :elements="neighborhoods" v-model="service.start_address" :placeholder="$t('common.placeholders.address')"/>
+              <AutoComplete :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :placeholder="$t('common.placeholders.address')"/>
             </div>
             <ErrorMessage name="start_address"/>
           </div>
@@ -49,11 +49,11 @@ import {ServiceInterface} from '@/types/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {LocationType} from '@/types/LocationType'
 
 
 @Options({
@@ -69,7 +69,8 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 export default class CreateService extends Vue {
 
   neighborhoods: Array<AutoCompleteType> = []
-  
+  start_loc: LocationType
+  services: Array<Partial<Service>> = [new Service()]
 
   mounted(): void {
     locations.forEach(loc => {
@@ -80,7 +81,6 @@ export default class CreateService extends Vue {
     })
   }
 
-  services: Array<Partial<Service>> = [new Service()]
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
@@ -90,11 +90,15 @@ export default class CreateService extends Vue {
 
   createService(values: ServiceInterface, event: FormActions<any>): void {
     event.resetForm()
-    values.created_at = dayjs().unix()
-    values.status = Service.STATUS_PENDING
-    values.comment = values.comment ?? null
-    values.client_id = '57' + values.phone + '@c.us'
-    ServiceRepository.create(values).then(() => {
+    const service: Service = new Service()
+    service.comment = values.comment ?? null
+    service.client_id = '57' + values.phone + '@c.us'
+    service.name = values.name
+    service.phone = values.phone
+    service.start_loc = this.start_loc?? {
+      name: values.start_address
+    }
+    ServiceRepository.create(service).then(() => {
       ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
     }).catch(e => {
       ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
@@ -109,6 +113,15 @@ export default class CreateService extends Vue {
 
   remove(key: number): void {
     this.services.splice(key, 1)
+  }
+
+  locSelected(element: AutoCompleteType): void {
+    let neighbor = locations.find(el => el.name == element.value)
+    this.start_loc = {
+      name: neighbor?.name ?? '',
+      lat: neighbor?.location.lat,
+      long: neighbor?.location.lng
+    }
   }
 }
 </script>

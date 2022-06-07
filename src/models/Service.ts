@@ -1,12 +1,13 @@
 import {ServiceInterface} from '@/types/ServiceInterface'
 import dayjs from 'dayjs'
 import ServiceRepository from '@/repositories/ServiceRepository'
+import {LocationType} from '@/types/LocationType'
 
 export default class Service implements ServiceInterface {
   id: string
   status: string
-  start_address: string
-  end_address: string | null
+  start_loc: LocationType
+  end_loc: LocationType | null
   phone: string
   name: string
   amount: number | null
@@ -25,12 +26,14 @@ export default class Service implements ServiceInterface {
   static readonly EVENT_RELEASE = 'release-service'
 
   constructor() {
+    this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
-    this.end_address = null
+    this.start_loc = { name: '' }
     this.amount = null
     this.comment = null
     this.driver_id = null
+    this.end_loc = null
   }
 
   isPending(): boolean {
