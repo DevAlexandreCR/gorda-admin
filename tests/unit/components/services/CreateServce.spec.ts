@@ -6,6 +6,7 @@ import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
 import ServiceRepository from '@/repositories/ServiceRepository'
+import {nextTick} from 'vue'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
@@ -69,7 +70,21 @@ describe('CreateService.vue', () => {
     expect(wrapper.find('#row-3 input[name="comment"]').exists()).toBeFalsy()
     expect(wrapper.vm.services[3]).toBe(undefined)
   })
-
+  
+  it('an user can select location from neighborhoods', async () => {
+    const onSelected = jest.spyOn(wrapper.vm, 'locSelected')
+    await wrapper.vm.$nextTick()
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('barr')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    const li = wrapper.findAll('li').at(0)
+    await li?.trigger('click')
+    
+    expect(onSelected).toBeCalledTimes(1)
+  })
+  
   it('an user can create a new service', async () => {
     ServiceRepository.create = jest.fn().mockResolvedValue('success')
     const swal = jest.spyOn(Swal,'fire')
