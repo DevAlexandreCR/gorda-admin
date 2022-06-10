@@ -4,7 +4,7 @@
     ".write": true,
     "services": {
       "$uid": {
-        ".indexOn": "created_at"
+        ".indexOn": ["created_at", "status"]
       }
     },
     "sessions": {
