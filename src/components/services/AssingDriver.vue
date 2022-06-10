@@ -8,7 +8,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <auto-complete :elements="plates" @selected="onDriverSelected" :placeholder="$t('drivers.placeholders.plate')" :fieldName="'field'"/>
+          <auto-complete :elements="plates"   @selected="onDriverSelected" :placeholder="$t('drivers.placeholders.plate')" :fieldName="'field'"/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
@@ -32,9 +32,11 @@ import {useI18n} from 'vue-i18n'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {Modal} from 'bootstrap'
+import CreateService from '@/components/services/CreateService.vue'
 
 const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
+
 let service: Service = new Service()
 let driverId: string
 let driverModal: Modal

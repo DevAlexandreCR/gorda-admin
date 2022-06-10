@@ -6,7 +6,7 @@
           <div class="col-12 col-md">
             <div class="form-group">
               <div class="input-group">
-                <Field type="phone" class="form-control" :placeholder="$t('common.placeholders.phone')" name="phone" v-model="service.phone"/>
+                <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clients" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               </div>
             </div>
             <ErrorMessage name="phone"/>
@@ -41,7 +41,6 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
@@ -54,22 +53,25 @@ import ToastService from "@/services/ToastService";
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
-
+import ClientRepository from '@/repositories/ClientRepository'
+import AssignDriver from '@/components/services/AssingDriver.vue'
+import { Client } from 'socket.io/dist/client'
 
 @Options({
   components: {
     Form,
     Field,
     ErrorMessage,
-    AutoComplete
+    AutoComplete,
+    AssignDriver
   },
 })
-
 
 export default class CreateService extends Vue {
 
   neighborhoods: Array<AutoCompleteType> = []
-  
+  clients: Array<AutoCompleteType> = []
+  clientId: string
 
   mounted(): void {
     locations.forEach(loc => {
@@ -78,8 +80,17 @@ export default class CreateService extends Vue {
         value: loc.name
       })
     })
-  }
-
+    
+    ClientRepository.getAll().then(clients => {
+      clients.forEach(client => {
+        this.clients.push({
+          id: client.id,
+          value: client.phone
+          
+        })
+      })
+    })
+}
   services: Array<Partial<Service>> = [new Service()]
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
@@ -93,13 +104,17 @@ export default class CreateService extends Vue {
     values.created_at = dayjs().unix()
     values.status = Service.STATUS_PENDING
     values.comment = values.comment ?? null
-    values.client_id = '57' + values.phone + '@c.us'
+    values.client_id = this.clientId
     ServiceRepository.create(values).then(() => {
       ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
     }).catch(e => {
       ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
     })
   }
+
+  onClientSelected(element: AutoCompleteType): void {
+  this.clientId = element.id
+}
 
   add(): void {
     if (this.services.length < 5) {

@@ -1,19 +1,20 @@
 import {get, child, DataSnapshot, set, ref, push} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from "@/types/DriverInterface";
+import Driver from '@/models/Driver';
 
 class DriverRepository {
   
   /* istanbul ignore next */
   async getDriver(id: string): Promise<DriverInterface> {
     const snapshot: DataSnapshot = await get(child(DBService.dbDrivers(), id))
-    return <DriverInterface>snapshot.val()
+    return <DriverInterface>snapshot.val()?? new Driver
   }
   
   /* istanbul ignore next */
   async getAll(): Promise<Array<DriverInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbDrivers())
-    return Object.values(snapshot.val())
+    return Object.values(snapshot.val()?? [])
   }
   
   /* istanbul ignore next */
