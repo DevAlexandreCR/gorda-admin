@@ -48,12 +48,9 @@ function searchElements(): void {
   } else {
     foundElements.value = []
   }
-  console.log(foundElements.value);
-  console.log(props.elements);
-  
 }
 
-function selectElement(element: AutoCompleteType): void {  
+function selectElement(element: AutoCompleteType): void {
   emit('selected', element)
   selectedElement = element.value
   searchElement.value = element.value
