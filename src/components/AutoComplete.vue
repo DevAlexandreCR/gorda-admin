@@ -47,10 +47,7 @@ function searchElements(): void {
     })
   } else {
     foundElements.value = []
-  }
-  console.log(foundElements.value);
-  console.log(props.elements);
-  
+  }  
 }
 
 function selectElement(element: AutoCompleteType): void {  
