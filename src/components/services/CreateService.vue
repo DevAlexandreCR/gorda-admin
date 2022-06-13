@@ -6,14 +6,14 @@
           <div class="col-12 col-md">
             <div class="form-group">
               <div class="input-group">
-                <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clients" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+                <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               </div>
             </div>
             <ErrorMessage name="phone"/>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
+              <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="client.name"/>
             </div>
             <ErrorMessage name="name"/>
           </div>
@@ -54,7 +54,10 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import { Client } from 'socket.io/dist/client'
+import LocationType from '@/types/LocationType'
+import Client from '@/models/Client'
+
+
 
 @Options({
   components: {
@@ -69,8 +72,9 @@ import { Client } from 'socket.io/dist/client'
 export default class CreateService extends Vue {
 
   neighborhoods: Array<AutoCompleteType> = []
-  clients: Array<AutoCompleteType> = []
-  clientId: string
+  clients: Array<Client> = []
+  clientsPhone: Array<AutoCompleteType> = []
+  client: Client = new Client
   start_loc: LocationType
   services: Array<Partial<Service>> = [new Service()]
 
@@ -84,10 +88,14 @@ export default class CreateService extends Vue {
     
     ClientRepository.getAll().then(clients => {
       clients.forEach(client => {
-        this.clients.push({
-          id: client.id,
-          value: client.phone
-        })
+      this.clientsPhone.push( {
+        id: client.id,
+        value: client.phone
+      })
+
+      const clientTmp = new Client()
+      Object.assign(clientTmp, client)
+      this.clients.push(clientTmp)
       })
     })
   }
@@ -103,7 +111,7 @@ export default class CreateService extends Vue {
     event.resetForm()
     const service: Service = new Service()
     service.comment = values.comment ?? null
-    service.client_id = this.clientId
+    service.client_id = this.client.id
     service.name = values.name
     service.phone = values.phone
     service.start_loc = this.start_loc?? {
@@ -117,8 +125,8 @@ export default class CreateService extends Vue {
   }
 
   onClientSelected(element: AutoCompleteType): void {
-  this.clientId = element.id
-}
+    this.client = this.clients.find(client => client.id === element.id) ?? new Client
+  }
 
   add(): void {
     if (this.services.length < 5) {

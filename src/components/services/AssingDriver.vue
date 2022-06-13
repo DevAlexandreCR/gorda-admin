@@ -32,7 +32,6 @@ import {useI18n} from 'vue-i18n'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {Modal} from 'bootstrap'
-import CreateService from '@/components/services/CreateService.vue'
 
 const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
