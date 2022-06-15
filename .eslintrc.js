@@ -2,11 +2,11 @@ module.exports = {
   root: true,
   env: {
     node: true,
-    'vue/setup-compiler-macros': true
+    browser: true,
   },
   plugins: ['@typescript-eslint'],
   'extends': [
-    'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-recommended',
     'eslint:recommended',
     '@vue/typescript/recommended',
     'plugin:@typescript-eslint/eslint-recommended'
@@ -37,5 +37,9 @@ module.exports = {
         jest: true
       }
     }
-  ]
+  ],
+  globals: {
+    defineProps: "readonly",
+    defineEmits: "readonly"
+  }
 }
