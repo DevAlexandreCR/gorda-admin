@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {ErrorMessage, Field, Form} from 'vee-validate'
@@ -6,11 +6,13 @@ import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import {nextTick} from 'vue'
+import ClientRepository from '@/repositories/ClientRepository'
+import ClientMock from '../../../mocks/entities/ClientMock'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
+    ClientRepository.getAll = jest.fn().mockResolvedValue([ClientMock])
     wrapper = mount(CreateService,
       {
         attachTo: '#root',
