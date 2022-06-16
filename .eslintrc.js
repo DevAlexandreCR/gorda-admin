@@ -4,7 +4,7 @@ module.exports = {
     node: true, browser: true,
   },
   plugins: ['@typescript-eslint'],
-  'extends': ['plugin:vue/vue3-recommended', 'eslint:recommended', '@vue/typescript/recommended', 'plugin:@typescript-eslint/eslint-recommended'],
+  'extends': ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/typescript/recommended', 'plugin:@typescript-eslint/eslint-recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',

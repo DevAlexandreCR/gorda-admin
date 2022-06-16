@@ -44,7 +44,6 @@
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
-import {ServiceInterface} from '@/types/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
@@ -56,6 +55,7 @@ import ClientRepository from '@/repositories/ClientRepository'
 import AssignDriver from '@/components/services/AssingDriver.vue'
 import {LocationType} from '@/types/LocationType'
 import Client from '@/models/Client'
+import {ServiceInterface} from '@/types/ServiceInterface'
 
 
 
