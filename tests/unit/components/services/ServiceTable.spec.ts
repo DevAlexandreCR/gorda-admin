@@ -5,18 +5,17 @@ import ServicesTable from "@/components/services/ServicesTable.vue";
 import Service from "@/models/Service";
 import ServiceMock from "../../../mocks/entities/ServiceMock";
 import DateHelper from "@/helpers/DateHelper";
+import DriverMock from '../../../mocks/entities/DriverMock'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   const service = new Service()
   Object.assign(service, ServiceMock)
   const options = {
     attachTo: '#root',
     props: {
       services: [service, service],
+      drivers: [DriverMock],
       isHistory: false
     },
     global: {
@@ -33,11 +32,11 @@ describe('ServicesTable.vue', () => {
   it('an user can see all services passed by props', async () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
-    expect(wrapper.html()).toContain(service.status)
+    expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.pending'))
     expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
     expect(wrapper.html()).toContain(service.name)
-    expect(wrapper.html()).toContain(service.driver_id)
+    expect(wrapper.html()).toContain(DriverMock.vehicle.plate)
     expect(wrapper.findAll('tr').length).toBe(2)
     expect(wrapper.find('.fa-car').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()

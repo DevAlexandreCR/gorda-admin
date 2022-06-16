@@ -62,7 +62,7 @@
 <script lang="ts">
 import {Vue} from 'vue-class-component'
 import DateHelper from '@/helpers/DateHelper'
-import Service from "@/models/Service"
+import Service from '@/models/Service'
 import Driver from '@/models/Driver'
 
 
@@ -92,8 +92,7 @@ export default class ServicesTable extends Vue.with(Props) {
 
   getDriver(driverId: string): Driver|null {
     if (driverId) {
-      const driver = this.drivers.filter(driver => driver.id === driverId)[0]
-      return driver
+      return this.drivers.find(driver => driver.id === driverId)?? null
     }
 
     return null
