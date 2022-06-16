@@ -76,6 +76,7 @@ describe('Tabs.vue', () => {
   
   it('should exec functions when children emmit events', async () => {
     ServiceRepository.updateStatus = jest.fn().mockResolvedValue({})
+    ServiceRepository.update = jest.fn().mockResolvedValue({})
     const swat = jest.spyOn(Swal, 'fire')
     wrapper = mount(Tabs,
       {
@@ -92,7 +93,7 @@ describe('Tabs.vue', () => {
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
     await wrapper.vm.$nextTick()
-    tables.at(1)?.vm.$emit(Service.EVENT_RELEASE)
+    tables.at(1)?.vm.$emit(Service.EVENT_RELEASE, ServiceMock)
     await wrapper.vm.$nextTick()
     tables.at(1)?.vm.$emit(Service.EVENT_TERMINATE)
     await wrapper.vm.$nextTick()
@@ -103,6 +104,7 @@ describe('Tabs.vue', () => {
   
   it('should exec functions when children emmit events and promise fails', async () => {
     ServiceRepository.updateStatus = jest.fn().mockRejectedValue(new Error('Error fake'))
+    ServiceRepository.update = jest.fn().mockRejectedValue(new Error('Error fake'))
     const swat = jest.spyOn(Swal, 'fire')
     wrapper = mount(Tabs,
       {
@@ -114,17 +116,16 @@ describe('Tabs.vue', () => {
           }
         }
       })
-    await flushPromises()
     await wrapper.vm.$nextTick()
     
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
     await wrapper.vm.$nextTick()
-    tables.at(1)?.vm.$emit(Service.EVENT_RELEASE)
+    tables.at(1)?.vm.$emit(Service.EVENT_RELEASE, ServiceMock)
     await wrapper.vm.$nextTick()
     tables.at(1)?.vm.$emit(Service.EVENT_TERMINATE)
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
     expect(swat).toBeCalledTimes(3)
+    jest.clearAllMocks()
   })
 })
