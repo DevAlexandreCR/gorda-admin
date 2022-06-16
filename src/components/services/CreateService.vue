@@ -54,7 +54,7 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import LocationType from '@/types/LocationType'
+import {LocationType} from '@/types/LocationType'
 import Client from '@/models/Client'
 
 
