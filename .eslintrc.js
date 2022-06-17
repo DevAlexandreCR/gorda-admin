@@ -1,16 +1,10 @@
 module.exports = {
   root: true,
   env: {
-    node: true,
-    'vue/setup-compiler-macros': true
+    node: true, browser: true,
   },
   plugins: ['@typescript-eslint'],
-  'extends': [
-    'plugin:vue/vue3-essential',
-    'eslint:recommended',
-    '@vue/typescript/recommended',
-    'plugin:@typescript-eslint/eslint-recommended'
-  ],
+  'extends': ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/typescript/recommended', 'plugin:@typescript-eslint/eslint-recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -25,17 +19,15 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/no-deprecated-router-link-tag-prop': 'off',
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/html-indent': 'off'
   },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
-      ],
-      env: {
-        jest: true
-      }
+  overrides: [{
+    files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'], env: {
+      jest: true
     }
-  ]
+  }],
+  globals: {
+    defineProps: "readonly", defineEmits: "readonly"
+  }
 }

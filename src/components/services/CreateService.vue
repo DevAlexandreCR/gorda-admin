@@ -6,14 +6,14 @@
           <div class="col-12 col-md">
             <div class="form-group">
               <div class="input-group">
-                <Field type="phone" class="form-control" :placeholder="$t('common.placeholders.phone')" name="phone" v-model="service.phone"/>
+                <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               </div>
             </div>
             <ErrorMessage name="phone"/>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="service.name"/>
+              <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="client.name"/>
             </div>
             <ErrorMessage name="name"/>
           </div>
@@ -41,11 +41,9 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
-import {ServiceInterface} from '@/types/ServiceInterface'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
@@ -53,7 +51,12 @@ import ToastService from "@/services/ToastService";
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
+import ClientRepository from '@/repositories/ClientRepository'
+import AssignDriver from '@/components/services/AssingDriver.vue'
 import {LocationType} from '@/types/LocationType'
+import Client from '@/models/Client'
+import {ServiceInterface} from '@/types/ServiceInterface'
+
 
 
 @Options({
@@ -61,14 +64,17 @@ import {LocationType} from '@/types/LocationType'
     Form,
     Field,
     ErrorMessage,
-    AutoComplete
+    AutoComplete,
+    AssignDriver
   },
 })
-
 
 export default class CreateService extends Vue {
 
   neighborhoods: Array<AutoCompleteType> = []
+  clients: Array<Client> = []
+  clientsPhone: Array<AutoCompleteType> = []
+  client: Client = new Client
   start_loc: LocationType
   services: Array<Partial<Service>> = [new Service()]
 
@@ -79,8 +85,21 @@ export default class CreateService extends Vue {
         value: loc.name
       })
     })
-  }
+    
+    ClientRepository.getAll().then(clients => {
+      clients.forEach(client => {
+      this.clientsPhone.push( {
+        id: client.id,
+        value: client.phone
+      })
 
+      const clientTmp = new Client()
+      Object.assign(clientTmp, client)
+      this.clients.push(clientTmp)
+      })
+    })
+  }
+ 
   readonly schema = yup.object().shape({
     name: yup.string().min(3),
     phone: yup.string().required().min(8),
@@ -92,7 +111,7 @@ export default class CreateService extends Vue {
     event.resetForm()
     const service: Service = new Service()
     service.comment = values.comment ?? null
-    service.client_id = '57' + values.phone + '@c.us'
+    service.client_id = this.client.id
     service.name = values.name
     service.phone = values.phone
     service.start_loc = this.start_loc?? {
@@ -103,6 +122,10 @@ export default class CreateService extends Vue {
     }).catch(e => {
       ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
     })
+  }
+
+  onClientSelected(element: AutoCompleteType): void {
+    this.client = this.clients.find(client => client.id === element.id) ?? new Client
   }
 
   add(): void {

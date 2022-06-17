@@ -2,11 +2,11 @@ import {ServiceInterface} from "@/types/ServiceInterface";
 
 export class DataSnapshot {
   service: ServiceInterface
-  key: string
+  key: string|null
   
   constructor(service: ServiceInterface) {
     this.service = service
-    this.key = service.id!
+    this.key = service.id
   }
   
   val(): ServiceInterface {

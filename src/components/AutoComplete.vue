@@ -27,7 +27,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-let selectedElement = ''
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const emit = defineEmits(['on-change', 'selected'])
@@ -47,12 +46,11 @@ function searchElements(): void {
     })
   } else {
     foundElements.value = []
-  }
+  }  
 }
 
-function selectElement(element: AutoCompleteType): void {
+function selectElement(element: AutoCompleteType): void {  
   emit('selected', element)
-  selectedElement = element.value
   searchElement.value = element.value
   foundElements.value = []
 }
