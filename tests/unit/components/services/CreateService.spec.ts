@@ -5,12 +5,14 @@ import {ErrorMessage, Field, Form} from 'vee-validate'
 import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
+import {nextTick} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ClientRepository from '@/repositories/ClientRepository'
 import ClientMock from '../../../mocks/entities/ClientMock'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
+
   beforeEach(async () => {
     ClientRepository.getAll = jest.fn().mockResolvedValue([ClientMock])
     wrapper = mount(CreateService,
@@ -114,6 +116,19 @@ describe('CreateService.vue', () => {
       })
     })
     jest.resetAllMocks()
+  })
+
+  it('should assign driver when click in button', async () => {
+
+    const input = wrapper.find('input[name="phone"]')
+    await input.setValue('31031')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    await nextTick()
+    await wrapper.find('li').trigger('click')
+    await nextTick()
+    expect(wrapper.vm.client).toEqual(ClientMock)
   })
 
   it('show alert when error', async () => {
