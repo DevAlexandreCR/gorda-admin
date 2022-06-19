@@ -5,7 +5,9 @@
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
+              <div class="input-group">
                 <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+              </div>
             </div>
             <ErrorMessage name="phone"/>
           </div>
