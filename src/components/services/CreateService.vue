@@ -7,27 +7,27 @@
             <div class="form-group">
                 <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
             </div>
-            <ErrorMessage name="phone"/>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <Field type="text" class="form-control" :placeholder="$t('common.placeholders.name')" name="name" v-model="client.name"/>
+              <Field  name="name" type="text" v-slot="{ field, errorMessage }">
+                <input class="form-control"  v-model="client.name" :placeholder="$t('common.placeholders.name')" v-bind="field" />
+                <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+              </Field>
             </div>
-            <ErrorMessage name="name"/>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
               <AutoComplete :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :placeholder="$t('common.placeholders.address')"/>
             </div>
-            <ErrorMessage name="start_address"/>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <div class="input-group">
-                <Field type="text" class="form-control" :placeholder="$t('common.placeholders.comment')" name="comment" v-model="service.comment"/>
-              </div>
+                <Field name="comment" type="text" v-slot="{ field, errorMessage }">
+                <input class="form-control"  v-model="service.comment" :placeholder="$t('common.placeholders.comment')"  v-bind="field"/>
+                <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+              </Field>
             </div>
-            <ErrorMessage name="comment"/>
           </div>
           <div class="col-12 col-md">
             <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
@@ -75,6 +75,7 @@ export default class CreateService extends Vue {
   client: Client = new Client
   start_loc: LocationType
   services: Array<Partial<Service>> = [new Service()]
+  
 
   mounted(): void {
     locations.forEach(loc => {
