@@ -4,8 +4,6 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {DataSnapshot} from './mocks/firebase/FirebaseMock'
-import ServiceMock from './mocks/entities/ServiceMock'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {

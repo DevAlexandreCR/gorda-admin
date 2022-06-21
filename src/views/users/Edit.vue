@@ -18,21 +18,24 @@
             <div class="col-md-7">
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
-                  <Field name="name" type="text" v-slot="{ field, errorMessage }">
-                      <input class="form-control"  v-model="user.name" :placeholder="$t('common.placeholders.name')" id="name" aria-label="Name" aria-describedby="name-addon" v-bind="field" />
-                      <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+                  <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="user.name">
+                      <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" id="name" aria-label="Name" aria-describedby="name-addon" v-bind="field" />
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
-                <Field name="email" type="email" class="form-control" id="email" :placeholder="$t('common.placeholders.email')" v-model="user.email" aria-label="Email" aria-describedby="email-addon" />
-                  <ErrorMessage name="email"/>
+                <Field name="email" type="email" v-slot="{ field, errorMessage, meta }" v-model="user.email">
+                      <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.email')" id="email" aria-label="Email" aria-describedby="email-addon" v-bind="field" />
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  
+                </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
-                  <Field name="phone" type="phone"  v-slot="{ field, errorMessage }">
-                    <input class="form-control" :placeholder="$t('common.placeholders.phone')" v-model="user.phone" id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field" />
-                    <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+                  <Field name="phone" type="phone"  v-slot="{ field, errorMessage, meta }" v-model="user.phone">
+                    <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.phone')"  id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field" />
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
               </div>
               <div class="form-group">

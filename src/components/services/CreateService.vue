@@ -10,9 +10,11 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <Field  name="name" type="text" v-slot="{ field, errorMessage }">
-                <input class="form-control"  v-model="client.name" :placeholder="$t('common.placeholders.name')" v-bind="field" />
-                <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+              <Field  name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="client.name">
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <span>{{ meta }}</span>
+
               </Field>
             </div>
           </div>
@@ -23,8 +25,8 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-                <Field name="comment" type="text" v-slot="{ field, errorMessage }">
-                <input class="form-control"  v-model="service.comment" :placeholder="$t('common.placeholders.comment')"  v-bind="field"/>
+                <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"  v-bind="field"/>
                 <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
               </Field>
             </div>
@@ -100,7 +102,7 @@ export default class CreateService extends Vue {
   }
  
   readonly schema = yup.object().shape({
-    name: yup.string().min(3),
+    name: yup.string().required().min(3),
     phone: yup.string().required().min(8),
     start_address: yup.string().required(),
     comment: yup.string().min(5)

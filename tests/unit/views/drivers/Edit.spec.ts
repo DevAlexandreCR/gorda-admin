@@ -9,6 +9,8 @@ import DriverMock from "../../../mocks/entities/DriverMock";
 import dayjs from 'dayjs'
 import ToastService from "@/services/ToastService";
 import waitForExpect from 'wait-for-expect'
+import { nextTick } from 'vue'
+import Driver from '@/models/Driver'
 
 
 describe('Edit.vue', () => {
@@ -59,8 +61,33 @@ describe('Edit.vue', () => {
     const imageLoader = wrapper.findAllComponents(ImageLoader)
     expect(field.length).toBe(10)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(11)
+    expect(error.length).toBe(3)
     expect(imageLoader.length).toBe(2)
+  })
+
+  it('A user sees the Span when submit', async () => {
+    jest.resetAllMocks()
+    DriverRepository.getDriver = jest.fn().mockResolvedValue(new Driver())
+    DriverRepository.update = jest.fn().mockResolvedValue(null)
+    wrapper = mount(Edit, {
+      attachTo: '#root',
+      components: {
+        Field,
+        Form,
+        ErrorMessage,
+        ImageLoader
+      },
+      global: {
+          plugins: [router, i18n]
+        },
+    })
+    await nextTick()
+    const button = wrapper.find('button[type="submit"]')
+    await button.trigger('click')
+    await nextTick()
+    const span = wrapper.findAll('.is-invalid')    
+    await nextTick()
+    expect(span.length).toBe(7)
   })
   
   it('should show toast success when update driver successfully', async () => {
