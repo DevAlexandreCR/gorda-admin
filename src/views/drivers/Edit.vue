@@ -169,7 +169,7 @@ export default class Edit extends Vue {
 
   onEnable(e: Event): void {
     const target = e.target as HTMLInputElement
-    this.driver.enabled_at = target.checked ? dayjs().unix() : null
+    this.driver.enabled_at = target.checked ? dayjs().unix() : 0
   }
 }
 </script>
