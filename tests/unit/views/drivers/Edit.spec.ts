@@ -51,7 +51,7 @@ describe('Edit.vue', () => {
     const field = wrapper.find('input[name="enable"]')
     await field.trigger('click')
     
-    expect(wrapper.vm.driver.enabled_at).toBeNull()
+    expect(wrapper.vm.driver.enabled_at).toBe(0)
   })
   
   it('A user see the inputs to edit a driver', () => {
