@@ -3,7 +3,7 @@ import Vehicle from "@/models/Vehicle";
 import {DriverInterface} from "@/types/DriverInterface";
 
 class DriverMock implements DriverInterface{
-  id = 'id'
+  id = 'DriverID'
   name = 'Admin 1'
   email = 'admin@admin.com'
   phone = '310374656'

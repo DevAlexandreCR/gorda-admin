@@ -30,14 +30,14 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :services="pendingServices" @cancelService="cancel"></services-table>
+        <services-table :drivers="drivers" :services="pendingServices" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :services="inProgressServices" @cancelService="cancel" @endService="end"
+        <services-table :drivers="drivers" :services="inProgressServices" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <services-table :isHistory="true" :services="historyServices"></services-table>
+        <services-table :drivers="drivers" :isHistory="true" :services="historyServices"></services-table>
       </div>
       <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">...</div>
     </div>
@@ -129,8 +129,10 @@ function cancel(serviceId: string): void {
   })
 }
 
-function release(serviceId: string): void {
-  ServiceRepository.updateStatus(serviceId, Service.STATUS_PENDING).then(() => {
+function release(service: Service): void {
+  service.status = Service.STATUS_PENDING
+  service.driver_id = null
+  ServiceRepository.update(service).then(() => {
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
