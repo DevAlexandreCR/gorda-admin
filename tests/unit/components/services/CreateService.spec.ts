@@ -1,7 +1,7 @@
 import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import {ErrorMessage, Field, Form} from 'vee-validate'
+import {Field, Form} from 'vee-validate'
 import waitForExpect from 'wait-for-expect'
 import CreateService from '@/components/services/CreateService.vue'
 import Swal from 'sweetalert2'
@@ -9,6 +9,7 @@ import {nextTick} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ClientRepository from '@/repositories/ClientRepository'
 import ClientMock from '../../../mocks/entities/ClientMock'
+import AutoComplete from '@/components/AutoComplete.vue'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
@@ -22,7 +23,10 @@ describe('CreateService.vue', () => {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
-          }
+          },
+          components: {
+            AutoComplete
+          },
         },
       })
     await router.isReady()
@@ -31,10 +35,12 @@ describe('CreateService.vue', () => {
     await wrapper.vm.$nextTick()
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
-    const error = wrapper.findAllComponents(ErrorMessage)
+    const input = wrapper.findAll('.form-control')
+    const autoComplete = wrapper.findAllComponents(AutoComplete)
     expect(field.length).toBe(4)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(4)
+    expect(input.length).toBe(4)
+    expect(autoComplete.length).toBe(2)
   })
 
   it('an user can add another row to add service', async () => {

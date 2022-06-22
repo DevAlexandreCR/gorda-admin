@@ -17,22 +17,24 @@
                 </button>
                 <div class="form-group">
                   <label>{{ $t('users.fields.name') }}</label>
-                  <Field name="name" type="text" class="form-control" :placeholder=" $t('common.placeholders.name')"
-                         v-model="driver.name" id="name" aria-label="Name" aria-describedby="name-addon"/>
-                  <ErrorMessage name="name"/>
+                  <Field name="name" type="text"  v-slot="{ field, errorMessage, meta }" v-model="driver.name">
+                <input class="form-control" id="name" aria-label="Name" aria-describedby="name-addon" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field" />
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
                 </div>
                 <div class="form-group">
                   <label>{{ $t('users.fields.email') }}</label>
-                  <Field name="email" type="email" class="form-control" id="email"
-                         :placeholder="$t('common.placeholders.email')" v-model="driver.email" aria-label="Email"
-                         aria-describedby="email-addon"/>
-                  <ErrorMessage name="email"/>
+                  <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
+                <input class="form-control" id="email"  aria-label="Email"  aria-describedby="email-addon" v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
                 </div>
                 <div class="form-group">
                   <label>{{ $t('users.fields.phone') }}</label>
-                  <Field name="phone" type="phone" class="form-control" :placeholder=" $t('common.placeholders.phone')"
-                         id="phone" v-model="driver.phone" aria-label="Phone" aria-describedby="phone-addon"/>
-                  <ErrorMessage name="phone"/>
+                  <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
+                <input class="form-control" id="phone"  aria-label="Phone" aria-describedby="phone-addon" v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" />
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
                 </div>
                 <div class="form-group">
                   <div class="row">
@@ -41,15 +43,13 @@
                       <Field name="docType" class="form-select" id="doc_type" as="select" v-model="driver.docType">
                         <option v-for="(type, key) in types" :key="key" :value="type" selected>{{type}}</option>
                       </Field>
-                      <ErrorMessage name="docType"/>
                     </div>
                     <div class="col-sm-9">
                       <label>{{ $t('drivers.fields.document') }}</label>
-                      <Field name="document" class="form-control" id="document"
-                             :placeholder="$t('drivers.placeholders.document')" v-model="driver.document" aria-label="Document"
-                             aria-describedby="doc-addon">
+                      <Field name="document" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.document">
+                       <input class="form-control" id="document"  aria-label="Document" aria-describedby="doc-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.document')" v-bind="field"/>
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                       </Field>
-                      <ErrorMessage name="document"/>
                     </div>
                   </div>
                 </div>
@@ -71,23 +71,24 @@
               </button>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
-                <Field name="brand" type="text" class="form-control" :placeholder=" $t('drivers.placeholders.brand')"
-                       v-model="driver.vehicle.brand" id="brand" aria-label="Brand" aria-describedby="brand-addon"/>
-                <ErrorMessage name="brand"/>
+                <Field name="brand" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.brand">
+                 <input class="form-control" id="brand" aria-label="Brand" aria-describedby="brand-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
-                <Field name="model" type="text" class="form-control" id="model"
-                       :placeholder="$t('drivers.placeholders.model')" v-model="driver.vehicle.model" aria-label="Model"
-                       aria-describedby="model-addon"/>
-                <ErrorMessage name="model"/>
+                <Field name="model" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.model">
+                  <input class="form-control" id="model" aria-label="Model" aria-describedby="model-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.model')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
-                <Field name="plate" type="text" class="form-control" id="plate"
-                       :placeholder="$t('drivers.placeholders.plate')" v-model="driver.vehicle.plate" aria-label="Plate"
-                       aria-describedby="plate-addon"/>
-                <ErrorMessage name="plate"/>
+                <Field name="plate" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.plate">
+                  <input class="form-control" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
               </div>
             </div>
           </div>
