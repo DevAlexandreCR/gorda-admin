@@ -66,7 +66,6 @@ describe('Edit.vue', () => {
   })
 
   it('A user sees the Span when submit', async () => {
-    jest.resetAllMocks()
     DriverRepository.getDriver = jest.fn().mockResolvedValue(new Driver())
     DriverRepository.update = jest.fn().mockResolvedValue(null)
     wrapper = mount(Edit, {
