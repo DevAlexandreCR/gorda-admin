@@ -13,8 +13,6 @@
               <Field  name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="client.name">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                <span>{{ meta }}</span>
-
               </Field>
             </div>
           </div>
@@ -43,7 +41,7 @@
 </template>
 <script lang="ts">
 import {Vue, Options} from 'vue-class-component'
-import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
+import {Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
@@ -63,7 +61,6 @@ import {ServiceInterface} from '@/types/ServiceInterface'
   components: {
     Form,
     Field,
-    ErrorMessage,
     AutoComplete,
     AssignDriver
   },
