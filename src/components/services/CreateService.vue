@@ -1,7 +1,7 @@
 <template>
   <div class="my-2">
     <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
-      <Form @submit="createService" :validation-schema="schema">
+      <Form @submit="createService" :validation-schema="schema" autocomplete="off">
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
@@ -11,7 +11,7 @@
           <div class="col-12 col-md">
             <div class="form-group">
               <Field  name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="client.name">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field" autocomplete="off"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
               </Field>
             </div>
@@ -24,7 +24,7 @@
           <div class="col-12 col-md">
             <div class="form-group">
                 <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"  v-bind="field"/>
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"  v-bind="field" autocomplete="none"/>
                 <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
               </Field>
             </div>

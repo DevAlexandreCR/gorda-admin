@@ -1,7 +1,7 @@
 <template>
   <div class="form-group mb-1">
     <Field type="text" id="search" :name="fieldName ?? 'field'" @input="onChange" v-model="searchElement"
-           @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="off"
+           @keyup="searchElements" :placeholder="placeholder" class="form-control" autocomplete="none"
     />
 
     <ul v-if="foundElements.length > 0"
