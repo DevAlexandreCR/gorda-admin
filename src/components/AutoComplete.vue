@@ -23,6 +23,7 @@ interface Props {
   elements: Array<AutoCompleteType>
   fieldName: string
   placeholder: string
+  idField: string
 }
 
 const props = defineProps<Props>()
@@ -50,7 +51,7 @@ function searchElements(): void {
 }
 
 function selectElement(element: AutoCompleteType): void {  
-  emit('selected', element)
+  emit('selected', element, props.idField)
   searchElement.value = element.value
   foundElements.value = []
 }

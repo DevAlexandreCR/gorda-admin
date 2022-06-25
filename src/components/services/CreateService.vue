@@ -1,12 +1,15 @@
 <template>
   <div class="my-2">
     <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
-      <Form @submit="createService" :validation-schema="schema" autocomplete="off">
+      <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off">
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+              <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
+                <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
+              </Field>
             </div>
           </div>
           <div class="col-12 col-md">
@@ -29,7 +32,7 @@
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
                        v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+                <span class="is-invalid" v-if="errorMessage">{{ errorMessage }}</span>
               </Field>
             </div>
           </div>
@@ -48,8 +51,6 @@
 import {Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
-import ServiceRepository from '@/repositories/ServiceRepository'
-import ToastService from '@/services/ToastService'
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
@@ -58,12 +59,14 @@ import {LocationType} from '@/types/LocationType'
 import Client from '@/models/Client'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import {onMounted, ref, Ref} from 'vue'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
+import {ClientInterface} from '@/types/ClientInterface'
 
 const neighborhoods: Ref<Array<AutoCompleteType>> = ref([])
 const clients: Array<Client> = []
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-let client: Client = new Client
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
@@ -93,14 +96,35 @@ const schema = yup.object().shape({
   name: yup.string().required().min(3),
   phone: yup.string().required().min(8),
   start_address: yup.string().required(),
-  comment: yup.string().min(5)
+  comment: yup.string().nullable()
 })
 
-function createService(values: ServiceInterface, event: FormActions<any>): void {
+async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
+  if (!values.client_id) {
+    await createClient({
+      id: '',
+      name: values.name,
+      phone: values.phone
+    }).then((client) => {
+      ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
+      values.client_id = client.id
+      clients.push(client)
+      clientsPhone.value.push({
+        id: client.id,
+        value: client.phone
+      })
+    }).catch(e => {
+      ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+    })
+  }
+  createService(values)
   event.resetForm()
+}
+
+function createService(values: ServiceInterface): void {
   const service: Service = new Service()
   service.comment = values.comment ?? null
-  service.client_id = client.value.id
+  service.client_id = values.client_id
   service.name = values.name
   service.phone = values.phone
   service.start_loc = start_loc ?? {
@@ -113,8 +137,16 @@ function createService(values: ServiceInterface, event: FormActions<any>): void 
   })
 }
 
-function onClientSelected(element: AutoCompleteType): void {
-  client = clients.find(client => client.id === element.id) ?? new Client
+function onClientSelected(element: AutoCompleteType, id: string): void {
+  let client = clients.find(client => client.id === element.id) ?? new Client
+  let serviceIndex = services.value.findIndex(service => service.id == id)
+  services.value[serviceIndex].phone = client.phone
+  services.value[serviceIndex].name = client.name
+  services.value[serviceIndex].client_id = client.id
+}
+
+function createClient(client: ClientInterface): Promise<ClientInterface> {
+  return ClientRepository.create(client)
 }
 
 function add(): void {
