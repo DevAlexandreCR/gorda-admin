@@ -63,7 +63,7 @@ import i18n from '@/plugins/i18n'
 const neighborhoods: Ref<Array<AutoCompleteType>> = ref([])
 const clients: Array<Client> = []
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-const client: Client = new Client
+let client: Client = new Client
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
