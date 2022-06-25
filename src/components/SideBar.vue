@@ -52,6 +52,17 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link :to="{ name: 'places'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/places/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fas fa-location-dot"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('routes.places') }}</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <router-link :to="{ name: 'connection'}" tag="a"
                        :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ? 'nav-link active': 'nav-link'"
                        v-if="isAdmin">

@@ -10,7 +10,9 @@ export default {
     end_address: 'End address',
     phone: 'Phone',
     name: 'Name',
-    driver: 'Driver'
+    driver: 'Driver',
+    lat: 'latitude',
+    lng: 'Length'
   },
   history: 'History'
 }
