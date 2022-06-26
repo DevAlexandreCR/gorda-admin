@@ -17,7 +17,7 @@ describe('AutoComplete.vue', () => {
         elements: neighborhoods,
         placeholder: 'placeholder autocomplete',
         fieldName: 'fieldName',
-        idField: 0
+        idField: 'field'
       }
     })
   })
