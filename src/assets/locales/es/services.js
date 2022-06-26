@@ -10,7 +10,11 @@ export default {
     end_address: 'Dir final',
     phone: 'Teléfono',
     name: 'Nombre',
-    driver: 'Conductor'
+    driver: 'Conductor',
+    comment: 'Comentario'
   },
-  history: 'Historial'
+  history: 'Historial',
+  messages: {
+    new_client: 'El cliente no existe, por lo que se ha creado uno nuevo'
+  }
 }

@@ -6,9 +6,6 @@ import locations from '@/assets/location/neighborhoods.json'
 describe('AutoComplete.vue', () => {
   const neighborhoods: Array<any> = []
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   locations.forEach(loc => {
     neighborhoods.push({id: Math.random().toString(), value: loc.name})
   })
@@ -19,7 +16,8 @@ describe('AutoComplete.vue', () => {
       props: {
         elements: neighborhoods,
         placeholder: 'placeholder autocomplete',
-        fieldName: 'fieldName'
+        fieldName: 'fieldName',
+        idField: 'field'
       }
     })
   })

@@ -16,7 +16,6 @@
         <tr v-for="service of services" :key="service.id">
           <td>{{ format(service.created_at) }}</td>
           <td>{{ $t('services.statuses.' + service.status) }}</td>
-          <td>{{ service.start_address }}</td>
           <td>{{ service.start_loc.name }}</td>
           <td>{{ service.phone }}</td>
           <td>{{ service.name }}</td>
