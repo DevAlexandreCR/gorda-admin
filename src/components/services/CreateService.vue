@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods"
+              <AutoComplete :idField="'field'+ service.id" :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
