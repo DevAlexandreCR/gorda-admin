@@ -1,14 +1,13 @@
-import {shallowMount, VueWrapper} from '@vue/test-utils'
+import {shallowMount} from '@vue/test-utils'
 import App from '@/App.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 
 describe('App.vue', () => {
-  let wrapper: VueWrapper<any>
   const listener = jest.spyOn(AuthService, 'onAuthStateChanged')
   beforeEach(async () => {
-    wrapper = shallowMount(App,
+    shallowMount(App,
       {
         global: {
           plugins: [router, i18n],

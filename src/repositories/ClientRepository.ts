@@ -1,7 +1,6 @@
-import {get, DataSnapshot, push, set, child, ref} from 'firebase/database'
+import {get, DataSnapshot, set, ref} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ClientInterface} from '@/types/ClientInterface'
-import {ServiceInterface} from '@/types/ServiceInterface'
 
 class ClientRepository {
 

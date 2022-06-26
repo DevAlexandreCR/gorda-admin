@@ -1,7 +1,6 @@
 import {openServer, server, socket} from '../../../testSetup'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
-import {flushPromises} from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 
 describe('WhatsAppClient.ts', () => {
