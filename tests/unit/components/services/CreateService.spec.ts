@@ -123,6 +123,36 @@ describe('CreateService.vue', () => {
     })
     jest.resetAllMocks()
   })
+  
+  it('create client when not exists', async () => {
+    ServiceRepository.create = jest.fn().mockResolvedValue('success')
+    ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
+    const swal = jest.spyOn(Swal,'fire')
+    await wrapper.vm.$nextTick()
+    const phone = '3100000000'
+    const name = 'Name User'
+    const address = 'CR 1 1-1'
+    const comment = 'New comment to service'
+    await wrapper.find('input[name="phone"]').setValue(phone)
+    await wrapper.find('input[name="name"]').setValue(name)
+    await wrapper.find('input[name="start_address"]').setValue(address)
+    await wrapper.find('input[name="comment"]').setValue(comment)
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+    
+    await waitForExpect(() => {
+      expect(swal).toBeCalledWith({
+        icon: 'success',
+        position: 'top-right',
+        title: wrapper.vm.$t('services.messages.new_client'),
+        showConfirmButton: false,
+        text: undefined,
+        timer: 1500,
+        toast:true
+      })
+    })
+    jest.resetAllMocks()
+  })
 
   it('should assign driver when click in button', async () => {
 
@@ -142,6 +172,7 @@ describe('CreateService.vue', () => {
 
   it('show alert when error', async () => {
     ServiceRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
+    ClientRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
     const swal = jest.spyOn(Swal,'fire')
     await wrapper.vm.$nextTick()
 
