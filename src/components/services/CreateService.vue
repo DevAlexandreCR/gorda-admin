@@ -138,7 +138,7 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType, id: string): void {
-  let client = clients.find(client => client.id === element.id) ?? new Client
+  let client = clients.find(cli => cli.id === element.id) ?? new Client
   let serviceIndex = services.value.findIndex(service => service.id == id)
   services.value[serviceIndex].phone = client.phone
   services.value[serviceIndex].name = client.name
