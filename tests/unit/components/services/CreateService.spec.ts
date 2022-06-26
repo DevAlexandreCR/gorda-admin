@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {Field, Form} from 'vee-validate'
@@ -37,7 +37,7 @@ describe('CreateService.vue', () => {
     const form = wrapper.findComponent(Form)
     const input = wrapper.findAll('.form-control')
     const autoComplete = wrapper.findAllComponents(AutoComplete)
-    expect(field.length).toBe(4)
+    expect(field.length).toBe(5)
     expect(form.exists()).toBeTruthy()
     expect(input.length).toBe(4)
     expect(autoComplete.length).toBe(2)
@@ -48,7 +48,7 @@ describe('CreateService.vue', () => {
     const buttonAdd = wrapper.find('.btn-info')
     await buttonAdd.trigger('click')
     expect(wrapper.find('.btn-danger').exists()).toBeTruthy()
-    expect(wrapper.findAllComponents(Field).length).toBe(8)
+    expect(wrapper.findAllComponents(Field).length).toBe(10)
   })
 
   it('an user can not add more than 5 rows', async () => {
@@ -62,7 +62,7 @@ describe('CreateService.vue', () => {
     await buttonAdd.trigger('click')
     await buttonAdd.trigger('click')
     expect(wrapper.findAll('.btn-danger').length).toBe(4)
-    expect(wrapper.findAllComponents(Field).length).toBe(20)
+    expect(wrapper.findAllComponents(Field).length).toBe(25)
   })
 
   it('an user can remove a row to add service', async () => {
@@ -134,7 +134,10 @@ describe('CreateService.vue', () => {
     await nextTick()
     await wrapper.find('li').trigger('click')
     await nextTick()
-    expect(wrapper.vm.client).toEqual(ClientMock)
+    expect(wrapper.html()).toContain(ClientMock.phone)
+    expect(wrapper.vm.services[0].client_id).toBe(ClientMock.id)
+    expect(wrapper.vm.services[0].name).toBe(ClientMock.name)
+    expect(wrapper.vm.services[0].phone).toBe(ClientMock.phone)
   })
 
   it('show alert when error', async () => {
