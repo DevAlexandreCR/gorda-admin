@@ -39,7 +39,7 @@ onMounted(() => {
   const callback = function (mutationsList: MutationRecord[]) {
     for (let mutation of mutationsList) {
       if (mutation.type === 'childList') {
-        const list = document.getElementById('list-' + props.idField + props.fieldName)
+        const list = document?.getElementById('list-' + props.idField + props.fieldName)
         if (list && list.children.length > 0) {
           addListener()
         }
@@ -52,7 +52,7 @@ onMounted(() => {
 })
 
 function addListener(): void {
-  const ul = document.getElementById('list-' + props.idField + props.fieldName)
+  const ul = document?.getElementById('list-' + props.idField + props.fieldName)
   let liSelected: HTMLLIElement | null
   let index = -1
   if (!ul) return
