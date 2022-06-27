@@ -23,10 +23,7 @@ describe('CreateService.vue', () => {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
-          },
-          components: {
-            AutoComplete
-          },
+          }
         },
       })
     await router.isReady()

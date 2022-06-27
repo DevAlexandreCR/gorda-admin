@@ -28,7 +28,7 @@ describe('AutoComplete.vue', () => {
     expect(input.exists()).toBeTruthy()
     expect(input.html()).toContain('placeholder autocomplete')
     expect(input.html()).toContain('fieldName')
-    expect(list.exists()).toBeFalsy()
+    expect(list.isVisible()).toBeFalsy()
   })
   
   it('an user can show the list when write more than twice', async () => {
