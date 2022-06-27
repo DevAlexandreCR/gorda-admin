@@ -12,7 +12,7 @@ export default {
     name: 'Name',
     driver: 'Driver',
     lat: 'latitude',
-    lng: 'Length'
+    lng: 'Longitude'
   },
   history: 'History'
 }

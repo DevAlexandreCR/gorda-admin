@@ -1,20 +1,20 @@
 import {get, DataSnapshot, push} from 'firebase/database'
 import DBService from '@/services/DBService'
-import {PlacesInterface} from '@/types/PlacesInterface'
+import {PlaceInterface} from '@/types/PlaceInterface'
 
-class PlacesRepository {
+class PlaceRepository {
 
 /* istanbul ignore next */
-  async getAll(): Promise<Array<PlacesInterface>> {
+  async getAll(): Promise<Array<PlaceInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbPlaces())
     return Object.values(snapshot.val())
   }
 
     /* istanbul ignore next */
-    async create(Places: PlacesInterface): Promise<string> {
+    async create(Places: PlaceInterface): Promise<string> {
         const res = await push(DBService.dbPlaces(), Places)
         return res.key as string
     }
 }
 
-export default new PlacesRepository()
+export default new PlaceRepository()
