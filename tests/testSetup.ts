@@ -34,10 +34,11 @@ jest.mock('firebase/database', () => {
 jest.mock('firebase/storage')
 jest.mock('qrcode')
 
-
-const div = document.createElement('div')
-div.id = 'root'
-document.body.appendChild(div)
+beforeEach(() => {
+  const div = document.createElement('div')
+  div.id = 'root'
+  document.body.appendChild(div)
+})
 
 AuthService.currentUser = Object.assign(new User(), UserMock)
 

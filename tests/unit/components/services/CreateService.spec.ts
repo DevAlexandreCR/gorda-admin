@@ -15,6 +15,7 @@ describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
 
   beforeEach(async () => {
+    console.error = jest.fn()
     ClientRepository.getAll = jest.fn().mockResolvedValue([ClientMock])
     wrapper = mount(CreateService,
       {
@@ -23,10 +24,7 @@ describe('CreateService.vue', () => {
           plugins: [router, i18n],
           provide: {
             'appName': 'test'
-          },
-          components: {
-            AutoComplete
-          },
+          }
         },
       })
     await router.isReady()
