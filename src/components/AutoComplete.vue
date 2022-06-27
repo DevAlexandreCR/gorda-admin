@@ -36,7 +36,7 @@ onMounted(() => {
   const targetNode = document.body
   const config = {childList: true, subtree: true}
 
-  const callback = function (mutationsList: MutationRecord[], observer: MutationObserver) {
+  const callback = function (mutationsList: MutationRecord[]) {
     for (let mutation of mutationsList) {
       if (mutation.type === 'childList') {
         const list = document.getElementById('list-' + props.idField + props.fieldName)
