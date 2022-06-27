@@ -15,7 +15,6 @@ describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
 
   beforeEach(async () => {
-    console.error = jest.fn()
     ClientRepository.getAll = jest.fn().mockResolvedValue([ClientMock])
     wrapper = mount(CreateService,
       {

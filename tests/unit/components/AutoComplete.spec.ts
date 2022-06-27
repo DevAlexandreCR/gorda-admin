@@ -11,7 +11,6 @@ describe('AutoComplete.vue', () => {
   })
   
   beforeEach(() => {
-    console.error = jest.fn()
     wrapper = mount(AutoComplete, {
       attachTo: '#root',
       props: {
