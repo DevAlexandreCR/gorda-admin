@@ -1,11 +1,11 @@
 <template>
   <div class="my-2">
-    <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
-      <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off">
+    <div class="row" v-for="(service, key) in services" :key="key + service.id" :id="'row-' + key">
+      <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :idField="'field'+ service.id" :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods"
+              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :key="service.id"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
@@ -38,7 +38,7 @@
           </div>
           <div class="col-12 col-md">
             <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
-            <button class="btn btn-info ms-2" type="button" @click="add()"><em class="fas fa-plus"></em></button>
+            <button class="btn btn-info ms-2" type="button" @click="add()" v-show="false"><em class="fas fa-plus"></em></button>
             <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)">
               <em class="fas fa-trash"></em></button>
           </div>
@@ -71,6 +71,8 @@ let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
 onMounted(() => {
+  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
+  input?.focus()
   locations.forEach(loc => {
     neighborhoods.value.push({
       id: '0',
@@ -98,6 +100,11 @@ const schema = yup.object().shape({
   start_address: yup.string().required(),
   comment: yup.string().nullable()
 })
+
+function submitFromEnter(event: Event) {
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  if(input !== document.activeElement) event.preventDefault()
+}
 
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
   if (!values.client_id) {
@@ -130,7 +137,9 @@ function createService(values: ServiceInterface): void {
   service.start_loc = start_loc ?? {
     name: values.start_address
   }
+  const index = services.value.findIndex(s => s.client_id = values.client_id)
   ServiceRepository.create(service).then(() => {
+    services.value.splice(index, 1, new Service)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
@@ -143,6 +152,8 @@ function onClientSelected(element: AutoCompleteType, id: string): void {
   services.value[serviceIndex].phone = client.phone
   services.value[serviceIndex].name = client.name
   services.value[serviceIndex].client_id = client.id
+  const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
+  input?.focus()
 }
 
 function createClient(client: ClientInterface): Promise<ClientInterface> {
@@ -166,5 +177,7 @@ function locSelected(element: AutoCompleteType): void {
     lat: neighbor?.location.lat,
     long: neighbor?.location.lng
   }
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
 }
 </script>
