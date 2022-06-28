@@ -5,9 +5,9 @@ import Driver from '@/models/Driver'
 import {UserRequestType} from '@/types/UserRequestType'
 import axios, {AxiosError} from 'axios'
 import {UserResponse} from '@/types/UserResponse'
+import UserRepository from '@/repositories/UserRepository'
 
 class DriverRepository {
-  private readonly base_url = process.env.VUE_APP_GORDA_API_URL
   
   /* istanbul ignore next */
   async getDriver(id: string): Promise<DriverInterface> {
@@ -28,16 +28,17 @@ class DriverRepository {
   
   /* istanbul ignore next */
   async create(driver: DriverInterface, password: string): Promise<string> {
-    const userData: Partial<UserRequestType> = {
+    const userData: UserRequestType = {
       email: driver.email,
       emailVerified: true,
       displayName: driver.name,
       phoneNumber: '+57' + driver.phone,
       password: password,
-      disabled: driver.enabled_at == 0
+      disabled: driver.enabled_at == 0,
+      photoUrl: ''
     }
     return new Promise((resolve, reject) => {
-      axios.post(this.base_url + 'create-user/', userData).then(async (res) => {
+      UserRepository.createAuth(userData).then(async (res) => {
         const id = res.data.data.uid
         driver.id = id
         await set(ref(DBService.db, 'drivers/' + id), driver)
