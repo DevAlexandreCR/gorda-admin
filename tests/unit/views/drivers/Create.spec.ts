@@ -29,9 +29,9 @@ describe('Create.vue', () => {
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
-    expect(field.length).toBe(10)
+    expect(field.length).toBe(11)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(11)
+    expect(error.length).toBe(12)
   })
   
   it('A user can enable or disable a driver', async () => {
