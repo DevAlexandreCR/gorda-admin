@@ -22,13 +22,10 @@ describe('Edit.vue', () => {
   AuthService.currentUser = new User()
   Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = mount(Edit,
       {
-        attachTo: '#root',
+        attachTo: document.body,
         global: {
           plugins: [router, i18n],
           provide: {
@@ -92,7 +89,7 @@ describe('Edit.vue', () => {
   it('user can enable or disable user', async () => {
     const enable =  wrapper.find('input[name="enable"]')
     await enable.trigger('click')
-    expect(wrapper.vm.user.enabled_at).toBeNull()
+    expect(wrapper.vm.user.enabled_at).toBe(0)
     await enable.trigger('click')
     expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
   })
@@ -109,9 +106,8 @@ describe('Edit.vue', () => {
 
   it('an user can edit urlPhoto', async () => {
     await wrapper.vm.$nextTick()
-    const updateUser = jest.spyOn(wrapper.vm,'updateUser')
     await wrapper.vm.uploadImg()
-    expect(updateUser).toBeCalled()
+    await flushPromises()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
   })
 })

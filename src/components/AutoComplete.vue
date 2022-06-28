@@ -31,28 +31,26 @@ const input = ref<HTMLInputElement|null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const emit = defineEmits(['on-change', 'selected'])
+const callback = function (mutationsList: MutationRecord[]) {
+  for (let mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      const list = document?.getElementById('list-' + props.idField + props.fieldName)
+      if (list && list.children.length > 0) {
+        addListener()
+      }
+    }
+  }
+}
 
 onMounted(() => {
   const targetNode = document.body
   const config = {childList: true, subtree: true}
-
-  const callback = function (mutationsList: MutationRecord[]) {
-    for (let mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        const list = document?.getElementById('list-' + props.idField + props.fieldName)
-        if (list && list.children.length > 0) {
-          addListener()
-        }
-      }
-    }
-  }
-
   const observer = new MutationObserver(callback)
   observer.observe(targetNode, config)
 })
 
 function addListener(): void {
-  const ul = document?.getElementById('list-' + props.idField + props.fieldName)
+  const ul = document.getElementById('list-' + props.idField + props.fieldName)
   let liSelected: HTMLLIElement | null
   let index = -1
   if (!ul) return
@@ -65,7 +63,7 @@ function addListener(): void {
         if (liSelected) {
           removeClass(liSelected, 'selected')
           let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (typeof next != undefined && index <= len) {
+          if (next && index <= len) {
 
             liSelected = next
           } else {
@@ -85,7 +83,7 @@ function addListener(): void {
           removeClass(liSelected, 'selected')
           index--
           let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (typeof next != undefined && index >= 0) {
+          if (next && index >= 0) {
             liSelected = next
           } else {
             index = len

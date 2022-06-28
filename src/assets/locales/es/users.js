@@ -29,5 +29,9 @@ export default {
     edit: 'Editar información del usuario',
     upload: 'Subir foto de perfil',
     select_img: 'Seleccione una imagen del archivo'
+  },
+  messages: {
+    enabled: 'El usuario ha sido habilitado!',
+    disabled: 'El usuario ha sido inhabilitado!'
   }
 }

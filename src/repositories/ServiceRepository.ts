@@ -18,7 +18,8 @@ class ServiceRepository {
 
   /* istanbul ignore next */
   update(service: ServiceInterface): Promise<void> {
-    return set(ref(DBService.db, 'services/'.concat(service.id!)), service);
+    if (!service.id) return Promise.reject(new Error('Id is necessary'))
+    return set(ref(DBService.db, 'services/'.concat(service.id)), service);
   }
 
   /* istanbul ignore next */
