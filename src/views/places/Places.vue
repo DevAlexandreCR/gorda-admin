@@ -134,7 +134,7 @@ export default class Places extends Vue {
 
   CreatePlace(values: PlacesInterface, event: FormActions<any>): void {
     event.resetForm()
-    const place: Place  = new (Place)
+    const place: Place  = new Place()
     place.name = values.name 
     place.lat = values.lat
     place.lng = values.lng
