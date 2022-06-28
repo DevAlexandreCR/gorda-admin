@@ -73,7 +73,7 @@ describe('AssignDriver.vue', () => {
       title: wrapper.vm.$t('common.messages.updated'),
       showConfirmButton: false,
       text: undefined,
-      timer: 1500,
+      timer: 3000,
       toast:true
     })
   })
@@ -89,7 +89,7 @@ describe('AssignDriver.vue', () => {
       title: wrapper.vm.$t('common.messages.error'),
       showConfirmButton: false,
       text: wrapper.vm.$t('validations.driver'),
-      timer: 1500,
+      timer: 3000,
       toast:true
     })
   })
@@ -116,7 +116,7 @@ describe('AssignDriver.vue', () => {
       title: wrapper.vm.$t('common.messages.error'),
       showConfirmButton: false,
       text: 'something was wrong',
-      timer: 1500,
+      timer: 3000,
       toast:true
     })
   })

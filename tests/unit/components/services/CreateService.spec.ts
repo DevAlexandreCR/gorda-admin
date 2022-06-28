@@ -114,7 +114,7 @@ describe('CreateService.vue', () => {
         title: wrapper.vm.$t('common.messages.created'),
         showConfirmButton: false,
         text: undefined,
-        timer: 1500,
+        timer: 3000,
         toast:true
       })
     })
@@ -144,7 +144,7 @@ describe('CreateService.vue', () => {
         title: wrapper.vm.$t('services.messages.new_client'),
         showConfirmButton: false,
         text: undefined,
-        timer: 1500,
+        timer: 3000,
         toast:true
       })
     })
@@ -187,7 +187,7 @@ describe('CreateService.vue', () => {
         showConfirmButton: false,
         text: 'New Error',
         position: 'top-right',
-        timer: 1500,
+        timer: 3000,
         toast: true
       })
     })
