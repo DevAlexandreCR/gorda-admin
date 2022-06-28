@@ -22,9 +22,6 @@ describe('Edit.vue', () => {
   AuthService.currentUser = new User()
   Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = mount(Edit,
       {
