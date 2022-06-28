@@ -25,7 +25,7 @@ describe('Edit.vue', () => {
   beforeEach(async () => {
     wrapper = mount(Edit,
       {
-        attachTo: '#root',
+        attachTo: document.body,
         global: {
           plugins: [router, i18n],
           provide: {
