@@ -146,11 +146,11 @@ const schema: ObjectSchema<any> = yup.object().shape({
 })
 
 function uploadImg(path: string, image: File): Promise<string> {
-  const ref = StorageService.getStorageReference(path, driver.value.id ?? '', image.name)
-  return StorageService.uploadFile(ref, image)
+  const reference = StorageService.getStorageReference(path, driver.value.id ?? '', image.name)
+  return StorageService.uploadFile(reference, image)
 }
 
-function createDriver(values: DriverInterface, event: FormActions<any>): void {
+function createDriver(_values: DriverInterface, event: FormActions<any>): void {
     DriverRepository.create(driver.value, password.value).then((id) => {
       driver.value.id = id
       uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {

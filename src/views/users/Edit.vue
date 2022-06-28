@@ -137,8 +137,8 @@ const schema = yup.object().shape({
 })
 
 function uploadImg(): void {
-  const ref = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
-  StorageService.uploadFile(ref, image.value[0]).then(url => {
+  const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
+  StorageService.uploadFile(reference, image.value[0]).then(url => {
     user.value.photoUrl = url
     updateUser()
   })
@@ -164,8 +164,8 @@ function updateUser(): void {
   })
 }
 
-function onEnable(e: Event): void {
-  const target = e.target as HTMLInputElement
+function onEnable(event: Event): void {
+  const target = event.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
     const message = user.value.enabled_at == 0 ?

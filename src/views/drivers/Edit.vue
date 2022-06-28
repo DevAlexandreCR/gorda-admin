@@ -172,8 +172,8 @@ function updateDriver(): void {
   })
 }
 
-function onEnable(e: Event): void {
-  const target = e.target as HTMLInputElement
+function onEnable(event: Event): void {
+  const target = event.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id?? '', driver.value.enabled_at).then(() => {
     const message = driver.value.enabled_at == 0 ?
