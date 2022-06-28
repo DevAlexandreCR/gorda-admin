@@ -17,6 +17,7 @@ jest.mock('firebase/auth', () => {
     })
   }
 })
+jest.mock('sweetalert2')
 jest.mock('firebase/database', () => {
   return {
     getDatabase: jest.fn(),
