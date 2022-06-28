@@ -23,6 +23,7 @@ describe('Edit.vue', () => {
   Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
+    console.error = jest.fn()
     jest.mock('sweetalert2')
     wrapper = mount(Edit,
       {
