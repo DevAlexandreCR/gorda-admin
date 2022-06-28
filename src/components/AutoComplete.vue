@@ -63,7 +63,7 @@ function addListener(): void {
         if (liSelected) {
           removeClass(liSelected, 'selected')
           let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (typeof next != undefined && index <= len) {
+          if (next && index <= len) {
 
             liSelected = next
           } else {
@@ -83,7 +83,7 @@ function addListener(): void {
           removeClass(liSelected, 'selected')
           index--
           let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (typeof next != undefined && index >= 0) {
+          if (next && index >= 0) {
             liSelected = next
           } else {
             index = len
