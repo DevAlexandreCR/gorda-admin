@@ -45,6 +45,10 @@ class UserRepository{
   async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
     return axios.post(this.base_url + 'create-user/', userData)
   }
+  
+  async enable(enabled: boolean): Promise<AxiosResponse> {
+    return axios.post(this.base_url + 'enable-user/', {enabled: enabled})
+  }
 }
 
 export default new UserRepository()

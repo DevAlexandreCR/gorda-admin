@@ -27,6 +27,19 @@ class DriverRepository {
   }
   
   /* istanbul ignore next */
+  enable(driverId: string, enabledAt: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      UserRepository.enable(enabledAt == 0).then(() => {
+        set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(() => {
+          resolve()
+        })
+      }).catch((e) => {
+        reject(new Error(e.message))
+      })
+    })
+  }
+  
+  /* istanbul ignore next */
   async create(driver: DriverInterface, password: string): Promise<string> {
     const userData: UserRequestType = {
       email: driver.email,
@@ -44,7 +57,7 @@ class DriverRepository {
         await set(ref(DBService.db, 'drivers/' + id), driver)
         return resolve(id)
       }).catch((e: AxiosError<UserResponse>) => {
-        reject(new Error(e.response?.data.data))
+        reject(new Error(e.message))
       })
     })
   }
