@@ -137,6 +137,7 @@ const schema = yup.object().shape({
 })
 
 function uploadImg(): void {
+  console.log('sssss')
   const ref = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
   StorageService.uploadFile(ref, image.value[0]).then(url => {
     user.value.photoUrl = url
