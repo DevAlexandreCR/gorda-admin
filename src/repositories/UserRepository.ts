@@ -47,7 +47,7 @@ class UserRepository{
   }
   
   async enable(uid: string, enabled: boolean): Promise<AxiosResponse> {
-    return axios.post(this.base_url + 'enable-user/', {uid: uid, enabled: enabled})
+    return axios.post(this.base_url + 'enable-user/', {uid: uid, disabled: enabled})
   }
 }
 

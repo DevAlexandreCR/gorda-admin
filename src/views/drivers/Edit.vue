@@ -176,7 +176,9 @@ function onEnable(e: Event): void {
   const target = e.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id?? '', driver.value.enabled_at).then(() => {
-    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.enabled'))
+    const message = driver.value.enabled_at == 0 ?
+        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+    ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
