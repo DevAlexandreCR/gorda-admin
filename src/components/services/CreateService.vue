@@ -1,148 +1,183 @@
 <template>
   <div class="my-2">
-    <div class="row" v-for="(service, key) in services" :key="key" :id="'row-' + key">
-      <Form @submit="createService" :validation-schema="schema" autocomplete="off">
+    <div class="row" v-for="(service, key) in services" :key="key + service.id" :id="'row-' + key">
+      <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
-                <AutoComplete :fieldName="'phone'" @selected="onClientSelected" :elements="clientsPhone" v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id"
+                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+              <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
+                <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
+              </Field>
             </div>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <Field  name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="client.name">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field" autocomplete="off"/>
+              <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="service.name">
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
+                       v-bind="field" autocomplete="off"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
               </Field>
             </div>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :placeholder="$t('common.placeholders.address')"/>
+              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :key="service.id"
+                            :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-                <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"  v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage && field.value.length > 0">{{ errorMessage }}</span>
+              <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
+                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
+                       v-bind="field" autocomplete="none"/>
+                <span class="is-invalid" v-if="errorMessage">{{ errorMessage }}</span>
               </Field>
             </div>
           </div>
           <div class="col-12 col-md">
             <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
-            <button class="btn btn-info ms-2" type="button" @click="add()"><em class="fas fa-plus"></em></button>
-            <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)"><em class="fas fa-trash"></em></button>
+            <button class="btn btn-info ms-2" type="button" @click="add()" v-show="false"><em class="fas fa-plus"></em></button>
+            <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)">
+              <em class="fas fa-trash"></em></button>
           </div>
         </div>
       </Form>
     </div>
   </div>
 </template>
-<script lang="ts">
-import {Vue, Options} from 'vue-class-component'
+<script setup lang="ts">
 import {Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
-import ServiceRepository from '@/repositories/ServiceRepository'
-import ToastService from "@/services/ToastService";
 import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
-import AssignDriver from '@/components/services/AssingDriver.vue'
 import {LocationType} from '@/types/LocationType'
 import Client from '@/models/Client'
 import {ServiceInterface} from '@/types/ServiceInterface'
+import {onMounted, ref, Ref} from 'vue'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
+import i18n from '@/plugins/i18n'
+import {ClientInterface} from '@/types/ClientInterface'
 
+const neighborhoods: Ref<Array<AutoCompleteType>> = ref([])
+const clients: Array<Client> = []
+const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
+let start_loc: LocationType
+const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
-
-@Options({
-  components: {
-    Form,
-    Field,
-    AutoComplete,
-    AssignDriver
-  },
-})
-
-export default class CreateService extends Vue {
-
-  neighborhoods: Array<AutoCompleteType> = []
-  clients: Array<Client> = []
-  clientsPhone: Array<AutoCompleteType> = []
-  client: Client = new Client
-  start_loc: LocationType
-  services: Array<Partial<Service>> = [new Service()]
-  
-
-  mounted(): void {
-    locations.forEach(loc => {
-      this.neighborhoods.push({
-        id: '0',
-        value: loc.name
-      })
+onMounted(() => {
+  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
+  input?.focus()
+  locations.forEach(loc => {
+    neighborhoods.value.push({
+      id: '0',
+      value: loc.name
     })
-    
-    ClientRepository.getAll().then(clients => {
-      clients.forEach(client => {
-      this.clientsPhone.push( {
-        id: client.id,
-        value: client.phone
+  })
+
+  ClientRepository.getAll().then(clientsDB => {
+    clientsDB.forEach(clientDB => {
+      clientsPhone.value.push({
+        id: clientDB.id,
+        value: clientDB.phone
       })
 
       const clientTmp = new Client()
-      Object.assign(clientTmp, client)
-      this.clients.push(clientTmp)
-      })
+      Object.assign(clientTmp, clientDB)
+      clients.push(clientTmp)
     })
-  }
- 
-  readonly schema = yup.object().shape({
-    name: yup.string().required().min(3),
-    phone: yup.string().required().min(8),
-    start_address: yup.string().required(),
-    comment: yup.string().min(5)
   })
+})
 
-  createService(values: ServiceInterface, event: FormActions<any>): void {
-    event.resetForm()
-    const service: Service = new Service()
-    service.comment = values.comment ?? null
-    service.client_id = this.client.id
-    service.name = values.name
-    service.phone = values.phone
-    service.start_loc = this.start_loc?? {
-      name: values.start_address
-    }
-    ServiceRepository.create(service).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
+const schema = yup.object().shape({
+  name: yup.string().required().min(3),
+  phone: yup.string().required().min(8),
+  start_address: yup.string().required(),
+  comment: yup.string().nullable()
+})
+
+function submitFromEnter(event: Event) {
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  if(input !== document.activeElement) event.preventDefault()
+}
+
+async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
+  if (!values.client_id) {
+    await createClient({
+      id: '',
+      name: values.name,
+      phone: values.phone
+    }).then((client) => {
+      ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
+      values.client_id = client.id
+      clients.push(client)
+      clientsPhone.value.push({
+        id: client.id,
+        value: client.phone
+      })
     }).catch(e => {
-      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
+      ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
     })
   }
+  createService(values)
+  event.resetForm()
+}
 
-  onClientSelected(element: AutoCompleteType): void {
-    this.client = this.clients.find(client => client.id === element.id) ?? new Client
+function createService(values: ServiceInterface): void {
+  const service: Service = new Service()
+  service.comment = values.comment ?? null
+  service.client_id = values.client_id
+  service.name = values.name
+  service.phone = values.phone
+  service.start_loc = start_loc ?? {
+    name: values.start_address
   }
+  const index = services.value.findIndex(s => s.client_id = values.client_id)
+  ServiceRepository.create(service).then(() => {
+    services.value.splice(index, 1, new Service)
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
+  }).catch(e => {
+    ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+  })
+}
 
-  add(): void {
-    if (this.services.length < 5) {
-      this.services.push(new Service())
-    }
-  }
+function onClientSelected(element: AutoCompleteType, id: string): void {
+  let client = clients.find(cli => cli.id === element.id) ?? new Client
+  let serviceIndex = services.value.findIndex(service => service.id == id)
+  services.value[serviceIndex].phone = client.phone
+  services.value[serviceIndex].name = client.name
+  services.value[serviceIndex].client_id = client.id
+  const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
+  input?.focus()
+}
 
-  remove(key: number): void {
-    this.services.splice(key, 1)
-  }
+function createClient(client: ClientInterface): Promise<ClientInterface> {
+  return ClientRepository.create(client)
+}
 
-  locSelected(element: AutoCompleteType): void {
-    let neighbor = locations.find(el => el.name == element.value)
-    this.start_loc = {
-      name: neighbor?.name ?? '',
-      lat: neighbor?.location.lat,
-      long: neighbor?.location.lng
-    }
+function add(): void {
+  if (services.value.length < 5) {
+    services.value.push(new Service())
   }
+}
+
+function remove(key: number): void {
+  services.value.splice(key, 1)
+}
+
+function locSelected(element: AutoCompleteType): void {
+  let neighbor = locations.find(el => el.name == element.value)
+  start_loc = {
+    name: neighbor?.name ?? '',
+    lat: neighbor?.location.lat,
+    long: neighbor?.location.lng
+  }
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
 }
 </script>

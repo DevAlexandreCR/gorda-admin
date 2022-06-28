@@ -11,8 +11,12 @@ export default {
     phone: 'Teléfono',
     name: 'Nombre',
     driver: 'Conductor',
-    lat: 'latitud',
-    lng: 'Longitud'
+    lat: 'Latitud',
+    lng: 'Longitud',
+    comment: 'Comentario'
   },
-  history: 'Historial'
+  history: 'Historial',
+  messages: {
+    new_client: 'El cliente no existe, por lo que se ha creado uno nuevo'
+  }
 }

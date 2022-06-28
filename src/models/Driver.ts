@@ -10,7 +10,7 @@ export default class Driver implements DriverInterface {
   docType: string
   document: string
   email: string
-  enabled_at: number | null
+  enabled_at = 0
   name: string
   phone: string
   photoUrl: string | null

@@ -71,7 +71,7 @@ describe('SignUp.vue', () => {
       expect(swal).toBeCalledWith({
         icon: 'success',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
         title: wrapper.vm.$t('common.messages.created'),
         toast: true,
         position: 'top-right'
@@ -91,7 +91,7 @@ describe('SignUp.vue', () => {
         text: 'New Error while create',
         position: 'top-right',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
         toast: true
       })
     });

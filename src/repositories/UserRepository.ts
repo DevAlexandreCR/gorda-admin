@@ -5,9 +5,12 @@ import AuthService from '@/services/AuthService'
 import dayjs from 'dayjs'
 import StorageService from '@/services/StorageService'
 import User from '@/models/User'
+import {UserRequestType} from '@/types/UserRequestType'
+import axios, {AxiosResponse} from 'axios'
 
 class UserRepository{
-
+  private readonly base_url = process.env.VUE_APP_GORDA_API_URL
+  
   /* istanbul ignore next */
   async getUser(id: string): Promise<User> {
     const snapshot: DataSnapshot = await get(child(DBService.dbUsers(), id))
@@ -37,6 +40,14 @@ class UserRepository{
       }
       return this.update(user)
     })
+  }
+  
+  async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
+    return axios.post(this.base_url + 'create-user/', userData)
+  }
+  
+  async enable(uid: string, enabled: boolean): Promise<AxiosResponse> {
+    return axios.post(this.base_url + 'enable-user/', {uid: uid, disabled: enabled})
   }
 }
 

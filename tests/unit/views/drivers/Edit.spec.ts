@@ -21,12 +21,6 @@ describe('Edit.vue', () => {
     DriverRepository.update = jest.fn().mockResolvedValue(null)
     wrapper = mount(Edit, {
       attachTo: '#root',
-      components: {
-        Field,
-        Form,
-        ErrorMessage,
-        ImageLoader
-      },
       global: {
           plugins: [router, i18n]
         },
@@ -70,12 +64,6 @@ describe('Edit.vue', () => {
     DriverRepository.update = jest.fn().mockResolvedValue(null)
     wrapper = mount(Edit, {
       attachTo: '#root',
-      components: {
-        Field,
-        Form,
-        ErrorMessage,
-        ImageLoader
-      },
       global: {
           plugins: [router, i18n]
         },

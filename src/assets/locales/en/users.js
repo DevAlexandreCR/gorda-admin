@@ -31,5 +31,9 @@ export default {
     edit: 'Edit user information',
     upload: 'Upload photo profile',
     select_img: 'Choose image from files'
+  },
+  messages: {
+    enabled: 'User has been enabled!',
+    disabled: 'User has been disabled!'
   }
 }

@@ -10,7 +10,7 @@ class ToastService {
       title: title,
       text: msg,
       showConfirmButton: false,
-      timer: 1500,
+      timer: 3000,
       toast: true,
       position: 'top-right'
     })
