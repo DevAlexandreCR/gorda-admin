@@ -9,6 +9,6 @@ export interface DriverInterface {
   document: string
   photoUrl: string|null
   vehicle: VehicleInterface
-  enabled_at: number|null
+  enabled_at: number
   created_at: number
 }

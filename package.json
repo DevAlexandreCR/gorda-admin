@@ -14,9 +14,10 @@
     "lint-check": "vue-cli-service lint --no-fix --ignore-path .eslintignore src/",
     "serve:firebase": "firebase serve",
     "start:emulators": "firebase emulators:start --import dataEmulators --export-on-exit",
-    "watch": "run-p build:watch serve:firebase"
+    "watch": "run-p build:watch"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "firebase": "^9.5.0",

@@ -11,82 +11,92 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_driver') }}</h6>
               </div>
-                <img :src="this.driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
-                <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal" data-bs-target="#image-driver">
-                  <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
-                </button>
-                <div class="form-group">
-                  <label>{{ $t('users.fields.name') }}</label>
-                  <Field name="name" type="text"  v-slot="{ field, errorMessage, meta }" v-model="driver.name">
-                <input class="form-control" id="name" aria-label="Name" aria-describedby="name-addon" v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field" />
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-                <div class="form-group">
-                  <label>{{ $t('users.fields.email') }}</label>
-                  <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
-                <input class="form-control" id="email"  aria-label="Email"  aria-describedby="email-addon" v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-                <div class="form-group">
-                  <label>{{ $t('users.fields.phone') }}</label>
-                  <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
-                <input class="form-control" id="phone"  aria-label="Phone" aria-describedby="phone-addon" v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" />
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <label>{{ $t('drivers.fields.doc_type') }}</label>
-                      <Field name="docType" class="form-select" id="doc_type" as="select" v-model="driver.docType">
-                        <option v-for="(type, key) in types" :key="key" :value="type" selected>{{type}}</option>
-                      </Field>
-                    </div>
-                    <div class="col-sm-9">
-                      <label>{{ $t('drivers.fields.document') }}</label>
-                      <Field name="document" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.document">
-                       <input class="form-control" id="document"  aria-label="Document" aria-describedby="doc-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.document')" v-bind="field"/>
+              <img :src="this.driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
+                      data-bs-target="#image-driver">
+                <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
+              </button>
+              <div class="form-group">
+                <label>{{ $t('users.fields.name') }}</label>
+                <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.name">
+                  <input class="form-control" id="name" aria-label="Name" aria-describedby="name-addon"
+                         v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('users.fields.email') }}</label>
+                <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
+                  <input class="form-control" id="email" aria-label="Email" aria-describedby="email-addon"
+                         v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('users.fields.phone') }}</label>
+                <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
+                  <input class="form-control" id="phone" aria-label="Phone" aria-describedby="phone-addon"
+                         v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label>{{ $t('drivers.fields.doc_type') }}</label>
+                    <Field name="docType" class="form-select" id="doc_type" as="select" v-model="driver.docType">
+                      <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
+                    </Field>
+                  </div>
+                  <div class="col-sm-9">
+                    <label>{{ $t('drivers.fields.document') }}</label>
+                    <Field name="document" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.document">
+                      <input class="form-control" id="document" aria-label="Document" aria-describedby="doc-addon"
+                             v-model="field.value" :placeholder="$t('drivers.placeholders.document')" v-bind="field"/>
                       <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                      </Field>
-                    </div>
+                    </Field>
                   </div>
                 </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()" id="flexSwitchCheckDefault" @change="onEnable"/>
-                  <label class="form-check-label">{{
-                      $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
-                    }}</label>
-                  <ErrorMessage name="enable"/>
-                </div>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
+                       id="flexSwitchCheckDefault" @change="onEnable"/>
+                <label class="form-check-label">{{
+                    $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
+                  }}</label>
+                <ErrorMessage name="enable"/>
+              </div>
             </div>
             <div class="col-md-6">
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
               <img :src="this.driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
-              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal" data-bs-target="#image-vehicle">
+              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
+                      data-bs-target="#image-vehicle">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
               </button>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
                 <Field name="brand" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.brand">
-                 <input class="form-control" id="brand" aria-label="Brand" aria-describedby="brand-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field"/>
+                  <input class="form-control" id="brand" aria-label="Brand" aria-describedby="brand-addon"
+                         v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
                 <Field name="model" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.model">
-                  <input class="form-control" id="model" aria-label="Model" aria-describedby="model-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.model')" v-bind="field"/>
+                  <input class="form-control" id="model" aria-label="Model" aria-describedby="model-addon"
+                         v-model="field.value" :placeholder="$t('drivers.placeholders.model')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
                 <Field name="plate" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.plate">
-                  <input class="form-control" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" v-bind="field"/>
+                  <input class="form-control" id="plate" aria-label="Plate" aria-describedby="plate-addon"
+                         v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -99,77 +109,71 @@
         </div>
       </div>
     </Form>
-    <ImageLoader :id="'image-vehicle'" :resourceId="driver.id" :path="pathVehicle" :event="vehicleEvent" @imageVehicleLoaded="uploadImgVehicle"></ImageLoader>
-    <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent" @imageDriverLoaded="uploadImgDriver"></ImageLoader>
+    <ImageLoader :id="'image-vehicle'" :resourceId="driver.id" :path="pathVehicle" :event="vehicleEvent"
+                 @imageVehicleLoaded="uploadImgVehicle"></ImageLoader>
+    <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
+                 @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
 </template>
 
-<script lang="ts">
-import {Options, Vue} from 'vue-class-component'
-import StorageService from "@/services/StorageService"
+<script setup lang="ts">
+import StorageService from '@/services/StorageService'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as yup from 'yup'
 import dayjs from 'dayjs'
-import Driver from "@/models/Driver";
+import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
-import {Constants} from "@/constants/Constants";
-import ToastService from "@/services/ToastService";
+import {Constants} from '@/constants/Constants'
+import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
+import i18n from '@/plugins/i18n'
+import {onBeforeMount, ref, Ref} from 'vue'
+import {useRoute} from 'vue-router'
 
-@Options({
-  components: {
-    Form,
-    Field,
-    ErrorMessage,
-    ImageLoader
-  },
+const driver: Ref<Driver> = ref(new Driver)
+const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
+const driverEvent = 'image-driver-loaded'
+const vehicleEvent = 'image-vehicle-loaded'
+const pathDriver = StorageService.driverPath
+const pathVehicle = StorageService.vehiclePath
+const route = useRoute()
+const schema = yup.object().shape({
+  name: yup.string().required().min(3),
+  email: yup.string().required().email(),
+  phone: yup.string().required().min(8),
+  docType: yup.mixed().oneOf(Constants.DOC_TYPES).required(),
+  document: yup.string().required().min(6).max(10),
+  brand: yup.string().required().min(3),
+  plate: yup.string().required().min(3),
+  model: yup.string().required().min(3)
 })
 
-export default class Edit extends Vue {
-  driver: Driver = new Driver()
-  types: Array<any> = Constants.DOC_TYPES
-  readonly driverEvent = 'image-driver-loaded'
-  readonly vehicleEvent = 'image-vehicle-loaded'
-  readonly pathDriver = StorageService.driverPath
-  readonly pathVehicle = StorageService.vehiclePath
-  readonly schema = yup.object().shape({
-    name: yup.string().required().min(3),
-    email: yup.string().required().email(),
-    phone: yup.string().required().min(8),
-    docType: yup.mixed().oneOf(Constants.DOC_TYPES).required(),
-    document: yup.string().required().min(6).max(10),
-    brand: yup.string().required().min(3),
-    plate: yup.string().required().min(3),
-    model: yup.string().required().min(3)
+onBeforeMount(() => {
+  DriverRepository.getDriver(route.params.id as string).then(driverDB => {
+    Object.assign(driver.value, driverDB)
   })
+})
 
-  created (): void {
-    DriverRepository.getDriver(this.$route.params.id as string).then(driver => {
-      Object.assign(this.driver, driver)
-    })
-  }
+function uploadImgDriver(url: string): void {
+  driver.value.photoUrl = url
+  updateDriver()
+}
 
-  uploadImgDriver(url: string): void {
-    this.driver.photoUrl = url
-    this.updateDriver()
-  }
+function uploadImgVehicle(url: string): void {
+  driver.value.vehicle.photoUrl = url
+  updateDriver()
+}
 
-  uploadImgVehicle(url: string): void {
-    this.driver.vehicle.photoUrl = url
-    this.updateDriver()
-  }
+function updateDriver(): void {
+  DriverRepository.update(driver.value).then(() => {
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
+  }).catch(e => {
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
 
-  updateDriver(): void {
-    DriverRepository.update(this.driver).then(() => {
-      ToastService.toast(ToastService.SUCCESS, this.$t('common.messages.created'))
-    }).catch(e => {
-      ToastService.toast(ToastService.ERROR, this.$t('common.messages.error'), e.message)
-    })
-  }
-
-  onEnable(e: Event): void {
-    const target = e.target as HTMLInputElement
-    this.driver.enabled_at = target.checked ? dayjs().unix() : 0
-  }
+function onEnable(e: Event): void {
+  const target = e.target as HTMLInputElement
+  driver.value.enabled_at = target.checked ? dayjs().unix() : 0
 }
 </script>

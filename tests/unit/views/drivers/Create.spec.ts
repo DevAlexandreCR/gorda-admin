@@ -15,11 +15,6 @@ describe('Create.vue', () => {
     DriverRepository.create = jest.fn().mockResolvedValue('id-driver')
     wrapper = mount(Create, {
       attachTo: '#root',
-      components: {
-        Field,
-        Form,
-        ErrorMessage
-      },
       global: {
         plugins: [i18n]
       },
