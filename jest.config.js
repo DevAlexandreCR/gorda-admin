@@ -1,6 +1,7 @@
 module.exports = {
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   transform: {
+    "^.+\\.js$": "babel-jest",
     '^.+\\.vue$': '@vue/vue3-jest'
   },
   collectCoverage: true,
@@ -10,6 +11,7 @@ module.exports = {
     '!src/vendor/**',
     '!src/main.ts'
   ],
+  testEnvironment: 'jsdom',
   setupFiles: ['core-js'],
   setupFilesAfterEnv: ['<rootDir>/tests/testSetup.ts']
 }

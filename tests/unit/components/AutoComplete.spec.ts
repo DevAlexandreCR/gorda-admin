@@ -1,4 +1,4 @@
-import {VueWrapper, mount} from '@vue/test-utils'
+import {VueWrapper, mount, shallowMount} from '@vue/test-utils'
 import AutoComplete from "@/components/AutoComplete.vue"
 import {Field} from 'vee-validate'
 import locations from '@/assets/location/neighborhoods.json'

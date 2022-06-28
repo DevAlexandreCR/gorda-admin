@@ -4,6 +4,7 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
+import {enableAutoUnmount} from '@vue/test-utils'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -39,6 +40,8 @@ beforeEach(() => {
   div.id = 'root'
   document.body.appendChild(div)
 })
+
+enableAutoUnmount(afterEach)
 
 AuthService.currentUser = Object.assign(new User(), UserMock)
 

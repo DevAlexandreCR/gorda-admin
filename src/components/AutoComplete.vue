@@ -31,28 +31,26 @@ const input = ref<HTMLInputElement|null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const emit = defineEmits(['on-change', 'selected'])
+const callback = function (mutationsList: MutationRecord[]) {
+  for (let mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      const list = document?.getElementById('list-' + props.idField + props.fieldName)
+      if (list && list.children.length > 0) {
+        addListener()
+      }
+    }
+  }
+}
 
 onMounted(() => {
   const targetNode = document.body
   const config = {childList: true, subtree: true}
-
-  const callback = function (mutationsList: MutationRecord[]) {
-    for (let mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        const list = document?.getElementById('list-' + props.idField + props.fieldName)
-        if (list && list.children.length > 0) {
-          addListener()
-        }
-      }
-    }
-  }
-
   const observer = new MutationObserver(callback)
   observer.observe(targetNode, config)
 })
 
 function addListener(): void {
-  const ul = document?.getElementById('list-' + props.idField + props.fieldName)
+  const ul = document.getElementById('list-' + props.idField + props.fieldName)
   let liSelected: HTMLLIElement | null
   let index = -1
   if (!ul) return
