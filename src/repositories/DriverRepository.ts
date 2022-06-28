@@ -3,9 +3,9 @@ import DBService from '@/services/DBService'
 import {DriverInterface} from '@/types/DriverInterface'
 import Driver from '@/models/Driver'
 import {UserRequestType} from '@/types/UserRequestType'
-import axios, {AxiosError} from 'axios'
 import {UserResponse} from '@/types/UserResponse'
 import UserRepository from '@/repositories/UserRepository'
+import {AxiosError} from 'axios'
 
 class DriverRepository {
   
