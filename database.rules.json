@@ -25,6 +25,10 @@
     "online_drivers": {
       ".read": "auth.uid != null",
       ".write": "root.child('drivers').child(auth.uid).child('enabled_at').val() > 0"
+    },
+    "places": {
+      ".read": "auth.uid != null",
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
     }
   }
 }

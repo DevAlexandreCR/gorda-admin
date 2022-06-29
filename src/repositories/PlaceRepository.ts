@@ -10,11 +10,11 @@ class PlaceRepository {
     return Object.values(snapshot.val())
   }
 
-    /* istanbul ignore next */
-    async create(Places: PlaceInterface): Promise<string> {
-        const res = await push(DBService.dbPlaces(), Places)
-        return res.key as string
-    }
+  /* istanbul ignore next */
+  async create(Places: PlaceInterface): Promise<string> {
+      const res = await push(DBService.dbPlaces(), Places)
+      return res.key as string
+  }
 }
 
 export default new PlaceRepository()

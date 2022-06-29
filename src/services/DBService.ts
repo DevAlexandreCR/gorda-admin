@@ -26,7 +26,7 @@ class DBService {
 
   /* istanbul ignore next */
   public dbPlaces(): DatabaseReference {
-    return ref(this.db, 'Places/')
+    return ref(this.db, 'places/')
   }
 }
 
