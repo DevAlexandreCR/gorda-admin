@@ -1,7 +1,6 @@
-.places-group-up{
-    max-height: 300px;
-    max-width: max-content;
-    margin-bottom: 10px;
-    overflow:scroll;
+.places-group-up {
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    max-height: 75vh;
+    max-width: 100%;
 }
