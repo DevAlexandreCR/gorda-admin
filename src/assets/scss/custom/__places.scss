@@ -1,7 +1,6 @@
-.places-group-up{
-    max-height: 300px;
-    max-width: max-content;
-    margin-bottom: 10px;
-    overflow:scroll;
-    -webkit-overflow-scrolling: touch;
+.list-group-overflow{
+    overflow: auto;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    overflow-y: scroll; /* Add vertical scrollbar */
 }
+
