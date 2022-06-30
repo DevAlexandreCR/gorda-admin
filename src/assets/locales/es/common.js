@@ -35,6 +35,7 @@ export default {
     confirm_password: 'Confirmar contraseña',
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
+    search: 'Buscar',
     map: 'Mapa'
   },
   forms: {

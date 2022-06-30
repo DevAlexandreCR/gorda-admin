@@ -8,7 +8,8 @@ export default {
   routes: {
     dashboard: 'Dashboard',
     users: 'Users',
-    drivers: 'Drivers'
+    drivers: 'Drivers',
+    places: 'Places'
   },
   users: users,
   common: common,

@@ -35,6 +35,7 @@ export default {
     confirm_password: 'Confirm password',
     address: 'Enter Address',
     comment: 'Enter comment',
+    search: 'Search',
     map: 'Map'
   },
   forms: {

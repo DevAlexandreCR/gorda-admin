@@ -23,6 +23,11 @@ class DBService {
   public dbClients(): DatabaseReference {
     return ref(this.db, 'clients/')
   }
+
+  /* istanbul ignore next */
+  public dbPlaces(): DatabaseReference {
+    return ref(this.db, 'places/')
+  }
 }
 
 export default new DBService()

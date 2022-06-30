@@ -9,6 +9,7 @@ import DriverCreate from '@/views/drivers/Create.vue'
 import DriverIndex from '@/views/drivers/Index.vue'
 import DriverEdit from '@/views/drivers/Edit.vue'
 import Connection from '@/views/Connection.vue'
+import Places from '@/views/places/Places.vue'
 
 const routes: Array<any> = [
   {
@@ -61,6 +62,19 @@ const routes: Array<any> = [
             name: 'drivers.create',
             component: DriverCreate
           }
+        ]
+      },
+      {
+        path: 'dashboard/places',
+        name: 'places',
+        redirect: {name: 'places.index'},
+        component: Places,
+        children: [
+          {
+            path: '/dashboard/places/index/',
+            name: 'places.index',
+            component: Places
+          },
         ]
       },
       {

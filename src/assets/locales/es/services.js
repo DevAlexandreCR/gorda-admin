@@ -11,6 +11,8 @@ export default {
     phone: 'Teléfono',
     name: 'Nombre',
     driver: 'Conductor',
+    lat: 'Latitud',
+    lng: 'Longitud',
     comment: 'Comentario'
   },
   history: 'Historial',

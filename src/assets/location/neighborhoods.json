@@ -95,7 +95,7 @@
 	{"name":"SANTA INÉS ","location":{"lat":2.4375134,"lng":-76.6023187}},
 	{"name":"Molino De Moscopan","location":{"lat":2.4343974,"lng":-76.60204379999999}},
 	{"name":"Las Américas","location":{"lat":2.4373886,"lng":-76.6161149}},
-	{"name":"Cadillal","location":{"lat":2.8896107,"lng":-75.2555108}},
+	{"name":"Cadillal","location":{"lat":0,"lng":0}}, 
 	{"name":"Plateado","location":{"lat":2.423287999999999,"lng":-76.60727969999999}},
 	{"name":"Alameda","location":{"lat":2.431383,"lng":-76.6063655}},
 	{"name":"Colgate palmolive","location":{"lat":2.4364975,"lng":-76.6168533}},
