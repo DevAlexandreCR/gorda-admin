@@ -11,9 +11,9 @@ import PlaceRepository from '@/repositories/PlaceRepository'
 import {flushPromises} from '@vue/test-utils'
 describe('Places.vue', () => {
   let wrapper: VueWrapper<any>
-  PlaceRepository.create = jest.fn().mockResolvedValue({})
-  PlaceRepository.getAll = jest.fn().mockResolvedValue(getPlaces())
   beforeEach(async () => {
+    PlaceRepository.create = jest.fn().mockResolvedValue({})
+    PlaceRepository.getAll = jest.fn().mockResolvedValue(getPlaces())
     wrapper = mount(Places,
       {
         attachTo: '#root',
