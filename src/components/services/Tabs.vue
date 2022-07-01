@@ -132,6 +132,7 @@ function cancel(serviceId: string): void {
 function release(service: Service): void {
   service.status = Service.STATUS_PENDING
   service.driver_id = null
+  service.applicants = null
   ServiceRepository.update(service).then(() => {
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
   }).catch(e => {

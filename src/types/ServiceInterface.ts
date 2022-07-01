@@ -1,10 +1,12 @@
 import {LocationType} from '@/types/LocationType'
+import {Applicant} from '@/types/Applicant'
 
 export interface ServiceInterface {
   id: string | null
   status: string
   start_loc: LocationType
   end_loc: LocationType | null
+  applicants: Applicant | null
   phone: string
   name: string
   comment: string | null

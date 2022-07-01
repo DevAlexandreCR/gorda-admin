@@ -2,6 +2,7 @@ import {ServiceInterface} from '@/types/ServiceInterface'
 import dayjs from 'dayjs'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {LocationType} from '@/types/LocationType'
+import {Applicant} from '@/types/Applicant'
 
 export default class Service implements ServiceInterface {
   id: string
@@ -11,6 +12,7 @@ export default class Service implements ServiceInterface {
   phone: string
   name: string
   amount: number | null
+  applicants: Applicant | null
   driver_id: string | null
   client_id: string | null
   created_at: number

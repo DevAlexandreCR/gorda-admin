@@ -66,13 +66,13 @@ const searchPlace: Ref<string> = ref('')
 const foundPlaces: Ref<Array<PlaceInterface>> = ref([])
 
 onMounted(() => {
-    PlacesRepository.getAll().then(placesDB => {
-      placesDB.forEach(placeDB => {
-        const placeTmp = new Place
-        Object.assign(placeTmp, placeDB)
-        places.push(placeTmp)
-      })
-      foundPlaces.value = places
+  PlacesRepository.getAll().then(placesDB => {
+    placesDB.forEach(placeDB => {
+      const placeTmp = new Place
+      Object.assign(placeTmp, placeDB)
+      places.push(placeTmp)
+    })
+    foundPlaces.value = places
   })
 })
 
