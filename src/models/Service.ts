@@ -36,6 +36,7 @@ export default class Service implements ServiceInterface {
     this.comment = null
     this.driver_id = null
     this.end_loc = null
+    this.applicants = null
   }
 
   isPending(): boolean {
