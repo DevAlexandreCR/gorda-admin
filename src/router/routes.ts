@@ -17,6 +17,9 @@ const routes: Array<any> = [
     name: 'dashboard',
     redirect: {name: 'main'},
     component: Dashboard,
+    meta: {
+      requireRole: true
+    },
     children: [
       {
         path: '/dashboard/main',
@@ -88,6 +91,11 @@ const routes: Array<any> = [
         component: Connection
       }
     ]
+  },
+  {
+    path: '/403',
+    name: 'forbidden',
+    component: () => import('../views/Forbidden.vue')
   },
   {
     path: '/login',

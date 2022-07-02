@@ -25,7 +25,8 @@ export default {
     updated: 'Resource updated successfully',
     created: 'Resource created successfully',
     deleted: 'Resource deleted successfully',
-    error: 'Something went wrong!'
+    error: 'Something went wrong!',
+    forbidden: 'Permission denied'
   },
   placeholders: {
     name: 'Enter name',

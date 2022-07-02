@@ -2,7 +2,7 @@
   "rules": {
     "services": {
       ".read": "auth.uid != null",
-      ".write": "auth.uid != null",
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true",
       "$uid": {
         ".indexOn": ["created_at", "status"]
       }

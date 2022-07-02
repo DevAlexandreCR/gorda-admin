@@ -14,6 +14,8 @@ export default {
   create_account: 'Sign Up',
   already_account: 'Do you have account already?',
   upss: 'Upss!',
+  forbidden: 'Sorry, your access is refused due to security reasons of our server and also our sensitive data. \n\n Please go back to the previous page to continue browsing.',
+  go_back: 'Go Back',
   fields: {
     name: 'Name',
     email: 'E-Mail Address',
