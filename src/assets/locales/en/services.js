@@ -1,6 +1,7 @@
 export default {
   statuses: {
     pending: 'Pending',
+    canceled: 'Cancelado',
     in_progress: 'In progress',
   },
   fields: {

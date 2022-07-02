@@ -10,46 +10,42 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.driver') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"></th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="!isHistory"></th>
         </thead>
-        <tbody>
+        <tbody class="text-sm text-opacity-25">
         <tr v-for="service of services" :key="service.id">
-          <td>{{ format(service.created_at) }}</td>
-          <td>{{ $t('services.statuses.' + service.status) }}</td>
-          <td>{{ service.start_loc.name }}</td>
-          <td>{{ service.phone }}</td>
-          <td>{{ service.name }}</td>
-          <td v-if="getDriver(service.driver_id)">
-                <div class="d-flex px-2 py-1">
-                  <div>
-                    <img :src="getDriver(service.driver_id).photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">{{ getDriver(service.driver_id).vehicle.plate }}</h6>
-                    <p class="text-xs text-secondary mb-0">{{ getDriver(service.driver_id).phone }}</p>
-                  </div>
-                </div>
-              </td>
-              <td v-else>   
-              <button class="btn btn-link" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" 
+          <td class="py-1">{{ format(service.created_at) }}</td>
+          <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
+          <td class="py-1">{{ service.start_loc.name }}</td>
+          <td class="py-1">{{ service.phone }}</td>
+          <td class="py-1">{{ service.name }}</td>
+          <td class="py-1" v-if="getDriver(service.driver_id)">
+            <div class="d-flex px-2 py-1">
+              <div>
+                <img :src="getDriver(service.driver_id).photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
+              </div>
+              <div class="d-flex flex-column justify-content-center">
+                <h6 class="mb-0 text-sm">{{ getDriver(service.driver_id).vehicle.plate }}</h6>
+                <p class="text-xs text-secondary mb-0">{{ getDriver(service.driver_id).phone }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="py-1" v-else>
+              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="!isHistory"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td v-if="!isHistory">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1" @click="cancel(service)"
+          <td class="py-1" v-if="!isHistory">
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1" v-if="service.isPending()" 
+            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1" v-if="service.isinProgress()" @click="release(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isinProgress()" @click="release(service)"
               data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
               <em class="fas fa-car-crash"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1" v-if="service.isinProgress()" @click="end(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isinProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
-          </td>
-          <td v-else>
-            <button class="btn btn-sm btn-info btn-rounded px-2 py-1"><em class="fas fa-eye"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded px-2 py-1"><em class="fas fa-pencil"></em></button>
           </td>
         </tr>
         </tbody>
