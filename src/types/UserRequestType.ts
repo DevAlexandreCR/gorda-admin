@@ -4,6 +4,5 @@ export type UserRequestType = {
   phoneNumber: string,
   password: string
   displayName: string,
-  photoUrl: string,
   disabled: boolean
 }

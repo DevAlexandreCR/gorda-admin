@@ -48,7 +48,6 @@ class DriverRepository {
       phoneNumber: '+57' + driver.phone,
       password: password,
       disabled: driver.enabled_at == 0,
-      photoUrl: ''
     }
     return new Promise((resolve, reject) => {
       UserRepository.createAuth(userData).then(async (res) => {
