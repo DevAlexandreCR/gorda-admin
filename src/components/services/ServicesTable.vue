@@ -14,7 +14,7 @@
         </thead>
         <tbody class="text-sm text-opacity-25">
         <tr v-for="service of props.services" :key="service.id">
-          <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : service.aGo }}</td>
+          <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : service.a_go }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
@@ -104,7 +104,7 @@ function getDriver(driverId: string): Driver|null {
 function getTime(): void {
   props.services.forEach(service => {
     let time  = DateHelper.unix() - service.created_at
-    service.aGo = DateHelper.aGo(time)
+    service.a_go = DateHelper.aGo(time)
   })
 }
 </script>

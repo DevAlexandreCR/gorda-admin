@@ -16,11 +16,11 @@ export default class DateHelper {
       const s = Math.trunc((unix % 3600) % 60)
       return `${hours}h:${min}m:${s}s`
     } else if (unix > 60) {
-      const min = Math.trunc((unix / 60))
-      const s = Math.trunc((unix % min))
+      const min = Math.floor((unix / 60))
+      const s = unix % 60
       return `${min}m:${s}s`
     } else {
       return `${unix}s`
     }
-    }
+  }
 }
