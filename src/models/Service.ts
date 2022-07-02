@@ -17,6 +17,7 @@ export default class Service implements ServiceInterface {
   client_id: string | null
   created_at: number
   comment: string | null
+  aGo: string = ''
 
   static readonly STATUS_PENDING = 'pending'
   static readonly STATUS_IN_PROGRESS = 'in_progress'
