@@ -1,6 +1,7 @@
-import {get, DataSnapshot, set, ref} from 'firebase/database'
+import {get, DataSnapshot, set, ref, onChildAdded} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ClientInterface} from '@/types/ClientInterface'
+import Client from '@/models/Client'
 
 class ClientRepository {
 
@@ -20,6 +21,15 @@ class ClientRepository {
       }).catch(e => {
         rejected(e)
       })
+    })
+  }
+  
+  onAll(onClientAdded: (place: Client) => void): void {
+    onChildAdded(DBService.dbClients(), (snapshot) => {
+      const client: ClientInterface = snapshot.val() as ClientInterface
+      const clientTmp = new Client()
+      Object.assign(clientTmp, client)
+      onClientAdded(clientTmp)
     })
   }
 }

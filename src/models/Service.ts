@@ -32,7 +32,6 @@ export default class Service implements ServiceInterface {
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
-    this.start_loc = { name: '' }
     this.amount = null
     this.comment = null
     this.driver_id = null
