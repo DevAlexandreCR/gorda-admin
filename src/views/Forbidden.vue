@@ -2,7 +2,7 @@
   <div class="container w-50 py-5">
     <div class="row">
       <div class="col-md-2 text-center">
-        <p><i class="fa fa-exclamation-triangle fa-5x"></i><br/>Status Code: 403</p>
+        <p><em class="fa fa-exclamation-triangle fa-5x"></em><br/>Status Code: 403</p>
       </div>
       <div class="col-md-10">
         <h3>{{ $t('users.upss') }}</h3>
