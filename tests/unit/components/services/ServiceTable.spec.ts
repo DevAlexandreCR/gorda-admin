@@ -1,10 +1,9 @@
 import {mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import ServicesTable from "@/components/services/ServicesTable.vue";
+import ServicesTable from "@/components/services/ServicesTable.vue"
 import Service from "@/models/Service";
-import ServiceMock from "../../../mocks/entities/ServiceMock";
-import DateHelper from "@/helpers/DateHelper";
+import ServiceMock from "../../../mocks/entities/ServiceMock"
 import DriverMock from '../../../mocks/entities/DriverMock'
 
 describe('ServicesTable.vue', () => {
