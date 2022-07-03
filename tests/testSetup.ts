@@ -4,7 +4,10 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {enableAutoUnmount} from '@vue/test-utils'
+import {enableAutoUnmount, config} from '@vue/test-utils'
+import {createPinia} from 'pinia'
+import i18n from '@/plugins/i18n'
+import router from '@/router'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -35,6 +38,14 @@ jest.mock('firebase/database', () => {
 })
 jest.mock('firebase/storage')
 jest.mock('qrcode')
+
+const pinia = createPinia()
+
+config.global.plugins = [
+  pinia,
+  i18n,
+  router
+]
 
 beforeEach(() => {
   const div = document.createElement('div')
