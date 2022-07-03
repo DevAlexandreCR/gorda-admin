@@ -31,7 +31,6 @@ describe('ServicesTable.vue', () => {
   })
   it('an user can see all services passed by props', async () => {
     await wrapper.vm.$nextTick()
-    expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
     expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.pending'))
     expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
@@ -42,14 +41,6 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
     expect(wrapper.find('.fa-car-crash').exists()).toBeFalsy()
     expect(wrapper.find('.fa-check').exists()).toBeFalsy()
-  })
-  
-  it('show history buttons when isHistory is passed into props', async () => {
-    options.props.isHistory = true
-    wrapper = await mount(ServicesTable, options)
-  
-    expect(wrapper.find('.fa-eye').exists()).toBeTruthy()
-    expect(wrapper.find('.fa-pencil').exists()).toBeTruthy()
   })
   
   it('show release and terminate buttons when service is in in_progress status', async () => {

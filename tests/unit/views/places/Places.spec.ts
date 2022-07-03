@@ -9,11 +9,14 @@ import waitForExpect from 'wait-for-expect'
 import {getPlaces} from "../../../mocks/entities/PlaceMock"
 import PlaceRepository from '@/repositories/PlaceRepository'
 import {flushPromises} from '@vue/test-utils'
+import {usePlacesStore} from '@/services/stores/PlacesStore'
 describe('Places.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     PlaceRepository.create = jest.fn().mockResolvedValue({})
-    PlaceRepository.getAll = jest.fn().mockResolvedValue(getPlaces())
+    const placesStore = usePlacesStore()
+    placesStore.places = getPlaces()
+  
     wrapper = mount(Places,
       {
         attachTo: '#root',
