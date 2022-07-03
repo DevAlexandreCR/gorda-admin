@@ -59,6 +59,7 @@ import DateHelper from '@/helpers/DateHelper'
 import Service from '@/models/Service'
 import Driver from '@/models/Driver'
 import {onBeforeUnmount, onMounted} from 'vue'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 interface Props {
   services: Array<Service>
@@ -68,6 +69,7 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
 let interval: number
+const {findById} = useDriversStore()
 
 onMounted(() => {
   interval = window.setInterval(getTime, 1000)
@@ -93,12 +95,8 @@ function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
 }
 
-function getDriver(driverId: string): Driver|null {
-  if (driverId) {
-    return props.drivers.find(driver => driver.id === driverId)?? null
-  }
-
-  return null
+function getDriver(driverId: string): Driver {
+    return findById(driverId)
 }
 
 function getTime(): void {

@@ -5,6 +5,10 @@ import ServicesTable from "@/components/services/ServicesTable.vue"
 import Service from "@/models/Service";
 import ServiceMock from "../../../mocks/entities/ServiceMock"
 import DriverMock from '../../../mocks/entities/DriverMock'
+import {nextTick} from 'vue'
+import {useDriversStore} from '@/services/stores/DriversStore'
+import DriverRepository from '@/repositories/DriverRepository'
+import DateHelper from '@/helpers/DateHelper'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -25,11 +29,16 @@ describe('ServicesTable.vue', () => {
     },
   }
   beforeEach(async () => {
-    wrapper = mount(ServicesTable, options)
+    jest.useFakeTimers()
+    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
+    const driverStore = useDriversStore()
+    driverStore.getDrivers()
+    wrapper = await mount(ServicesTable, options)
     await router.isReady()
   })
   it('an user can see all services passed by props', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
+    jest.advanceTimersByTime(2000)
     expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.pending'))
     expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
@@ -40,6 +49,14 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
     expect(wrapper.find('.fa-car-crash').exists()).toBeFalsy()
     expect(wrapper.find('.fa-check').exists()).toBeFalsy()
+  })
+  
+  it('an user can see date in history', async () => {
+    options.props.isHistory = true
+    wrapper = await mount(ServicesTable, options)
+    await nextTick()
+    expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
+    await nextTick()
   })
   
   it('show release and terminate buttons when service is in in_progress status', async () => {
