@@ -10,11 +10,9 @@ export const useClientsStore = defineStore('clientsStore', {
   },
   actions: {
     async getClients() {
-      const clients: Array<Client> = []
       ClientRepository.onAll(async (client) => {
-        clients.push(client)
+        this.clients.push(client)
       })
-      this.clients = clients
     },
     findById(id: string): Client {
       const client = this.clients.find(el => el.id == id)

@@ -8,14 +8,17 @@ import AuthService from '@/services/AuthService'
 import {onMounted} from 'vue'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
+const {getDrivers} = useDriversStore()
 
 onMounted((): void => {
   AuthService.onAuthStateChanged(location.pathname)
   getPlaces()
   getClients()
+  getDrivers()
 })
 </script>
 

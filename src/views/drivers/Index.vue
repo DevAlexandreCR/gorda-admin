@@ -71,18 +71,12 @@
 </template>
 
 <script setup lang="ts">
-import {DriverInterface} from "@/types/DriverInterface";
-import DriverRepository from '@/repositories/DriverRepository';
 import DateHelper from "@/helpers/DateHelper";
-import {onBeforeMount, Ref, ref} from 'vue'
+import {useDriversStore} from '@/services/stores/DriversStore'
+import {storeToRefs} from 'pinia'
 
-const drivers: Ref<Array<DriverInterface>> = ref([])
-
-onBeforeMount((): void => {
-  DriverRepository.getAll().then(driversDB => {
-    drivers.value = driversDB
-  })
-})
+const driverStore = useDriversStore()
+const {drivers} = storeToRefs(driverStore)
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')

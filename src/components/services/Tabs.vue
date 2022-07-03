@@ -55,17 +55,18 @@ import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import Driver from '@/models/Driver'
-import DriverRepository from '@/repositories/DriverRepository'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {storeToRefs} from 'pinia'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 const {t} = useI18n()
 
 const pendingServices: Ref<Array<ServiceInterface>> = ref([])
 const inProgressServices: Ref<Array<ServiceInterface>> = ref([])
 const historyServices: Ref<Array<ServiceInterface>> = ref([])
-const drivers: Ref<Array<Driver>> = ref([])
+const driverStore = useDriversStore()
+const {drivers} = storeToRefs(driverStore)
 
 function onServiceAdded(data: DataSnapshot): void {
   const service = new Service()
@@ -112,13 +113,6 @@ function setServiceOnChange(service: Service): void {
 
 onBeforeMount((): void => {
   ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().subtract(1, 'day').unix())
-  DriverRepository.getAll().then(dbDrivers => {
-    dbDrivers.forEach(driver => {
-      const driverTmp = new Driver()
-      Object.assign(driverTmp, driver)
-      drivers.value.push(driverTmp)
-    })
-  })
 })
 
 function cancel(serviceId: string): void {
