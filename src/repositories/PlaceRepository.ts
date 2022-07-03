@@ -5,12 +5,13 @@ import Place from '@/models/Place'
 
 class PlaceRepository {
 
-/* istanbul ignore next */
+ /* istanbul ignore next */
   async getAll(): Promise<Array<PlaceInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbPlaces())
     return Object.values(snapshot.val())
   }
   
+  /* istanbul ignore next */
   onAll(onPlaceAdded: (place: Place) => void): void {
     onChildAdded(DBService.dbPlaces(), (snapshot) => {
       const place: PlaceInterface = snapshot.val() as PlaceInterface

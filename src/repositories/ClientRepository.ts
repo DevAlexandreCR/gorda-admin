@@ -24,6 +24,7 @@ class ClientRepository {
     })
   }
   
+  /* istanbul ignore next */
   onAll(onClientAdded: (place: Client) => void): void {
     onChildAdded(DBService.dbClients(), (snapshot) => {
       const client: ClientInterface = snapshot.val() as ClientInterface
