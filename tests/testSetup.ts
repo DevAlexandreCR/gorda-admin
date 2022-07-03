@@ -5,7 +5,7 @@ import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {enableAutoUnmount, config} from '@vue/test-utils'
-import {createPinia} from 'pinia'
+import {createPinia, setActivePinia} from 'pinia'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -47,6 +47,7 @@ beforeEach(() => {
   const div = document.createElement('div')
   div.id = 'root'
   document.body.appendChild(div)
+  setActivePinia(pinia)
 })
 
 enableAutoUnmount(afterEach)
