@@ -11,7 +11,7 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_driver') }}</h6>
               </div>
-              <img :src="this.driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <img :src="driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
               <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
                       data-bs-target="#image-driver">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
@@ -71,7 +71,7 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
-              <img :src="this.driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <img :src="driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
               <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
                       data-bs-target="#image-vehicle">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
@@ -167,7 +167,7 @@ function uploadImgVehicle(url: string): void {
 
 function updateDriver(): void {
   DriverRepository.update(driver.value).then(() => {
-    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })

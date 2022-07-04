@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-md-5">
               <div class="card-header p-0 mx-3 mt-3 z-index-1">
-                <img :src="this.user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
+                <img :src="user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
                 <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img" type="button" data-bs-toggle="modal"
                         data-bs-target="#imgModal">
                   <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
