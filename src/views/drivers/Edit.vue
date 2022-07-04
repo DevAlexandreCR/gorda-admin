@@ -11,8 +11,11 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_driver') }}</h6>
               </div>
-              <img :src="driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
-              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
+              <img v-if="driver.photoUrl" :src="driver.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <div v-else class="container-fluid text-center">
+                <em class="fa-solid fa-user-astronaut fa-10x"></em>
+              </div>
+              <button class="btn btn-sm btn-info btn-edit-img py-1 px-2" type="button" data-bs-toggle="modal"
                       data-bs-target="#image-driver">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
               </button>
@@ -71,8 +74,11 @@
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
-              <img :src="driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
-              <button class="btn btn-sm btn-outline-white btn-edit-img" type="button" data-bs-toggle="modal"
+              <img v-if="driver.vehicle.photoUrl" :src="driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <div v-else class="container-fluid text-center">
+                <em class="fa-solid fa-car-side fa-10x"></em>
+              </div>
+              <button class="btn btn-sm btn-info btn-edit-img py-1 px-2" type="button" data-bs-toggle="modal"
                       data-bs-target="#image-vehicle">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
               </button>
