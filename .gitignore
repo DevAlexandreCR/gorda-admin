@@ -21,6 +21,7 @@ firebase-debug.log
 .idea
 .vscode
 *.suo
+*.cache
 *.ntvs*
 *.njsproj
 *.sln
