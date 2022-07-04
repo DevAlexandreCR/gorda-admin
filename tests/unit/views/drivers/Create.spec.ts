@@ -8,6 +8,8 @@ import {flushPromises} from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import Driver from "@/models/Driver";
 import DriverRepository from "@/repositories/DriverRepository";
+import {nextTick} from 'vue'
+
 
 describe('Create.vue', () => {
   let wrapper: VueWrapper<any>
@@ -29,9 +31,21 @@ describe('Create.vue', () => {
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
+    const input = wrapper.findAll('.form-control')
     expect(field.length).toBe(11)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(12)
+    expect(error.length).toBe(1)
+    expect(input.length).toBe(10)
+  })
+
+  it('A user sees the Span when submit', async () => {
+    await nextTick()
+    const button = wrapper.find('button[type="submit"]')
+    await button.trigger('click')
+    await nextTick()
+    const span = wrapper.findAll('.is-invalid')    
+    await nextTick()
+    expect(span.length).toBe(10)
   })
   
   it('A user can enable or disable a driver', async () => {
