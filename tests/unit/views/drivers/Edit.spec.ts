@@ -81,7 +81,7 @@ describe('Edit.vue', () => {
     const success =  jest.spyOn(ToastService, 'toast')
     await wrapper.vm.updateDriver()
     
-    expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('common.messages.created'))
+    expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('common.messages.updated'))
   })
   
   it('should show toast error when update driver fail', async () => {
