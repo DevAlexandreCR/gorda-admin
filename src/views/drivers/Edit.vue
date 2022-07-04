@@ -129,6 +129,7 @@ import ImageLoader from '@/components/ImageLoader.vue'
 import i18n from '@/plugins/i18n'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -137,6 +138,7 @@ const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
+const driverStore = useDriversStore()
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
@@ -149,9 +151,8 @@ const schema = yup.object().shape({
 })
 
 onBeforeMount(() => {
-  DriverRepository.getDriver(route.params.id as string).then(driverDB => {
-    Object.assign(driver.value, driverDB)
-  })
+  const id = route.params.id as string
+  driver.value = driverStore.findById(id)
 })
 
 function uploadImgDriver(url: string): void {
