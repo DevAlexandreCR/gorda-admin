@@ -8,9 +8,8 @@
       </div>
       <div class="card-body p-0 mx-3 mt-3 position-relative z-index-1">
         <div class="container text-center">
-<!--          <img v-if="connecting" class="img img-fluid w-25 circle" src="../assets/img/svg/connection.svg" alt="Connecting">-->
           <em v-if="connecting" class="fa-solid fa-spinner fa-10x circle my-0"></em>
-          <img v-if="connected" class="img h-25 mx-auto" src="../assets/img/svg/whatsapp.svg" alt="Connected">
+          <img v-if="connected" class="img w-25  mx-auto" src="../assets/img/svg/whatsapp.svg" alt="Connected">
           <em v-if="!connecting && !connected && !qr" class="fa-solid fa-circle-exclamation fa-10x mt-5"></em>
           <canvas class="img img-fluid h-25 h-auto" v-show="qr && !connected" id="canvas"></canvas>
         </div>
