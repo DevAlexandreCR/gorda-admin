@@ -13,9 +13,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
-                <Field name="photoUrl"  type="file" accept="image/*" v-model="imageDriver"  v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.photo')" id="formFileDriver" name="photoUrl" v-bind="field"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span> 
+                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageDriver">
                 </Field>
               </div>
               <div class="form-group">
@@ -56,7 +54,7 @@
                   </div>
                   <div class="col-sm-9">
                     <label>{{ $t('drivers.fields.document') }}</label>
-                      <Field name="document"   v-model="driver.document" v-slot="{ field, errorMessage, meta }">
+                      <Field name="document" v-model="driver.document" v-slot="{ field, errorMessage, meta }">
                         <input class="form-control form-control-sm" id="document" v-model="field.value" :placeholder="$t('common.placeholders.comment')" aria-label="Document" aria-describedby="doc-addon" v-bind="field" autocomplete="none"/>
                         <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
@@ -98,9 +96,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
-                <Field name="photoVehicleUrl"  type="file" accept="image/*" v-model="imageVehicle" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.photo_vehicle')" id="formFileVehicle" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle">
                 </Field>
               </div>
             </div>
