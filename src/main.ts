@@ -8,9 +8,10 @@ import axios from 'axios'
 
 const pinia = createPinia()
 
+axios.defaults.baseURL = window.location.origin
 axios.defaults.headers.common['Content-Type'] = 'application/json'
+axios.defaults.headers.common['Accept'] = 'application/json;charset=UTF-8'
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-axios.defaults.headers.common['Accept'] = 'application/json'
 
 createApp(App)
   .use(i18n)
