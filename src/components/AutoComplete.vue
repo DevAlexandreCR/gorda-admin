@@ -70,12 +70,12 @@ function addListener(): void {
             index = 0
             liSelected = ul.getElementsByTagName('li')[0] as HTMLLIElement
           }
-          addClass(liSelected, 'selected')
+          addClass(liSelected, ul, 'selected')
         } else {
           index = 0
 
           liSelected = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (liSelected) addClass(liSelected, 'selected')
+          if (liSelected) addClass(liSelected, ul, 'selected')
         }
         break
       case 'ArrowUp':
@@ -89,17 +89,19 @@ function addListener(): void {
             index = len
             liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
           }
-          addClass(liSelected, 'selected')
+          addClass(liSelected, ul, 'selected')
         } else {
           index = 0
           liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
-          if (liSelected) addClass(liSelected, 'selected')
+          if (liSelected) addClass(liSelected, ul, 'selected')
         }
         break
       case 'Enter':
         if (liSelected) {
           input.value?.blur()
+          liSelected = ul.getElementsByClassName('selected')[0] as HTMLLIElement
           liSelected.click()
+          liSelected.remove()
         }
         break
       default:
@@ -123,7 +125,14 @@ function removeClass(el: HTMLLIElement, className: string) {
   }
 }
 
-function addClass(el: HTMLLIElement, className: string) {
+function addClass(el: HTMLLIElement, ul: HTMLElement, className: string) {
+  const elements = ul.getElementsByClassName('selected')
+  if (elements) {
+    for (let i = 0; i < elements.length; i++) {
+      const li = elements.item(i) as HTMLLIElement
+      removeClass(li, 'selected')
+    }
+  }
   if(el.className.includes(className)) return
   if (el.classList) {
     el.classList.add(className)

@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id +1"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete" :key="service.id"
+              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete" :key="service.id + 2"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
