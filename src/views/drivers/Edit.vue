@@ -136,6 +136,7 @@ import i18n from '@/plugins/i18n'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
 import {useDriversStore} from '@/services/stores/DriversStore'
+import router from '@/router'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -158,7 +159,11 @@ const schema = yup.object().shape({
 
 onBeforeMount(() => {
   const id = route.params.id as string
-  driver.value = driverStore.findById(id)
+  const driverTmp = driverStore.findById(id)
+  if (driverTmp) driver.value = driverTmp
+  else {
+    router.push({name: 'drivers'})
+  }
 })
 
 function uploadImgDriver(url: string): void {

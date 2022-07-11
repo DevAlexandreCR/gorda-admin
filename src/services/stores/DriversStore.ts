@@ -19,9 +19,8 @@ export const useDriversStore = defineStore('driverStore', {
         })
       })
     },
-    findById(id: string): Driver {
-      const driver = this.drivers.find(el => el.id == id)
-      return driver ?? new Driver()
+    findById(id: string): Driver|undefined {
+      return this.drivers.find(el => el.id == id)
     }
   }
 })
