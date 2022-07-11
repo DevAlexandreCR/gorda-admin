@@ -63,7 +63,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 
 interface Props {
   services: Array<Service>
-  isHistory: boolean
+  isHistory?: boolean
   drivers: Array<Driver>
 }
 const props = defineProps<Props>()
