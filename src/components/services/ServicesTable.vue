@@ -95,7 +95,7 @@ function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
 }
 
-function getDriver(driverId: string): Driver {
+function getDriver(driverId: string): Driver|undefined {
     return findById(driverId)
 }
 

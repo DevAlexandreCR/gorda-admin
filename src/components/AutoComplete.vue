@@ -1,6 +1,6 @@
 <template>
   <div class="form-group mb-1">
-    <Field type="text" id="search" :name="props.fieldName ?? 'field'" @input="onChange" v-model="searchElement" :ref="input"
+    <Field type="text" id="search" :name="props.fieldName ?? '12345'" @input="onChange" v-model="searchElement" :ref="input"
            @keyup="searchElements" :placeholder="props.placeholder" class="form-control" autocomplete="none"
     />
 
@@ -21,9 +21,9 @@ import {onMounted, ref, Ref} from 'vue'
 
 interface Props {
   elements: Array<AutoCompleteType>
-  fieldName: string
-  placeholder: string
-  idField: string
+  fieldName?: string
+  placeholder?: string
+  idField?: string
 }
 
 const props = defineProps<Props>()
