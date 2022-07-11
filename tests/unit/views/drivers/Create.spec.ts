@@ -45,7 +45,7 @@ describe('Create.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(10)
+    expect(span.length).toBe(8)
   })
   
   it('A user can enable or disable a driver', async () => {
