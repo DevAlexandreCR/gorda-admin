@@ -60,12 +60,12 @@ let server: httpServer
 function openServer(done: Function): void{
   server = createServer()
   socket = new Server(server)
-  WhatsAppClient.getInstance()
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
     socket.on('connection', () => {
       done()
     })
   })
+  WhatsAppClient.getInstance()
 }
 
 export {
