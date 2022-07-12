@@ -3,11 +3,11 @@ import {PlaceInterface} from '@/types/PlaceInterface'
 
 class PlaceMock implements PlaceInterface{
     name = 'Berlin'
-    lat = '2.32893283'
-    lng = ' 76.549830456'
+    lat = 2.32893283
+    lng = 76.549830456
 }
 
-export function getPlaces(): Array<Place> {
+export function getPlaces(): Array<PlaceMock> {
     const place1 = new PlaceMock()
     const place2  = new PlaceMock()
     place2.name = 'Maria Oriente'

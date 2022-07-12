@@ -42,12 +42,25 @@ class UserRepository{
     })
   }
   
-  async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
-    return axios.post(this.base_url + 'auth/create-user/', userData)
+  /* istanbul ignore next */
+  enable(userId: string, enabledAt: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.enableAuth(userId, enabledAt == 0).then(() => {
+        set(ref(DBService.db, 'users/' + userId + '/enabled_at'), enabledAt).then(() => {
+          resolve()
+        })
+      }).catch((e) => {
+        reject(new Error(e.message))
+      })
+    })
   }
   
-  async enable(uid: string, enabled: boolean): Promise<AxiosResponse> {
-    return axios.post(this.base_url + 'auth/enable-user/', {uid: uid, disabled: enabled})
+  async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
+    return axios.post(this.base_url + '/auth/create-user/', userData)
+  }
+  
+  async enableAuth(uid: string, enabled: boolean): Promise<AxiosResponse> {
+    return axios.post(this.base_url + '/auth/enable-user/', {uid: uid, disabled: enabled})
   }
 }
 

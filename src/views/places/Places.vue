@@ -59,21 +59,21 @@ import { PlaceInterface } from '@/types/PlaceInterface'
 import ToastService from '@/services/ToastService'
 import Place from '@/models/Place'
 import i18n from '@/plugins/i18n'
+import {usePlacesStore} from '@/services/stores/PlacesStore'
 
 const places: Array<Place> = []
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
 const foundPlaces: Ref<Array<PlaceInterface>> = ref([])
+const placesStore = usePlacesStore()
 
 onMounted(() => {
-  PlacesRepository.getAll().then(placesDB => {
-    placesDB.forEach(placeDB => {
-      const placeTmp = new Place
-      Object.assign(placeTmp, placeDB)
-      places.push(placeTmp)
-    })
-    foundPlaces.value = places
+  placesStore.places.forEach(placeDB => {
+    const placeTmp = new Place
+    Object.assign(placeTmp, placeDB)
+    places.push(placeTmp)
   })
+  foundPlaces.value = places
 })
 
 watch(searchPlace, findPlaceByName)

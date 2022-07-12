@@ -2,7 +2,7 @@
   <aside class="sidenav navbar navbar-vertical bg-light navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
    <div class="sidenav-header">
      <router-link class="navbar-brand m-0" tag="a" :to="{name: 'profile'}">
-       <img src="../assets/img/logo.png" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
+       <img :src="logoUrl" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
        <span class="ms-1 font-weight-bold">{{ user.name }}</span>
      </router-link>
     </div>
@@ -96,12 +96,16 @@ import User from '@/models/User'
 import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 import {onMounted, onUnmounted, ref, Ref} from 'vue'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
+import {useStorage} from '@/services/stores/Storage'
+import {storeToRefs} from 'pinia'
 
 let user: Ref<User> = ref(new User())
 let isAdmin: Ref<boolean> = ref(false)
 let connectionState: Ref<boolean> = ref(false)
 let socket: WhatsAppClient
 let observer: ClientObserver
+const storage = useStorage()
+const {logoUrl} = storeToRefs(storage)
 
 function signOut(): void {
   AuthService.logOut()

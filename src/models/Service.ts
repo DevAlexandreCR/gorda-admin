@@ -17,6 +17,7 @@ export default class Service implements ServiceInterface {
   client_id: string | null
   created_at: number
   comment: string | null
+  a_go = ''
 
   static readonly STATUS_PENDING = 'pending'
   static readonly STATUS_IN_PROGRESS = 'in_progress'
@@ -31,7 +32,6 @@ export default class Service implements ServiceInterface {
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
-    this.start_loc = { name: '' }
     this.amount = null
     this.comment = null
     this.driver_id = null

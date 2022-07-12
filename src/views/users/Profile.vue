@@ -8,7 +8,7 @@
         <div class="row gx-4">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative">
-              <img src="../../assets/img/logo.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              <img :src="logoUrl" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
             </div>
           </div>
           <div class="col-auto my-auto">
@@ -83,16 +83,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import {Vue} from 'vue-class-component'
+<script setup lang="ts">
 import User from '@/models/User'
 import AuthService from '@/services/AuthService'
+import {onBeforeMount, ref, Ref} from 'vue'
+import {useStorage} from '@/services/stores/Storage'
+import {storeToRefs} from 'pinia'
 
-export default class Profile extends Vue {
-  user: User
+const user: Ref<User> = ref(new User())
+const storage = useStorage()
+const {logoUrl} = storeToRefs(storage)
 
-  created(): void {
-    this.user = AuthService.getCurrentUser()
-  }
-}
+onBeforeMount(() => {
+  user.value = AuthService.getCurrentUser()
+})
 </script>

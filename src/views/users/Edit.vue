@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-md-5">
               <div class="card-header p-0 mx-3 mt-3 z-index-1">
-                <img :src="this.user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
+                <img :src="user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
                 <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img" type="button" data-bs-toggle="modal"
                         data-bs-target="#imgModal">
                   <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
@@ -116,7 +116,6 @@ import CustomValidator from '@/assets/validatiions/validators'
 import * as bootstrap from 'bootstrap'
 import StorageService from '@/services/StorageService'
 import dayjs from 'dayjs'
-import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {onBeforeMount, ref, Ref} from 'vue'
@@ -167,9 +166,10 @@ function updateUser(): void {
 function onEnable(event: Event): void {
   const target = event.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
-  DriverRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
+  UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
     const message = user.value.enabled_at == 0 ?
-        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+        i18n.global.t('users.messages.disabled') :
+        i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

@@ -10,12 +10,18 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import ClientRepository from '@/repositories/ClientRepository'
 import ClientMock from '../../../mocks/entities/ClientMock'
 import AutoComplete from '@/components/AutoComplete.vue'
+import {getPlaces} from "../../../mocks/entities/PlaceMock"
+import {usePlacesStore} from '@/services/stores/PlacesStore'
+import {useClientsStore} from '@/services/stores/ClientsStore'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
 
   beforeEach(async () => {
-    ClientRepository.getAll = jest.fn().mockResolvedValue([ClientMock])
+    const placesStore = usePlacesStore()
+    const clientsStore = useClientsStore()
+    placesStore.places = getPlaces()
+    clientsStore.clients = [ClientMock]
     wrapper = mount(CreateService,
       {
         attachTo: '#root',
@@ -80,9 +86,9 @@ describe('CreateService.vue', () => {
   
   it('an user can select location from neighborhoods', async () => {
     const onSelected = jest.spyOn(wrapper.vm, 'locSelected')
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('barr')
+    await input.setValue('ber')
     await input.trigger('keyup', {
       keyCode: 72
     })

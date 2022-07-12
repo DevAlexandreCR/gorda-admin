@@ -14,7 +14,10 @@ export default class WhatsAppClient implements WPSubject {
   constructor() {
     const url = process.env.VUE_APP_WP_CLIENT_API_URL as string ?? 'http://localhost'
     const port = process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000
-    this.socket = io( url + ':' + port )
+    this.socket = io( url + ':' + port, {
+      reconnectionAttempts: 5,
+      reconnectionDelay: 5000
+    })
     this.onQRCode()
     this.getState()
     this.onReady()

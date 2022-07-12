@@ -14,6 +14,8 @@ export default {
   upss: 'Upss!',
   create_new_account: 'Ingresa tus datos',
   create_account: 'Regístrate',
+  go_back: 'Volver',
+  forbidden: 'Lo sentimos, su acceso está denegado por razones de seguridad de nuestro servidor y también de nuestros datos sensibles.\n\n Por favor inicia sesión con otra cuenta',
   fields: {
     name: 'Nombre',
     email: 'Correo electrónico',

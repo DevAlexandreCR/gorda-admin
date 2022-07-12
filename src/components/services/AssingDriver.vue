@@ -8,7 +8,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <auto-complete :idField="'field'" :elements="plates" @selected="onDriverSelected" :placeholder="$t('drivers.placeholders.plate')" :fieldName="'field'"/>
+          <auto-complete :idField="'fieldAssign'" v-bind="plate" :elements="plates" @selected="onDriverSelected" :key="keyAutoComplete"
+                         :placeholder="$t('drivers.placeholders.plate')" :fieldName="'randomName'"/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
@@ -35,9 +36,11 @@ import {Modal} from 'bootstrap'
 
 const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
+const plate: Ref<string> = ref('')
+const keyAutoComplete: Ref<number> = ref(0)
 
 let service: Service = new Service()
-let driverId: string
+let driverId: string|null
 let driverModal: Modal
 const {t} = useI18n()
 
@@ -51,12 +54,17 @@ onMounted(() => {
   const element = document.getElementById('driverModal') as HTMLElement;
   if (element) driverModal = new Modal(element)
   element?.addEventListener('show.bs.modal', (event: any) => {
+    plate.value = ''
     const serviceId = event.relatedTarget.id
     if (serviceId) {
       ServiceRepository.getService(serviceId).then(dbService => {
         Object.assign(service, dbService)
       })
     }
+  })
+
+  element?.addEventListener('hidden.bs.modal', () => {
+    plate.value = ''
   })
 })
 
@@ -77,5 +85,7 @@ const assignDriver = (): void => {
 
 function onDriverSelected(element: AutoCompleteType): void {
   driverId = element.id
+  assignDriver()
+  keyAutoComplete.value++
 }
 </script>

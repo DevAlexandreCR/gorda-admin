@@ -4,7 +4,8 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {enableAutoUnmount} from '@vue/test-utils'
+import {enableAutoUnmount, config} from '@vue/test-utils'
+import {createPinia, setActivePinia} from 'pinia'
 
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
@@ -36,10 +37,17 @@ jest.mock('firebase/database', () => {
 jest.mock('firebase/storage')
 jest.mock('qrcode')
 
+const pinia = createPinia()
+
+config.global.plugins = [
+  pinia
+]
+
 beforeEach(() => {
   const div = document.createElement('div')
   div.id = 'root'
   document.body.appendChild(div)
+  setActivePinia(pinia)
 })
 
 enableAutoUnmount(afterEach)
@@ -52,12 +60,12 @@ let server: httpServer
 function openServer(done: Function): void{
   server = createServer()
   socket = new Server(server)
-  WhatsAppClient.getInstance()
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
     socket.on('connection', () => {
       done()
     })
   })
+  WhatsAppClient.getInstance()
 }
 
 export {

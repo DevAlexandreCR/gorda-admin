@@ -55,17 +55,18 @@ import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import Driver from '@/models/Driver'
-import DriverRepository from '@/repositories/DriverRepository'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {storeToRefs} from 'pinia'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 const {t} = useI18n()
 
 const pendingServices: Ref<Array<ServiceInterface>> = ref([])
 const inProgressServices: Ref<Array<ServiceInterface>> = ref([])
 const historyServices: Ref<Array<ServiceInterface>> = ref([])
-const drivers: Ref<Array<Driver>> = ref([])
+const driverStore = useDriversStore()
+const {drivers} = storeToRefs(driverStore)
 
 function onServiceAdded(data: DataSnapshot): void {
   const service = new Service()
@@ -82,20 +83,32 @@ function onServiceChanged(data: DataSnapshot): void {
 }
 
 function setServiceOnChange(service: Service): void {
+  let updated = false
   switch (service.status) {
     case Service.STATUS_PENDING:
-      pendingServices.value = pendingServices.value.filter(serv => {
+      pendingServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          updated = true
+          pendingServices.value[index] = service
+        }
+      })
+      if (!updated) pendingServices.value.unshift(service)
+        inProgressServices.value = inProgressServices.value.filter(serv => {
         return serv.id != service.id
       })
-      inProgressServices.value = inProgressServices.value.filter(serv => {
-        return serv.id != service.id
-      })
-      pendingServices.value.unshift(service)
       break
     case Service.STATUS_IN_PROGRESS:
-      inProgressServices.value.unshift(service)
-      pendingServices.value = pendingServices.value.filter(serv => {
-        return serv.id !== service.id
+      inProgressServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          updated = true
+          inProgressServices.value[index] = service
+        }
+      })
+      if (!updated) inProgressServices.value.unshift(service)
+      pendingServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          pendingServices.value.splice(index, 1)
+        }
       })
       break
     default:
@@ -108,17 +121,11 @@ function setServiceOnChange(service: Service): void {
       historyServices.value[historyServices.value.findIndex(serv => serv.id === service.id)].status = service.status
       break
   }
+  updated = false
 }
 
 onBeforeMount((): void => {
   ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().subtract(1, 'day').unix())
-  DriverRepository.getAll().then(dbDrivers => {
-    dbDrivers.forEach(driver => {
-      const driverTmp = new Driver()
-      Object.assign(driverTmp, driver)
-      drivers.value.push(driverTmp)
-    })
-  })
 })
 
 function cancel(serviceId: string): void {

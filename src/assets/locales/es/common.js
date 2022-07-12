@@ -25,7 +25,8 @@ export default {
     updated: 'Recurso actualizado correctamente',
     created: 'Recurso creado correctamente',
     deleted: 'Recurso eliminado correctamente',
-    error: 'Algo salió mal!'
+    error: 'Algo salió mal!',
+    forbidden: 'Permiso denegado!'
   },
   placeholders: {
     name: 'Ingrese el nombre',

@@ -14,7 +14,7 @@
             <div class="mb-3">
               <label class="form-label">{{ $t('users.forms.select_img') }}</label>
               <Field name="image" class="form-control" type="file" accept="image/*" v-model="image"/>
-              <ErrorMessage name="image"/>
+              <ErrorMessage name="image" class="is-invalid"/>
             </div>
           </div>
           <div class="modal-footer">
@@ -33,7 +33,8 @@ import CustomValidator from '@/assets/validatiions/validators'
 import * as yup from 'yup'
 import StorageService from "@/services/StorageService";
 import {ErrorMessage, Field, Form} from 'vee-validate'
-import {Modal} from 'bootstrap'
+import * as bootstrap from 'bootstrap'
+
 
 class Props {
   id: string
@@ -64,8 +65,8 @@ export default class ImageLoader extends Vue.with(Props) {
     StorageService.uploadFile(ref, this.image[0]).then(url => {
       this.$emit(this.event, url)
       const modal = document.getElementById(this.id) as HTMLElement
-      const modalImg = new Modal(modal)
-      modalImg?.hide()
+      const modalImg = bootstrap.Modal.getOrCreateInstance(modal ?? '')
+      modalImg.hide()
     })
   }
 }

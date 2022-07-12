@@ -29,7 +29,7 @@ class DriverRepository {
   /* istanbul ignore next */
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.enable(driverId, enabledAt == 0).then(() => {
+      UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
         set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(() => {
           resolve()
         })
@@ -48,7 +48,6 @@ class DriverRepository {
       phoneNumber: '+57' + driver.phone,
       password: password,
       disabled: driver.enabled_at == 0,
-      photoUrl: ''
     }
     return new Promise((resolve, reject) => {
       UserRepository.createAuth(userData).then(async (res) => {

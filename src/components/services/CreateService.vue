@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id +1"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="neighborhoods" :key="service.id"
+              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete" :key="service.id + 2"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
@@ -51,45 +51,39 @@
 import {Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
-import locations from '../../../src/assets/location/neighborhoods.json'
 import AutoComplete from '@/components/AutoComplete.vue'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import {LocationType} from '@/types/LocationType'
-import Client from '@/models/Client'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import {onMounted, ref, Ref} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import {ClientInterface} from '@/types/ClientInterface'
-
-const neighborhoods: Ref<Array<AutoCompleteType>> = ref([])
-const clients: Array<Client> = []
+import {usePlacesStore} from '@/services/stores/PlacesStore'
+import {useClientsStore} from '@/services/stores/ClientsStore'
+const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
+const placesStore = usePlacesStore()
+const clientsStore = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
-onMounted(() => {
+onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
-  locations.forEach(loc => {
-    neighborhoods.value.push({
+  placesStore.places.forEach(place => {
+    placesAutocomplete.value.push({
       id: '0',
-      value: loc.name
+      value: place.name
     })
   })
 
-  ClientRepository.getAll().then(clientsDB => {
-    clientsDB.forEach(clientDB => {
-      clientsPhone.value.push({
-        id: clientDB.id,
-        value: clientDB.phone
-      })
-
-      const clientTmp = new Client()
-      Object.assign(clientTmp, clientDB)
-      clients.push(clientTmp)
+  clientsStore.clients.forEach(clientDB => {
+    clientsPhone.value.push({
+      id: clientDB.id,
+      value: clientDB.phone
     })
   })
 })
@@ -115,7 +109,6 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     }).then((client) => {
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
-      clients.push(client)
       clientsPhone.value.push({
         id: client.id,
         value: client.phone
@@ -147,7 +140,7 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType, id: string): void {
-  let client = clients.find(cli => cli.id === element.id) ?? new Client
+  let client = clientsStore.findById(element.id)
   let serviceIndex = services.value.findIndex(service => service.id == id)
   services.value[serviceIndex].phone = client.phone
   services.value[serviceIndex].name = client.name
@@ -171,12 +164,8 @@ function remove(key: number): void {
 }
 
 function locSelected(element: AutoCompleteType): void {
-  let neighbor = locations.find(el => el.name == element.value)
-  start_loc = {
-    name: neighbor?.name ?? '',
-    lat: neighbor?.location.lat,
-    long: neighbor?.location.lng
-  }
+  let place = placesStore.findByName(element.value)
+  start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
 }
