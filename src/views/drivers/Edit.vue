@@ -22,7 +22,7 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
                 <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.name">
-                  <input class="form-control" id="name" aria-label="Name" aria-describedby="name-addon"
+                  <input class="form-control form-control-sm" id="name" aria-label="Name" aria-describedby="name-addon"
                          v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
@@ -30,7 +30,7 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
-                  <input class="form-control" id="email" aria-label="Email" aria-describedby="email-addon"
+                  <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
                          v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
@@ -38,7 +38,7 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
-                  <input class="form-control" id="phone" aria-label="Phone" aria-describedby="phone-addon"
+                  <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
                          v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
@@ -47,14 +47,14 @@
                 <div class="row">
                   <div class="col-sm-3">
                     <label>{{ $t('drivers.fields.doc_type') }}</label>
-                    <Field name="docType" class="form-select" id="doc_type" as="select" v-model="driver.docType">
+                    <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select" v-model="driver.docType">
                       <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
                     </Field>
                   </div>
                   <div class="col-sm-9">
                     <label>{{ $t('drivers.fields.document') }}</label>
                     <Field name="document" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.document">
-                      <input class="form-control" id="document" aria-label="Document" aria-describedby="doc-addon"
+                      <input class="form-control form-control-sm" id="document" aria-label="Document" aria-describedby="doc-addon"
                              v-model="field.value" :placeholder="$t('drivers.placeholders.document')" v-bind="field"/>
                       <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
@@ -85,7 +85,7 @@
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
                 <Field name="brand" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.brand">
-                  <input class="form-control" id="brand" aria-label="Brand" aria-describedby="brand-addon"
+                  <input class="form-control form-control-sm" id="brand" aria-label="Brand" aria-describedby="brand-addon"
                          v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
@@ -93,7 +93,7 @@
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
                 <Field name="model" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.model">
-                  <input class="form-control" id="model" aria-label="Model" aria-describedby="model-addon"
+                  <input class="form-control form-control-sm" id="model" aria-label="Model" aria-describedby="model-addon"
                          v-model="field.value" :placeholder="$t('drivers.placeholders.model')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
@@ -101,7 +101,7 @@
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
                 <Field name="plate" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.plate">
-                  <input class="form-control" id="plate" aria-label="Plate" aria-describedby="plate-addon"
+                  <input class="form-control form-control-sm" id="plate" aria-label="Plate" aria-describedby="plate-addon"
                          v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>

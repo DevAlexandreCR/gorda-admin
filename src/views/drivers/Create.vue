@@ -48,7 +48,7 @@
                 <div class="row">
                   <div class="col-sm-3">
                     <label>{{ $t('drivers.fields.doc_type') }}</label>
-                    <Field name="docType" class="form-select" id="doc_type" as="select" v-model="driver.docType">
+                    <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select" v-model="driver.docType">
                       <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
                     </Field>
                   </div>
