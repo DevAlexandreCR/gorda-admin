@@ -3,6 +3,7 @@ import Login from '@/views/Login.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {ErrorMessage, Field, Form} from 'vee-validate'
+import AuthService from "@/services/AuthService";
 
 describe('Login.vue', () => {
   let wrapper: VueWrapper<any>
@@ -25,8 +26,9 @@ describe('Login.vue', () => {
     await router.isReady()
   })
   it('show alert when try login without credentials', async () => {
+    AuthService.login = jest.fn().mockRejectedValue(new Error('error'))
     await wrapper.vm.login({email: '', pass: ''})
-    expect(wrapper.text()).toContain('Usuario o contraseña incorrectos!')
+    expect(wrapper.text()).toContain(wrapper.vm.$t('users.alert'))
     expect(wrapper.vm.error).toBeTruthy()
   })
 })

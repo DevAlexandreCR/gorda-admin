@@ -1,0 +1,11 @@
+.autocomplete-list {
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+}
+
+li.selected {
+  background: $secondary;
+  color: white;
+  font-weight: bolder;
+}

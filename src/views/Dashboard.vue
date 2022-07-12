@@ -1,27 +1,19 @@
 <template>
-  <SideBar></SideBar>
-  <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg " id="main">
-    <NavBar/>
-    <router-view></router-view>
-  </main>
+  <div>
+    <SideBar></SideBar>
+    <main  class="main-content mt-1 border-radius-lg " id="main">
+      <NavBar/>
+      <router-view class="mt-4 ms-2"></router-view>
+    </main>
+  </div>
 </template>
 
-<script lang="ts">
-import {Options, Vue} from 'vue-class-component'
+<script setup lang="ts">
 import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
+import {onMounted} from 'vue'
 
-@Options({
-  components: {
-    SideBar,
-    NavBar
-  },
+onMounted((): void => {
+  require('@/vendor/js/soft-ui-dashboard')
 })
-export default class Dashboard extends Vue {
-  collapsed = false
-
-  mounted(): void {
-    require('@/vendor/js/soft-ui-dashboard')
-  }
-}
 </script>

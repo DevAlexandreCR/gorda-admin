@@ -1,5 +1,7 @@
 "use strict";
 
+const bootstrap = require('bootstrap')
+
 // Verify navbar blur on scroll
 navbarBlurOnScroll('navbarBlur');
 

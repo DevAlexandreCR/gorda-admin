@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
+    "useDefineForClassFields": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,6 +19,10 @@
     "types": [
       "webpack-env",
       "jest"
+    ],
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types/"
     ],
     "paths": {
       "@/*": [

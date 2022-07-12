@@ -1,16 +1,16 @@
 <template>
   <aside class="sidenav navbar navbar-vertical bg-light navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
    <div class="sidenav-header">
-      <a class="navbar-brand m-0">
-        <img src="../assets/img/logo.png" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
-        <span class="ms-1 font-weight-bold">Dashboard</span>
-      </a>
+     <router-link class="navbar-brand m-0" tag="a" :to="{name: 'profile'}">
+       <img :src="logoUrl" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
+       <span class="ms-1 font-weight-bold">{{ user.name }}</span>
+     </router-link>
     </div>
     <hr class="horizontal bg-dark dark mt-0">
     <div class="collapse navbar-collapse w-auto max-height-vh-100 h-100 ps ps--active-y" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <router-link :to="{ name: 'main'}" tag="a" class="nav-link">
+          <router-link :to="{ name: 'dashboard'}" tag="a" :class="$router.currentRoute.value.path.includes('/dashboard/main') ? 'nav-link active': 'nav-link'">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg id="ico" width="12px" height="12px" viewBox="0 0 45 40" xmlns="http://www.w3.org/2000/svg">
                 <title>shop </title>
@@ -29,36 +29,102 @@
             <span class="nav-link-text ms-1">{{ $t('routes.dashboard') }}</span>
           </router-link>
         </li>
-  <li class="nav-item">
-          <router-link :to="{ name: 'users'}" tag="a" class="nav-link">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <svg width="12px" height="12px" viewBox="0 0 46 42" xmlns="http://www.w3.org/2000/svg" >
-                <title>customer-support</title>
-                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <g transform="translate(-1717.000000, -291.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                    <g transform="translate(1716.000000, 291.000000)">
-                      <g transform="translate(1.000000, 0.000000)">
-                        <path class="color-background opacity-6" d="M45,0 L26,0 C25.447,0 25,0.447 25,1 L25,20 C25,20.379 25.214,20.725 25.553,20.895 C25.694,20.965 25.848,21 26,21 C26.212,21 26.424,20.933 26.6,20.8 L34.333,15 L45,15 C45.553,15 46,14.553 46,14 L46,1 C46,0.447 45.553,0 45,0 Z"></path>
-                        <path class="color-background" d="M22.883,32.86 C20.761,32.012 17.324,31 13,31 C8.676,31 5.239,32.012 3.116,32.86 C1.224,33.619 0,35.438 0,37.494 L0,41 C0,41.553 0.447,42 1,42 L25,42 C25.553,42 26,41.553 26,41 L26,37.494 C26,35.438 24.776,33.619 22.883,32.86 Z"></path>
-                        <path class="color-background" d="M13,28 C17.432,28 21,22.529 21,18 C21,13.589 17.411,10 13,10 C8.589,10 5,13.589 5,18 C5,22.529 8.568,28 13,28 Z"></path>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
+        <li class="nav-item">
+          <router-link :to="{ name: 'users'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/users/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fas fa-users"></em>
             </div>
             <span class="nav-link-text ms-1">{{ $t('routes.users') }}</span>
           </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'drivers'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/drivers/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-solid fa-car-side"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('routes.drivers') }}</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'places'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/places/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fas fa-location-dot"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('routes.places') }}</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{ name: 'connection'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ? 'nav-link active': 'nav-link'"
+                       v-if="isAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-brands fa-whatsapp"></em>
+            </div>
+            <span class="nav-link-text ms-1 position-relative">{{ connectionState ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
+
+            <span v-if="connectionState" class="position-absolute p-2 ms-2 bg-success border border-light rounded-circle"></span>
+            <span  v-else class="position-absolute p-2 ms-2 bg-danger border border-light rounded-circle"></span>
+            </span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" @click="signOut" href="" id="signOut">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fas fa-sign-out-alt"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('users.logOut') }}</span>
+          </a>
         </li>
       </ul>
   </div>
 </aside>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import AuthService from '@/services/AuthService'
+import User from '@/models/User'
+import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
+import {onMounted, onUnmounted, ref, Ref} from 'vue'
+import {ClientObserver} from '@/services/gordaApi/ClientObserver'
+import {useStorage} from '@/services/stores/Storage'
+import {storeToRefs} from 'pinia'
 
-export default defineComponent({
-  name: 'Sidebar'
+let user: Ref<User> = ref(new User())
+let isAdmin: Ref<boolean> = ref(false)
+let connectionState: Ref<boolean> = ref(false)
+let socket: WhatsAppClient
+let observer: ClientObserver
+const storage = useStorage()
+const {logoUrl} = storeToRefs(storage)
+
+function signOut(): void {
+  AuthService.logOut()
+}
+
+const onUpdate = (socket: WhatsAppClient): void => {
+  connectionState.value = socket.isConnected()
+}
+
+onMounted(async () => {
+  user.value = AuthService.getCurrentUser()
+  isAdmin.value = user.value.isAdmin()
+  socket = WhatsAppClient.getInstance()
+  observer = new ClientObserver(onUpdate)
+  socket.attach(observer)
+})
+
+onUnmounted(() => {
+  socket.detach(observer)
 })
 </script>
 

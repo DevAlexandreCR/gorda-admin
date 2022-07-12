@@ -1,19 +1,16 @@
 import {mount, VueWrapper} from '@vue/test-utils'
 import Dashboard from '@/views/Dashboard.vue'
-import SideBar from '@/components/SideBar.vue'
-import NavBar from '@/components/NavBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
+import AuthService from '@/services/AuthService'
+import UserInterface from '../../mocks/entities/UserMock'
 
 describe('Dashboard.vue', () => {
+  Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
       {
-        components: {
-          SideBar,
-          NavBar
-        },
         global: {
           plugins: [router, i18n],
           provide: {
@@ -23,8 +20,8 @@ describe('Dashboard.vue', () => {
       })
     await router.isReady()
   })
-
   it('an user can show dashboard', async () => {
-    expect(wrapper.html()).toContain('users')
+    expect(wrapper.html()).toContain(wrapper.vm.$t('routes.dashboard'))
+    expect(wrapper.html()).toContain(wrapper.vm.$t('routes.users'))
   })
 })
