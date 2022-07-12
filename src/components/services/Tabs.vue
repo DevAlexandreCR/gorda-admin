@@ -83,20 +83,32 @@ function onServiceChanged(data: DataSnapshot): void {
 }
 
 function setServiceOnChange(service: Service): void {
+  let updated = false
   switch (service.status) {
     case Service.STATUS_PENDING:
-      pendingServices.value = pendingServices.value.filter(serv => {
+      pendingServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          updated = true
+          pendingServices.value[index] = service
+        }
+      })
+      if (!updated) pendingServices.value.unshift(service)
+        inProgressServices.value = inProgressServices.value.filter(serv => {
         return serv.id != service.id
       })
-      inProgressServices.value = inProgressServices.value.filter(serv => {
-        return serv.id != service.id
-      })
-      pendingServices.value.unshift(service)
       break
     case Service.STATUS_IN_PROGRESS:
-      inProgressServices.value.unshift(service)
-      pendingServices.value = pendingServices.value.filter(serv => {
-        return serv.id !== service.id
+      inProgressServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          updated = true
+          inProgressServices.value[index] = service
+        }
+      })
+      if (!updated) inProgressServices.value.unshift(service)
+      pendingServices.value.forEach((serv, index) => {
+        if (serv.id === service.id) {
+          pendingServices.value.splice(index, 1)
+        }
       })
       break
     default:
@@ -109,6 +121,7 @@ function setServiceOnChange(service: Service): void {
       historyServices.value[historyServices.value.findIndex(serv => serv.id === service.id)].status = service.status
       break
   }
+  updated = false
 }
 
 onBeforeMount((): void => {

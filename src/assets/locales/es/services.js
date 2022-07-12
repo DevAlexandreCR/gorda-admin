@@ -3,6 +3,7 @@ export default {
     canceled: 'Cancelado',
     pending: 'Pendientes',
     in_progress: 'En curso',
+    terminated: 'Completado',
   },
   fields: {
     hour: 'Hora',
