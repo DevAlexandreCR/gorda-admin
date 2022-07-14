@@ -11,6 +11,7 @@ import ToastService from "@/services/ToastService";
 import waitForExpect from 'wait-for-expect'
 import { nextTick } from 'vue'
 import Driver from '@/models/Driver'
+import DateHelper from '@/helpers/DateHelper'
 
 
 describe('Edit.vue', () => {
@@ -49,14 +50,25 @@ describe('Edit.vue', () => {
   })
   
   it('A user see the inputs to edit a driver', () => {
+    const unix = dayjs().unix()
+    DriverMock.vehicle.soat_exp = unix
+    DriverMock.vehicle.tec_exp = unix
+    DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
+    wrapper = mount(Edit, {
+      attachTo: '#root',
+      global: {
+        plugins: [router, i18n]
+      },
+    })
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
     const imageLoader = wrapper.findAllComponents(ImageLoader)
-    expect(field.length).toBe(10)
+    expect(field.length).toBe(13)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(3)
     expect(imageLoader.length).toBe(2)
+    expect(wrapper.text()).toContain(DateHelper.unixToDate(unix, 'YYYY-MM-DD'))
   })
 
   it('A user sees the Span when submit', async () => {
@@ -74,7 +86,7 @@ describe('Edit.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(7)
+    expect(span.length).toBe(10)
   })
   
   it('should show toast success when update driver successfully', async () => {

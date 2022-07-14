@@ -38,6 +38,7 @@ export default {
     plate: 'ingrese el número de placa',
     photo: 'Seleccione foto de perfil',
     photo_vehicle: 'Seleccione foto del vehículo',
+    color: 'Seleccione el color del vehículo',
     soat_exp: 'Seleccione vencimiento del soat',
     tec_exp: 'Seleccione vencimiento de la tecno-mecánica'
   }
