@@ -164,7 +164,7 @@ const schema: ObjectSchema<any> = object().shape({
   brand: string().required().min(3),
   plate: string().required().min(3),
   model: string().required().min(3),
-  color: string().matches(new RegExp('^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$')).required(),
+  color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
   soat_exp: date().required().min(new Date()),
   tec_exp: date().required().min(new Date),
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),

@@ -147,7 +147,6 @@
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
 import {ErrorMessage, Field, Form} from 'vee-validate'
-import * as yup from 'yup'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -160,7 +159,7 @@ import {useRoute} from 'vue-router'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
-import {date, string} from 'yup'
+import {mixed, object, date, string} from 'yup'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -172,16 +171,16 @@ const route = useRoute()
 const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
-const schema = yup.object().shape({
-  name: yup.string().required().min(3),
-  email: yup.string().required().email(),
-  phone: yup.string().required().min(8),
-  docType: yup.mixed().oneOf(Constants.DOC_TYPES).required(),
-  document: yup.string().required().min(6).max(10),
-  brand: yup.string().required().min(3),
-  plate: yup.string().required().min(3),
-  model: yup.string().required().min(3),
-  color: string().matches(new RegExp('^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$')).required(),
+const schema = object().shape({
+  name: string().required().min(3),
+  email: string().required().email(),
+  phone: string().required().min(8),
+  docType: mixed().oneOf(Constants.DOC_TYPES).required(),
+  document: string().required().min(6).max(10),
+  brand: string().required().min(3),
+  plate: string().required().min(3),
+  model: string().required().min(3),
+  color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
   soat_exp: date().required().min(new Date),
   tec_exp: date().required().min(new Date)
 })
