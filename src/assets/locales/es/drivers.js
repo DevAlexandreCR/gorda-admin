@@ -9,7 +9,10 @@ export default {
     doc_type: 'Tipo doc',
     document: 'Documento',
     vehicle: 'Vehículo',
-    plate: 'Placa'
+    plate: 'Placa',
+    color: 'Color',
+    soat_exp: 'Vencimiento Soat',
+    tec_exp: 'Vencimiento tecno-mecánica'
   },
   forms: {
     edit: 'Editar información del conductor',
@@ -22,7 +25,10 @@ export default {
   vehicle: {
     brand: 'Marca',
     model: 'Modelo',
-    plate: 'Placas'
+    plate: 'Placas',
+    color: 'Color',
+    soat_exp: 'Vencimiento Soat',
+    tec_exp: 'Vencimiento tecno-mecánica'
   },
   placeholders: {
     docType: 'Tipo de documento',
@@ -31,6 +37,9 @@ export default {
     model: 'Ingrese modelo del vehículo',
     plate: 'ingrese el número de placa',
     photo: 'Seleccione foto de perfil',
-    photo_vehicle: 'Seleccione foto del vehículo'
+    photo_vehicle: 'Seleccione foto del vehículo',
+    color: 'Seleccione el color del vehículo',
+    soat_exp: 'Seleccione vencimiento del soat',
+    tec_exp: 'Seleccione vencimiento de la tecno-mecánica'
   }
 }

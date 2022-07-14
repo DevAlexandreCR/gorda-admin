@@ -32,10 +32,10 @@ describe('Create.vue', () => {
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
     const input = wrapper.findAll('.form-control')
-    expect(field.length).toBe(11)
+    expect(field.length).toBe(14)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(1)
-    expect(input.length).toBe(10)
+    expect(input.length).toBe(13)
   })
 
   it('A user sees the Span when submit', async () => {
@@ -45,7 +45,7 @@ describe('Create.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(8)
+    expect(span.length).toBe(11)
   })
   
   it('A user can enable or disable a driver', async () => {

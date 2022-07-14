@@ -23,12 +23,11 @@ describe('SideBar.vue', () => {
   
   beforeEach((done) => {
     openServer(done)
-  })
+  }, 10000)
   
   afterEach(() => {
     server.close()
     socket.close()
-    wrapper.unmount()
   })
   
   it('an user can show buttons to users and dashboard', async () => {
