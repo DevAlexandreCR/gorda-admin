@@ -15,18 +15,15 @@ import {onMounted} from 'vue'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import {useStorage} from '@/services/stores/Storage'
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
-const {getLogoUrl} = useStorage()
 
 onMounted((): void => {
   require('@/vendor/js/soft-ui-dashboard')
   getPlaces()
   getClients()
   getDrivers()
-  getLogoUrl()
 })
 </script>
