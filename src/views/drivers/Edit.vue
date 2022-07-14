@@ -98,11 +98,33 @@
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
+              <div class="row">
+                <div class="form-group col-sm-9">
+                  <label>{{ $t('drivers.vehicle.plate') }}</label>
+                  <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+                <div class="form-group col-sm-3">
+                  <label>{{ $t('drivers.vehicle.color') }}</label>
+                  <Field name="color" v-model="driver.vehicle.color" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm py-0" type="color" v-model="field.value" :placeholder="$t('drivers.placeholders.color')" id="color" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+              </div>
               <div class="form-group">
-                <label>{{ $t('drivers.vehicle.plate') }}</label>
-                <Field name="plate" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.plate">
-                  <input class="form-control form-control-sm" id="plate" aria-label="Plate" aria-describedby="plate-addon"
-                         v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" v-bind="field"/>
+                <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
+                <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
+                <Field name="tec_exp" type="datetime" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -133,10 +155,12 @@ import {Constants} from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import i18n from '@/plugins/i18n'
-import {onBeforeMount, ref, Ref} from 'vue'
+import {onBeforeMount, ref, Ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import router from '@/router'
+import DateHelper from '@/helpers/DateHelper'
+import {date, string} from 'yup'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -146,6 +170,8 @@ const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
 const driverStore = useDriversStore()
+const soatExp: Ref<string> = ref('')
+const tecExp: Ref<string> = ref('')
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
@@ -154,13 +180,28 @@ const schema = yup.object().shape({
   document: yup.string().required().min(6).max(10),
   brand: yup.string().required().min(3),
   plate: yup.string().required().min(3),
-  model: yup.string().required().min(3)
+  model: yup.string().required().min(3),
+  color: string().matches(new RegExp('^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$')).required(),
+  soat_exp: date().required().min(new Date),
+  tec_exp: date().required().min(new Date)
+})
+
+watch(soatExp, (newValue: string) => {
+  driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
+})
+
+watch(tecExp, (newValue: string) => {
+  driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
 })
 
 onBeforeMount(() => {
   const id = route.params.id as string
   const driverTmp = driverStore.findById(id)
-  if (driverTmp) driver.value = driverTmp
+  if (driverTmp) {
+    driver.value = driverTmp
+    soatExp.value = DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD')
+    tecExp.value = DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
+  }
   else {
     router.push({name: 'drivers'})
   }

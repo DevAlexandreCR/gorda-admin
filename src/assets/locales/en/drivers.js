@@ -9,7 +9,10 @@ export default {
     doc_type: 'Doc type',
     document: 'Document',
     vehicle: 'Vehicle',
-    plate: 'Licence number'
+    plate: 'Licence number',
+    color: 'Color',
+    soat_exp: 'Soat expiration',
+    tec_exp: 'Techno expiration'
   },
   forms: {
     edit: 'Edit driver information',
@@ -22,7 +25,10 @@ export default {
   vehicle: {
     brand: 'Brand',
     model: 'Model',
-    plate: 'Licence plate number'
+    plate: 'Licence plate number',
+    color: 'Color',
+    soat_exp: 'Soat expiration',
+    tec_exp: 'Techno expiration'
   },
   placeholders: {
     password: 'Password',
@@ -33,6 +39,9 @@ export default {
     model: 'Enter car model',
     plate: 'Enter licence plate number',
     photo: 'Choose photo profile',
-    photo_vehicle: 'Choose photo vehicle'
+    photo_vehicle: 'Choose photo vehicle',
+    color: 'Choose color vehicle',
+    soat_exp: 'Choose Soat expiration',
+    tec_exp: 'Choose Techno expiration'
   }
 }
