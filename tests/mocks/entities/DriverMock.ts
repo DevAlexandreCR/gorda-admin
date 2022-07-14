@@ -16,7 +16,7 @@ class DriverMock implements DriverInterface{
     brand: 'Mazda',
     model: 'Cx30',
     plate: 'HEM390',
-    color: '#ffffff',
+    color: {name: 'white', hex: '#ffffff'},
     soat_exp: 0,
     tec_exp: 0,
     photoUrl: 'https://fakeUrl.com'

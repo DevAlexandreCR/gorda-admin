@@ -11,8 +11,8 @@ export default {
     vehicle: 'Vehicle',
     plate: 'Licence number',
     color: 'Color',
-    soat_exp: 'Soat expiration',
-    tec_exp: 'Techno expiration'
+    soat_exp: 'Soat',
+    tec_exp: 'Techno'
   },
   forms: {
     edit: 'Edit driver information',
@@ -27,8 +27,8 @@ export default {
     model: 'Model',
     plate: 'Licence plate number',
     color: 'Color',
-    soat_exp: 'Soat expiration',
-    tec_exp: 'Techno expiration'
+    soat_exp: 'Soat',
+    tec_exp: 'Techno'
   },
   placeholders: {
     password: 'Password',

@@ -11,8 +11,8 @@ export default {
     vehicle: 'Vehículo',
     plate: 'Placa',
     color: 'Color',
-    soat_exp: 'Vencimiento Soat',
-    tec_exp: 'Vencimiento tecno-mecánica'
+    soat_exp: 'Soat',
+    tec_exp: 'Tecno-mecánica'
   },
   forms: {
     edit: 'Editar información del conductor',
@@ -27,8 +27,8 @@ export default {
     model: 'Modelo',
     plate: 'Placas',
     color: 'Color',
-    soat_exp: 'Vencimiento Soat',
-    tec_exp: 'Vencimiento tecno-mecánica'
+    soat_exp: 'Soat',
+    tec_exp: 'Tecno-mecánica'
   },
   placeholders: {
     docType: 'Tipo de documento',
