@@ -11,7 +11,6 @@ import ToastService from "@/services/ToastService";
 import waitForExpect from 'wait-for-expect'
 import { nextTick } from 'vue'
 import Driver from '@/models/Driver'
-import DateHelper from '@/helpers/DateHelper'
 
 
 describe('Edit.vue', () => {
@@ -49,7 +48,7 @@ describe('Edit.vue', () => {
     expect(wrapper.vm.driver.enabled_at).toBe(0)
   })
   
-  it('A user see the inputs to edit a driver', () => {
+  it('A user see the inputs to edit a driver', async () => {
     const unix = dayjs().unix()
     DriverMock.vehicle.soat_exp = unix
     DriverMock.vehicle.tec_exp = unix
@@ -60,15 +59,17 @@ describe('Edit.vue', () => {
         plugins: [router, i18n]
       },
     })
+    await nextTick()
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
     const imageLoader = wrapper.findAllComponents(ImageLoader)
+    const dates = wrapper.findAll('input[type="date"]')
     expect(field.length).toBe(13)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(3)
     expect(imageLoader.length).toBe(2)
-    expect(wrapper.text()).toContain(DateHelper.unixToDate(unix, 'YYYY-MM-DD'))
+    expect(dates.length).toBe(2)
   })
 
   it('A user sees the Span when submit', async () => {
