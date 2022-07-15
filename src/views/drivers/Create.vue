@@ -49,7 +49,7 @@
                   <div class="col-sm-3">
                     <label>{{ $t('drivers.fields.doc_type') }}</label>
                     <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select" v-model="driver.docType">
-                      <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
+                      <option v-for="(type, key) in types" :key="key" :value="type">{{ type }}</option>
                     </Field>
                   </div>
                   <div class="col-sm-9">
@@ -92,35 +92,43 @@
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                  </Field>
               </div>
+              <div class="form-group">
+                <label>{{ $t('drivers.vehicle.plate') }}</label>
+                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
               <div class="row">
-                <div class="form-group col-sm-9">
-                  <label>{{ $t('drivers.vehicle.plate') }}</label>
-                  <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
-                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
+                <div class="form-group col-sm-8">
+                  <label>{{ $t('drivers.placeholders.color') }}</label>
+                  <select name="colorObj" class="form-select form-select-sm" id="color" v-model="color">
+                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.' + color.name) }}</option>
+                  </select>
                 </div>
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-4">
                   <label>{{ $t('drivers.vehicle.color') }}</label>
-                  <Field name="color" v-model="driver.vehicle.color" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm py-0" type="color" v-model="field.value" :placeholder="$t('drivers.placeholders.color')" id="color" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
+                  <Field name="color" v-model="driver.vehicle.color.hex" v-slot="{ field, errorMessage, meta }">
+                    <input name="color" class="form-control form-control-sm p-0" type="color" disabled v-model="field.value" :placeholder="$t('drivers.placeholders.color')" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
               </div>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
-                <Field name="soat_exp" type="date" v-model="driver.vehicle.soat_exp" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
-                <Field name="tec_exp" type="date" v-model="driver.vehicle.tec_exp" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
+                  <Field name="soat_exp" type="date" v-model="driver.vehicle.soat_exp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
+                  <Field name="tec_exp" type="date" v-model="driver.vehicle.tec_exp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
               </div>
             </div>
           </div>
@@ -146,12 +154,13 @@ import {Constants} from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
-import {ref, Ref} from 'vue'
+import {ref, Ref, watch} from 'vue'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
 const imageDriver: Ref<File[]> = ref([])
 const imageVehicle: Ref<File[]> = ref([])
+const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
 const schema: ObjectSchema<any> = object().shape({
   name: string().required().min(3),
@@ -168,6 +177,10 @@ const schema: ObjectSchema<any> = object().shape({
   tec_exp: date().required().min(new Date),
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   photoVehicleUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
+})
+
+watch(color, (newColor) => {
+  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor)?? Constants.COLORS[0]
 })
 
 function uploadImg(path: string, image: File): Promise<string> {

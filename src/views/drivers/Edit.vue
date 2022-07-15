@@ -98,35 +98,43 @@
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
+              <div class="form-group">
+                <label>{{ $t('drivers.vehicle.plate') }}</label>
+                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
               <div class="row">
-                <div class="form-group col-sm-9">
-                  <label>{{ $t('drivers.vehicle.plate') }}</label>
-                  <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
-                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
+                <div class="form-group col-sm-8">
+                  <label>{{ $t('drivers.placeholders.color') }}</label>
+                  <select class="form-select form-select-sm" id="color" v-model="color">
+                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.' + color.name) }}</option>
+                  </select>
                 </div>
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-4">
                   <label>{{ $t('drivers.vehicle.color') }}</label>
-                  <Field name="color" v-model="driver.vehicle.color" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm py-0" type="color" v-model="field.value" :placeholder="$t('drivers.placeholders.color')" id="color" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
+                  <Field name="color" v-model="driver.vehicle.color.hex" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm p-0" type="color" disabled v-model="field.value" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
               </div>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
-                <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
-                <Field name="tec_exp" type="datetime" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
+                  <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
+                  <Field name="tec_exp" type="date" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
               </div>
             </div>
           </div>
@@ -171,6 +179,7 @@ const route = useRoute()
 const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
+const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const schema = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -189,6 +198,10 @@ watch(soatExp, (newValue: string) => {
   driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
 })
 
+watch(color, (newColor) => {
+  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor)?? Constants.COLORS[0]
+})
+
 watch(tecExp, (newValue: string) => {
   driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
 })
@@ -198,8 +211,10 @@ onBeforeMount(() => {
   const driverTmp = driverStore.findById(id)
   if (driverTmp) {
     driver.value = driverTmp
+    if (!driver.value.vehicle.color) driver.value.vehicle.color = Constants.COLORS[0]
     soatExp.value = DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD')
     tecExp.value = DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
+    color.value = driverTmp.vehicle.color.hex
   }
   else {
     router.push({name: 'drivers'})
