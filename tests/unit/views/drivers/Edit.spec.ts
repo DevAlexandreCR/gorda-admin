@@ -11,20 +11,23 @@ import ToastService from "@/services/ToastService";
 import waitForExpect from 'wait-for-expect'
 import { nextTick } from 'vue'
 import Driver from '@/models/Driver'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 
 describe('Edit.vue', () => {
   let wrapper: VueWrapper<any>
   
   beforeEach(() => {
-    DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
+    DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
     DriverRepository.update = jest.fn().mockResolvedValue(null)
+    DriverRepository.enable = jest.fn().mockResolvedValue(null)
     wrapper = mount(Edit, {
       attachTo: '#root',
       global: {
           plugins: [router, i18n]
         },
     })
+    useDriversStore().getDrivers()
   })
   
   afterEach(async () => {
@@ -49,6 +52,15 @@ describe('Edit.vue', () => {
   })
   
   it('A user see the inputs to edit a driver', async () => {
+    await router.push('/dashboard/drivers/DriverID/edit')
+    DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
+    DriverRepository.update = jest.fn().mockResolvedValue(null)
+    wrapper = mount(Edit, {
+      attachTo: '#root',
+      global: {
+        plugins: [router, i18n]
+      },
+    })
     const unix = dayjs().unix()
     DriverMock.vehicle.soat_exp = unix
     DriverMock.vehicle.tec_exp = unix
@@ -95,6 +107,23 @@ describe('Edit.vue', () => {
     await wrapper.vm.updateDriver()
     
     expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('common.messages.updated'))
+  })
+  
+  it('should show toast success when enable driver', async () => {
+    const success =  jest.spyOn(ToastService, 'toast')
+    const input = wrapper.find('input[name="enable"]')
+    await input.trigger('click')
+    
+    expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('users.messages.enabled'))
+  })
+  
+  it('should show toast error when enable driver', async () => {
+    DriverRepository.enable = jest.fn().mockRejectedValue(new Error('new Error'))
+    const success =  jest.spyOn(ToastService, 'toast')
+    const input = wrapper.find('input[name="enable"]')
+    await input.trigger('click')
+    
+    expect(success).toHaveBeenCalledWith('error', wrapper.vm.$t('common.messages.error'), 'new Error')
   })
   
   it('should show toast error when update driver fail', async () => {
