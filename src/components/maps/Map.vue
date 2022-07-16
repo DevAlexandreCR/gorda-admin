@@ -24,6 +24,7 @@ const loader = new Loader({
 interface Props {
   places: Array<PlaceInterface>
 }
+
 const props = defineProps<Props>()
 
 onMounted(() => {
