@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted} from 'vue'
+import {onMounted, watch} from 'vue'
 import { PlaceInterface } from '@/types/PlaceInterface';
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
 
@@ -18,6 +18,12 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+watch(props.places, (newPlaces) => {
+  newPlaces.forEach(place => {
+    googleMap.addMarker(place)
+  })
+})
 
 onMounted(() => {
   googleMap = new GoogleMaps()

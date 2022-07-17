@@ -34,17 +34,20 @@
          </div>
       </div>
       </Form>
+      <div class="row min-vh-75">
+        <Map :places="selectedPlace"/>
+      </div>
     </div>
   <div class="col-sm-3 pe-4">
       <h5>{{$t('routes.places')}}</h5>
        <div class="form-group">
         <Field name="lat" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchPlace">
-           <input class="form-control" type="search" id="lat" v-model="field.value" :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
+           <input class="form-control" type="search" v-model="field.value" :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
            <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
         </Field>
       </div>
         <ul class="list-group places-group-up">
-          <li class="list-group-item list-group-item-action" v-for="(place, key) in foundPlaces" :key="key">{{place.name}}</li>
+          <li class="list-group-item list-group-item-action" @click="selectPlace(place)" v-for="(place, key) in foundPlaces" :key="key">{{place.name}}</li>
         </ul>
     </div>
 </div>
@@ -60,23 +63,24 @@ import ToastService from '@/services/ToastService'
 import Place from '@/models/Place'
 import i18n from '@/plugins/i18n'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
+import Map from '@/components/maps/Map.vue'
+import {storeToRefs} from 'pinia'
 
-const places: Array<Place> = []
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
-const foundPlaces: Ref<Array<PlaceInterface>> = ref([])
+const foundPlaces: Ref<Array<Place>> = ref([])
 const placesStore = usePlacesStore()
+const {places} = storeToRefs(placesStore)
+const selectedPlace: Ref<Array<Place>> = ref([])
 
 onMounted(() => {
-  placesStore.places.forEach(placeDB => {
-    const placeTmp = new Place
-    Object.assign(placeTmp, placeDB)
-    places.push(placeTmp)
-  })
-  foundPlaces.value = places
+  foundPlaces.value = places.value
 })
 
 watch(searchPlace, findPlaceByName)
+watch(places, (newPlaces) => {
+  foundPlaces.value = newPlaces
+})
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
@@ -94,8 +98,12 @@ function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   })
 }
 
+function selectPlace(place: Place): void {
+  selectedPlace.value[0] = place
+}
+
 function findPlaceByName(placeName: string): void {
-  foundPlaces.value = places.filter(pl => {
+  foundPlaces.value = places.value.filter(pl => {
     if (pl.name.toLowerCase().includes(placeName.toLowerCase())) {
       return pl
     }
