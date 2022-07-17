@@ -35,7 +35,7 @@
       </div>
       </Form>
       <div class="row min-vh-75">
-        <Map :places="selectedPlace"/>
+        <Map :places="selectedPlace" @onMapClick="onMapClick"/>
       </div>
     </div>
   <div class="col-sm-3 pe-4">
@@ -65,6 +65,7 @@ import i18n from '@/plugins/i18n'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import Map from '@/components/maps/Map.vue'
 import {storeToRefs} from 'pinia'
+import {google} from 'google-maps'
 
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
@@ -108,5 +109,11 @@ function findPlaceByName(placeName: string): void {
       return pl
     }
   })
+}
+
+function onMapClick(latLng: google.maps.LatLng): void {
+  place.value = new Place()
+  place.value.lat = latLng.lat()
+  place.value.lng = latLng.lng()
 }
 </script>

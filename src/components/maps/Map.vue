@@ -18,11 +18,16 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits(['onMapClick'])
 
 watch(props.places, (newPlaces) => {
+  googleMap.clearMap()
   newPlaces.forEach(place => {
     googleMap.addMarker(place)
   })
+  if (newPlaces.length === 1) {
+    googleMap.moveCamera(newPlaces[0])
+  }
 })
 
 onMounted(() => {
@@ -31,7 +36,12 @@ onMounted(() => {
     props.places.forEach(place => {
       googleMap.addMarker(place)
     })
+    googleMap.addListener(onMapClick)
   })
 })
+
+function onMapClick(latLng: google.maps.LatLng): void {
+  emit('onMapClick', latLng)
+}
 </script>
 
