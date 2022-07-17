@@ -22,7 +22,7 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#map" type="button" role="tab"
+        <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">{{ $t('common.placeholders.map') }}
         </button>
       </li>
@@ -39,7 +39,7 @@
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
         <services-table :drivers="drivers" :isHistory="true" :services="historyServices"></services-table>
       </div>
-      <div class="tab-pane fade card card-body" id="map" role="tabpanel" aria-labelledby="map-tab">
+      <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         ...
       </div>
     </div>
