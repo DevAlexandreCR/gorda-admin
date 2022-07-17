@@ -17,10 +17,12 @@
     "watch": "run-p build:watch"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.14.3",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "firebase": "^9.5.0",
+    "google-maps": "^4.3.3",
     "pinia": "^2.0.14",
     "qrcode": "^1.5.0",
     "socket.io-client": "^4.4.1",
@@ -36,6 +38,7 @@
     "@intlify/vue-i18n-loader": "^3.0.0",
     "@popperjs/core": "^2.11.0",
     "@types/bootstrap": "^5.1.9",
+    "@types/google.maps": "^3.49.2",
     "@types/jest": "^27.4.1",
     "@types/qrcode": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
