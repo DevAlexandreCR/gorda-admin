@@ -28,8 +28,8 @@ export class GoogleMaps {
   addMarker(place: PlaceInterface): void {
     new google.maps.Marker({
       position: {
-        lat: place.lat as number,
-        lng: place.lng as number
+        lat: place.lat,
+        lng: place.lng
       },
       map: this.map,
       title: place.name
