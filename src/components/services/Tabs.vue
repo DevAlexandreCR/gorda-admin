@@ -40,7 +40,7 @@
         <services-table :drivers="drivers" :isHistory="true" :services="historyServices"></services-table>
       </div>
       <div class="tab-pane fade card card-body" id="map" role="tabpanel" aria-labelledby="map-tab">
-        <Map :places="places"/>
+        ...
       </div>
     </div>
     <AssignDriver :drivers="drivers"></AssignDriver>
@@ -61,10 +61,6 @@ import {onBeforeMount, ref, Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import Map from '@/components/maps/Map.vue' 
-import { PlaceInterface } from '@/types/PlaceInterface'
-import {usePlacesStore} from '@/services/stores/PlacesStore'
-
 
 const {t} = useI18n()
 
@@ -72,9 +68,7 @@ const pendingServices: Ref<Array<ServiceInterface>> = ref([])
 const inProgressServices: Ref<Array<ServiceInterface>> = ref([])
 const historyServices: Ref<Array<ServiceInterface>> = ref([])
 const driverStore = useDriversStore()
-const placesStore = usePlacesStore()
 
-const {places} = storeToRefs(placesStore)
 const {drivers} = storeToRefs(driverStore)
 
 function onServiceAdded(data: DataSnapshot): void {
