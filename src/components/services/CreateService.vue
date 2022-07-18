@@ -80,7 +80,7 @@ watch(clients, (newClients) => {
 })
 
 watch(places, (newPlaces) => {
-  console.log(newPlaces)
+  placesAutocomplete.value = []
   newPlaces.forEach(place => {
     placesAutocomplete.value.push({
       id: place.key?? '0',
@@ -92,6 +92,20 @@ watch(places, (newPlaces) => {
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
+  placesAutocomplete.value = []
+  places.forEach(place => {
+    placesAutocomplete.value.push({
+      id: place.key?? '0',
+      value: place.name
+    })
+  })
+  clientsPhone.value = []
+  clients.forEach(clientDB => {
+    clientsPhone.value.push({
+      id: clientDB.id,
+      value: clientDB.phone
+    })
+  })
 })
 
 const schema = yup.object().shape({
