@@ -101,7 +101,6 @@ const schema = yup.object().shape({
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   event.resetForm()
   PlacesRepository.create(place.value).then(() => {
-    foundPlaces.value.push(place.value)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

@@ -80,6 +80,7 @@ watch(clients, (newClients) => {
 })
 
 watch(places, (newPlaces) => {
+  console.log(newPlaces)
   newPlaces.forEach(place => {
     placesAutocomplete.value.push({
       id: place.key?? '0',
