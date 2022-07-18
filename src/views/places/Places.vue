@@ -46,8 +46,17 @@
            <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
         </Field>
       </div>
-        <ul class="list-group places-group-up">
-          <li class="list-group-item list-group-item-action" @click="selectPlace(place)" v-for="(place, key) in foundPlaces" :key="key">{{place.name}}</li>
+        <ul class="list-group places-group-up text-xs">
+          <li class="list-group-item list-group-item-action" @click="selectPlace(place)" v-for="(place, key) in foundPlaces" :key="key">
+            <div class="row">
+              <div class="col-10">
+                {{place.name}}
+              </div>
+              <div class="col-2 text-end">
+                <em class="fa-solid fa-trash cursor-pointer" @click="deletePlace(place)"></em>
+              </div>
+            </div>
+          </li>
         </ul>
     </div>
 </div>
@@ -115,5 +124,20 @@ function onMapClick(latLng: google.maps.LatLng): void {
   place.value = new Place()
   place.value.lat = latLng.lat()
   place.value.lng = latLng.lng()
+}
+
+async function deletePlace(place: Place): Promise<void> {
+  place.delete().then(() => {
+    remove(place)
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
+  }).catch(e => {
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function remove(place: Place): void {
+  placesStore.remove(place)
+  let placeIndex = foundPlaces.value.findIndex(placeST => placeST.key == place.key)
+  foundPlaces.value.splice(placeIndex, 1)
 }
 </script>

@@ -17,10 +17,11 @@ export class GoogleMaps {
   /* istanbul ignore next */
   async initMap(id: string): Promise<google.maps.Map> {
     await this.loader.load().then((google)=> {
-      this.map = new google.maps.Map(document.getElementById(id) as HTMLElement, {
+      const options: google.maps.MapOptions = {
         center: { lat: 2.4448143, lng: -76.6147395 },
         zoom: 14
-      })
+      }
+      this.map = new google.maps.Map(document.getElementById(id) as HTMLElement, options)
     }).catch(error => console.error(error))
     
     return Promise.resolve(this.map)
