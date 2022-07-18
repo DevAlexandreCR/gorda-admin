@@ -75,6 +75,7 @@ import {usePlacesStore} from '@/services/stores/PlacesStore'
 import Map from '@/components/maps/Map.vue'
 import {storeToRefs} from 'pinia'
 import {google} from 'google-maps'
+import {StrHelper} from '@/helpers/StrHelper'
 
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
@@ -99,8 +100,9 @@ const schema = yup.object().shape({
 })
 
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
-  event.resetForm()
+  place.value.name = StrHelper.toCamelCase(place.value.name)
   PlacesRepository.create(place.value).then(() => {
+    event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
@@ -127,6 +129,7 @@ function onMapClick(latLng: google.maps.LatLng): void {
 
 async function deletePlace(deletedPlace: Place): Promise<void> {
   deletedPlace.delete().then(() => {
+    searchPlace.value = ''
     remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
   }).catch(e => {
