@@ -121,6 +121,10 @@ function submitFromEnter(event: Event) {
 }
 
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
+  if (!start_loc) {
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
+    return
+  }
   if (!values.client_id) {
     await createClient({
       id: '',
@@ -147,9 +151,7 @@ function createService(values: ServiceInterface): void {
   service.client_id = values.client_id
   service.name = values.name
   service.phone = values.phone
-  service.start_loc = start_loc ?? {
-    name: values.start_address
-  }
+  service.start_loc = start_loc
   const index = services.value.findIndex(s => s.client_id = values.client_id)
   ServiceRepository.create(service).then(() => {
     services.value.splice(index, 1, new Service)

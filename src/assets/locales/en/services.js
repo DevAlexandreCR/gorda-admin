@@ -19,6 +19,7 @@ export default {
   },
   history: 'History',
   messages: {
-    new_client: 'Client does nor exists, therefor has been created a new one'
+    new_client: 'Client does nor exists, therefor has been created a new one',
+    no_start_loc: 'No place selected!'
   }
 }
