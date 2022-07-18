@@ -108,8 +108,8 @@ function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   })
 }
 
-function selectPlace(place: Place): void {
-  selectedPlace.value[0] = place
+function selectPlace(placeSelected: Place): void {
+  selectedPlace.value[0] = placeSelected
 }
 
 function findPlaceByName(placeName: string): void {
@@ -126,18 +126,18 @@ function onMapClick(latLng: google.maps.LatLng): void {
   place.value.lng = latLng.lng()
 }
 
-async function deletePlace(place: Place): Promise<void> {
-  place.delete().then(() => {
-    remove(place)
+async function deletePlace(deletedPlace: Place): Promise<void> {
+  deletedPlace.delete().then(() => {
+    remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
-function remove(place: Place): void {
-  placesStore.remove(place)
-  let placeIndex = foundPlaces.value.findIndex(placeST => placeST.key == place.key)
+function remove(placeToRemove: Place): void {
+  placesStore.remove(placeToRemove)
+  let placeIndex = foundPlaces.value.findIndex(placeST => placeST.key == placeToRemove.key)
   foundPlaces.value.splice(placeIndex, 1)
 }
 </script>
