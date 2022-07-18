@@ -20,7 +20,7 @@ export const usePlacesStore = defineStore('placesStore', {
       })
     },
     remove(place: Place): void {
-      let placeIndex = this.places.findIndex(placeST => placeST.key == place.key)
+      const placeIndex = this.places.findIndex(placeST => placeST.key == place.key)
       this.places.splice(placeIndex, 1)
     }
   }

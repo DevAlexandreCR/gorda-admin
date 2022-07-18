@@ -10,6 +10,7 @@
 import {onMounted, watch} from 'vue'
 import { PlaceInterface } from '@/types/PlaceInterface';
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
+import {google} from 'google-maps'
 
 let googleMap: GoogleMaps
 
