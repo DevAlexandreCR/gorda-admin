@@ -63,6 +63,7 @@ import i18n from '@/plugins/i18n'
 import {ClientInterface} from '@/types/ClientInterface'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {PlaceInterface} from '@/types/PlaceInterface'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById} = useClientsStore()
@@ -71,42 +72,39 @@ let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
 watch(clients, (newClients) => {
-  newClients.forEach(clientDB => {
-    clientsPhone.value.push({
-      id: clientDB.id,
-      value: clientDB.phone
-    })
-  })
+  updateAutocompleteClients(newClients)
 })
 
 watch(places, (newPlaces) => {
-  placesAutocomplete.value = []
-  newPlaces.forEach(place => {
-    placesAutocomplete.value.push({
-      id: place.key?? '0',
-      value: place.name
-    })
-  })
+  updateAutocompletePlaces(newPlaces)
 })
 
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
+  updateAutocompletePlaces(places)
+  updateAutocompleteClients(clients)
+})
+
+function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
   placesAutocomplete.value = []
-  places.forEach(place => {
+  from.forEach(place => {
     placesAutocomplete.value.push({
       id: place.key?? '0',
       value: place.name
     })
   })
+}
+
+function updateAutocompleteClients(from: Array<ClientInterface>): void {
   clientsPhone.value = []
-  clients.forEach(clientDB => {
+  from.forEach(clientDB => {
     clientsPhone.value.push({
       id: clientDB.id,
       value: clientDB.phone
     })
   })
-})
+}
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
