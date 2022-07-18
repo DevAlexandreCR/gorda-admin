@@ -56,7 +56,7 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import {LocationType} from '@/types/LocationType'
 import {ServiceInterface} from '@/types/ServiceInterface'
-import {onMounted, ref, Ref} from 'vue'
+import {onMounted, ref, Ref, watch} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
@@ -64,28 +64,33 @@ import {ClientInterface} from '@/types/ClientInterface'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
-const placesStore = usePlacesStore()
-const clientsStore = useClientsStore()
+const {places, findByName} = usePlacesStore()
+const {clients, findById} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
-onMounted(async () => {
-  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
-  input?.focus()
-  placesStore.places.forEach(place => {
-    placesAutocomplete.value.push({
-      id: '0',
-      value: place.name
-    })
-  })
-
-  clientsStore.clients.forEach(clientDB => {
+watch(clients, (newClients) => {
+  newClients.forEach(clientDB => {
     clientsPhone.value.push({
       id: clientDB.id,
       value: clientDB.phone
     })
   })
+})
+
+watch(places, (newPlaces) => {
+  newPlaces.forEach(place => {
+    placesAutocomplete.value.push({
+      id: place.key?? '0',
+      value: place.name
+    })
+  })
+})
+
+onMounted(async () => {
+  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
+  input?.focus()
 })
 
 const schema = yup.object().shape({
@@ -140,7 +145,7 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType, id: string): void {
-  let client = clientsStore.findById(element.id)
+  let client = findById(element.id)
   let serviceIndex = services.value.findIndex(service => service.id == id)
   services.value[serviceIndex].phone = client.phone
   services.value[serviceIndex].name = client.name
@@ -164,7 +169,7 @@ function remove(key: number): void {
 }
 
 function locSelected(element: AutoCompleteType): void {
-  let place = placesStore.findByName(element.value)
+  let place = findByName(element.value)
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
