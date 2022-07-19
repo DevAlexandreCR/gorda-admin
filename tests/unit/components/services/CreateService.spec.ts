@@ -16,12 +16,10 @@ import {useClientsStore} from '@/services/stores/ClientsStore'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
-
+  
   beforeEach(async () => {
     const placesStore = usePlacesStore()
     const clientsStore = useClientsStore()
-    clientsStore.clients = [ClientMock]
-    placesStore.places = getPlaces()
     wrapper = mount(CreateService,
       {
         attachTo: '#root',
@@ -33,6 +31,8 @@ describe('CreateService.vue', () => {
         },
       })
     await router.isReady()
+    clientsStore.clients = [ClientMock]
+    placesStore.places = getPlaces()
   })
   it('an user can show inputs to add service', async () => {
     await wrapper.vm.$nextTick()
