@@ -20,8 +20,8 @@ describe('CreateService.vue', () => {
   beforeEach(async () => {
     const placesStore = usePlacesStore()
     const clientsStore = useClientsStore()
-    placesStore.places = getPlaces()
     clientsStore.clients = [ClientMock]
+    placesStore.places = getPlaces()
     wrapper = mount(CreateService,
       {
         attachTo: '#root',
@@ -88,7 +88,7 @@ describe('CreateService.vue', () => {
     const onSelected = jest.spyOn(wrapper.vm, 'locSelected')
     await nextTick()
     const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('ber')
+    await input.setValue('mar')
     await input.trigger('keyup', {
       keyCode: 72
     })
@@ -104,11 +104,16 @@ describe('CreateService.vue', () => {
     await wrapper.vm.$nextTick()
     const phone = '3100000000'
     const name = 'Name User'
-    const address = 'CR 1 1-1'
     const comment = 'New comment to service'
     await wrapper.find('input[name="phone"]').setValue(phone)
     await wrapper.find('input[name="name"]').setValue(name)
-    await wrapper.find('input[name="start_address"]').setValue(address)
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mar')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    const li = wrapper.findAll('li').at(0)
+    await li?.trigger('click')
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -134,11 +139,16 @@ describe('CreateService.vue', () => {
     await wrapper.vm.$nextTick()
     const phone = '3100000000'
     const name = 'Name User'
-    const address = 'CR 1 1-1'
     const comment = 'New comment to service'
     await wrapper.find('input[name="phone"]').setValue(phone)
     await wrapper.find('input[name="name"]').setValue(name)
-    await wrapper.find('input[name="start_address"]').setValue(address)
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mar')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    const li = wrapper.findAll('li').at(0)
+    await li?.trigger('click')
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -181,7 +191,13 @@ describe('CreateService.vue', () => {
 
     await wrapper.find('input[name="phone"]').setValue('3100000000')
     await wrapper.find('input[name="name"]').setValue('Name User')
-    await wrapper.find('input[name="start_address"]').setValue('CR 1 1-1')
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mar')
+    await input.trigger('keyup', {
+      keyCode: 72
+    })
+    const li = wrapper.findAll('li').at(0)
+    await li?.trigger('click')
     await wrapper.find('input[name="comment"]').setValue('New comment to service')
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')

@@ -10,6 +10,7 @@ class PlaceMock implements PlaceInterface {
 
 export function getPlaces(): Array<Place> {
     const place1 = new Place()
+    place1.name = 'Berlin'
     const place2  = new Place()
     place2.name = 'Maria Oriente'
     const place3  = new Place()
