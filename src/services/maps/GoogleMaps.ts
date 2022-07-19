@@ -44,6 +44,7 @@ export class GoogleMaps {
     this.map.panTo(new google.maps.LatLng(place.lat, place.lng))
   }
   
+  /* istanbul ignore next */
   addListener(listener: (latLng: google.maps.LatLng) => void): void {
     this.map.addListener('click', (event: google.maps.MapMouseEvent) => {
       const marker = new google.maps.Marker()
@@ -58,6 +59,7 @@ export class GoogleMaps {
     })
   }
   
+  /* istanbul ignore next */
   clearMap(): void {
     this.markers.forEach(marker => marker.setMap(null))
     this.markers = []
