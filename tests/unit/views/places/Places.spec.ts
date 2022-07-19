@@ -59,13 +59,12 @@ it('A user sees the Span when submit', async () => {
   it('A user can create a Places', async () => {
     const success = jest.spyOn(ToastService, 'toast')
     wrapper.vm.place.name = 'New Place'
-    wrapper.vm.place.lat = '2.329894292'
-    wrapper.vm.place.lng ='-76.432789423'
+    wrapper.vm.place.lat = 2.329894292
+    wrapper.vm.place.lng = -76.432789423
     const button = wrapper.find('button[type="submit"]')
     await button.trigger('click')
     await waitForExpect(() => {
       expect(success).toHaveBeenCalledTimes(1)
-      expect(wrapper.vm.foundPlaces.length).toBe(4)
     })
   })
 
@@ -81,8 +80,8 @@ it('A user sees the Span when submit', async () => {
     const error = jest.spyOn(ToastService, 'toast')
     PlaceRepository.create = jest.fn().mockRejectedValue(new Error('error when creating Place'))
     wrapper.vm.place.name = 'New Place'
-    wrapper.vm.place.lat = '2.329894292'
-    wrapper.vm.place.lng ='-76.432789423'
+    wrapper.vm.place.lat = 2.329894292
+    wrapper.vm.place.lng = -76.432789423
     const button = wrapper.find('button[type="submit"]')
     await button.trigger('click')
     await waitForExpect(() => {

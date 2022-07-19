@@ -95,7 +95,7 @@ watch(places, (newPlaces) => {
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
-  lat: yup.string().required().min(8),
+  lat: yup.number().required(),
   lng: yup.number().required(),
 })
 
