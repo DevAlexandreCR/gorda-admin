@@ -9,6 +9,7 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.start_address') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
+        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.driver') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="!props.isHistory"></th>
         </thead>
@@ -19,6 +20,8 @@
           <td class="py-1">{{ service.start_loc.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
+          <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
+            :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
           <td class="py-1" v-if="getDriver(service.driver_id)">
             <div class="d-flex px-2 py-1">
               <div>

@@ -56,37 +56,55 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import {LocationType} from '@/types/LocationType'
 import {ServiceInterface} from '@/types/ServiceInterface'
-import {onMounted, ref, Ref} from 'vue'
+import {onMounted, ref, Ref, watch} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import {ClientInterface} from '@/types/ClientInterface'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {PlaceInterface} from '@/types/PlaceInterface'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
-const placesStore = usePlacesStore()
-const clientsStore = useClientsStore()
+const {places, findByName} = usePlacesStore()
+const {clients, findById} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 
+watch(clients, (newClients) => {
+  updateAutocompleteClients(newClients)
+})
+
+watch(places, (newPlaces) => {
+  updateAutocompletePlaces(newPlaces)
+})
+
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
-  placesStore.places.forEach(place => {
+  updateAutocompletePlaces(places)
+  updateAutocompleteClients(clients)
+})
+
+function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
+  placesAutocomplete.value = []
+  from.forEach(place => {
     placesAutocomplete.value.push({
-      id: '0',
+      id: place.key?? '0',
       value: place.name
     })
   })
+}
 
-  clientsStore.clients.forEach(clientDB => {
+function updateAutocompleteClients(from: Array<ClientInterface>): void {
+  clientsPhone.value = []
+  from.forEach(clientDB => {
     clientsPhone.value.push({
       id: clientDB.id,
       value: clientDB.phone
     })
   })
-})
+}
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
@@ -101,6 +119,10 @@ function submitFromEnter(event: Event) {
 }
 
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
+  if (!start_loc) {
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
+    return
+  }
   if (!values.client_id) {
     await createClient({
       id: '',
@@ -127,9 +149,7 @@ function createService(values: ServiceInterface): void {
   service.client_id = values.client_id
   service.name = values.name
   service.phone = values.phone
-  service.start_loc = start_loc ?? {
-    name: values.start_address
-  }
+  service.start_loc = start_loc
   const index = services.value.findIndex(s => s.client_id = values.client_id)
   ServiceRepository.create(service).then(() => {
     services.value.splice(index, 1, new Service)
@@ -140,7 +160,7 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType, id: string): void {
-  let client = clientsStore.findById(element.id)
+  let client = findById(element.id)
   let serviceIndex = services.value.findIndex(service => service.id == id)
   services.value[serviceIndex].phone = client.phone
   services.value[serviceIndex].name = client.name
@@ -164,7 +184,7 @@ function remove(key: number): void {
 }
 
 function locSelected(element: AutoCompleteType): void {
-  let place = placesStore.findByName(element.value)
+  let place = findByName(element.value)
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()

@@ -48,5 +48,24 @@ export default {
     disconnect: 'Disconnect',
     connect: 'Connect',
     reset: 'Reset'
+  },
+  colors: {
+    black: 'Black',
+    blue: 'Blue',
+    gray: 'Gray',
+    green: 'Green',
+    purple: 'Purple',
+    red: 'Red',
+    white: 'White',
+    pink: 'Pink',
+    orange: 'Orange',
+    gold: 'Gold',
+    yellow: 'Yellow',
+    magenta: 'Magenta',
+    cyan: 'Cyan',
+    brown: 'Brown',
+    maroon: 'Maroon',
+    beige: 'Beige',
+    silver: 'Silver'
   }
 }

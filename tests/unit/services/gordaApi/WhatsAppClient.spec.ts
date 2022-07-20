@@ -9,7 +9,7 @@ describe('WhatsAppClient.ts', () => {
   beforeEach((done) => {
     client = WhatsAppClient.getInstance()
     openServer(done)
-  })
+  }, 10000)
   
   afterEach(() => {
     server.close()

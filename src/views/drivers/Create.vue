@@ -49,7 +49,7 @@
                   <div class="col-sm-3">
                     <label>{{ $t('drivers.fields.doc_type') }}</label>
                     <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select" v-model="driver.docType">
-                      <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
+                      <option v-for="(type, key) in types" :key="key" :value="type">{{ type }}</option>
                     </Field>
                   </div>
                   <div class="col-sm-9">
@@ -74,6 +74,11 @@
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
               <div class="form-group">
+                <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
+                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle">
+                </Field>
+              </div>
+              <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
                 <Field name="brand" type="text"  v-model="driver.vehicle.brand" v-slot="{ field, errorMessage, meta }">
                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" id="brand" aria-label="Brand" aria-describedby="brand-addon" v-bind="field" autocomplete="none"/>
@@ -90,14 +95,40 @@
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
                 <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
-               <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                 </Field>
-              </div>
-              <div class="form-group">
-                <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
-                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle">
+                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-8">
+                  <label>{{ $t('drivers.placeholders.color') }}</label>
+                  <select name="colorObj" class="form-select form-select-sm" id="color" v-model="color">
+                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.' + color.name) }}</option>
+                  </select>
+                </div>
+                <div class="form-group col-sm-4">
+                  <label>{{ $t('drivers.vehicle.color') }}</label>
+                  <Field name="color" v-model="driver.vehicle.color.hex" v-slot="{ field, errorMessage, meta }">
+                    <input name="color" class="form-control form-control-sm p-0" type="color" disabled v-model="field.value" :placeholder="$t('drivers.placeholders.color')" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
+                  <Field name="soat_exp" type="date" v-model="driver.vehicle.soat_exp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
+                  <Field name="tec_exp" type="date" v-model="driver.vehicle.tec_exp" v-slot="{ field, errorMessage, meta }">
+                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
+                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  </Field>
+                </div>
               </div>
             </div>
           </div>
@@ -115,8 +146,7 @@
 import CustomValidator from '@/assets/validatiions/validators'
 import StorageService from '@/services/StorageService'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
-import * as yup from 'yup'
-import {ObjectSchema} from 'yup'
+import {string, date, mixed, object, ObjectSchema} from 'yup'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -124,25 +154,33 @@ import {Constants} from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
-import {ref, Ref} from 'vue'
+import {ref, Ref, watch} from 'vue'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
 const imageDriver: Ref<File[]> = ref([])
 const imageVehicle: Ref<File[]> = ref([])
+const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
-const schema: ObjectSchema<any> = yup.object().shape({
-  name: yup.string().required().min(3),
-  email: yup.string().required().email(),
-  password: yup.string().required().min(6),
-  phone: yup.string().required().min(8),
-  docType: yup.mixed().oneOf(Constants.DOC_TYPES).required(),
-  document: yup.string().required().min(6).max(10),
-  brand: yup.string().required().min(3),
-  plate: yup.string().required().min(3),
-  model: yup.string().required().min(3),
+const schema: ObjectSchema<any> = object().shape({
+  name: string().required().min(3),
+  email: string().required().email(),
+  password: string().required().min(6),
+  phone: string().required().min(8),
+  docType: mixed().oneOf(Constants.DOC_TYPES).required(),
+  document: string().required().min(6).max(10),
+  brand: string().required().min(3),
+  plate: string().required().min(3),
+  model: string().required().min(3),
+  color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
+  soat_exp: date().required().min(new Date()),
+  tec_exp: date().required().min(new Date),
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   photoVehicleUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
+})
+
+watch(color, (newColor) => {
+  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor)?? Constants.COLORS[0]
 })
 
 function uploadImg(path: string, image: File): Promise<string> {
@@ -151,20 +189,22 @@ function uploadImg(path: string, image: File): Promise<string> {
 }
 
 function createDriver(_values: DriverInterface, event: FormActions<any>): void {
-    DriverRepository.create(driver.value, password.value).then((id) => {
-      driver.value.id = id
-      uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {
-        driver.value.photoUrl = url
-        uploadImg(StorageService.vehiclePath, imageVehicle.value[0]).then(urlPhotoVehicle => {
-          driver.value.vehicle.photoUrl = urlPhotoVehicle
-          DriverRepository.update(driver.value)
-          ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
-          event.resetForm()
-        })
+  driver.value.vehicle.soat_exp = dayjs(driver.value.vehicle.soat_exp).unix()
+  driver.value.vehicle.tec_exp = dayjs(driver.value.vehicle.tec_exp).unix()
+  DriverRepository.create(driver.value, password.value).then((id) => {
+    driver.value.id = id
+    uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {
+      driver.value.photoUrl = url
+      uploadImg(StorageService.vehiclePath, imageVehicle.value[0]).then(urlPhotoVehicle => {
+        driver.value.vehicle.photoUrl = urlPhotoVehicle
+        DriverRepository.update(driver.value)
+        ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
+        event.resetForm()
       })
-    }).catch(e => {
-      ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
     })
+  }).catch(e => {
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
 }
 
 function onEnable(e: Event): void {

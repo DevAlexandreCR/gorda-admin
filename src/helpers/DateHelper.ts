@@ -23,4 +23,8 @@ export default class DateHelper {
       return `${unix}s`
     }
   }
+  
+  public static dateToUnix(date: string): number {
+    return dayjs(date).unix()
+  }
 }

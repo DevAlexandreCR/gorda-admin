@@ -18,6 +18,10 @@ export const usePlacesStore = defineStore('placesStore', {
       PlaceRepository.onAll(async (place) => {
         this.places.push(place)
       })
+    },
+    remove(place: Place): void {
+      const placeIndex = this.places.findIndex(placeST => placeST.key == place.key)
+      this.places.splice(placeIndex, 1)
     }
   }
 })

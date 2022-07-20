@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "jest"
+      "jest",
+      "googlemaps"
     ],
     "typeRoots": [
       "./typings",
