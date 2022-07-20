@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {Field, Form} from 'vee-validate'
@@ -22,7 +22,7 @@ describe('CreateService.vue', () => {
     const clientsStore = useClientsStore()
     wrapper = mount(CreateService,
       {
-        attachTo: '#root',
+        attachTo: document.body,
         global: {
           plugins: [router, i18n],
           provide: {
@@ -35,7 +35,7 @@ describe('CreateService.vue', () => {
     placesStore.places = getPlaces()
   })
   it('an user can show inputs to add service', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const input = wrapper.findAll('.form-control')
@@ -47,7 +47,7 @@ describe('CreateService.vue', () => {
   })
 
   it('an user can add another row to add service', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const buttonAdd = wrapper.find('.btn-info')
     await buttonAdd.trigger('click')
     expect(wrapper.find('.btn-danger').exists()).toBeTruthy()
@@ -55,7 +55,7 @@ describe('CreateService.vue', () => {
   })
 
   it('an user can not add more than 5 rows', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const buttonAdd = wrapper.find('.btn-info')
     await buttonAdd.trigger('click')
     await buttonAdd.trigger('click')
@@ -69,7 +69,7 @@ describe('CreateService.vue', () => {
   })
 
   it('an user can remove a row to add service', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const buttonAdd = wrapper.find('.btn-info')
     await buttonAdd.trigger('click')
     await buttonAdd.trigger('click')
@@ -101,7 +101,7 @@ describe('CreateService.vue', () => {
   it('an user can create a new service', async () => {
     ServiceRepository.create = jest.fn().mockResolvedValue('success')
     const swal = jest.spyOn(Swal,'fire')
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const phone = '3100000000'
     const name = 'Name User'
     const comment = 'New comment to service'
@@ -117,7 +117,6 @@ describe('CreateService.vue', () => {
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
-
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'success',
@@ -132,11 +131,40 @@ describe('CreateService.vue', () => {
     jest.resetAllMocks()
   })
   
+  it('an user can not create a new service without select a place', async () => {
+    const swal = jest.spyOn(Swal,'fire')
+    await nextTick()
+    const phone = '3100000000'
+    const name = 'Name User'
+    await wrapper.find('input[name="phone"]').setValue(phone)
+    await wrapper.find('input[name="name"]').setValue(name)
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mar')
+    const inputComment = document.querySelector('input[name="comment"]') as HTMLInputElement
+    await inputComment.focus()
+    await wrapper.find('input[name="comment"]').trigger('keydown.enter')
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+    await flushPromises()
+    await waitForExpect(() => {
+      expect(swal).toBeCalledWith({
+        icon: 'error',
+        position: 'top-right',
+        title: wrapper.vm.$t('common.messages.error'),
+        showConfirmButton: false,
+        text: wrapper.vm.$t('services.messages.no_start_loc'),
+        timer: 3000,
+        toast: true
+      })
+    })
+    jest.resetAllMocks()
+  })
+  
   it('create client when not exists', async () => {
     ServiceRepository.create = jest.fn().mockResolvedValue('success')
     ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
     const swal = jest.spyOn(Swal,'fire')
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const phone = '3100000000'
     const name = 'Name User'
     const comment = 'New comment to service'
@@ -187,7 +215,7 @@ describe('CreateService.vue', () => {
     ServiceRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
     ClientRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
     const swal = jest.spyOn(Swal,'fire')
-    await wrapper.vm.$nextTick()
+    await nextTick()
 
     await wrapper.find('input[name="phone"]').setValue('3100000000')
     await wrapper.find('input[name="name"]').setValue('Name User')
