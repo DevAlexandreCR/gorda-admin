@@ -28,14 +28,15 @@ export class GoogleMaps {
   }
   /* istanbul ignore next */
   addMarker(place: PlaceInterface): void {
-    const marker = new google.maps.Marker({
+    const markerOptions: google.maps.MarkerOptions = {
       position: {
         lat: place.lat,
         lng: place.lng
       },
       map: this.map,
       title: place.name
-    });
+    }
+    const marker = new google.maps.Marker(markerOptions)
     this.markers.push(marker)
   }
   

@@ -7,6 +7,9 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {enableAutoUnmount, config} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 
+require('./mocks/maps/googleMaps')
+
+jest.mock('google-maps')
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
   return {

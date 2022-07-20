@@ -10,12 +10,23 @@ import {getPlaces} from "../../../mocks/entities/PlaceMock"
 import PlaceRepository from '@/repositories/PlaceRepository'
 import {flushPromises} from '@vue/test-utils'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
+import {GoogleMaps} from '@/services/maps/GoogleMaps'
+import {google} from 'google-maps'
+import Swal from 'sweetalert2'
+
 describe('Places.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
-    PlaceRepository.create = jest.fn().mockResolvedValue({})
     const placesStore = usePlacesStore()
     placesStore.places = getPlaces()
+    GoogleMaps.prototype.addMarker = jest.fn()
+    GoogleMaps.prototype.moveCamera = jest.fn()
+    PlaceRepository.create = jest.fn().mockResolvedValue({})
+    jest.mock('@/services/maps/GoogleMaps', () => {
+      return {
+        initMap: jest.fn()
+      }
+    })
   
     wrapper = mount(Places,
       {
@@ -74,6 +85,43 @@ it('A user sees the Span when submit', async () => {
     await waitForExpect(() => {
       expect(wrapper.vm.foundPlaces.length).toBe(1)
     })
+  })
+
+  it('A user can remove a place', async () => {
+    PlaceRepository.remove = jest.fn().mockResolvedValue(null)
+    const input = wrapper.findAll('.fa-trash')
+    expect(input.length).toBe(3)
+    await input.at(1)?.trigger('click')
+    expect(wrapper.vm.foundPlaces.length).toBe(2)
+  })
+  
+  it('it must toast when remove place fails', async () => {
+    jest.restoreAllMocks()
+    PlaceRepository.remove = jest.fn().mockRejectedValue(new Error('error when removing Place'))
+    const swal = jest.spyOn(Swal,'fire')
+    const input = wrapper.findAll('.fa-trash')
+    expect(input.length).toBe(3)
+    await input.at(1)?.trigger('click')
+    expect(wrapper.vm.foundPlaces.length).toBe(3)
+    await flushPromises()
+    await waitForExpect(() => {
+      expect(swal).toBeCalledWith({
+        icon: 'error',
+        title: wrapper.vm.$t('common.messages.error'),
+        text: 'error when removing Place',
+        position: 'top-right',
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true
+      })
+    })
+  })
+  
+  it('it must set place when onMapClick event emitted', async () => {
+    wrapper.vm.onMapClick(new google.maps.LatLng(1.0, -2.0))
+    await nextTick()
+    expect(wrapper.vm.place.lat).toBe(1.0)
+    expect(wrapper.vm.place.lng).toBe(-2.0)
   })
 
   it('it must return a error when createPlace fails', async () => {

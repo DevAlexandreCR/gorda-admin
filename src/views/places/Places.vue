@@ -130,16 +130,10 @@ function onMapClick(latLng: google.maps.LatLng): void {
 async function deletePlace(deletedPlace: Place): Promise<void> {
   deletedPlace.delete().then(() => {
     searchPlace.value = ''
-    remove(deletedPlace)
+    placesStore.remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
-}
-
-function remove(placeToRemove: Place): void {
-  placesStore.remove(placeToRemove)
-  let placeIndex = foundPlaces.value.findIndex(placeST => placeST.key == placeToRemove.key)
-  foundPlaces.value.splice(placeIndex, 1)
 }
 </script>
