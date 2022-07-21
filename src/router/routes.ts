@@ -10,6 +10,8 @@ import DriverIndex from '@/views/drivers/Index.vue'
 import DriverEdit from '@/views/drivers/Edit.vue'
 import Connection from '@/views/Connection.vue'
 import Places from '@/views/places/Places.vue'
+import UserCreate from '@/views/users/Create.vue'
+
 
 const routes: Array<any> = [
   {
@@ -41,6 +43,11 @@ const routes: Array<any> = [
             path: '/dashboard/users/:id/edit',
             name: 'users.edit',
             component: UserEdit
+          },
+          {
+            path: '/dashboard/users/create',
+            name: 'users.create',
+            component: UserCreate
           }
         ]
       },

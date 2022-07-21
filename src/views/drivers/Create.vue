@@ -89,7 +89,7 @@
                 <label>{{ $t('drivers.vehicle.model') }}</label>
                 <Field name="model" type="text" class="form-control" v-model="driver.vehicle.model" v-slot="{ field, errorMessage, meta }">
                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.model')" id="model" aria-label="Model" aria-describedby="model-addon" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
                  </Field>
               </div>
               <div class="form-group">
