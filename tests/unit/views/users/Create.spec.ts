@@ -55,7 +55,7 @@ describe('Create.vue', () => {
       await admin.trigger('click')
   
       expect(wrapper.vm.user.roles.operator).toBeTruthy()
-      expect(wrapper.vm.user.roles.admin).toBeFalsy()
+      expect(wrapper.vm.user.roles.admin).toBeTruthy()
     })
 
   it('A user can enable or disable a user', async () => {
