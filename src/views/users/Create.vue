@@ -31,9 +31,15 @@
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.email')"
                          id="email" aria-label="Email" aria-describedby="email-addon" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-
                 </Field>
               </div>
+              <div class="form-group">
+                <label>{{ $t('users.fields.password') }}</label>
+                <Field name="password" type="password" v-slot="{ field, errorMessage, meta }" v-model="password">
+                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('users.fields.password')" id="password" aria-label="Password" aria-describedby="password-addon" v-bind="field"/>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div> 
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }">
@@ -57,7 +63,7 @@
                 <ErrorMessage name="role"/>
               </div>
               <div class="form-check form-switch"> 
-                <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault"
+                <input class="form-check-input" name="enable" type="checkbox" id="enableUser"
                        :checked="user.isEnabled()" @change="onEnable"/>
                 <label class="form-check-label">{{
                     $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
@@ -125,6 +131,7 @@ const schemaImg: ObjectSchema<any> = yup.object().shape({
   photo: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })
 const image: Ref<File[]> = ref([])
+const password: Ref<string> = ref('')
 
 
 const schema = yup.object().shape({

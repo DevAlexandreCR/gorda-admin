@@ -52,15 +52,22 @@ describe('Create.vue', () => {
 
       it('A user can create a Users', async () => {
         await nextTick()
+      })
+    it('A user can enable or disable a user', async () => {
+      const field = wrapper.find('#enableUser')
+      await field.trigger('click')
+  
+      expect(wrapper.vm.user.enabled_at).toBe(dayjs().unix())
     })
-
-    it('user can enable or disable user', async () => {
-      const enable =  wrapper.find('input[name="enable"]')
-      await enable.trigger('click')
-    })
+    
     it('user can assign role to user', async () => {
-      await nextTick()
-
+      const operator =  wrapper.find('#operator')
+      await operator.trigger('click')
+      const admin =  wrapper.find('#admin')
+      await admin.trigger('click')
+  
+      expect(wrapper.vm.user.roles.operator).toBeFalsy()
+      expect(wrapper.vm.user.roles.admin).toBeFalsy()
     })
 })
 
