@@ -45,7 +45,7 @@ class UserRepository{
         await set(ref(DBService.db, 'users/' + id), user)
         return resolve(id)
       }).catch((e: AxiosError<UserResponse>) => {
-        reject(new Error(e.message))
+        reject(new Error(e.response?.data.data as string?? e.message))
       })
     })
   }

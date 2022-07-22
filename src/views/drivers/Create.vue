@@ -13,8 +13,8 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
-                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageDriver">
-                </Field>
+                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageDriver"/>
+                <ErrorMessage name="photoUrl" class="is-invalid"/>
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
@@ -75,8 +75,8 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
-                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle">
-                </Field>
+                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle"/>
+                <ErrorMessage name="photoVehicleUrl" class="is-invalid"/>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
