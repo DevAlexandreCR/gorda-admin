@@ -25,7 +25,8 @@ class UserRepository{
   update(user: UserInterface): Promise<void> {
     return set(ref(DBService.db, 'users/' + user.id), user);
   }
-
+  
+  /* istanbul ignore next */
   async create(user: UserInterface, password: string): Promise<string> {
     const userData: UserRequestType = {
       email: user.email,
@@ -60,10 +61,12 @@ class UserRepository{
     })
   }
   
+  /* istanbul ignore next */
   async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
     return axios.post(this.base_url + '/auth/create-user/', userData)
   }
   
+  /* istanbul ignore next */
   async enableAuth(uid: string, enabled: boolean): Promise<AxiosResponse> {
     return axios.post(this.base_url + '/auth/enable-user/', {uid: uid, disabled: enabled})
   }
