@@ -1,5 +1,6 @@
 import {UserInterface} from '@/types/UserInterface'
 import {Roles} from '@/types/Roles'
+import dayjs from 'dayjs'
 
 export default class User implements UserInterface {
   id?: string
@@ -7,8 +8,8 @@ export default class User implements UserInterface {
   email: string
   phone: string
   photoUrl?: string
-  enabled_at: number|null
-  created_at: number
+  enabled_at = 0
+  created_at: number = dayjs().unix()
   roles: Roles = {
     operator: false,
     admin: false
