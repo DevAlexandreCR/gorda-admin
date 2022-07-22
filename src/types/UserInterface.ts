@@ -6,7 +6,7 @@ export interface UserInterface {
   email: string
   phone: string
   photoUrl?: string
-  enabled_at: number
+  enabled_at: number|null
   created_at: number
   roles?: Roles
 

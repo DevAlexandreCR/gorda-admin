@@ -10,17 +10,16 @@
             <div class="col-md-5">
               <div class="card-header p-0 mx-3 mt-3 z-index-1">
                 <img :src="user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
+                <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img" type="button" data-bs-toggle="modal"
+                        data-bs-target="#imgModal">
+                  <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
+                </button>
               </div>
             </div>
             <div class="col-md-7">
               <div class="form-group">
-                <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
-                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="image"/>
-                <ErrorMessage name="photoUrl" class="is-invalid"/>
-              </div>
-              <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
-                <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="user.name">
+                <Field name="name" type="text" v-slot="{ field, errorMessage, meta }">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
                          id="name" aria-label="Name" aria-describedby="name-addon" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
@@ -28,7 +27,7 @@
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
-                <Field name="email" type="email" v-slot="{ field, errorMessage, meta }" v-model="user.email">
+                <Field name="email" type="email" v-slot="{ field, errorMessage, meta }">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.email')"
                          id="email" aria-label="Email" aria-describedby="email-addon" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
@@ -37,13 +36,13 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.password') }}</label>
                 <Field name="password" type="password" v-slot="{ field, errorMessage, meta }" v-model="password">
-                <input class="form-control form-control-sm" type="password" v-model="field.value" :placeholder="$t('users.fields.password')" id="password" aria-label="Password" aria-describedby="password-addon" v-bind="field"/>
+                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('users.fields.password')" id="password" aria-label="Password" aria-describedby="password-addon" v-bind="field"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div> 
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
-                <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="user.phone">
+                <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.phone')"
                          id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
@@ -80,6 +79,35 @@
         </div>
       </div>
     </Form>
+    <!-- Modal -->
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.upload') }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <Form @submit="uploadImg" :validation-schema="schemaImg">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">{{ $t('users.forms.select_img') }}</label>
+                <Field name="photo" class="form-control" type="file" accept="image/*" v-model="image" id="formFile"/>
+                <ErrorMessage name="photo"/>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+                {{ $t('common.actions.close') }}
+              </button>
+              <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,49 +116,43 @@ import UserRepository from '@/repositories/UserRepository'
 import User from '@/models/User'
 import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
+import {ObjectSchema} from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
 import StorageService from '@/services/StorageService'
 import i18n from '@/plugins/i18n'
-import {onMounted, ref, Ref} from 'vue'
+import {ref, Ref} from 'vue'
 import dayjs from 'dayjs'
 import ToastService from '@/services/ToastService'
 import {UserInterface} from '@/types/UserInterface'
-import {useStorage} from '@/services/stores/Storage'
-import {storeToRefs} from 'pinia'
-import router from '@/router'
-
-const storage = useStorage()
-const {photoUrl} = storeToRefs(storage)
 
 
 const user: Ref<User> = ref(new User)
+const schemaImg: ObjectSchema<any> = yup.object().shape({
+  photo: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
+})
 const image: Ref<File[]> = ref([])
 const password: Ref<string> = ref('')
 
 
 const schema = yup.object().shape({
-  photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
   phone: yup.string().required().min(8),
   password: yup.string().required().min(6),
 })
 
+function uploadImg(): void {
+  const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
+  StorageService.uploadFile(reference, image.value[0]).then(url => {
+    user.value.photoUrl = url
+    UserRepository.update(user.value)
+  })
+}
+
 function createUser(_values: UserInterface, event: FormActions<any>): void {
   UserRepository.create(user.value, password.value).then((id) => {
     user.value.id = id
-    const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
-    StorageService.uploadFile(reference, image.value[0]).then(url => {
-      user.value.photoUrl = url
-      event.resetForm()
-      UserRepository.update(user.value).then(() => {
-        ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
-        event.resetForm()
-        user.value.photoUrl = photoUrl.value
-        image.value = []
-        router.push({name: 'users.index'})
-      })
-    })
+    uploadImg()
   }).catch(e => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
@@ -140,20 +162,4 @@ function onEnable(e: Event): void {
   const target = e.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
 }
-function assignRole(e: Event): void {
-  const target = e.target as HTMLInputElement
-  if (user.value.roles) {
-    if (target.value === 'operator') {
-      user.value.roles.operator = target.checked
-    } else {
-      user.value.roles.admin = target.checked
-    }
-  }
-}
-
-onMounted(() => {
-  storage.getDefaultPhotoUrl().then(() => {
-    user.value.photoUrl = photoUrl.value
-  })
-})
 </script>
