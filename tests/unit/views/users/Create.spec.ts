@@ -34,9 +34,9 @@ describe('Create.vue', () => {
       const field = wrapper.findAllComponents(Field)
       const form = wrapper.findComponent(Form)
       const input = wrapper.findAll('.form-control')
-      expect(field.length).toBe(4)
+      expect(field.length).toBe(5)
       expect(form.exists()).toBeTruthy()
-      expect(input.length).toBe(4)
+      expect(input.length).toBe(5)
     })
 
   it('A user sees the Span when submit', async () => {
@@ -46,7 +46,7 @@ describe('Create.vue', () => {
       await nextTick()
       const span = wrapper.findAll('.is-invalid')    
       await nextTick()
-      expect(span.length).toBe(3)
+      expect(span.length).toBe(4)
     })
     it('user can assign role to user', async () => {
       const operator =  wrapper.find('#operator')
