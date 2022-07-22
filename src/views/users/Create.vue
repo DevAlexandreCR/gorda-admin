@@ -42,7 +42,7 @@
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
-              <!-- <div class="form-group">
+              <div class="form-group">
                 <label>{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
                   <input class="form-check-input" type="checkbox" @change="assignRole" name="role" id="operator"
@@ -55,7 +55,7 @@
                   <label class="custom-control-label">{{ $t('users.fields.admin') }}</label>
                 </div>
                 <ErrorMessage name="role"/>
-              </div> -->
+              </div>
               <div class="form-check form-switch"> 
                 <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault"
                        :checked="user.isEnabled()" @change="onEnable"/>
@@ -112,11 +112,12 @@ import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
 import * as yup from 'yup'
 import {ObjectSchema} from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
-import * as bootstrap from 'bootstrap'
 import StorageService from '@/services/StorageService'
 import i18n from '@/plugins/i18n'
 import {ref, Ref} from 'vue'
 import dayjs from 'dayjs'
+import ToastService from '@/services/ToastService'
+import {UserInterface} from '@/types/UserInterface'
 
 
 const user: Ref<User> = ref(new User)
@@ -130,15 +131,25 @@ const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
   phone: yup.string().required().min(8),
+  password: yup.string().required().min(6),
 })
 
 function uploadImg(): void {
   const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
   StorageService.uploadFile(reference, image.value[0]).then(url => {
     user.value.photoUrl = url
+    UserRepository.update(user.value)
   })
 }
 
+function createUser(_values: UserInterface, event: FormActions<any>): void {
+  UserRepository.create(user.value, password.value).then((id) => {
+    user.value.id = id
+    uploadImg()
+  }).catch(e => {
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
 
 function onEnable(e: Event): void {
   const target = e.target as HTMLInputElement

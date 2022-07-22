@@ -6,7 +6,8 @@ import dayjs from 'dayjs'
 import StorageService from '@/services/StorageService'
 import User from '@/models/User'
 import {UserRequestType} from '@/types/UserRequestType'
-import axios, {AxiosResponse} from 'axios'
+import axios, {AxiosError, AxiosResponse} from 'axios'
+import {UserResponse} from '@/types/UserResponse'
 
 class UserRepository{
   private readonly base_url = process.env.VUE_APP_GORDA_API_URL
@@ -28,17 +29,24 @@ class UserRepository{
     return set(ref(DBService.db, 'users/' + user.id), user);
   }
 
-  async create(user: UserInterface, password: string): Promise<void> {
-    await AuthService.createUser(user.email as string, password).then(async userCredential => {
-      user.id = userCredential.user.uid
-      user.created_at = dayjs().unix()
-      user.photoUrl = await StorageService.getDownloadUrl('images/app/default_user.png')
-      user.enabled_at = null
-      user.roles = {
-        admin: false,
-        operator: false
-      }
-      return this.update(user)
+  async create(user: UserInterface, password: string): Promise<string> {
+    const userData: UserRequestType = {
+      email: user.email,
+      emailVerified: true,
+      displayName: user.name,
+      phoneNumber: '+57' + user.phone,
+      password: password,
+      disabled: user.enabled_at == 0,
+    }
+    return new Promise((resolve, reject) => {
+      this.createAuth(userData).then(async (res) => {
+        const id = res.data.data.uid
+        user.id = id
+        await set(ref(DBService.db, 'users/' + id), user)
+        return resolve(id)
+      }).catch((e: AxiosError<UserResponse>) => {
+        reject(new Error(e.message))
+      })
     })
   }
   

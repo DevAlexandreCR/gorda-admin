@@ -3,13 +3,16 @@ import {Roles} from '@/types/Roles'
 
 export default class User implements UserInterface {
   id?: string
-  name?: string
-  email?: string
-  phone?: string
+  name: string
+  email: string
+  phone: string
   photoUrl?: string
   enabled_at: number|null
   created_at: number
-  roles: Roles
+  roles: Roles = {
+    operator: false,
+    admin: false
+  }
 
   isAdmin(): boolean {
     return this.roles.admin ?? false
