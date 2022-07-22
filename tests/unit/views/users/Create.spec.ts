@@ -54,7 +54,7 @@ describe('Create.vue', () => {
       const admin =  wrapper.find('#admin')
       await admin.trigger('click')
   
-      expect(wrapper.vm.user.roles.operator).toBeFalsy()
+      expect(wrapper.vm.user.roles.operator).toBeTruthy()
       expect(wrapper.vm.user.roles.admin).toBeFalsy()
     })
 
