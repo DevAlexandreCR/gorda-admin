@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "run-s build:dev watch",
+    "serve": "vue-cli-service serve --mode development --port 5000",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit --coverage",
     "test:watch": "vue-cli-service test:unit --watchAll",
