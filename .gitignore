@@ -9,6 +9,7 @@ dataEmulators
 .env.*.local
 .env.local
 .env
+.env.testing
 
 # Log files
 npm-debug.log*
@@ -19,6 +20,7 @@ ui-debug.log
 database-debug.log
 firebase-debug.log
 firebaseAccount.json
+firebase.json
 
 # Editor directories and files
 .idea
