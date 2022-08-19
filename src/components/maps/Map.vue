@@ -7,9 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted} from 'vue'
+import {onMounted, watch} from 'vue'
 import { PlaceInterface } from '@/types/PlaceInterface';
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
+import {google} from 'google-maps'
 
 let googleMap: GoogleMaps
 
@@ -18,6 +19,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits(['onMapClick'])
+
+watch(props.places, (newPlaces) => {
+  googleMap.clearMap()
+  newPlaces.forEach(place => {
+    googleMap.addMarker(place)
+  })
+  if (newPlaces.length === 1) {
+    googleMap.moveCamera(newPlaces[0])
+  }
+})
 
 onMounted(() => {
   googleMap = new GoogleMaps()
@@ -25,7 +37,12 @@ onMounted(() => {
     props.places.forEach(place => {
       googleMap.addMarker(place)
     })
+    googleMap.addListener(onMapClick)
   })
 })
+
+function onMapClick(latLng: google.maps.LatLng): void {
+  emit('onMapClick', latLng)
+}
 </script>
 
