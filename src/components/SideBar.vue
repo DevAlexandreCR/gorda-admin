@@ -42,8 +42,7 @@
         </li>
         <li class="nav-item">
           <router-link :to="{ name: 'drivers'}" tag="a"
-                       :class="$router.currentRoute.value.path.includes('/dashboard/drivers/') ? 'nav-link active': 'nav-link'"
-                       v-if="isAdmin">
+                       :class="$router.currentRoute.value.path.includes('/dashboard/drivers/') ? 'nav-link active': 'nav-link'">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <em class="fa-solid fa-car-side"></em>
@@ -53,8 +52,7 @@
         </li>
         <li class="nav-item">
           <router-link :to="{ name: 'places'}" tag="a"
-                       :class="$router.currentRoute.value.path.includes('/dashboard/places/') ? 'nav-link active': 'nav-link'"
-                       v-if="isAdmin">
+                       :class="$router.currentRoute.value.path.includes('/dashboard/places/') ? 'nav-link active': 'nav-link'">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <em class="fas fa-location-dot"></em>
@@ -64,8 +62,8 @@
         </li>
         <li class="nav-item">
           <router-link :to="{ name: 'connection'}" tag="a"
-                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ? 'nav-link active': 'nav-link'"
-                       v-if="isAdmin">
+                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ?
+                       'nav-link active': 'nav-link'">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <em class="fa-brands fa-whatsapp"></em>

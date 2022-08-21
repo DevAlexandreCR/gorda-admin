@@ -11,6 +11,8 @@ import DriverEdit from '@/views/drivers/Edit.vue'
 import Connection from '@/views/Connection.vue'
 import Places from '@/views/places/Places.vue'
 import UserCreate from '@/views/users/Create.vue'
+import adminGuard from "@/router/guards/AdminGuard";
+import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 
 
 const routes: Array<any> = [
@@ -33,6 +35,11 @@ const routes: Array<any> = [
         name: 'users',
         redirect: {name: 'users.index'},
         component: Users,
+        beforeEnter: (
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) => adminGuard(to, from, next),
         children: [
           {
             path: '/dashboard/users/index/',
