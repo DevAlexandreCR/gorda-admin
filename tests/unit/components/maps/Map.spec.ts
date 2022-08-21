@@ -17,7 +17,7 @@ describe('Map.vue', () => {
           }
         },
         propsData: {
-            places: "name: 'barrio berlin', lat: 2.431681, lng: -76.601789"
+            places: [{name: 'barrio berlin', lat: 2.431681, lng: -76.601789 }]
         }
       })
     await router.isReady()
@@ -32,6 +32,6 @@ it('A user can see the map', async () => {
  })
 
 it('checks the prop places', async () => {
-    expect(wrapper.props().places).toBe("name: 'barrio berlin', lat: 2.431681, lng: -76.601789")
+    expect(wrapper.props().places).toStrictEqual([{name: 'barrio berlin', lat: 2.431681, lng: -76.601789 }])
  })
 })
