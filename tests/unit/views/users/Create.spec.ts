@@ -10,12 +10,16 @@ import waitForExpect from 'wait-for-expect'
 import User from "@/models/User";
 import dayjs from 'dayjs'
 import AuthService from '@/services/AuthService'
+import StorageService from "@/services/StorageService";
 
 describe('Create.vue', () => {
   AuthService.currentUser = new User()
     let wrapper: VueWrapper<any>
     beforeEach(async () => {
     UserRepository.create = jest.fn().mockResolvedValue('id-user')
+    UserRepository.update = jest.fn().mockResolvedValue('id-user')
+    StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost/image')
+    StorageService.getStorageReference = jest.fn()
       wrapper = mount(Create,
         {
           attachTo: '#root',
@@ -73,7 +77,7 @@ describe('Create.vue', () => {
     wrapper.vm.user.enabled_at = dayjs().unix()
     const file = new File([new Blob(['file contents'], {type: 'image/jpeg'})], 'image')
     wrapper.vm.image.push(file)
-    await wrapper.vm.createUser(new User(), { resetForm: () => null })
+    await wrapper.vm.createUser(wrapper.vm.user, { resetForm: () => null })
 
     await waitForExpect(() => {
       expect(success).toHaveBeenCalledTimes(1)
@@ -87,7 +91,7 @@ describe('Create.vue', () => {
     await wrapper.vm.createUser(new User(), {})
     
     await waitForExpect(() => {
-      expect(error).toHaveBeenCalledTimes(1)
+      expect(error).toHaveBeenCalledTimes(2)
     })
   })
 })
