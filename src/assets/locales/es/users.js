@@ -24,7 +24,9 @@ export default {
     phone: 'Teléfono',
     roles: 'Roles',
     admin: 'Administrador', 
-    operator: 'Operador'
+    operator: 'Operador',
+    role: 'Role',
+    status: 'Status'
   },
   platform_settings: 'Configuraciones',
   forms: {

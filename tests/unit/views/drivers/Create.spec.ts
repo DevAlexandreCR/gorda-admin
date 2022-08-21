@@ -34,7 +34,7 @@ describe('Create.vue', () => {
     const input = wrapper.findAll('.form-control')
     expect(field.length).toBe(14)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(1)
+    expect(error.length).toBe(3)
     expect(input.length).toBe(13)
   })
 
