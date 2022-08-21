@@ -21,7 +21,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="driver in drivers" :key="driver.id">
+            <tr v-for="driver in paginatedDrivers" :key="driver.id">
               <td>
                 <div class="d-flex px-2 py-1">
                   <div>
@@ -64,6 +64,9 @@
             </tr>
             </tbody>
           </table>
+          <div class="container text-center mt-2">
+            <Paginator :data="drivers" :perPage="10" @paginatedData="getPaginatedData"/>
+          </div>
         </div>
       </div>
     </div>
@@ -71,14 +74,22 @@
 </template>
 
 <script setup lang="ts">
-import DateHelper from "@/helpers/DateHelper";
+import DateHelper from '@/helpers/DateHelper'
+import Paginator from '@/components/Paginator'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {storeToRefs} from 'pinia'
+import Driver from '@/models/Driver';
+import {ref, Ref} from 'vue';
 
 const driverStore = useDriversStore()
 const {drivers} = storeToRefs(driverStore)
+const paginatedDrivers: Ref<Array<Driver>> = ref([])
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
+}
+
+function getPaginatedData(data: []): void {
+  paginatedDrivers.value = data
 }
 </script>
