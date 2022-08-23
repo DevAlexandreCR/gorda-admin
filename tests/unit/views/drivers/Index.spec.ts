@@ -1,4 +1,4 @@
-import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
+import {mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import Index from '@/views/drivers/Index.vue'
@@ -27,7 +27,6 @@ describe('Index.vue', () => {
   })
   it('an user can show users list', async () => {
     await nextTick()
-    await flushPromises()
     expect(wrapper.html()).toContain(DriverMock.name)
     expect(wrapper.html()).toContain(DriverMock.email)
     expect(wrapper.html()).toContain(DriverMock.photoUrl)

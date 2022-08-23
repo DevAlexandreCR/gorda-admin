@@ -1,11 +1,21 @@
 <template>
   <div class="container-fluid">
-    <div class="card mb-4">
-      <div class="modal-header pb-0">
-        <h6>{{ $t('common.models.drivers', 2) }}</h6>
-        <router-link :to="{ name: 'drivers.create'}" tag="a" class="btn btn-sm btn-primary btn-rounded" data-original-title="Create Driver">
-          <em class="fas fa-plus"></em>
-        </router-link>
+      <div class="card mb-4">
+      <div class="pt-3 d-inline-flex">
+        <h6 class="col-6 col-md-9 ms-2">{{ $t('common.models.drivers', 2) }}</h6>
+        <div class="col-6 col-md-3 d-flex">
+          <div class="form-group me-2">
+            <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
+              <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
+                     :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
+              <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+            </Field>
+          </div>
+          <router-link :to="{ name: 'drivers.create'}" tag="a" class="btn btn-sm btn-primary btn-rounded float-end"
+                       data-original-title="Create Driver">
+            <em class="fas fa-plus"></em>
+          </router-link>
+        </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
@@ -65,7 +75,7 @@
             </tbody>
           </table>
           <div class="container text-center mt-2">
-            <Paginator :data="drivers" :perPage="10" @paginatedData="getPaginatedData"/>
+            <Paginator :data="filteredDrivers" :perPage="10" @paginatedData="getPaginatedData"/>
           </div>
         </div>
       </div>
@@ -77,13 +87,15 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import {storeToRefs} from 'pinia'
-import Driver from '@/models/Driver';
-import {ref, Ref} from 'vue';
+import {Field} from 'vee-validate'
+import Driver from '@/models/Driver'
+import {onMounted, ref, Ref, watch} from 'vue'
 
-const driverStore = useDriversStore()
-const {drivers} = storeToRefs(driverStore)
+const {drivers} = useDriversStore()
+const {filterByPlate} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
+const filteredDrivers: Ref<Array<Driver>> = ref([])
+const searchDriver: Ref<string> = ref('')
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
@@ -92,4 +104,18 @@ function format(unix: number): string {
 function getPaginatedData(data: []): void {
   paginatedDrivers.value = data
 }
+
+watch(drivers, (newDrivers) => {
+  filteredDrivers.value.splice(0, filteredDrivers.value.length)
+  newDrivers.forEach(driver => filteredDrivers.value.push(driver))
+})
+
+watch(searchDriver, (plate) => {
+  filteredDrivers.value.splice(0, filteredDrivers.value.length)
+  filterByPlate(plate).forEach(driver => filteredDrivers.value.push(driver))
+})
+
+onMounted(() => {
+  drivers.forEach(driver => filteredDrivers.value.push(driver))
+})
 </script>

@@ -21,6 +21,9 @@ export const useDriversStore = defineStore('driverStore', {
     },
     findById(id: string): Driver|undefined {
       return this.drivers.find(el => el.id == id)
+    },
+    filterByPlate(plate: string): Driver[] {
+      return this.drivers.filter(el => el.vehicle.plate.toLowerCase().includes(plate.toLowerCase()))
     }
   }
 })
