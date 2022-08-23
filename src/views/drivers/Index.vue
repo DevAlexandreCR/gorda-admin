@@ -1,10 +1,10 @@
 <template>
-  <div class="container-fluid">
+  <div class="mx-3">
       <div class="card mb-4">
-      <div class="pt-3 d-inline-flex">
-        <h6 class="col-6 col-md-9 ms-2">{{ $t('common.models.drivers', 2) }}</h6>
-        <div class="col-6 col-md-3 d-flex">
-          <div class="form-group me-2">
+      <div class="pt-3 d-inline-flex mx-3">
+        <h6 class="col-6 col-lg-9 ms-2">{{ $t('common.models.drivers', 2) }}</h6>
+        <div class="col-6 col-lg-3 d-flex justify-content-end">
+          <div class="form-group me-2 w-100">
             <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
               <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
                      :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
