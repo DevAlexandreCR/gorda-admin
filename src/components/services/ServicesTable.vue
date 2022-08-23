@@ -121,9 +121,9 @@ function getPaginatedData(data: []): void {
 }
 
 function getTime(): void {
-  // paginatedServices.value.forEach(service => {
-  //   let time  = DateHelper.unix() - service.created_at
-  //   service.a_go = DateHelper.aGo(time)
-  // })
+  paginatedServices.value.forEach(service => {
+    let time  = DateHelper.unix() - service.created_at
+    service.a_go = DateHelper.aGo(time)
+  })
 }
 </script>
