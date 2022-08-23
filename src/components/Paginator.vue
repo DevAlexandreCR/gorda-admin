@@ -4,7 +4,7 @@
       <ul class="pagination">
         <li class="page-item">
           <a class="page-link cursor-pointer" @click="backPage" tabindex="-1">
-            <i class="fa fa-angle-left"></i>
+            <em class="fa fa-angle-left"></em>
             <span class="sr-only">Previous</span>
           </a>
         </li>
@@ -16,7 +16,7 @@
         </li>
         <li class="page-item cursor-pointer">
           <a class="page-link" @click="nextPage">
-            <i class="fa fa-angle-right"></i>
+            <em class="fa fa-angle-right"></em>
             <span class="sr-only">Next</span>
           </a>
         </li>
