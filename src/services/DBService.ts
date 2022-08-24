@@ -20,6 +20,11 @@ class DBService {
   }
 
   /* istanbul ignore next */
+  public dbOnlineDrivers(): DatabaseReference {
+    return ref(this.db, 'online_drivers/')
+  }
+
+  /* istanbul ignore next */
   public dbClients(): DatabaseReference {
     return ref(this.db, 'clients/')
   }

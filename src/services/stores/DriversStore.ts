@@ -6,7 +6,8 @@ export const useDriversStore = defineStore('driverStore', {
   state: () => {
 
     return {
-      drivers: Array<Driver>()
+      drivers: Array<Driver>(),
+      connectedDrivers: Array<Driver>()
     }
   },
   actions: {
@@ -24,6 +25,11 @@ export const useDriversStore = defineStore('driverStore', {
     },
     filterByPlate(plate: string): Driver[] {
       return this.drivers.filter(el => el.vehicle.plate.toLowerCase().includes(plate.toLowerCase()))
+    },
+    getOnlineDrivers(): void {
+      DriverRepository.onlineDriverListener((data) => {
+        console.log(data.val())
+      })
     }
   }
 })

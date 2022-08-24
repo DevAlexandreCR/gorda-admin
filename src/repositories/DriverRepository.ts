@@ -1,4 +1,14 @@
-import {child, DataSnapshot, get, ref, set} from 'firebase/database'
+import {
+  child,
+  DataSnapshot,
+  get,
+  onValue,
+  orderByKey,
+  query,
+  ref,
+  set,
+  startAfter
+} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from '@/types/DriverInterface'
 import Driver from '@/models/Driver'
@@ -37,6 +47,10 @@ class DriverRepository {
         reject(new Error(e.message))
       })
     })
+  }
+
+  onlineDriverListener(listener: (data: DataSnapshot) => void): void {
+    onValue(query(DBService.dbOnlineDrivers(), orderByKey()), listener)
   }
   
   /* istanbul ignore next */
