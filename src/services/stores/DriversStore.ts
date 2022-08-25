@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
+import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -20,16 +21,16 @@ export const useDriversStore = defineStore('driverStore', {
         })
       })
     },
-    findById(id: string): Driver|undefined {
+    findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
     },
     filterByPlate(plate: string): Driver[] {
       return this.drivers.filter(el => el.vehicle.plate.toLowerCase().includes(plate.toLowerCase()))
     },
-    getOnlineDrivers(): void {
-      DriverRepository.onlineDriverListener((data) => {
-        console.log(data.val())
-      })
+    getOnlineDrivers(onAdded: (driver: DriverConnectedInterface) => void,
+                     onChanged: (driver: DriverConnectedInterface) => void,
+                     onRemoved: (driver: DriverConnectedInterface) => void): void {
+      DriverRepository.onlineDriverListener(onAdded, onChanged, onRemoved)
     }
   }
 })

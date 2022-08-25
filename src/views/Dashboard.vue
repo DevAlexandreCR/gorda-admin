@@ -1,29 +1,34 @@
 <template>
   <div>
     <SideBar></SideBar>
-    <main  class="main-content mt-1 border-radius-lg " id="main">
-      <NavBar/>
-      <router-view class="mt-4 ms-2"></router-view>
-    </main>
+    <Suspense>
+      <template #default>
+        <main class="main-content mt-1 border-radius-lg " id="main">
+          <NavBar/>
+          <router-view class="mt-4 ms-2"></router-view>
+        </main>
+      </template>
+      <template #fallback>
+        <div class="display-6">Loading...</div>
+      </template>
+    </Suspense>
   </div>
 </template>
 
 <script setup lang="ts">
 import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
-import {onMounted} from 'vue'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
+require('@/vendor/js/soft-ui-dashboard')
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
 
-onMounted((): void => {
-  require('@/vendor/js/soft-ui-dashboard')
-  getPlaces()
-  getClients()
-  getDrivers()
-})
+getPlaces()
+getClients()
+getDrivers()
+
 </script>

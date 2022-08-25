@@ -2,12 +2,13 @@ import {
   child,
   DataSnapshot,
   get,
-  onValue,
+  onChildChanged,
+  onChildAdded,
+  onChildRemoved,
   orderByKey,
   query,
   ref,
-  set,
-  startAfter
+  set
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from '@/types/DriverInterface'
@@ -16,26 +17,27 @@ import {UserRequestType} from '@/types/UserRequestType'
 import {UserResponse} from '@/types/UserResponse'
 import UserRepository from '@/repositories/UserRepository'
 import {AxiosError} from 'axios'
+import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 
 class DriverRepository {
-  
+
   /* istanbul ignore next */
   async getDriver(id: string): Promise<DriverInterface> {
     const snapshot: DataSnapshot = await get(child(DBService.dbDrivers(), id))
     return <DriverInterface>snapshot.val() ?? new Driver
   }
-  
+
   /* istanbul ignore next */
   async getAll(): Promise<Array<DriverInterface>> {
     const snapshot: DataSnapshot = await get(DBService.dbDrivers())
     return Object.values(snapshot.val() ?? [])
   }
-  
+
   /* istanbul ignore next */
   update(driver: DriverInterface): Promise<void> {
     return set(ref(DBService.db, 'drivers/' + driver.id), driver)
   }
-  
+
   /* istanbul ignore next */
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -49,10 +51,24 @@ class DriverRepository {
     })
   }
 
-  onlineDriverListener(listener: (data: DataSnapshot) => void): void {
-    onValue(query(DBService.dbOnlineDrivers(), orderByKey()), listener)
+  /* istanbul ignore next */
+  onlineDriverListener(onAdded: (driver: DriverConnectedInterface) => void,
+                       onChanged: (driver: DriverConnectedInterface) => void,
+                       onRemoved: (driver: DriverConnectedInterface) => void): void {
+    onChildAdded(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
+      const driver = data.val() as DriverConnectedInterface
+      onAdded(driver)
+    })
+    onChildChanged(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
+      const driver = data.val() as DriverConnectedInterface
+      onChanged(driver)
+    })
+    onChildRemoved(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
+      const driver = data.val() as DriverConnectedInterface
+      onRemoved(driver)
+    })
   }
-  
+
   /* istanbul ignore next */
   async create(driver: DriverInterface, password: string): Promise<string> {
     const userData: UserRequestType = {

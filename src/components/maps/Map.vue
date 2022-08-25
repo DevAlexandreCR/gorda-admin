@@ -13,6 +13,7 @@ import {GoogleMaps} from '@/services/maps/GoogleMaps'
 import {google} from 'google-maps'
 
 let googleMap: GoogleMaps
+let mapReady = false
 
 interface Props {
   places: Array<PlaceInterface>
@@ -21,24 +22,25 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits(['onMapClick'])
 
-watch(props.places, (newPlaces) => {
-  googleMap.clearMap()
-  newPlaces.forEach(place => {
-    googleMap.addMarker(place)
-  })
-  if (newPlaces.length === 1) {
-    googleMap.moveCamera(newPlaces[0])
-  }
-})
-
-onMounted(() => {
+onMounted(async () => {
   googleMap = new GoogleMaps()
-  googleMap.initMap('map').then(() => {
+  await googleMap.initMap('map').then(() => {
+    mapReady = true
     props.places.forEach(place => {
       googleMap.addMarker(place)
     })
     googleMap.addListener(onMapClick)
   })
+})
+
+watch(props.places, (newPlaces) => {
+  googleMap.clearMap()
+  newPlaces.forEach(place => {
+    if(mapReady) googleMap.addMarker(place)
+  })
+  if (newPlaces.length === 1) {
+    if(mapReady) googleMap.moveCamera(newPlaces[0])
+  }
 })
 
 function onMapClick(latLng: google.maps.LatLng): void {
