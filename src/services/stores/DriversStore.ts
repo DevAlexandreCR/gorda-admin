@@ -34,8 +34,8 @@ export const useDriversStore = defineStore('driverStore', {
         this.connectedDrivers.push({
           key: driver.id,
           name: driver.vehicle.plate,
-          lat: partialDriver.location?.lat?? 0,
-          lng: partialDriver.location?.lng?? 0
+          lat: partialDriver.location.lat,
+          lng: partialDriver.location.lng
         })
       }
 
@@ -45,8 +45,8 @@ export const useDriversStore = defineStore('driverStore', {
         this.connectedDrivers[index] = {
           key: driver.id,
           name: driver.vehicle.plate,
-          lat: partialDriver.location?.lat?? 0,
-          lng: partialDriver.location?.lng?? 0
+          lat: partialDriver.location.lat,
+          lng: partialDriver.location.lng
         }
       }
 

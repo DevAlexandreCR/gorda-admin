@@ -6,12 +6,14 @@ export class GoogleMaps {
   loader: Loader
   map: google.maps.Map
   markers: Array<google.maps.Marker> = []
+  icon: string
   
-  constructor() {
+  constructor(icon: string) {
     this.loader = new Loader({
       apiKey: process.env.VUE_APP_GOOGLE_API_KEY?? '',
       version: "weekly"
     })
+    this.icon = icon
   }
   
   /* istanbul ignore next */
@@ -28,15 +30,28 @@ export class GoogleMaps {
   }
   /* istanbul ignore next */
   addMarker(place: PlaceInterface): void {
+    const infoWindow = new google.maps.InfoWindow({
+      content: place.name
+    });
     const markerOptions: google.maps.MarkerOptions = {
       position: {
         lat: place.lat,
         lng: place.lng
       },
       map: this.map,
-      title: place.name
+      icon: {
+        url: this.icon,
+        scaledSize: new google.maps.Size(30, 30)
+      },
+      title: place.name,
+      optimized: true
     }
     const marker = new google.maps.Marker(markerOptions)
+    infoWindow.open({
+      anchor: marker,
+      map: this.map,
+      shouldFocus: false
+    })
     this.markers.push(marker)
   }
   

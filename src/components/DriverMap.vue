@@ -1,7 +1,7 @@
 <template>
   <div class="row row-cols-2 w-100">
-    <div class="col-8">Drivers</div>
-    <div class="form-group col-4">
+    <div class="col-9">Drivers</div>
+    <div class="form-group col-3">
       <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
         <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
                :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="row min-vh-75">
-    <Map :places="filteredDrivers"/>
+    <Map :places="filteredDrivers" :icon="icon"/>
   </div>
 </template>
 
@@ -24,6 +24,7 @@ import {PlaceInterface} from '@/types/PlaceInterface'
 const {getOnlineDrivers, connectedDrivers} = useDriversStore()
 const searchDriver: Ref<string> = ref('')
 const filteredDrivers: Ref<Array<PlaceInterface>> = ref([])
+const icon: Ref<string> = ref(process.env.VUE_APP_DRIVER_LOC_IMAGE_URL as string)
 let filtering = false
 
 watch(searchDriver, (plate) => {

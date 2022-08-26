@@ -21,7 +21,7 @@ import NavBar from '@/components/NavBar.vue'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
-require('@/vendor/js/soft-ui-dashboard')
+import {onMounted} from 'vue'
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
@@ -30,5 +30,9 @@ const {getDrivers} = useDriversStore()
 getPlaces()
 getClients()
 getDrivers()
+
+onMounted(() => {
+  require('@/vendor/js/soft-ui-dashboard')
+})
 
 </script>

@@ -16,20 +16,24 @@ let googleMap: GoogleMaps
 let mapReady = false
 
 interface Props {
-  places: Array<PlaceInterface>
+  places: Array<PlaceInterface>,
+  icon?: string
+  addListener?: boolean
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['onMapClick'])
+let icon: string
 
 onMounted(async () => {
-  googleMap = new GoogleMaps()
+  icon = props.icon?? process.env.VUE_APP_LOCATION_IMAGE_URL as string
+  googleMap = new GoogleMaps(icon)
   await googleMap.initMap('map').then(() => {
     mapReady = true
     props.places.forEach(place => {
       googleMap.addMarker(place)
     })
-    googleMap.addListener(onMapClick)
+    if (props.addListener) googleMap.addListener(onMapClick)
   })
 })
 
