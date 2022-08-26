@@ -20,45 +20,45 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Map from '@/components/maps/Map.vue'
 import {PlaceInterface} from '@/types/PlaceInterface'
-import Driver from '@/models/Driver'
-import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 
-const {drivers, filterByPlate, getOnlineDrivers, findById} = useDriversStore()
+const {getOnlineDrivers, connectedDrivers} = useDriversStore()
 const searchDriver: Ref<string> = ref('')
 const filteredDrivers: Ref<Array<PlaceInterface>> = ref([])
+let filtering = false
 
 watch(searchDriver, (plate) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  // filterByPlate(plate).forEach(driver => filteredDrivers.value.push(driver))
+  if (plate.length > 0) {
+    filtering = true
+    const filtered = connectedDrivers.filter(place => place.name.toLowerCase().includes(plate.toLowerCase()))
+    filteredDrivers.value.splice(0, filteredDrivers.value.length)
+    filtered.forEach(driver => filteredDrivers.value.push(driver))
+  } else {
+    filtering = false
+    connectedDrivers.forEach(driver => filteredDrivers.value.push(driver))
+  }
 })
 
-function onDriverConnected(partialDriver: DriverConnectedInterface): void {
-  const driver = findById(partialDriver.id??'') ?? new Driver()
-  filteredDrivers.value.push({
-    key: driver.id,
-    name: driver.vehicle.plate,
-    lat: partialDriver.location?.lat?? 0,
-    lng: partialDriver.location?.lng?? 0
-  })
-}
-
-function onDriverChanged(partialDriver: DriverConnectedInterface): void {
-  const driver = findById(partialDriver.id??'') ?? new Driver()
-  const index = filteredDrivers.value.findIndex(dri => dri.key === partialDriver.id)
-  filteredDrivers.value[index] = {
-    key: driver.id,
-    name: driver.vehicle.plate,
-    lat: partialDriver.location?.lat?? 0,
-    lng: partialDriver.location?.lng?? 0
+watch(connectedDrivers, (newDrivers) => {
+  if (!filtering) {
+    if (filteredDrivers.value.length <= newDrivers.length) {
+      newDrivers.forEach((driver, index) => {
+        const indexDriver = filteredDrivers.value.findIndex(dri => dri.key === driver.key)
+        if (indexDriver > 0) {
+          filteredDrivers.value[indexDriver] = driver
+        } else {
+          filteredDrivers.value[index] = driver
+        }
+      })
+    } else {
+      filteredDrivers.value.forEach((filtered, index) => {
+        const indexDriver = newDrivers.findIndex(connected => connected.key === filtered.key)
+        if (indexDriver < 0) filteredDrivers.value.splice(index, 1)
+      })
+    }
   }
-}
-
-function onDriverDisconnected(driver: DriverConnectedInterface): void {
-  const index = filteredDrivers.value.findIndex(dri => dri.key === driver.id)
-  filteredDrivers.value.splice(index, 1)
-}
+})
 
 onMounted(() => {
-  getOnlineDrivers(onDriverConnected, onDriverChanged, onDriverDisconnected)
+  getOnlineDrivers()
 })
 </script>
