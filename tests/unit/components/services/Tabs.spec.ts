@@ -10,6 +10,7 @@ import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import Swal from 'sweetalert2'
 import {nextTick} from 'vue'
+import DriverRepository from '@/repositories/DriverRepository'
 
 describe('Tabs.vue', () => {
   let wrapper: VueWrapper<any>
@@ -80,6 +81,7 @@ describe('Tabs.vue', () => {
   it('should exec functions when children emmit events', async () => {
     ServiceRepository.updateStatus = jest.fn().mockResolvedValue({})
     ServiceRepository.update = jest.fn().mockResolvedValue({})
+    DriverRepository.onlineDriverListener = jest.fn()
     const swat = jest.spyOn(Swal, 'fire')
     wrapper = mount(Tabs,
       {

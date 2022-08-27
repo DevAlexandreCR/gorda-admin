@@ -35,7 +35,7 @@
       </div>
       </Form>
       <div class="row min-vh-75">
-        <Map :places="selectedPlace" @onMapClick="onMapClick"/>
+        <Map :places="selectedPlace" @onMapClick="onMapClick" :add-listener="true"/>
       </div>
     </div>
   <div class="col-sm-3 pe-4">

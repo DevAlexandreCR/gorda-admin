@@ -85,14 +85,13 @@
 
 <script setup lang="ts">
 import DateHelper from '@/helpers/DateHelper'
-import Paginator from '@/components/Paginator'
+import Paginator from '@/components/Paginator.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
 import {onMounted, ref, Ref, watch} from 'vue'
 
-const {drivers} = useDriversStore()
-const {filterByPlate} = useDriversStore()
+const {drivers, filterByPlate} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')

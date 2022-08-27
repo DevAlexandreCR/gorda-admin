@@ -4,9 +4,11 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import UserInterface from '../../mocks/entities/UserMock'
+import DriverRepository from '@/repositories/DriverRepository'
 
 describe('Dashboard.vue', () => {
   Object.assign(AuthService.currentUser, UserInterface)
+  DriverRepository.onlineDriverListener = jest.fn()
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
