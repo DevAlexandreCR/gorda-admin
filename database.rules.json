@@ -14,7 +14,7 @@
     },
     "drivers": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true"
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
     },
     "clients": {
       ".read": "auth.uid != null",
@@ -22,7 +22,10 @@
     },
     "online_drivers": {
       ".read": "auth.uid != null",
-      ".write": "root.child('drivers').child(auth.uid).child('enabled_at').val() > 0"
+      ".write": "root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
+      "$uid": {
+        ".validate": "newData.hasChildren(['location', 'id'])"
+      }
     },
     "places": {
       ".read": "auth.uid != null",

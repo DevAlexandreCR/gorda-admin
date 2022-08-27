@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 export default class Driver implements DriverInterface {
 
-  id: string|null
+  id: string
   created_at: number
   docType: string
   document: string
@@ -17,7 +17,7 @@ export default class Driver implements DriverInterface {
   vehicle: VehicleInterface
   
   constructor() {
-    this.id = null
+    this.id = ''
     this.created_at = dayjs().unix()
     this.photoUrl = null
     this.vehicle = new Vehicle()

@@ -1,7 +1,7 @@
 import {VehicleInterface} from "@/types/VehicleInterface";
 
 export interface DriverInterface {
-  id: string|null
+  id: string
   name: string
   email: string
   phone: string

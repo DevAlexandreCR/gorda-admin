@@ -13,32 +13,38 @@ import {GoogleMaps} from '@/services/maps/GoogleMaps'
 import {google} from 'google-maps'
 
 let googleMap: GoogleMaps
+let mapReady = false
 
 interface Props {
-  places: Array<PlaceInterface>
+  places: Array<PlaceInterface>,
+  icon?: string
+  addListener?: boolean
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['onMapClick'])
+let icon: string
+
+onMounted(async () => {
+  icon = props.icon?? process.env.VUE_APP_LOCATION_IMAGE_URL as string
+  googleMap = new GoogleMaps(icon)
+  await googleMap.initMap('map').then(() => {
+    mapReady = true
+    props.places.forEach(place => {
+      googleMap.addMarker(place)
+    })
+    if (props.addListener) googleMap.addListener(onMapClick)
+  })
+})
 
 watch(props.places, (newPlaces) => {
   googleMap.clearMap()
   newPlaces.forEach(place => {
-    googleMap.addMarker(place)
+    if(mapReady) googleMap.addMarker(place)
   })
   if (newPlaces.length === 1) {
-    googleMap.moveCamera(newPlaces[0])
+    if(mapReady) googleMap.moveCamera(newPlaces[0])
   }
-})
-
-onMounted(() => {
-  googleMap = new GoogleMaps()
-  googleMap.initMap('map').then(() => {
-    props.places.forEach(place => {
-      googleMap.addMarker(place)
-    })
-    googleMap.addListener(onMapClick)
-  })
 })
 
 function onMapClick(latLng: google.maps.LatLng): void {

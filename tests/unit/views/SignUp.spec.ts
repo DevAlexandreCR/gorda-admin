@@ -13,12 +13,10 @@ import UserInterface from '../../mocks/entities/UserMock'
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
+UserRepository.create = jest.fn().mockResolvedValue('user_id')
 
 describe('SignUp.vue', () => {
   let wrapper: VueWrapper<any>
-  const div = document.createElement('div')
-  div.id = 'root'
-  document.body.appendChild(div)
   beforeEach(async () => {
     wrapper = mount(SignUp,
       {

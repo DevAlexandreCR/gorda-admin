@@ -13,8 +13,8 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
-                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageDriver">
-                </Field>
+                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageDriver"/>
+                <ErrorMessage name="photoUrl" class="is-invalid"/>
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
@@ -75,8 +75,8 @@
               </div>
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo_vehicle') }}</label>
-                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle">
-                </Field>
+                <Field name="photoVehicleUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="imageVehicle"/>
+                <ErrorMessage name="photoVehicleUrl" class="is-invalid"/>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
@@ -89,7 +89,7 @@
                 <label>{{ $t('drivers.vehicle.model') }}</label>
                 <Field name="model" type="text" class="form-control" v-model="driver.vehicle.model" v-slot="{ field, errorMessage, meta }">
                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.model')" id="model" aria-label="Model" aria-describedby="model-addon" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
                  </Field>
               </div>
               <div class="form-group">

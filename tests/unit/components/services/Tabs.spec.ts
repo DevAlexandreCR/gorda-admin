@@ -9,6 +9,8 @@ import ServiceMock from '../../../mocks/entities/ServiceMock'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import Swal from 'sweetalert2'
+import {nextTick} from 'vue'
+import DriverRepository from '@/repositories/DriverRepository'
 
 describe('Tabs.vue', () => {
   let wrapper: VueWrapper<any>
@@ -40,43 +42,46 @@ describe('Tabs.vue', () => {
   })
   
   it('set services on add serviceListener', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const snapshot = new DataSnapshot(ServiceMock)
     snapshot.service.status = Service.STATUS_IN_PROGRESS
-    wrapper.vm.inProgressServices.push(snapshot)
+    wrapper.vm.services.inProgress.push(snapshot)
     snapshot.service.status = Service.STATUS_PENDING
     wrapper.vm.onServiceAdded(snapshot)
     wrapper.vm.onServiceAdded(snapshot)
-    expect(wrapper.vm.pendingServices.length).toBe(1)
+    await nextTick()
+    expect(wrapper.vm.services.pending.length).toBe(2)
   })
   
   it('set services on change serviceListener', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const snapshot = new DataSnapshot(ServiceMock)
-    wrapper.vm.pendingServices.push(snapshot)
+    wrapper.vm.onServiceAdded(snapshot)
+    await nextTick()
     snapshot.service.status = Service.STATUS_IN_PROGRESS
-    
     await wrapper.vm.onServiceChanged(snapshot)
-    
-    expect(wrapper.vm.inProgressServices.length).toBe(1)
+    await nextTick()
+
+    expect(wrapper.vm.services.inProgress.length).toBe(1)
   })
   
   it('ser historyService on change event', async () => {
     await wrapper.vm.$nextTick()
     const snapshot = new DataSnapshot(ServiceMock)
     snapshot.service.status = Service.STATUS_IN_PROGRESS
-    wrapper.vm.inProgressServices.push(snapshot.service)
-    wrapper.vm.historyServices.push(snapshot.service)
-    
+    wrapper.vm.onServiceAdded(snapshot)
+    await nextTick()
+
     snapshot.service.status = Service.STATUS_TERMINATED
     await wrapper.vm.onServiceChanged(snapshot)
-    
-    expect(wrapper.vm.historyServices.length).toBe(1)
+    await nextTick()
+    expect(wrapper.vm.services.history.length).toBe(1)
   })
   
   it('should exec functions when children emmit events', async () => {
     ServiceRepository.updateStatus = jest.fn().mockResolvedValue({})
     ServiceRepository.update = jest.fn().mockResolvedValue({})
+    DriverRepository.onlineDriverListener = jest.fn()
     const swat = jest.spyOn(Swal, 'fire')
     wrapper = mount(Tabs,
       {

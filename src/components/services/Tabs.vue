@@ -5,14 +5,14 @@
         <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" aria-selected="true">{{ $t('services.statuses.pending') }}
           <span class="badge badge-circle bg-danger"
-                v-show="pendingServices.length > 0">{{ pendingServices.length }}</span>
+                v-show="services.pending.length > 0">{{ services.pending.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" aria-selected="false">{{ $t('services.statuses.in_progress') }}
           <span class="badge badge-circle bg-success"
-                v-show="inProgressServices.length > 0">{{ inProgressServices.length }}</span>
+                v-show="services.inProgress.length > 0">{{ services.inProgress.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -30,17 +30,17 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :drivers="drivers" :services="pendingServices" @cancelService="cancel"></services-table>
+        <services-table :drivers="drivers" :services="services.pending" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :drivers="drivers" :services="inProgressServices" @cancelService="cancel" @endService="end"
+        <services-table :drivers="drivers" :services="services.inProgress" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <services-table :drivers="drivers" :isHistory="true" :services="historyServices"></services-table>
+        <services-table :drivers="drivers" :isHistory="true" :services="services.history"></services-table>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
-        ...
+        <DriverMap/>
       </div>
     </div>
     <AssignDriver :drivers="drivers"></AssignDriver>
@@ -50,82 +50,53 @@
 <script setup lang="ts">
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import {ServiceInterface} from '@/types/ServiceInterface'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {DataSnapshot} from 'firebase/database'
 import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {onBeforeMount, ref, Ref} from 'vue'
+import {onBeforeMount, reactive, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
+import DriverMap from '@/components/DriverMap.vue'
 
 const {t} = useI18n()
-
-const pendingServices: Ref<Array<ServiceInterface>> = ref([])
-const inProgressServices: Ref<Array<ServiceInterface>> = ref([])
-const historyServices: Ref<Array<ServiceInterface>> = ref([])
 const driverStore = useDriversStore()
-
 const {drivers} = storeToRefs(driverStore)
+const services = reactive({
+  pending: Array<Service>(),
+  inProgress: Array<Service>(),
+  history: Array<Service>()
+})
 
 function onServiceAdded(data: DataSnapshot): void {
   const service = new Service()
   Object.assign(service, data.val())
   service.id = data.key as string
-  historyServices.value.unshift(service)
-  setServiceOnChange(service)
+  services.history.unshift(service)
 }
 
 function onServiceChanged(data: DataSnapshot): void {
   const service = new Service()
   Object.assign(service, data.val())
-  setServiceOnChange(service)
+  services.history[services.history.findIndex(serv => serv.id === service.id)].status = service.status
 }
 
-function setServiceOnChange(service: Service): void {
-  let updated = false
-  switch (service.status) {
-    case Service.STATUS_PENDING:
-      pendingServices.value.forEach((serv, index) => {
-        if (serv.id === service.id) {
-          updated = true
-          pendingServices.value[index] = service
-        }
-      })
-      if (!updated) pendingServices.value.unshift(service)
-        inProgressServices.value = inProgressServices.value.filter(serv => {
-        return serv.id != service.id
-      })
-      break
-    case Service.STATUS_IN_PROGRESS:
-      inProgressServices.value.forEach((serv, index) => {
-        if (serv.id === service.id) {
-          updated = true
-          inProgressServices.value[index] = service
-        }
-      })
-      if (!updated) inProgressServices.value.unshift(service)
-      pendingServices.value.forEach((serv, index) => {
-        if (serv.id === service.id) {
-          pendingServices.value.splice(index, 1)
-        }
-      })
-      break
-    default:
-      inProgressServices.value = inProgressServices.value.filter(serv => {
-        return serv.id !== service.id
-      })
-      pendingServices.value = pendingServices.value.filter(serv => {
-        return serv.id !== service.id
-      })
-      historyServices.value[historyServices.value.findIndex(serv => serv.id === service.id)].status = service.status
-      break
-  }
-  updated = false
-}
+watch(services.history,(newServices) => {
+  services.pending.splice(0,services.pending.length)
+  newServices.forEach(service => {
+    if (service.status == Service.STATUS_PENDING) services.pending.push(service)
+  })
+})
+
+watch(services.history,(newServices) => {
+  services.inProgress.splice(0,services.inProgress.length)
+  newServices.forEach(service => {
+    if (service.status == Service.STATUS_IN_PROGRESS) services.inProgress.push(service)
+  })
+})
 
 onBeforeMount((): void => {
   ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().subtract(1, 'day').unix())
