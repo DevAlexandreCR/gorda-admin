@@ -81,7 +81,7 @@ function onServiceAdded(data: DataSnapshot): void {
 function onServiceChanged(data: DataSnapshot): void {
   const service = new Service()
   Object.assign(service, data.val())
-  services.history[services.history.findIndex(serv => serv.id === service.id)].status = service.status
+  services.history[services.history.findIndex(serv => serv.id === service.id)] = service
 }
 
 watch(services.history,(newServices) => {
