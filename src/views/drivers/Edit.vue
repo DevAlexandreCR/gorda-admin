@@ -168,6 +168,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
 import {mixed, object, date, string} from 'yup'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -180,6 +181,7 @@ const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
+const {setLoading} = useLoadingState()
 const schema = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -232,21 +234,27 @@ function uploadImgVehicle(url: string): void {
 }
 
 function updateDriver(): void {
+  setLoading(true)
   DriverRepository.update(driver.value).then(() => {
+    setLoading(false)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function onEnable(event: Event): void {
+  setLoading(true)
   const target = event.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id?? '', driver.value.enabled_at).then(() => {
+    setLoading(false)
     const message = driver.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

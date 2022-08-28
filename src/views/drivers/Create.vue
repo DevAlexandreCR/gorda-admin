@@ -157,6 +157,8 @@ import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
 import {ref, Ref, watch} from 'vue'
+import {useLoadingState} from '@/services/stores/LoadingState'
+import router from '@/router'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -164,6 +166,7 @@ const imageDriver: Ref<File[]> = ref([])
 const imageVehicle: Ref<File[]> = ref([])
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
+const {setLoading} = useLoadingState()
 const schema: ObjectSchema<any> = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -191,6 +194,7 @@ function uploadImg(path: string, image: File): Promise<string> {
 }
 
 function createDriver(_values: DriverInterface, event: FormActions<any>): void {
+  setLoading(true)
   driver.value.vehicle.soat_exp = dayjs(driver.value.vehicle.soat_exp).unix()
   driver.value.vehicle.tec_exp = dayjs(driver.value.vehicle.tec_exp).unix()
   DriverRepository.create(driver.value, password.value).then((id) => {
@@ -198,13 +202,16 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
     uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {
       driver.value.photoUrl = url
       uploadImg(StorageService.vehiclePath, imageVehicle.value[0]).then(urlPhotoVehicle => {
+        setLoading(false)
         driver.value.vehicle.photoUrl = urlPhotoVehicle
         DriverRepository.update(driver.value)
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
+        router.push({name: 'driver.index'})
       })
     })
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
