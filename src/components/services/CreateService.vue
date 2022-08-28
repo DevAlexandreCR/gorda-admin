@@ -64,12 +64,14 @@ import {ClientInterface} from '@/types/ClientInterface'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {PlaceInterface} from '@/types/PlaceInterface'
+import {useLoadingState} from '@/services/stores/LoadingState'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
+const {setLoading} = useLoadingState()
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -124,11 +126,13 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     return
   }
   if (!values.client_id) {
+    setLoading(true)
     await createClient({
       id: '',
       name: values.name,
       phone: values.phone
     }).then((client) => {
+      setLoading(false)
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
       clientsPhone.value.push({
@@ -136,6 +140,7 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
         value: client.phone
       })
     }).catch(e => {
+      setLoading(false)
       ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
     })
   }
@@ -144,6 +149,7 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 }
 
 function createService(values: ServiceInterface): void {
+  setLoading(true)
   const service: Service = new Service()
   service.comment = values.comment ?? null
   service.client_id = values.client_id
@@ -152,9 +158,11 @@ function createService(values: ServiceInterface): void {
   service.start_loc = start_loc
   const index = services.value.findIndex(s => s.client_id = values.client_id)
   ServiceRepository.create(service).then(() => {
+    setLoading(false)
     services.value.splice(index, 1, new Service)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
   })
 }
