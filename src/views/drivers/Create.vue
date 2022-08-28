@@ -207,7 +207,7 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
         DriverRepository.update(driver.value)
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
-        router.push({name: 'driver.index'})
+        router.push({name: 'drivers.index'})
       })
     })
   }).catch(e => {
