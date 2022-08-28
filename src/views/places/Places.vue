@@ -76,6 +76,7 @@ import Map from '@/components/maps/Map.vue'
 import {storeToRefs} from 'pinia'
 import {google} from 'google-maps'
 import {StrHelper} from '@/helpers/StrHelper'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
@@ -83,6 +84,7 @@ const foundPlaces: Ref<Array<Place>> = ref([])
 const placesStore = usePlacesStore()
 const {places} = storeToRefs(placesStore)
 const selectedPlace: Ref<Array<Place>> = ref([])
+const {setLoading} = useLoadingState()
 
 onMounted(() => {
   foundPlaces.value = places.value
@@ -100,11 +102,14 @@ const schema = yup.object().shape({
 })
 
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
+  setLoading(true)
   place.value.name = StrHelper.toCamelCase(place.value.name)
   PlacesRepository.create(place.value).then(() => {
+    setLoading(false)
     event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
@@ -128,11 +133,14 @@ function onMapClick(latLng: google.maps.LatLng): void {
 }
 
 async function deletePlace(deletedPlace: Place): Promise<void> {
+  setLoading(true)
   deletedPlace.delete().then(() => {
+    setLoading(false)
     searchPlace.value = ''
     placesStore.remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
