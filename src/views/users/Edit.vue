@@ -120,6 +120,7 @@ import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const user: Ref<User> = ref(new User)
 const route = useRoute()
@@ -127,7 +128,7 @@ const schemaImg: ObjectSchema<any> = yup.object().shape({
   photo: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })
 const image: Ref<File[]> = ref([])
-
+const {setLoading} = useLoadingState()
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
@@ -137,14 +138,17 @@ const schema = yup.object().shape({
 
 function uploadImg(): void {
   const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
+  setLoading(true)
   StorageService.uploadFile(reference, image.value[0]).then(url => {
     user.value.photoUrl = url
     updateUser()
-  })
+  }).catch(() => setLoading(false))
 }
 
 function updateUser(): void {
+  setLoading(true)
   UserRepository.update(user.value).then(() => {
+    setLoading(false)
     Swal.fire({
       icon: 'success',
       title: i18n.global.t('common.messages.updated'),
@@ -155,6 +159,7 @@ function updateUser(): void {
     const modalImg = bootstrap.Modal.getOrCreateInstance(modal ?? '')
     modalImg.hide()
   }).catch(e => {
+    setLoading(false)
     Swal.fire({
       icon: 'error',
       title: i18n.global.t('common.messages.error'),
@@ -164,14 +169,17 @@ function updateUser(): void {
 }
 
 function onEnable(event: Event): void {
+  setLoading(true)
   const target = event.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
   UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
+    setLoading(false)
     const message = user.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') :
         i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
