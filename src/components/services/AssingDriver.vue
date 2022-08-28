@@ -33,12 +33,13 @@ import {useI18n} from 'vue-i18n'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {Modal} from 'bootstrap'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const plate: Ref<string> = ref('')
 const keyAutoComplete: Ref<number> = ref(0)
-
+const {setLoading} = useLoadingState()
 let service: Service = new Service()
 let driverId: string|null
 let driverModal: Modal
@@ -75,10 +76,13 @@ const assignDriver = (): void => {
   }
   service.driver_id = driverId
   service.status = Service.STATUS_IN_PROGRESS
+  setLoading(true)
   service.update(service).then(() => {
+    setLoading(false)
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     driverModal?.hide()
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
 }

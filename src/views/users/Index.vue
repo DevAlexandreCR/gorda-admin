@@ -40,7 +40,9 @@
                 <p class="text-xs font-weight-bold mb-0">{{ $t(user.roles.admin ? 'users.fields.admin' : 'users.fields.operator') }}</p>
               </td>
               <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-success">{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
+                <span class="badge badge-sm bg-gradient-success"
+                      :class="user.enabled_at? 'bg-gradient-success' : 'bg-gradient-danger'"
+                >{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(user.created_at) }}</span>

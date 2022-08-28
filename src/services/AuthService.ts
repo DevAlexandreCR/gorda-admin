@@ -4,6 +4,7 @@ import User from '@/models/User'
 import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 export default class AuthService {
   public static currentUser: User
@@ -16,7 +17,10 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static onAuthStateChanged(path: string): void {
+    const {setLoading} = useLoadingState()
+    setLoading(true)
     onAuthStateChanged(AuthService.auth, async (userFB: UserFB | null) => {
+      setLoading(false)
       if (userFB) {
         const user = await UserRepository.getUser(userFB.uid)?? {}
         if(user) {

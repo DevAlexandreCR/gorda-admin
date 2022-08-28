@@ -98,6 +98,7 @@ import {UserInterface} from '@/types/UserInterface'
 import {useStorage} from '@/services/stores/Storage'
 import {storeToRefs} from 'pinia'
 import router from '@/router'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const storage = useStorage()
 const {photoUrl} = storeToRefs(storage)
@@ -106,7 +107,7 @@ const {photoUrl} = storeToRefs(storage)
 const user: Ref<User> = ref(new User)
 const image: Ref<File[]> = ref([])
 const password: Ref<string> = ref('')
-
+const {setLoading} = useLoadingState()
 
 const schema = yup.object().shape({
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
@@ -117,6 +118,7 @@ const schema = yup.object().shape({
 })
 
 function createUser(_values: UserInterface, event: FormActions<any>): void {
+  setLoading(true)
   UserRepository.create(user.value, password.value).then((id) => {
     user.value.id = id
     const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
@@ -124,6 +126,7 @@ function createUser(_values: UserInterface, event: FormActions<any>): void {
       user.value.photoUrl = url
       event.resetForm()
       UserRepository.update(user.value).then(() => {
+        setLoading(false)
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
         user.value.photoUrl = photoUrl.value
@@ -132,6 +135,7 @@ function createUser(_values: UserInterface, event: FormActions<any>): void {
       })
     })
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

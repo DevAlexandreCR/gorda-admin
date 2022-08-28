@@ -9,18 +9,20 @@ import waitForExpect from 'wait-for-expect'
 import Driver from "@/models/Driver";
 import DriverRepository from "@/repositories/DriverRepository";
 import {nextTick} from 'vue'
+import router from '@/router'
 
 
 describe('Create.vue', () => {
   let wrapper: VueWrapper<any>
-  beforeEach(() => {
+  beforeEach(async () => {
     DriverRepository.create = jest.fn().mockResolvedValue('id-driver')
     wrapper = mount(Create, {
       attachTo: '#root',
       global: {
-        plugins: [i18n]
+        plugins: [i18n, router]
       },
     })
+    await router.isReady()
   })
   
   afterEach(async () => {

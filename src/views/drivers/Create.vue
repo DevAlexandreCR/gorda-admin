@@ -118,7 +118,9 @@
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
                   <Field name="soat_exp" type="date" v-model="driver.vehicle.soat_exp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <input class="form-control form-control-sm" type="date" v-model="field.value"
+                           :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp"
+                           aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
@@ -155,6 +157,8 @@ import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
 import {ref, Ref, watch} from 'vue'
+import {useLoadingState} from '@/services/stores/LoadingState'
+import router from '@/router'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -162,6 +166,7 @@ const imageDriver: Ref<File[]> = ref([])
 const imageVehicle: Ref<File[]> = ref([])
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
+const {setLoading} = useLoadingState()
 const schema: ObjectSchema<any> = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -173,8 +178,8 @@ const schema: ObjectSchema<any> = object().shape({
   plate: string().required().min(3),
   model: string().required().min(3),
   color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
-  soat_exp: date().required().min(new Date()),
-  tec_exp: date().required().min(new Date),
+  soat_exp: date().required(),
+  tec_exp: date().required(),
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   photoVehicleUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })
@@ -189,6 +194,7 @@ function uploadImg(path: string, image: File): Promise<string> {
 }
 
 function createDriver(_values: DriverInterface, event: FormActions<any>): void {
+  setLoading(true)
   driver.value.vehicle.soat_exp = dayjs(driver.value.vehicle.soat_exp).unix()
   driver.value.vehicle.tec_exp = dayjs(driver.value.vehicle.tec_exp).unix()
   DriverRepository.create(driver.value, password.value).then((id) => {
@@ -196,13 +202,16 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
     uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {
       driver.value.photoUrl = url
       uploadImg(StorageService.vehiclePath, imageVehicle.value[0]).then(urlPhotoVehicle => {
+        setLoading(false)
         driver.value.vehicle.photoUrl = urlPhotoVehicle
         DriverRepository.update(driver.value)
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
+        router.push({name: 'drivers.index'})
       })
     })
   }).catch(e => {
+    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
