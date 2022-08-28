@@ -26,6 +26,7 @@ export default {
     created: 'Recurso creado correctamente',
     deleted: 'Recurso eliminado correctamente',
     error: 'Algo salió mal!',
+    waiting: 'Por favor espere...',
     forbidden: 'Permiso denegado!'
   },
   placeholders: {

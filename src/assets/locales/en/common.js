@@ -26,6 +26,7 @@ export default {
     created: 'Resource created successfully',
     deleted: 'Resource deleted successfully',
     error: 'Something went wrong!',
+    waiting: 'Please wait ...',
     forbidden: 'Permission denied'
   },
   placeholders: {
