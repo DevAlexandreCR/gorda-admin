@@ -61,7 +61,10 @@
                 <p class="text-xs font-weight-bold mb-0">{{ driver.vehicle.plate }}</p>
               </td>
               <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-success">{{ $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
+                <span class="badge badge-sm"
+                      :class="driver.enabled_at? 'bg-gradient-success' : 'bg-gradient-danger'"
+                >{{ $t(driver.enabled_at ?
+                    'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(driver.created_at) }}</span>
