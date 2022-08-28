@@ -32,7 +32,7 @@
             </thead>
             <tbody>
             <tr v-for="driver in paginatedDrivers" :key="driver.id">
-              <td>
+              <td class="py-0">
                 <div class="d-flex px-2 py-1">
                   <div>
                     <img :src="driver.photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
@@ -46,7 +46,7 @@
               <td>
                 <p class="text-xs font-weight-bold mb-0">{{ driver.phone }}</p>
               </td>
-              <td>
+              <td class="py-0">
                 <div class="d-flex px-2 py-1">
                   <div>
                     <img :src="driver.vehicle.photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
@@ -66,10 +66,20 @@
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(driver.created_at) }}</span>
               </td>
-              <td class="align-middle">
-                <router-link :to="{ name: 'drivers.edit', params: {id: driver.id}}" tag="a" class="btn btn-sm btn-dark btn-rounded px-2 py-1 mb-1" data-original-title="Edit Driver">
-                  <em class="fas fa-pencil"></em>
-                </router-link>
+              <td class="align-middle p-0">
+                <div class="row row-cols-2 mx-2">
+                  <div class="form-check form-switch col-2">
+                    <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
+                           :id="driver.id" @change="onEnable"/>
+                  </div>
+                  <div class="col-4">
+                    <router-link :to="{ name: 'drivers.edit', params: {id: driver.id}}" tag="a"
+                                 class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                                 data-original-title="Edit Driver">
+                      <em class="fas fa-pencil"></em>
+                    </router-link>
+                  </div>
+                </div>
               </td>
             </tr>
             </tbody>
@@ -90,11 +100,17 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
 import {onMounted, ref, Ref, watch} from 'vue'
+import dayjs from 'dayjs'
+import DriverRepository from '@/repositories/DriverRepository'
+import i18n from '@/plugins/i18n'
+import ToastService from '@/services/ToastService'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
-const {drivers, filterByPlate} = useDriversStore()
+const {drivers, filterByPlate, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
+const {setLoading} = useLoadingState()
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
@@ -117,4 +133,20 @@ watch(searchDriver, (plate) => {
 onMounted(() => {
   drivers.forEach(driver => filteredDrivers.value.push(driver))
 })
+
+function onEnable(event: Event): void {
+  setLoading(true)
+  const target = event.target as HTMLInputElement
+  const driver = findById(target.id) ?? new Driver()
+  driver.enabled_at = target.checked ? dayjs().unix() : 0
+  DriverRepository.enable(driver.id, driver.enabled_at).then(() => {
+    setLoading(false)
+    const message = driver.enabled_at == 0 ?
+        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+    ToastService.toast(ToastService.SUCCESS, message)
+  }).catch(e => {
+    setLoading(false)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
 </script>
