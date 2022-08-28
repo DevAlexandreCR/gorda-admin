@@ -7,7 +7,10 @@
 import AuthService from '@/services/AuthService'
 import {onMounted} from 'vue'
 import {useStorage} from '@/services/stores/Storage'
+import {useLoadingState} from '@/services/stores/LoadingState'
+
 const {getLogoUrl} = useStorage()
+const {isLoading} = useLoadingState()
 
 onMounted((): void => {
   AuthService.onAuthStateChanged(location.pathname)

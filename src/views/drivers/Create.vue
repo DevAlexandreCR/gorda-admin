@@ -118,7 +118,9 @@
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
                   <Field name="soat_exp" type="date" v-model="driver.vehicle.soat_exp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <input class="form-control form-control-sm" type="date" v-model="field.value"
+                           :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp"
+                           aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
@@ -173,8 +175,8 @@ const schema: ObjectSchema<any> = object().shape({
   plate: string().required().min(3),
   model: string().required().min(3),
   color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
-  soat_exp: date().required().min(new Date()),
-  tec_exp: date().required().min(new Date),
+  soat_exp: date().required(),
+  tec_exp: date().required(),
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   photoVehicleUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })

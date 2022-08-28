@@ -190,8 +190,8 @@ const schema = object().shape({
   plate: string().required().min(3),
   model: string().required().min(3),
   color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
-  soat_exp: date().required().min(new Date),
-  tec_exp: date().required().min(new Date)
+  soat_exp: date().required(),
+  tec_exp: date().required()
 })
 
 watch(soatExp, (newValue: string) => {
