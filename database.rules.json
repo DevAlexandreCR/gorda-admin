@@ -6,7 +6,7 @@
       ".indexOn": ["created_at", "status"]
     },
     "sessions": {
-      ".indexOn": ["chat_id", "created_at"]
+      ".indexOn": ["chat_id", "created_at", "status"]
     },
     "users": {
       ".read": "auth.uid != null",
