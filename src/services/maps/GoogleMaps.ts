@@ -31,7 +31,8 @@ export class GoogleMaps {
   /* istanbul ignore next */
   addMarker(place: PlaceInterface): void {
     const infoWindow = new google.maps.InfoWindow({
-      content: place.name
+      content: place.name,
+      disableAutoPan: true
     });
     const markerOptions: google.maps.MarkerOptions = {
       position: {
