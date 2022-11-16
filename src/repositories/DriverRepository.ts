@@ -8,7 +8,8 @@ import {
   orderByKey,
   query,
   ref,
-  set
+  set,
+  off
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from '@/types/DriverInterface'
@@ -67,6 +68,10 @@ class DriverRepository {
       const driver = data.val() as DriverConnectedInterface
       onRemoved(driver)
     })
+  }
+
+  removeOnlineDriverListener(): void {
+    off(query(DBService.dbOnlineDrivers(), orderByKey()))
   }
 
   /* istanbul ignore next */

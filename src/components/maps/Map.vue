@@ -38,6 +38,7 @@ onMounted(async () => {
 })
 
 watch(() => [...props.places], (newPlaces, oldPlaces) => {
+  //TODO: refactor to events
   if (oldPlaces.length <= newPlaces.length) {
     const intersections = newPlaces.filter(place => oldPlaces.indexOf(place) === -1)
     intersections.forEach(place => {

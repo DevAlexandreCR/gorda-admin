@@ -15,13 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, Ref, watch} from 'vue'
+import {ref, Ref, watch} from 'vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Map from '@/components/maps/Map.vue'
 import {PlaceInterface} from '@/types/PlaceInterface'
 
-const {getOnlineDrivers, connectedDrivers} = useDriversStore()
+const {connectedDrivers} = useDriversStore()
 const searchDriver: Ref<string> = ref('')
 const filteredDrivers: Ref<Array<PlaceInterface>> = ref([])
 const icon: Ref<string> = ref(process.env.VUE_APP_DRIVER_LOC_IMAGE_URL as string)
@@ -63,9 +63,5 @@ watch(connectedDrivers, (newConnectedDrivers) => {
       })      
       }
     }
-})
-
-onMounted(() => {
-  getOnlineDrivers()
 })
 </script>
