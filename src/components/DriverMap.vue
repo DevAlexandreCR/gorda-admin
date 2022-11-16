@@ -39,24 +39,30 @@ watch(searchDriver, (plate) => {
   }
 })
 
-watch(connectedDrivers, (newDrivers) => {
+watch(connectedDrivers, (newConnectedDrivers) => {
   if (!filtering) {
-    if (filteredDrivers.value.length <= newDrivers.length) {
-      newDrivers.forEach((driver, index) => {
-        const indexDriver = filteredDrivers.value.findIndex(dri => dri.key === driver.key)
-        if (indexDriver > 0) {
-          filteredDrivers.value[indexDriver] = driver
-        } else {
+    if (filteredDrivers.value.length <= newConnectedDrivers.length) {
+      const intersections = newConnectedDrivers.filter(driver => filteredDrivers.value.indexOf(driver) === -1)
+      intersections.forEach(driver => { 
+        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
+        if (currents.length === 1) {
+          const index = filteredDrivers.value.indexOf(currents[0])
           filteredDrivers.value[index] = driver
+        } else {
+          filteredDrivers.value.push(driver)
         }
       })
-    } else {
-      filteredDrivers.value.forEach((filtered, index) => {
-        const indexDriver = newDrivers.findIndex(connected => connected.key === filtered.key)
-        if (indexDriver < 0) filteredDrivers.value.splice(index, 1)
-      })
+      } else {
+      const intersections = filteredDrivers.value.filter(driver => newConnectedDrivers.indexOf(driver) === -1)
+      intersections.forEach(driver => {
+        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
+        currents.forEach(current => {
+          const index = filteredDrivers.value.indexOf(current)
+          filteredDrivers.value.splice(index, 1)
+        })
+      })      
+      }
     }
-  }
 })
 
 onMounted(() => {
