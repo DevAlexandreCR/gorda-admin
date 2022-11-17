@@ -1,6 +1,6 @@
 <template>
   <div class="row row-cols-2 w-100">
-    <div class="col-9">Drivers</div>
+    <div class="col-9"><p>{{ $t('common.models.drivers_connected') }} <span class="badge bg-secondary">{{filteredDrivers.length}}</span></p></div>
     <div class="form-group col-3">
       <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
         <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
