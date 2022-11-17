@@ -1,6 +1,6 @@
 <template>
   <div class="row row-cols-2 w-100">
-    <div class="col-9">Drivers</div>
+    <div class="col-9"><p>{{ $t('common.models.drivers_connected') }} <span class="badge bg-secondary">{{filteredDrivers.length}}</span></p></div>
     <div class="form-group col-3">
       <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
         <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
@@ -15,13 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, Ref, watch} from 'vue'
+import {ref, Ref, watch} from 'vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Map from '@/components/maps/Map.vue'
 import {PlaceInterface} from '@/types/PlaceInterface'
 
-const {getOnlineDrivers, connectedDrivers} = useDriversStore()
+const {connectedDrivers} = useDriversStore()
 const searchDriver: Ref<string> = ref('')
 const filteredDrivers: Ref<Array<PlaceInterface>> = ref([])
 const icon: Ref<string> = ref(process.env.VUE_APP_DRIVER_LOC_IMAGE_URL as string)
@@ -39,27 +39,29 @@ watch(searchDriver, (plate) => {
   }
 })
 
-watch(connectedDrivers, (newDrivers) => {
+watch(connectedDrivers, (newConnectedDrivers) => {
   if (!filtering) {
-    if (filteredDrivers.value.length <= newDrivers.length) {
-      newDrivers.forEach((driver, index) => {
-        const indexDriver = filteredDrivers.value.findIndex(dri => dri.key === driver.key)
-        if (indexDriver > 0) {
-          filteredDrivers.value[indexDriver] = driver
-        } else {
+    if (filteredDrivers.value.length <= newConnectedDrivers.length) {
+      const intersections = newConnectedDrivers.filter(driver => filteredDrivers.value.indexOf(driver) === -1)
+      intersections.forEach(driver => { 
+        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
+        if (currents.length === 1) {
+          const index = filteredDrivers.value.indexOf(currents[0])
           filteredDrivers.value[index] = driver
+        } else {
+          filteredDrivers.value.push(driver)
         }
       })
-    } else {
-      filteredDrivers.value.forEach((filtered, index) => {
-        const indexDriver = newDrivers.findIndex(connected => connected.key === filtered.key)
-        if (indexDriver < 0) filteredDrivers.value.splice(index, 1)
-      })
+      } else {
+      const intersections = filteredDrivers.value.filter(driver => newConnectedDrivers.indexOf(driver) === -1)
+      intersections.forEach(driver => {
+        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
+        currents.forEach(current => {
+          const index = filteredDrivers.value.indexOf(current)
+          filteredDrivers.value.splice(index, 1)
+        })
+      })      
+      }
     }
-  }
-})
-
-onMounted(() => {
-  getOnlineDrivers()
 })
 </script>

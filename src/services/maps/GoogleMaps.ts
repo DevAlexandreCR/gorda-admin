@@ -31,7 +31,8 @@ export class GoogleMaps {
   /* istanbul ignore next */
   addMarker(place: PlaceInterface): void {
     const infoWindow = new google.maps.InfoWindow({
-      content: place.name
+      content: place.name,
+      disableAutoPan: true
     });
     const markerOptions: google.maps.MarkerOptions = {
       position: {
@@ -54,7 +55,25 @@ export class GoogleMaps {
     })
     this.markers.push(marker)
   }
+
+  updateMarker(place: PlaceInterface): void {
+    const markerIndex = this.findMarkerIndexByTitle(place.name)
+    const latlng = new google.maps.LatLng(place.lat, place.lng)
+    if (markerIndex >= 0) this.markers[markerIndex].setPosition(latlng)
+  }
   
+  removeMarker(place: PlaceInterface): void {
+    const markerIndex = this.findMarkerIndexByTitle(place.name)
+    if (markerIndex >= 0) { 
+      this.markers[markerIndex].setMap(null)
+      this.markers.splice(markerIndex, 1)
+    }
+  }
+
+  findMarkerIndexByTitle(title: string): number {
+    return this.markers.findIndex(marker => marker.getTitle() == title)
+  }
+
   /* istanbul ignore next */
   moveCamera(place: PlaceInterface): void {
     this.map.panTo(new google.maps.LatLng(place.lat, place.lng))
