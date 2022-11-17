@@ -37,13 +37,28 @@ onMounted(async () => {
   })
 })
 
-watch(props.places, (newPlaces) => {
-  googleMap.clearMap()
-  newPlaces.forEach(place => {
-    if(mapReady) googleMap.addMarker(place)
-  })
+watch(() => [...props.places], (newPlaces, oldPlaces) => {
+  //TODO: refactor to events
+  if (oldPlaces.length <= newPlaces.length) {
+    const intersections = newPlaces.filter(place => oldPlaces.indexOf(place) === -1)
+    intersections.forEach(place => {
+      const currents = oldPlaces.filter(pla => pla.key === place.key)
+      if (currents.length === 1) {
+        if (mapReady) googleMap.updateMarker(currents[0])
+      } else {
+        if (mapReady) googleMap.addMarker(place)
+      }
+    })
+  } else {
+    const intersections = oldPlaces.filter(driver => newPlaces.indexOf(driver) === -1)
+    intersections.forEach(place => {
+      const currents = oldPlaces.filter(pla => pla.key === place.key)
+      currents.forEach(placeRemove => {if (mapReady) googleMap.removeMarker(place)})
+    })
+  }
+  
   if (newPlaces.length === 1) {
-    if(mapReady) googleMap.moveCamera(newPlaces[0])
+    if (mapReady) googleMap.moveCamera(newPlaces[0])
   }
 })
 

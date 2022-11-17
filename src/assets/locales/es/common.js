@@ -9,7 +9,8 @@ export default {
   },
   models: {
     users: 'Usuario | Usuarios',
-    drivers: 'Conductor | Conductores'
+    drivers: 'Conductor | Conductores',
+    drivers_connected: 'Conductores Conectados'
   },
   actions: {
     submit: 'Enviar',
