@@ -29,16 +29,14 @@
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
-                <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
-                  <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                         v-model="field.value" @change="updateEmail" :placeholder="$t('common.placeholders.email')" readonly v-bind="field"/>
-                  <button class="btn btn-sm btn-info btn-edit-email py-1 px-2" type="button" data-bs-toggle="modal"
-                        data-bs-target="#editGmail">
-                  <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
-                </button>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
+                <div class="input-group">
+                  <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')" readonly
+                    aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
+                  <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editGmail">
+                    {{ $t('common.actions.edit') }}
+                  </button>
+                </div>
+              </div>            
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
@@ -164,21 +162,24 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <Form :validation-schema="schema">
-            <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label">{{ $t('users.fields.email') }}</label>
-                <Field name="email" class="form-control" type="email" id="email" :placeholder="$t('common.placeholders.email')"/>
-                <ErrorMessage name="email"/>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-                {{ $t('common.actions.close') }}
-              </button>
-              <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
-            </div>
-          </Form>
+      <Form @submit="updateEmail" :validation-schema="schemaEmail">
+        <div class="modal-body">
+          <div class="mb-3">
+            <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
+              <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
+                v-model="field.value" :placeholder="$t('common.placeholders.email')"
+                v-bind="field" />
+            </Field>
+            <ErrorMessage name="email"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+        </div>
+      </Form>
     </div>
   </div>
 </div>
@@ -186,7 +187,7 @@
 
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
-import {ErrorMessage, Field, Form} from 'vee-validate'
+import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -228,6 +229,10 @@ const schema = object().shape({
   color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
   soat_exp: date().required(),
   tec_exp: date().required()
+})
+
+const schemaEmail = object().shape({
+  email: string().required().email()
 })
 
 watch(soatExp, (newValue: string) => {
@@ -278,16 +283,11 @@ function updateDriver(): void {
   })
 }
 
-function updateEmail(event: Event): void {
+function updateEmail(): void {
   setLoading(true)
-  const target = event.target as HTMLInputElement
-  const driver = findById(target.id) ?? new Driver()
-  driver.email = target.checked ? dayjs().unix()
-  DriverRepository.enable(driver.id, driver.enabled_at).then(() => {
+  DriverRepository.updateEmail(driver.value.id, driver.value.email).then(() => {
     setLoading(false)
-    const message = driver.enabled_at == 0 ?
-        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
-    ToastService.toast(ToastService.SUCCESS, message)
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

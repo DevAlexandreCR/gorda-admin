@@ -56,7 +56,7 @@ class DriverRepository {
   updateEmail(driverId: string, email: string): Promise<void> {
     return new Promise((resolve, reject) => {
       UserRepository.emailAuth(driverId, email).then(() => {
-        set(ref(DBService.db, 'drivers/' + driverId + '/update-Email/'), email).then(() => {
+        set(ref(DBService.db, 'drivers/' + driverId + '/email/'), email).then(() => {
           resolve()
         })
       }).catch((e) => {
