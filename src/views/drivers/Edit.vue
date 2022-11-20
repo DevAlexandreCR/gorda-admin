@@ -31,7 +31,11 @@
                 <label>{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
                   <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                         v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
+                         v-model="field.value" @change="updateEmail" :placeholder="$t('common.placeholders.email')" readonly v-bind="field"/>
+                  <button class="btn btn-sm btn-info btn-edit-email py-1 px-2" type="button" data-bs-toggle="modal"
+                        data-bs-target="#editGmail">
+                  <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
+                </button>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -150,6 +154,34 @@
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
                  @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
+      <!-- Modal -->
+      <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <Form :validation-schema="schema">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">{{ $t('users.fields.email') }}</label>
+                <Field name="email" class="form-control" type="email" id="email" :placeholder="$t('common.placeholders.email')"/>
+                <ErrorMessage name="email"/>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+                {{ $t('common.actions.close') }}
+              </button>
+              <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            </div>
+          </Form>
+    </div>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -170,6 +202,7 @@ import DateHelper from '@/helpers/DateHelper'
 import {mixed, object, date, string} from 'yup'
 import {useLoadingState} from '@/services/stores/LoadingState'
 
+
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const driverEvent = 'image-driver-loaded'
@@ -178,6 +211,7 @@ const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
 const driverStore = useDriversStore()
+const {findById} = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
@@ -238,6 +272,22 @@ function updateDriver(): void {
   DriverRepository.update(driver.value).then(() => {
     setLoading(false)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(e => {
+    setLoading(false)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function updateEmail(event: Event): void {
+  setLoading(true)
+  const target = event.target as HTMLInputElement
+  const driver = findById(target.id) ?? new Driver()
+  driver.email = target.checked ? dayjs().unix()
+  DriverRepository.enable(driver.id, driver.enabled_at).then(() => {
+    setLoading(false)
+    const message = driver.enabled_at == 0 ?
+        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+    ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

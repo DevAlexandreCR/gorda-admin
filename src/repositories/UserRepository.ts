@@ -70,6 +70,13 @@ class UserRepository{
   async enableAuth(uid: string, enabled: boolean): Promise<AxiosResponse> {
     return axios.post(this.base_url + '/auth/enable-user/', {uid: uid, disabled: enabled})
   }
-}
+
+    /* istanbul ignore next */
+    async emailAuth(uid: string, email: string): Promise<AxiosResponse> {
+      return axios.post(this.base_url + '/auth/update-Email/', {uid: uid, email: email})
+    }
+  }
+
+
 
 export default new UserRepository()

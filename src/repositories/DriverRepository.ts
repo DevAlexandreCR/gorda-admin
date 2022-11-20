@@ -53,6 +53,19 @@ class DriverRepository {
   }
 
   /* istanbul ignore next */
+  updateEmail(driverId: string, email: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      UserRepository.emailAuth(driverId, email).then(() => {
+        set(ref(DBService.db, 'drivers/' + driverId + '/update-Email/'), email).then(() => {
+          resolve()
+        })
+      }).catch((e) => {
+        reject(new Error(e.message))
+      })
+    })
+  }
+
+  /* istanbul ignore next */
   onlineDriverListener(onAdded: (driver: DriverConnectedInterface) => void,
                        onChanged: (driver: DriverConnectedInterface) => void,
                        onRemoved: (driver: DriverConnectedInterface) => void): void {
