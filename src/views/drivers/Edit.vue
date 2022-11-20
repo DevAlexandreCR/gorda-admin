@@ -32,7 +32,7 @@
                 <div class="input-group">
                   <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')" readonly
                     aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
-                  <button class="btn-sm btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editGmail">
+                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal" data-bs-target="#editGmail">
                     {{ $t('common.actions.edit') }}
                   </button>
                   </div>
