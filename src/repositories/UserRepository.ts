@@ -73,7 +73,7 @@ class UserRepository{
 
     /* istanbul ignore next */
     async emailAuth(uid: string, email: string): Promise<AxiosResponse> {
-      return axios.post(this.base_url + '/auth/update-Email/', {uid: uid, email: email})
+      return axios.post(this.base_url + '/auth/update-email/', {uid: uid, email: email})
     }
   }
 
