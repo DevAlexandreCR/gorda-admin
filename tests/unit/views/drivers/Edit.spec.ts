@@ -21,6 +21,7 @@ describe('Edit.vue', () => {
     DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
     DriverRepository.update = jest.fn().mockResolvedValue(null)
     DriverRepository.enable = jest.fn().mockResolvedValue(null)
+    DriverRepository.updateEmail = jest.fn().mockResolvedValue(null)
     wrapper = mount(Edit, {
       attachTo: '#root',
       global: {
@@ -79,7 +80,7 @@ describe('Edit.vue', () => {
     const dates = wrapper.findAll('input[type="date"]')
     expect(field.length).toBe(13)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(3)
+    expect(error.length).toBe(4)
     expect(imageLoader.length).toBe(2)
     expect(dates.length).toBe(2)
   })
@@ -99,7 +100,7 @@ describe('Edit.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(10)
+    expect(span.length).toBe(9)
   })
   
   it('should show toast success when update driver successfully', async () => {
