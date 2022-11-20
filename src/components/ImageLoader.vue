@@ -34,6 +34,7 @@ import * as yup from 'yup'
 import StorageService from "@/services/StorageService";
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as bootstrap from 'bootstrap'
+import { hide } from '@/helpers/ModalHelper';
 
 
 class Props {
@@ -64,9 +65,7 @@ export default class ImageLoader extends Vue.with(Props) {
     const ref = StorageService.getStorageReference(this.path, this.resourceId, this.image[0]?.name)
     StorageService.uploadFile(ref, this.image[0]).then(url => {
       this.$emit(this.event, url)
-      const modal = document.getElementById(this.id) as HTMLElement
-      const modalImg = bootstrap.Modal.getOrCreateInstance(modal ?? '')
-      modalImg.hide()
+      hide(this.id)
     })
   }
 }

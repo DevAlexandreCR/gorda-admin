@@ -202,6 +202,7 @@ import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
 import {mixed, object, date, string} from 'yup'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import { hide } from '@/helpers/ModalHelper'
 
 
 const driver: Ref<Driver> = ref(new Driver)
@@ -287,6 +288,7 @@ function updateEmail(): void {
   setLoading(true)
   DriverRepository.updateEmail(driver.value.id, driver.value.email).then(() => {
     setLoading(false)
+    hide('editGmail')
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     setLoading(false)
