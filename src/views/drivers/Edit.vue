@@ -29,12 +29,14 @@
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
-                <Field name="email" type="email" v-slot="{ field, errorMessage,meta }" v-model="driver.email">
-                  <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                         v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
+                <div class="input-group">
+                  <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')" readonly
+                    aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
+                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal" data-bs-target="#editGmail">
+                    {{ $t('common.actions.edit') }}
+                  </button>
+                  </div>
+              </div>            
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
@@ -150,11 +152,42 @@
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
                  @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
+      <!-- Modal -->
+      <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <Form @submit="updateEmail" :validation-schema="schemaEmail">
+        <div class="modal-body">
+          <div class="mb-3">
+            <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
+              <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
+                v-model="field.value" :placeholder="$t('common.placeholders.email')"
+                v-bind="field" />
+            </Field>
+            <ErrorMessage name="email"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+        </div>
+      </Form>
+    </div>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
-import {ErrorMessage, Field, Form} from 'vee-validate'
+import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -169,6 +202,8 @@ import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
 import {mixed, object, date, string} from 'yup'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import { hide } from '@/helpers/ModalHelper'
+
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -178,6 +213,7 @@ const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
 const driverStore = useDriversStore()
+const {findById} = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
@@ -194,6 +230,10 @@ const schema = object().shape({
   color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
   soat_exp: date().required(),
   tec_exp: date().required()
+})
+
+const schemaEmail = object().shape({
+  email: string().required().email()
 })
 
 watch(soatExp, (newValue: string) => {
@@ -237,6 +277,18 @@ function updateDriver(): void {
   setLoading(true)
   DriverRepository.update(driver.value).then(() => {
     setLoading(false)
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(e => {
+    setLoading(false)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function updateEmail(): void {
+  setLoading(true)
+  DriverRepository.updateEmail(driver.value.id, driver.value.email).then(() => {
+    setLoading(false)
+    hide('editGmail')
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     setLoading(false)
