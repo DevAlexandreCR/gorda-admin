@@ -3,20 +3,22 @@ import dayjs from 'dayjs'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {LocationType} from '@/types/LocationType'
 import {Applicant} from '@/types/Applicant'
+import { Metadata } from '@/types/Metadata'
 
 export default class Service implements ServiceInterface {
   id: string
   status: string
   start_loc: LocationType
-  end_loc: LocationType | null
+  end_loc: LocationType | null = null
   phone: string
   name: string
-  amount: number | null
-  applicants: Applicant | null
-  driver_id: string | null
-  client_id: string | null
+  amount: number | null = null
+  applicants: Applicant | null = null
+  metadata: Metadata | null = null
+  driver_id: string | null = null
+  client_id: string | null = null
   created_at: number
-  comment: string | null
+  comment: string | null = null
   a_go = ''
 
   static readonly STATUS_PENDING = 'pending'
@@ -32,11 +34,6 @@ export default class Service implements ServiceInterface {
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
-    this.amount = null
-    this.comment = null
-    this.driver_id = null
-    this.end_loc = null
-    this.applicants = null
   }
 
   isPending(): boolean {

@@ -1,5 +1,6 @@
 import {LocationType} from '@/types/LocationType'
 import {Applicant} from '@/types/Applicant'
+import { Metadata } from './Metadata'
 
 export interface ServiceInterface {
   id: string | null
@@ -11,6 +12,7 @@ export interface ServiceInterface {
   name: string
   comment: string | null
   amount: number | null
+  metadata: Metadata | null
   driver_id: string | null
   client_id: string | null
   created_at: number
