@@ -187,7 +187,7 @@
 
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
-import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
+import {ErrorMessage, Field, Form} from 'vee-validate'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
