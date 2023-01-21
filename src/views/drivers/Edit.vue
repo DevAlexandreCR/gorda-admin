@@ -187,7 +187,7 @@
 
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
-import {ErrorMessage, Field, Form, FormActions} from 'vee-validate'
+import {ErrorMessage, Field, Form} from 'vee-validate'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -220,7 +220,6 @@ const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const {setLoading} = useLoadingState()
 const schema = object().shape({
   name: string().required().min(3),
-  email: string().required().email(),
   phone: string().required().min(8),
   docType: mixed().oneOf(Constants.DOC_TYPES).required(),
   document: string().required().min(6).max(10),
