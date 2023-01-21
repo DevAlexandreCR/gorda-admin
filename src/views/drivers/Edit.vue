@@ -220,7 +220,6 @@ const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const {setLoading} = useLoadingState()
 const schema = object().shape({
   name: string().required().min(3),
-  email: string().required().email(),
   phone: string().required().min(8),
   docType: mixed().oneOf(Constants.DOC_TYPES).required(),
   document: string().required().min(6).max(10),
@@ -274,6 +273,7 @@ function uploadImgVehicle(url: string): void {
 }
 
 function updateDriver(): void {
+  console.log('update')
   setLoading(true)
   DriverRepository.update(driver.value).then(() => {
     setLoading(false)
