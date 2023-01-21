@@ -273,7 +273,6 @@ function uploadImgVehicle(url: string): void {
 }
 
 function updateDriver(): void {
-  console.log('update')
   setLoading(true)
   DriverRepository.update(driver.value).then(() => {
     setLoading(false)
