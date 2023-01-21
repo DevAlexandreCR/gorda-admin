@@ -104,7 +104,7 @@ class DriverRepository {
         await set(ref(DBService.db, 'drivers/' + id), driver)
         return resolve(id)
       }).catch((e: AxiosError<UserResponse>) => {
-        reject(new Error(e.message))
+        reject(new Error(e.response?.data.data as string?? e.message))
       })
     })
   }
