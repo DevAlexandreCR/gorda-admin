@@ -3,26 +3,26 @@
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
-                role="tab" aria-controls="pending" aria-selected="true">{{ $t('services.statuses.pending') }}
+                role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">{{ $t('services.statuses.pending') }}
           <span class="badge badge-circle bg-danger"
                 v-show="services.pending.length > 0">{{ services.pending.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
-                role="tab" aria-controls="progress" aria-selected="false">{{ $t('services.statuses.in_progress') }}
+                role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">{{ $t('services.statuses.in_progress') }}
           <span class="badge badge-circle bg-success"
                 v-show="services.inProgress.length > 0">{{ services.inProgress.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
+        <button class="nav-link" id="history-tab" data-bs-toggle="tab" @click="currentTap = 'history'"  data-bs-target="#history" type="button"
                 role="tab"
                 aria-controls="history" aria-selected="false">{{ $t('services.history') }}
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#mapTab" type="button" role="tab"
+        <button class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'" data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">{{ $t('common.placeholders.map') }}
         </button>
       </li>
@@ -40,7 +40,7 @@
         <services-table :drivers="drivers" :isHistory="true" :services="services.history"></services-table>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
-        <DriverMap/>
+        <DriverMap v-if="currentTap === 'mapTab'"/>
       </div>
     </div>
     <AssignDriver :drivers="drivers"></AssignDriver>
@@ -56,7 +56,7 @@ import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {onBeforeMount, reactive, watch} from 'vue'
+import {onBeforeMount, reactive, ref, Ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -70,6 +70,7 @@ const services = reactive({
   inProgress: Array<Service>(),
   history: Array<Service>()
 })
+const currentTap: Ref<string> = ref('pendings')
 
 function onServiceAdded(data: DataSnapshot): void {
   const service = new Service()
