@@ -26,11 +26,9 @@ import {onMounted} from 'vue'
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
-const {getOnlineDrivers} = useDriversStore()
 getPlaces()
 getClients()
 getDrivers()
-getOnlineDrivers()
 onMounted(() => {
   require('@/vendor/js/soft-ui-dashboard')
 })
