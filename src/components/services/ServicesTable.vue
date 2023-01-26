@@ -56,7 +56,7 @@
         </tr>
         </tbody>
       </table>
-      <div class="container text-center mt-2">
+      <div class="container-fluid mt-2">
         <Paginator :data="props.services" :perPage="20" @paginatedData="getPaginatedData"/>
       </div>
     </div>

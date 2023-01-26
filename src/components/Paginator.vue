@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-25">
+  <div class="container-fluid">
     <nav aria-label="...">
       <ul class="pagination">
         <li class="page-item">
