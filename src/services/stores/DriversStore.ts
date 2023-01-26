@@ -58,6 +58,7 @@ export const useDriversStore = defineStore('driverStore', {
     },
     offOnlineDrivers(): void {
       DriverRepository.removeOnlineDriverListener()
+      this.connectedDrivers = []
     }
   }
 })
