@@ -19,6 +19,7 @@ export default {
   },
   history: 'Historial',
   total: 'Total',
+  title: 'Servicio | Servicios',
   messages: {
     new_client: 'El cliente no existe, por lo que se ha creado uno nuevo',
     no_start_loc: 'Debe seleccionar un lugar!'

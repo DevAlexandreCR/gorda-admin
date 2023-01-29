@@ -47,16 +47,16 @@
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col-sm-10">
+              <div class="col col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
                     {{ history.length }}
-<!--                    <span class="text-success text-sm font-weight-bolder">{{ completedPercent + '%' }}</span>-->
+                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length) }}</span>
                   </h5>
                 </div>
               </div>
-              <div class="col-sm-2 text-end">
+              <div class="col col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-light shadow text-center border-radius-md">
                   <em class="fa-solid fa-arrow-up-wide-short fa-2x mt-2"></em>
                 </div>
@@ -69,7 +69,7 @@
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col-sm-10">
+              <div class="col col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.statuses.terminated') }}</p>
                   <h5 class="font-weight-bolder mb-0">
@@ -78,7 +78,7 @@
                   </h5>
                 </div>
               </div>
-              <div class="col-sm-2 text-end">
+              <div class="col col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
                   <em class="fa-solid fa-thumbs-up fa-2x mt-2 text-light"></em>
                 </div>
@@ -91,7 +91,7 @@
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col-sm-10">
+              <div class="col col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.statuses.canceled') }}</p>
                   <h5 class="font-weight-bolder mb-0">
@@ -100,7 +100,7 @@
                   </h5>
                 </div>
               </div>
-              <div class="col-sm-2 text-end">
+              <div class="col col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-danger shadow text-center text-light border-radius-md">
                   <em class="fa-solid fa-ban fa-2x mt-2"></em>
                 </div>

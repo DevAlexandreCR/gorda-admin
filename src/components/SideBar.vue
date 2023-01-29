@@ -85,11 +85,13 @@
           </a>
         </li>
       </ul>
+      <div class="position-absolute bottom-0 w-100 text-bold text-center">{{ 'version ' + version }}</div>
   </div>
 </aside>
 </template>
 <script setup lang="ts">
 import AuthService from '@/services/AuthService'
+import {version} from '../../package.json'
 import User from '@/models/User'
 import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 import {onMounted, onUnmounted, ref, Ref} from 'vue'
