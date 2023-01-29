@@ -51,12 +51,10 @@
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import {DataSnapshot} from 'firebase/database'
-import dayjs from 'dayjs'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {onBeforeMount, reactive, ref, Ref, watch} from 'vue'
+import {onBeforeMount, ref, Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -66,7 +64,7 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
-const {getPendingServices, getInProgressServices}  = useServicesStore()
+const {getPendingServices, getInProgressServices} = useServicesStore()
 const {pendings, inProgress} = storeToRefs(useServicesStore())
 const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')

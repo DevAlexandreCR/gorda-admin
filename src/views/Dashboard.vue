@@ -22,13 +22,16 @@ import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {onMounted} from 'vue'
+import {useServicesStore} from '@/services/stores/ServiceStore'
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
+const {getHistoryServices} = useServicesStore()
 getPlaces()
 getClients()
 getDrivers()
+getHistoryServices()
 onMounted(() => {
   require('@/vendor/js/soft-ui-dashboard')
 })

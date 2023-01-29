@@ -27,4 +27,19 @@ export default class DateHelper {
   public static dateToUnix(date: string): number {
     return dayjs(date).unix()
   }
+
+  public static stringNow(format = 'YYYY-MM-DD'): string
+  {
+    return dayjs().format(format)
+  }
+
+  public static getFromDate(date: string, format = 'YYYY-MM-DD'): number
+  {
+    return dayjs(date, format).startOf('day').unix()
+  }
+
+  public static getToDate(date: string, format = 'YYYY-MM-DD'): number
+  {
+    return dayjs(date, format).endOf('day').unix()
+  }
 }
