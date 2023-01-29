@@ -63,6 +63,7 @@ export const useServicesStore = defineStore('servicesStore', {
       setLoading(true)
       ServiceRepository.historyListener(from, to).then(snapshot => {
         setLoading(false)
+        this.history.splice(0)
         snapshot.forEach(dataSnapshot => {
           const service = setService(dataSnapshot)
           this.history.unshift(service)
