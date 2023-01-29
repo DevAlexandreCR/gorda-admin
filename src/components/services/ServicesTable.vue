@@ -17,7 +17,7 @@
         <tbody class="text-sm text-opacity-25">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
           <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
-          <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : service.a_go }}</td>
+          <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
@@ -39,8 +39,8 @@
           <td class="py-1" v-else>
               <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="!props.isHistory"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td class="py-1 col-1" v-if="!props.isHistory">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
+          <td class="py-1 col-1" v-show="!props.isHistory">
+            <button v-if="service.a_go < 1800" class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
@@ -122,8 +122,7 @@ function getPaginatedData(data: []): void {
 
 function getTime(): void {
   paginatedServices.value.forEach(service => {
-    let time  = DateHelper.unix() - service.created_at
-    service.a_go = DateHelper.aGo(time)
+    service.a_go  = DateHelper.unix() - service.created_at
   })
 }
 </script>

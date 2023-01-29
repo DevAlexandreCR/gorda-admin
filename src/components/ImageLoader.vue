@@ -33,7 +33,6 @@ import CustomValidator from '@/assets/validatiions/validators'
 import * as yup from 'yup'
 import StorageService from "@/services/StorageService";
 import {ErrorMessage, Field, Form} from 'vee-validate'
-import * as bootstrap from 'bootstrap'
 import { hide } from '@/helpers/ModalHelper';
 
 
