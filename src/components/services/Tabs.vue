@@ -37,7 +37,7 @@
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <services-table :drivers="drivers" :isHistory="true" :services="services.history"></services-table>
+        <history :drivers="drivers" :services="services.history"></history>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         <DriverMap v-if="currentTap === 'mapTab'"/>
@@ -61,6 +61,7 @@ import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverMap from '@/components/DriverMap.vue'
+import History from '@/components/services/History.vue'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
@@ -100,7 +101,7 @@ watch(services.history,(newServices) => {
 })
 
 onBeforeMount((): void => {
-  ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().subtract(1, 'day').unix())
+  ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().startOf('day').unix())
 })
 
 function cancel(serviceId: string): void {
