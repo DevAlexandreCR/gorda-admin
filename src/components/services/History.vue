@@ -35,21 +35,18 @@
         </div>
       </div>
     </div>
-    <services-table :drivers="props.drivers" :isHistory="true" :services="props.services"></services-table>
+    <services-table :drivers="drivers" :isHistory="true" :services="[]"></services-table>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import Service from '@/models/Service'
-import Driver from '@/models/Driver'
 import ServicesTable from '@/components/services/ServicesTable.vue'
+import {storeToRefs} from 'pinia'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
-interface Props {
-  services: Array<Service>
-  drivers: Array<Driver>
-}
 
-const props = defineProps<Props>()
+const driverStore = useDriversStore()
+const {drivers} = storeToRefs(driverStore)
 
 </script>

@@ -5,14 +5,14 @@
         <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">{{ $t('services.statuses.pending') }}
           <span class="badge badge-circle bg-danger"
-                v-show="services.pending.length > 0">{{ services.pending.length }}</span>
+                v-show="pendings.length > 0">{{ pendings.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">{{ $t('services.statuses.in_progress') }}
           <span class="badge badge-circle bg-success"
-                v-show="services.inProgress.length > 0">{{ services.inProgress.length }}</span>
+                v-show="inProgress.length > 0">{{ inProgress.length }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -30,14 +30,14 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :drivers="drivers" :services="services.pending" @cancelService="cancel"></services-table>
+        <services-table :drivers="drivers" :services="pendings" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :drivers="drivers" :services="services.inProgress" @cancelService="cancel" @endService="end"
+        <services-table :drivers="drivers" :services="inProgress" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <history :drivers="drivers" :services="services.history"></history>
+        <history :drivers="drivers"></history>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         <DriverMap v-if="currentTap === 'mapTab'"/>
@@ -62,46 +62,18 @@ import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverMap from '@/components/DriverMap.vue'
 import History from '@/components/services/History.vue'
+import {useServicesStore} from '@/services/stores/ServiceStore'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
+const {getPendingServices, getInProgressServices}  = useServicesStore()
+const {pendings, inProgress} = storeToRefs(useServicesStore())
 const {drivers} = storeToRefs(driverStore)
-const services = reactive({
-  pending: Array<Service>(),
-  inProgress: Array<Service>(),
-  history: Array<Service>()
-})
 const currentTap: Ref<string> = ref('pendings')
 
-function onServiceAdded(data: DataSnapshot): void {
-  const service = new Service()
-  Object.assign(service, data.val())
-  service.id = data.key as string
-  services.history.unshift(service)
-}
-
-function onServiceChanged(data: DataSnapshot): void {
-  const service = new Service()
-  Object.assign(service, data.val())
-  services.history[services.history.findIndex(serv => serv.id === service.id)] = service
-}
-
-watch(services.history,(newServices) => {
-  services.pending.splice(0,services.pending.length)
-  newServices.forEach(service => {
-    if (service.status == Service.STATUS_PENDING) services.pending.push(service)
-  })
-})
-
-watch(services.history,(newServices) => {
-  services.inProgress.splice(0,services.inProgress.length)
-  newServices.forEach(service => {
-    if (service.status == Service.STATUS_IN_PROGRESS) services.inProgress.push(service)
-  })
-})
-
 onBeforeMount((): void => {
-  ServiceRepository.serviceListener(onServiceAdded, onServiceChanged, dayjs().startOf('day').unix())
+  getPendingServices()
+  getInProgressServices()
 })
 
 function cancel(serviceId: string): void {
