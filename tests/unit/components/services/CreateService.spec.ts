@@ -152,7 +152,7 @@ describe('CreateService.vue', () => {
         position: 'top-right',
         title: i18n.global.t('common.messages.error'),
         showConfirmButton: false,
-        text: wrapper.vm.$t('services.messages.no_start_loc'),
+        text: i18n.global.t('services.messages.no_start_loc'),
         timer: 3000,
         toast: true
       })

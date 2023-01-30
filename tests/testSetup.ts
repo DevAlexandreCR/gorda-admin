@@ -30,6 +30,7 @@ jest.mock('firebase/database', () => {
     ref: jest.fn(),
     orderByChild: jest.fn(),
     startAfter: jest.fn(),
+    equalTo: jest.fn(),
     query: jest.fn(),
     onChildAdded: jest.fn(),
     onChildChanged: jest.fn(),
