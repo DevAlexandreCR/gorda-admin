@@ -70,7 +70,7 @@ describe('SignUp.vue', () => {
         icon: 'success',
         showConfirmButton: false,
         timer: 3000,
-        title: wrapper.vm.$t('common.messages.created'),
+        title: i18n.global.t('common.messages.created'),
         toast: true,
         position: 'top-right'
       })
@@ -85,7 +85,7 @@ describe('SignUp.vue', () => {
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'error',
-        title: wrapper.vm.$t('common.messages.error'),
+        title: i18n.global.t('common.messages.error'),
         text: 'New Error while create',
         position: 'top-right',
         showConfirmButton: false,

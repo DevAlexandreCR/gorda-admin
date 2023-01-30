@@ -32,7 +32,7 @@ describe('SideBar.vue', () => {
   
   it('an user can show buttons to users and dashboard', async () => {
     expect(wrapper.find('#sidenav-main').exists()).toBeTruthy()
-    expect(wrapper.html()).toContain(wrapper.vm.$t('routes.users'))
+    expect(wrapper.html()).toContain(i18n.global.t('routes.users'))
   })
   
   it('must change state to connected', async () => {

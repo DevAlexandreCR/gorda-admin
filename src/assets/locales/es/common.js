@@ -20,7 +20,8 @@ export default {
     cancel: 'Cancelar',
     release: 'Liberar',
     assign: 'Asignar',
-    terminate: 'Terminar'
+    terminate: 'Terminar',
+    filter: 'Filtrar'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -43,6 +44,11 @@ export default {
   },
   forms: {
     select_img: 'Choose image from files'
+  },
+  filters: {
+    title: 'Filtros',
+    from: 'Desde',
+    until: 'Hasta'
   },
   chatBot: {
     connected: 'Conectado',

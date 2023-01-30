@@ -1,6 +1,21 @@
-import {get, child, DataSnapshot, set, ref, push, onChildAdded, onChildChanged, query, startAfter, orderByChild} from 'firebase/database'
+import {
+  get,
+  child,
+  DataSnapshot,
+  set,
+  ref,
+  push,
+  onChildAdded,
+  query,
+  startAfter,
+  endBefore,
+  orderByChild,
+  equalTo,
+  onChildRemoved
+} from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
+import Service from '@/models/Service'
 
 class ServiceRepository {
 
@@ -28,9 +43,20 @@ class ServiceRepository {
   }
   
   /* istanbul ignore next */
-  serviceListener(added: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void, startAtl: number): void {
-    onChildAdded(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl, 'created_at')), added)
-    onChildChanged(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl, 'created_at')), changed)
+  getHistory(startAtl: number, endAt: number): Promise<DataSnapshot> {
+    return get(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl), endBefore(endAt)))
+  }
+
+  /* istanbul ignore next */
+  pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
+    onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), added)
+    onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), removed)
+  }
+
+  /* istanbul ignore next */
+  inProgressListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
+    onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), added)
+    onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), removed)
   }
 
   /* istanbul ignore next */

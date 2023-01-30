@@ -80,7 +80,7 @@ describe('Edit.vue', () => {
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'error',
-        title: wrapper.vm.$t('common.messages.error'),
+        title: i18n.global.t('common.messages.error'),
         text: 'New Error',
       })
     })

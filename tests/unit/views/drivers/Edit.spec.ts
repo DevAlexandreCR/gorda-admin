@@ -107,7 +107,7 @@ describe('Edit.vue', () => {
     const success =  jest.spyOn(ToastService, 'toast')
     await wrapper.vm.updateDriver()
     
-    expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('common.messages.updated'))
+    expect(success).toHaveBeenCalledWith('success', i18n.global.t('common.messages.updated'))
   })
   
   it('should show toast success when enable driver', async () => {
@@ -115,7 +115,7 @@ describe('Edit.vue', () => {
     const input = wrapper.find('input[name="enable"]')
     await input.trigger('click')
     
-    expect(success).toHaveBeenCalledWith('success', wrapper.vm.$t('users.messages.enabled'))
+    expect(success).toHaveBeenCalledWith('success', i18n.global.t('users.messages.enabled'))
   })
   
   it('should show toast error when enable driver', async () => {
@@ -124,7 +124,7 @@ describe('Edit.vue', () => {
     const input = wrapper.find('input[name="enable"]')
     await input.trigger('click')
     
-    expect(success).toHaveBeenCalledWith('error', wrapper.vm.$t('common.messages.error'), 'new Error')
+    expect(success).toHaveBeenCalledWith('error', i18n.global.t('common.messages.error'), 'new Error')
   })
   
   it('should show toast error when update driver fail', async () => {
@@ -133,7 +133,7 @@ describe('Edit.vue', () => {
     await wrapper.vm.updateDriver()
     
     await waitForExpect(() => {
-      expect(error).toHaveBeenCalledWith('error', wrapper.vm.$t('common.messages.error'), 'new Error')
+      expect(error).toHaveBeenCalledWith('error', i18n.global.t('common.messages.error'), 'new Error')
     })
   })
   
