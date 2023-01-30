@@ -1,7 +1,7 @@
 export default {
   statuses: {
     pending: 'Pending',
-    canceled: 'Cancelado',
+    canceled: 'Canceled',
     in_progress: 'In progress',
     terminated: 'Completed',
   },
@@ -18,6 +18,8 @@ export default {
     comment: 'Comment'
   },
   history: 'History',
+  total: 'Total',
+  title: 'Service | Services',
   messages: {
     new_client: 'Client does nor exists, therefor has been created a new one',
     no_start_loc: 'No place selected!'

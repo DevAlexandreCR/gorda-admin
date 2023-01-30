@@ -39,8 +39,8 @@ describe('AssignDriver.vue', () => {
     await nextTick()
     await button.click()
     expect(wrapper.findComponent(AutoComplete).exists()).toBeTruthy()
-    expect(wrapper.find('.btn-secondary').text()).toMatch(wrapper.vm.$t('common.actions.close'))
-    expect(wrapper.find('.btn-primary').text()).toMatch(wrapper.vm.$t('common.actions.assign'))
+    expect(wrapper.find('.btn-secondary').text()).toMatch(i18n.global.t('common.actions.close'))
+    expect(wrapper.find('.btn-primary').text()).toMatch(i18n.global.t('common.actions.assign'))
   })
   
   it('should fill plates with river given', async () => {
@@ -70,7 +70,7 @@ describe('AssignDriver.vue', () => {
     expect(swal).toBeCalledWith({
       icon: 'success',
       position: 'top-right',
-      title: wrapper.vm.$t('common.messages.updated'),
+      title: i18n.global.t('common.messages.updated'),
       showConfirmButton: false,
       text: undefined,
       timer: 3000,
@@ -86,9 +86,9 @@ describe('AssignDriver.vue', () => {
     expect(swal).toBeCalledWith({
       icon: 'error',
       position: 'top-right',
-      title: wrapper.vm.$t('common.messages.error'),
+      title: i18n.global.t('common.messages.error'),
       showConfirmButton: false,
-      text: wrapper.vm.$t('validations.driver'),
+      text: i18n.global.t('validations.driver'),
       timer: 3000,
       toast:true
     })
@@ -113,7 +113,7 @@ describe('AssignDriver.vue', () => {
     expect(swal).toBeCalledWith({
       icon: 'error',
       position: 'top-right',
-      title: wrapper.vm.$t('common.messages.error'),
+      title: i18n.global.t('common.messages.error'),
       showConfirmButton: false,
       text: 'something was wrong',
       timer: 3000,

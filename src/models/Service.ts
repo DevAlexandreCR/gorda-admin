@@ -19,7 +19,7 @@ export default class Service implements ServiceInterface {
   client_id: string | null = null
   created_at: number
   comment: string | null = null
-  a_go = ''
+  a_go = 0
 
   static readonly STATUS_PENDING = 'pending'
   static readonly STATUS_IN_PROGRESS = 'in_progress'
@@ -43,7 +43,11 @@ export default class Service implements ServiceInterface {
   isinProgress(): boolean {
     return this.status === Service.STATUS_IN_PROGRESS
   }
-  
+
+  isEnd(): boolean {
+    return this.status === Service.STATUS_CANCELED || this.status === Service.STATUS_TERMINATED
+  }
+
   async update(data: ServiceInterface): Promise<Service> {
     await ServiceRepository.update(data)
     return this

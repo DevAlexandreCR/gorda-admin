@@ -53,7 +53,7 @@ watch(() => [...props.places], (newPlaces, oldPlaces) => {
     const intersections = oldPlaces.filter(driver => newPlaces.indexOf(driver) === -1)
     intersections.forEach(place => {
       const currents = oldPlaces.filter(pla => pla.key === place.key)
-      currents.forEach(placeRemove => {if (mapReady) googleMap.removeMarker(place)})
+      currents.forEach(() => {if (mapReady) googleMap.removeMarker(place)})
     })
   }
   

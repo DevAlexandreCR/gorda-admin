@@ -20,7 +20,8 @@ export default {
     cancel: 'Cancel',
     release: 'Release',
     assign: 'Assign',
-    terminate: 'Terminate'
+    terminate: 'Terminate',
+    filter: 'Filter'
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -40,6 +41,11 @@ export default {
     comment: 'Enter comment',
     search: 'Search',
     map: 'Map'
+  },
+  filters: {
+    title: 'Filters',
+    from: 'From',
+    until: 'Until'
   },
   forms: {
     select_img: 'Choose image from files'

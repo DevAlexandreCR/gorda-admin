@@ -108,7 +108,7 @@ describe('CreateService.vue', () => {
     await wrapper.find('input[name="phone"]').setValue(phone)
     await wrapper.find('input[name="name"]').setValue(name)
     const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('mar')
+    await input.setValue('mari')
     await input.trigger('keyup', {
       keyCode: 72
     })
@@ -121,7 +121,7 @@ describe('CreateService.vue', () => {
       expect(swal).toBeCalledWith({
         icon: 'success',
         position: 'top-right',
-        title: wrapper.vm.$t('common.messages.created'),
+        title: i18n.global.t('common.messages.created'),
         showConfirmButton: false,
         text: undefined,
         timer: 3000,
@@ -150,9 +150,9 @@ describe('CreateService.vue', () => {
       expect(swal).toBeCalledWith({
         icon: 'error',
         position: 'top-right',
-        title: wrapper.vm.$t('common.messages.error'),
+        title: i18n.global.t('common.messages.error'),
         showConfirmButton: false,
-        text: wrapper.vm.$t('services.messages.no_start_loc'),
+        text: i18n.global.t('services.messages.no_start_loc'),
         timer: 3000,
         toast: true
       })
@@ -185,7 +185,7 @@ describe('CreateService.vue', () => {
       expect(swal).toBeCalledWith({
         icon: 'success',
         position: 'top-right',
-        title: wrapper.vm.$t('services.messages.new_client'),
+        title: i18n.global.t('services.messages.new_client'),
         showConfirmButton: false,
         text: undefined,
         timer: 3000,
@@ -233,7 +233,7 @@ describe('CreateService.vue', () => {
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'error',
-        title: wrapper.vm.$t('common.messages.error'),
+        title: i18n.global.t('common.messages.error'),
         showConfirmButton: false,
         text: 'New Error',
         position: 'top-right',

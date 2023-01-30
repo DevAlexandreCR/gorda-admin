@@ -3,7 +3,7 @@
     "services": {
       ".read": "auth.uid != null",
       ".write": "auth.uid != null",
-      ".indexOn": ["created_at", "status"]
+      ".indexOn": ["created_at", "status", "driver_id"]
     },
     "sessions": {
       ".indexOn": ["chat_id", "created_at", "status"]

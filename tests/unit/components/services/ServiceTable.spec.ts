@@ -39,7 +39,7 @@ describe('ServicesTable.vue', () => {
   it('an user can see all services passed by props', async () => {
     await nextTick()
     jest.advanceTimersByTime(2000)
-    expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.pending'))
+    expect(wrapper.html()).toContain(i18n.global.t('services.statuses.pending'))
     expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
     expect(wrapper.html()).toContain(service.name)

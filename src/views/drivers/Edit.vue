@@ -41,7 +41,7 @@
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
                   <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
-                         v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field"/>
+                         v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" disabled/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -213,7 +213,6 @@ const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
 const driverStore = useDriversStore()
-const {findById} = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
