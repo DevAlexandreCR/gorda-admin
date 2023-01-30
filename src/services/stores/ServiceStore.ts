@@ -6,10 +6,10 @@ import {Filter} from '@/types/Filter'
 import DateHelper from '@/helpers/DateHelper'
 import {useLoadingState} from '@/services/stores/LoadingState'
 
-const setService = (snapshot: DataSnapshot): Service => {
+const setService = (snapshot?: DataSnapshot): Service => {
   const service = new Service()
-  Object.assign(service, snapshot.val())
-  service.id = snapshot.key as string
+  Object.assign(service, snapshot?.val())
+  service.id = snapshot?.key as string
   return  service
 }
 
