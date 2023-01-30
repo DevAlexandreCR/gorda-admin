@@ -28,7 +28,7 @@ describe('Login.vue', () => {
   it('show alert when try login without credentials', async () => {
     AuthService.login = jest.fn().mockRejectedValue(new Error('error'))
     await wrapper.vm.login({email: '', pass: ''})
-    expect(wrapper.text()).toContain(wrapper.vm.$t('users.alert'))
+    expect(wrapper.text()).toContain(i18n.global.t('users.alert'))
     expect(wrapper.vm.error).toBeTruthy()
   })
 })
