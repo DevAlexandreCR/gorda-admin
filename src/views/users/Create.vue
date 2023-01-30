@@ -15,7 +15,8 @@
             <div class="col-md-7">
               <div class="form-group">
                 <label class="form-label">{{ $t('drivers.placeholders.photo') }}</label>
-                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*" v-model="image"/>
+                <Field name="photoUrl" class="form-control form-control-sm" type="file" accept="image/*"
+                       multiple v-model="image"/>
                 <ErrorMessage name="photoUrl" class="is-invalid"/>
               </div>
               <div class="form-group">

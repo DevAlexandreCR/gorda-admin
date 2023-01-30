@@ -88,7 +88,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <label class="form-label">{{ $t('users.forms.select_img') }}</label>
-                <Field name="photo" class="form-control" type="file" accept="image/*" v-model="image" id="formFile"/>
+                <Field name="photo" class="form-control" type="file" accept="image/*" v-model="image" id="formFile" multiple/>
                 <ErrorMessage name="photo"/>
               </div>
             </div>
