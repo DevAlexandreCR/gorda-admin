@@ -43,7 +43,11 @@ export default class Service implements ServiceInterface {
   isinProgress(): boolean {
     return this.status === Service.STATUS_IN_PROGRESS
   }
-  
+
+  isEnd(): boolean {
+    return this.status === Service.STATUS_CANCELED || this.status === Service.STATUS_TERMINATED
+  }
+
   async update(data: ServiceInterface): Promise<Service> {
     await ServiceRepository.update(data)
     return this

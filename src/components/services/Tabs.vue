@@ -37,7 +37,7 @@
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <History :drivers="drivers"></History>
+        <History v-if="currentTap === 'history'" :drivers="drivers"></History>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         <DriverMap v-if="currentTap === 'mapTab'"/>

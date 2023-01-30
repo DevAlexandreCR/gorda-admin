@@ -43,11 +43,11 @@
       </div>
     </div>
     <div class="row my-2">
-      <div class="col col-sm-4">
+      <div class="col-12 col-md-4 my-1 my-md-0">
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col col-sm-10">
+              <div class="col-9 col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
@@ -56,7 +56,7 @@
                   </h5>
                 </div>
               </div>
-              <div class="col col-sm-2 text-end">
+              <div class="col-3 col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-light shadow text-center border-radius-md">
                   <em class="fa-solid fa-arrow-up-wide-short fa-2x mt-2"></em>
                 </div>
@@ -65,11 +65,11 @@
           </div>
         </div>
       </div>
-      <div class="col col-sm-4">
+      <div class="col-12 col-md-4 my-1 my-md-0">
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col col-sm-10">
+              <div class="col-9 col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.statuses.terminated') }}</p>
                   <h5 class="font-weight-bolder mb-0">
@@ -78,20 +78,20 @@
                   </h5>
                 </div>
               </div>
-              <div class="col col-sm-2 text-end">
+              <div class="col-3 col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                  <em class="fa-solid fa-thumbs-up fa-2x mt-2 text-light"></em>
+                  <em class="fa-solid text-light fa-thumbs-up fa-2x mt-2"></em>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col">
+      <div class="col-12 col-md-4 my-1 my-md-0">
         <div class="card">
           <div class="card-body p-3">
             <div class="row">
-              <div class="col col-sm-10">
+              <div class="col-9 col-sm-10">
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.statuses.canceled') }}</p>
                   <h5 class="font-weight-bolder mb-0">
@@ -100,9 +100,9 @@
                   </h5>
                 </div>
               </div>
-              <div class="col col-sm-2 text-end">
+              <div class="col-3 col-sm-2 text-end">
                 <div class="icon icon-shape bg-gradient-danger shadow text-center text-light border-radius-md">
-                  <em class="fa-solid fa-ban fa-2x mt-2"></em>
+                  <em class="fa-solid fa-thumbs-down fa-2x mt-2"></em>
                 </div>
               </div>
             </div>
@@ -123,7 +123,8 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Form, Field} from 'vee-validate'
 import {object, date} from 'yup'
 import Service from '@/models/Service'
-import {computed} from 'vue'
+import {computed, onBeforeMount} from 'vue'
+import DateHelper from '@/helpers/DateHelper'
 
 const driverStore = useDriversStore()
 const {drivers} = storeToRefs(driverStore)
@@ -154,6 +155,14 @@ const canceledPercent = computed(() =>
 function isWhatPercent(x: number): number {
   return Math.round((x / history.value.length) * 100)
 }
+
+onBeforeMount(() => {
+  if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
+    const lastService = history.value[0]
+    filter.value.from = DateHelper.unixToDate(lastService.created_at, 'YYYY-MM-DD HH:mm:ss')
+    getHistoryServices(true)
+  }
+})
 
 function getServices(): void {
   getHistoryServices()

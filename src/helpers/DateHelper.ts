@@ -1,12 +1,16 @@
 import dayjs from 'dayjs'
 
 export default class DateHelper {
-  static unixToDate(unix: number,  format: string): string {
+  static unixToDate(unix: number,  format = 'YYYY-MM-DD'): string {
     return dayjs(unix * 1000).format(format)
   }
   
   static unix(): number {
     return dayjs().unix()
+  }
+
+  static startOfDayUnix(): number {
+    return dayjs().startOf('day').unix()
   }
   
   static aGo(unix: number): string {
@@ -35,7 +39,7 @@ export default class DateHelper {
 
   public static getFromDate(date: string, format = 'YYYY-MM-DD'): number
   {
-    return dayjs(date, format).startOf('day').unix()
+    return dayjs(date, format).unix()
   }
 
   public static getToDate(date: string, format = 'YYYY-MM-DD'): number

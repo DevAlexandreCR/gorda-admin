@@ -43,8 +43,8 @@ class ServiceRepository {
   }
   
   /* istanbul ignore next */
-  historyListener(startAtl: number, endAt: number): Promise<DataSnapshot> {
-    return get(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl, 'created_at'), endBefore(endAt, 'created_at')))
+  getHistory(startAtl: number, endAt: number): Promise<DataSnapshot> {
+    return get(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl), endBefore(endAt)))
   }
 
   /* istanbul ignore next */
