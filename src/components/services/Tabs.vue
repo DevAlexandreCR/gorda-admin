@@ -54,7 +54,7 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {onBeforeMount, ref, Ref} from 'vue'
+import {ref, Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -64,15 +64,9 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
-const {getPendingServices, getInProgressServices} = useServicesStore()
 const {pendings, inProgress} = storeToRefs(useServicesStore())
 const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')
-
-onBeforeMount((): void => {
-  getPendingServices()
-  getInProgressServices()
-})
 
 function cancel(serviceId: string): void {
   ServiceRepository.updateStatus(serviceId, Service.STATUS_CANCELED).then(() => {
