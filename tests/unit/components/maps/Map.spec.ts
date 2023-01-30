@@ -16,7 +16,7 @@ describe('Map.vue', () => {
             'appName': 'test'
           }
         },
-        propsData: {
+        props: {
             places: [{name: 'barrio berlin', lat: 2.431681, lng: -76.601789 }]
         }
       })
@@ -26,12 +26,12 @@ describe('Map.vue', () => {
     await flushPromises()
   })
 
-it('A user can see the map', async () => {
+  it('A user can see the map', async () => {
     const div = wrapper.find('div[id="map"]')
     expect(div.exists()).toBeTruthy()
- })
+  })
 
-it('checks the prop places', async () => {
-    expect(wrapper.props().places).toStrictEqual([{name: 'barrio berlin', lat: 2.431681, lng: -76.601789 }])
- })
+  it('checks the prop places', async () => {
+    expect(wrapper.props().places).toStrictEqual([{name: 'barrio berlin', lat: 2.431681, lng: -76.601789}])
+  })
 })
