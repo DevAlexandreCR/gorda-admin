@@ -6,6 +6,7 @@ import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {enableAutoUnmount, config} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
+import {endBefore} from 'firebase/database'
 
 require('./mocks/maps/googleMaps')
 
@@ -30,10 +31,12 @@ jest.mock('firebase/database', () => {
     ref: jest.fn(),
     orderByChild: jest.fn(),
     startAfter: jest.fn(),
+    endBefore: jest.fn(),
     equalTo: jest.fn(),
     query: jest.fn(),
     onChildAdded: jest.fn(),
     onChildChanged: jest.fn(),
+    onChildRemoved: jest.fn(),
     set: jest.fn(),
     child: jest.fn()
   }
