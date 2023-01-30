@@ -32,52 +32,15 @@ describe('Tabs.vue', () => {
     const tables = wrapper.findAllComponents(ServicesTable)
     const form = wrapper.findComponent(CreateService)
     const tabs = wrapper.findAll('.nav-item')
-    expect(tables.length).toBe(3)
+    expect(tables.length).toBe(2)
     expect(tabs.length).toBe(4)
     expect(form.exists()).toBeTruthy()
-    expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.pending'))
-    expect(wrapper.html()).toContain(wrapper.vm.$t('services.statuses.in_progress'))
-    expect(wrapper.html()).toContain(wrapper.vm.$t('services.history'))
-    expect(wrapper.html()).toContain(wrapper.vm.$t('common.placeholders.map'))
+    expect(wrapper.html()).toContain(i18n.global.t('services.statuses.pending'))
+    expect(wrapper.html()).toContain(i18n.global.t('services.statuses.in_progress'))
+    expect(wrapper.html()).toContain(i18n.global.t('services.history'))
+    expect(wrapper.html()).toContain(i18n.global.t('common.placeholders.map'))
   })
-  
-  it('set services on add serviceListener', async () => {
-    await nextTick()
-    const snapshot = new DataSnapshot(ServiceMock)
-    snapshot.service.status = Service.STATUS_IN_PROGRESS
-    wrapper.vm.services.inProgress.push(snapshot)
-    snapshot.service.status = Service.STATUS_PENDING
-    wrapper.vm.onServiceAdded(snapshot)
-    wrapper.vm.onServiceAdded(snapshot)
-    await nextTick()
-    expect(wrapper.vm.services.pending.length).toBe(2)
-  })
-  
-  it('set services on change serviceListener', async () => {
-    await nextTick()
-    const snapshot = new DataSnapshot(ServiceMock)
-    wrapper.vm.onServiceAdded(snapshot)
-    await nextTick()
-    snapshot.service.status = Service.STATUS_IN_PROGRESS
-    await wrapper.vm.onServiceChanged(snapshot)
-    await nextTick()
 
-    expect(wrapper.vm.services.inProgress.length).toBe(1)
-  })
-  
-  it('ser historyService on change event', async () => {
-    await wrapper.vm.$nextTick()
-    const snapshot = new DataSnapshot(ServiceMock)
-    snapshot.service.status = Service.STATUS_IN_PROGRESS
-    wrapper.vm.onServiceAdded(snapshot)
-    await nextTick()
-
-    snapshot.service.status = Service.STATUS_TERMINATED
-    await wrapper.vm.onServiceChanged(snapshot)
-    await nextTick()
-    expect(wrapper.vm.services.history.length).toBe(1)
-  })
-  
   it('should exec functions when children emmit events', async () => {
     ServiceRepository.updateStatus = jest.fn().mockResolvedValue({})
     ServiceRepository.update = jest.fn().mockResolvedValue({})

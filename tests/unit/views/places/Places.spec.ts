@@ -107,7 +107,7 @@ it('A user sees the Span when submit', async () => {
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'error',
-        title: wrapper.vm.$t('common.messages.error'),
+        title: i18n.global.t('common.messages.error'),
         text: 'error when removing Place',
         position: 'top-right',
         showConfirmButton: false,
