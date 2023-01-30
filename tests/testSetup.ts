@@ -7,6 +7,7 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {enableAutoUnmount, config} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 import {endBefore} from 'firebase/database'
+import * as console from 'console'
 
 require('./mocks/maps/googleMaps')
 
@@ -27,7 +28,10 @@ jest.mock('firebase/database', () => {
   return {
     getDatabase: jest.fn(),
     connectDatabaseEmulator: jest.fn(),
-    get: jest.fn().mockResolvedValue({val: () => {return {}}}),
+    get: jest.fn().mockResolvedValue({
+      val: () => {return {}},
+      forEach: (callback: any): void => {callback()}
+    }),
     ref: jest.fn(),
     orderByChild: jest.fn(),
     startAfter: jest.fn(),
