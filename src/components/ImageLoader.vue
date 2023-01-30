@@ -13,7 +13,7 @@
           <div class="modal-body">
             <div class="mb-3">
               <label class="form-label">{{ $t('users.forms.select_img') }}</label>
-              <Field name="image" class="form-control" type="file" accept="image/*" v-model="image"/>
+              <Field name="image" class="form-control" type="file" accept="image/*" v-model="image" multiple/>
               <ErrorMessage name="image" class="is-invalid"/>
             </div>
           </div>
