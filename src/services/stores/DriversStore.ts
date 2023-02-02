@@ -3,6 +3,7 @@ import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
 import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 import {PlaceInterface} from '@/types/PlaceInterface'
+import CacheStore from '@/services/stores/CacheStore'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -14,13 +15,7 @@ export const useDriversStore = defineStore('driverStore', {
   },
   actions: {
     async getDrivers() {
-      DriverRepository.getAll().then(driversDB => {
-        driversDB.forEach(driver => {
-          const driverTmp = new Driver()
-          Object.assign(driverTmp, driver)
-          this.drivers.push(driverTmp)
-        })
-      })
+      this.drivers = CacheStore.getDrivers()
     },
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
@@ -59,6 +54,23 @@ export const useDriversStore = defineStore('driverStore', {
     offOnlineDrivers(): void {
       DriverRepository.removeOnlineDriverListener()
       this.connectedDrivers = []
+    },
+
+    setDriverObject(drivers: Array<any>): void {
+      drivers.forEach(driver => {
+        const driverTmp = new Driver()
+        Object.assign(driverTmp, driver)
+        this.drivers.push(driverTmp)
+      })
+    },
+
+    addDriver(driver: Driver): void {
+      this.drivers.push(driver)
+    },
+
+    updateDriver(driver: Driver): void {
+      const index = this.drivers.findIndex(dri => dri.id === driver.id)
+      this.drivers[index] = driver
     }
   }
 })
