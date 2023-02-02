@@ -3,6 +3,8 @@ import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
 import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 import {PlaceInterface} from '@/types/PlaceInterface'
+import CacheStore from '@/services/stores/CacheStore'
+import Vehicle from '@/models/Vehicle'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -14,23 +16,21 @@ export const useDriversStore = defineStore('driverStore', {
   },
   actions: {
     async getDrivers() {
-      DriverRepository.getAll().then(driversDB => {
-        driversDB.forEach(driver => {
-          const driverTmp = new Driver()
-          Object.assign(driverTmp, driver)
-          this.drivers.push(driverTmp)
-        })
-      })
+      await CacheStore.getDrivers(this.drivers)
     },
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
     },
-    filterByPlate(plate: string): Driver[] {
-      return this.drivers.filter(el => el.vehicle.plate.toLowerCase().includes(plate.toLowerCase()))
+    filter(search: string): Driver[] {
+      return this.drivers.filter(driver => {
+        return driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
+          driver.email.toLowerCase().includes(search.toLowerCase()) ||
+          driver.phone.toLowerCase().includes(search.toLowerCase())
+      })
     },
     getOnlineDrivers(): void {
-      const onDriverConnected = (partialDriver: DriverConnectedInterface): void =>  {
-        const driver = this.findById(partialDriver.id??'') ?? new Driver()
+      const onDriverConnected = (partialDriver: DriverConnectedInterface): void => {
+        const driver = this.findById(partialDriver.id ?? '') ?? new Driver()
         this.connectedDrivers.push({
           key: driver.id,
           name: driver.vehicle.plate,
@@ -39,8 +39,8 @@ export const useDriversStore = defineStore('driverStore', {
         })
       }
 
-      const onDriverChanged = (partialDriver: DriverConnectedInterface): void =>  {
-        const driver = this.findById(partialDriver.id??'') ?? new Driver()
+      const onDriverChanged = (partialDriver: DriverConnectedInterface): void => {
+        const driver = this.findById(partialDriver.id ?? '') ?? new Driver()
         const index = this.connectedDrivers.findIndex(dri => dri.key === partialDriver.id)
         this.connectedDrivers[index] = {
           key: driver.id,
@@ -59,6 +59,15 @@ export const useDriversStore = defineStore('driverStore', {
     offOnlineDrivers(): void {
       DriverRepository.removeOnlineDriverListener()
       this.connectedDrivers = []
+    },
+
+    addDriver(driver: Driver): void {
+      const driverTmp = new Driver()
+      Object.assign(driverTmp, driver)
+      const vehicleTmp = new Vehicle()
+      Object.assign(vehicleTmp, driver.vehicle)
+      driverTmp.vehicle = vehicleTmp
+      this.drivers.push(driverTmp)
     }
   }
 })

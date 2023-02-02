@@ -19,7 +19,7 @@
           <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
           <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
-          <td class="py-1">{{ service.start_loc.name }}</td>
+          <td class="py-1">{{ service.start_loc?.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
           <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"

@@ -28,10 +28,15 @@ const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
 const {getHistoryServices} = useServicesStore()
+const {getPendingServices, getInProgressServices} = useServicesStore()
+
 getPlaces()
 getClients()
 getDrivers()
 getHistoryServices()
+getPendingServices()
+getInProgressServices()
+
 onMounted(() => {
   require('@/vendor/js/soft-ui-dashboard')
 })

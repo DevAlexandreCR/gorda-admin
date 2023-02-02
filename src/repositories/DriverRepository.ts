@@ -19,6 +19,7 @@ import {UserResponse} from '@/types/UserResponse'
 import UserRepository from '@/repositories/UserRepository'
 import {AxiosError} from 'axios'
 import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
+import CacheStore from '@/services/stores/CacheStore'
 
 class DriverRepository {
 
@@ -36,6 +37,7 @@ class DriverRepository {
 
   /* istanbul ignore next */
   update(driver: DriverInterface): Promise<void> {
+    CacheStore.clear(CacheStore.ALL_DRIVERS)
     return set(ref(DBService.db, 'drivers/' + driver.id), driver)
   }
 
@@ -45,6 +47,7 @@ class DriverRepository {
       UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
         set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(() => {
           resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
       }).catch((e) => {
         reject(new Error(e.message))
@@ -58,6 +61,7 @@ class DriverRepository {
       UserRepository.emailAuth(driverId, email).then(() => {
         set(ref(DBService.db, 'drivers/' + driverId + '/email/'), email).then(() => {
           resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
       }).catch((e) => {
         reject(new Error(e.message))
@@ -102,6 +106,7 @@ class DriverRepository {
         const id = res.data.data.uid
         driver.id = id
         await set(ref(DBService.db, 'drivers/' + id), driver)
+        CacheStore.clear(CacheStore.ALL_DRIVERS)
         return resolve(id)
       }).catch((e: AxiosError<UserResponse>) => {
         reject(new Error(e.response?.data.data as string?? e.message))

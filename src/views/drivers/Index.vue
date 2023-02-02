@@ -109,7 +109,7 @@ import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
 
-const {drivers, filterByPlate, findById} = useDriversStore()
+const {drivers, filter, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
@@ -130,7 +130,7 @@ watch(drivers, (newDrivers) => {
 
 watch(searchDriver, (plate) => {
   filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filterByPlate(plate).forEach(driver => filteredDrivers.value.push(driver))
+  filter(plate).forEach(driver => filteredDrivers.value.push(driver))
 })
 
 onMounted(() => {
