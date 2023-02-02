@@ -21,12 +21,16 @@ export const useDriversStore = defineStore('driverStore', {
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
     },
-    filterByPlate(plate: string): Driver[] {
-      return this.drivers.filter(el => el.vehicle.plate.toLowerCase().includes(plate.toLowerCase()))
+    filterByPlate(search: string): Driver[] {
+      return this.drivers.filter(driver => {
+        return driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
+          driver.email.toLowerCase().includes(search.toLowerCase()) ||
+          driver.phone.toLowerCase().includes(search.toLowerCase())
+      })
     },
     getOnlineDrivers(): void {
-      const onDriverConnected = (partialDriver: DriverConnectedInterface): void =>  {
-        const driver = this.findById(partialDriver.id??'') ?? new Driver()
+      const onDriverConnected = (partialDriver: DriverConnectedInterface): void => {
+        const driver = this.findById(partialDriver.id ?? '') ?? new Driver()
         this.connectedDrivers.push({
           key: driver.id,
           name: driver.vehicle.plate,
@@ -35,8 +39,8 @@ export const useDriversStore = defineStore('driverStore', {
         })
       }
 
-      const onDriverChanged = (partialDriver: DriverConnectedInterface): void =>  {
-        const driver = this.findById(partialDriver.id??'') ?? new Driver()
+      const onDriverChanged = (partialDriver: DriverConnectedInterface): void => {
+        const driver = this.findById(partialDriver.id ?? '') ?? new Driver()
         const index = this.connectedDrivers.findIndex(dri => dri.key === partialDriver.id)
         this.connectedDrivers[index] = {
           key: driver.id,
