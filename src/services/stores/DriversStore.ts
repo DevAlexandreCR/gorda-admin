@@ -61,14 +61,6 @@ export const useDriversStore = defineStore('driverStore', {
       this.connectedDrivers = []
     },
 
-    setDriverObject(drivers: Array<any>): void {
-      drivers.forEach(driver => {
-        const driverTmp = new Driver()
-        Object.assign(driverTmp, driver)
-        this.drivers.push(driverTmp)
-      })
-    },
-
     addDriver(driver: Driver): void {
       const driverTmp = new Driver()
       Object.assign(driverTmp, driver)
