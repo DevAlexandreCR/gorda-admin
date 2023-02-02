@@ -29,6 +29,7 @@ const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
 const {getHistoryServices} = useServicesStore()
 const {getPendingServices, getInProgressServices} = useServicesStore()
+
 getPlaces()
 getClients()
 getDrivers()

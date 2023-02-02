@@ -161,6 +161,7 @@ import i18n from '@/plugins/i18n'
 import {ref, Ref, watch} from 'vue'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import router from '@/router'
+import {useDriversStore} from '@/services/stores/DriversStore'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -169,6 +170,7 @@ const imageVehicle: Ref<File[]> = ref([])
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
 const {setLoading} = useLoadingState()
+const {addDriver} = useDriversStore()
 const schema: ObjectSchema<any> = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -206,6 +208,7 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
       uploadImg(StorageService.vehiclePath, imageVehicle.value[0]).then(urlPhotoVehicle => {
         setLoading(false)
         driver.value.vehicle.photoUrl = urlPhotoVehicle
+        addDriver(driver.value)
         DriverRepository.update(driver.value)
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
