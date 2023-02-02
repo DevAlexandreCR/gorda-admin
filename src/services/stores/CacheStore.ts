@@ -5,31 +5,30 @@ class CacheStore {
 
   public ALL_DRIVERS = "all_drivers"
   private cachedDrivers: string|null = null
-  getDrivers(): Array<Driver> {
+  getDrivers(drivers: Driver[]): Promise<void> {
     this.cachedDrivers = localStorage.getItem(this.ALL_DRIVERS)
-    let drivers: Array<Driver> = []
-    if (this.cachedDrivers == null) {
-      DriverRepository.getAll().then(driversDB => {
-        drivers = this.setDriverObject(driversDB)
-        localStorage.setItem(this.ALL_DRIVERS, JSON.stringify(drivers))
-        console.log('base datos')
-      })
-    } else {
-      drivers = this.setDriverObject(JSON.parse(this.cachedDrivers))
-    }
+    return new Promise((resolve, reject) => {
+      if (this.cachedDrivers == null) {
+        DriverRepository.getAll().then(driversDB => {
+          this.setDriverObject(driversDB, drivers)
+          localStorage.setItem(this.ALL_DRIVERS, JSON.stringify(drivers))
+        }).catch((reason) => {
+          reject(reason)
+        })
+      } else {
+        this.setDriverObject(JSON.parse(this.cachedDrivers), drivers)
+      }
+      resolve()
+    })
 
-    return drivers
   }
 
-  private setDriverObject(jsonDrivers: Array<any>): Array<Driver> {
-    const drivers = Array<Driver>()
+  private setDriverObject(jsonDrivers: Array<any>, drivers: Driver[]): void {
     jsonDrivers.forEach(driver => {
       const driverTmp = new Driver()
       Object.assign(driverTmp, driver)
       drivers.push(driverTmp)
     })
-
-    return drivers
   }
 
   clear(key: string): void {

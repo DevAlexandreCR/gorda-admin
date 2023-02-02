@@ -21,7 +21,7 @@ import NavBar from '@/components/NavBar.vue'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import {onBeforeMount, onMounted} from 'vue'
+import {onMounted} from 'vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 
 const {getPlaces} = usePlacesStore()
@@ -30,14 +30,12 @@ const {getDrivers} = useDriversStore()
 const {getHistoryServices} = useServicesStore()
 const {getPendingServices, getInProgressServices} = useServicesStore()
 
-onBeforeMount(() => {
-  getPlaces()
-  getClients()
-  getDrivers()
-  getHistoryServices()
-  getPendingServices()
-  getInProgressServices()
-})
+getPlaces()
+getClients()
+getDrivers()
+getHistoryServices()
+getPendingServices()
+getInProgressServices()
 
 onMounted(() => {
   require('@/vendor/js/soft-ui-dashboard')

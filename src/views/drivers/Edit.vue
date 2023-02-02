@@ -275,7 +275,6 @@ function updateDriver(): void {
   setLoading(true)
   DriverRepository.update(driver.value).then(() => {
     setLoading(false)
-    driverStore.updateDriver(driver.value)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     setLoading(false)
@@ -288,7 +287,6 @@ function updateEmail(): void {
   DriverRepository.updateEmail(driver.value.id, driver.value.email).then(() => {
     setLoading(false)
     hide('editGmail')
-    driverStore.updateDriver(driver.value)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(e => {
     setLoading(false)
@@ -302,7 +300,6 @@ function onEnable(event: Event): void {
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id?? '', driver.value.enabled_at).then(() => {
     setLoading(false)
-    driverStore.updateDriver(driver.value)
     const message = driver.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)

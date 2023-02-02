@@ -4,6 +4,7 @@ import DriverRepository from '@/repositories/DriverRepository'
 import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 import {PlaceInterface} from '@/types/PlaceInterface'
 import CacheStore from '@/services/stores/CacheStore'
+import Vehicle from '@/models/Vehicle'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -15,7 +16,7 @@ export const useDriversStore = defineStore('driverStore', {
   },
   actions: {
     async getDrivers() {
-      this.drivers = CacheStore.getDrivers()
+      await CacheStore.getDrivers(this.drivers)
     },
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
@@ -65,12 +66,12 @@ export const useDriversStore = defineStore('driverStore', {
     },
 
     addDriver(driver: Driver): void {
-      this.drivers.push(driver)
-    },
-
-    updateDriver(driver: Driver): void {
-      const index = this.drivers.findIndex(dri => dri.id === driver.id)
-      this.drivers[index] = driver
+      const driverTmp = new Driver()
+      Object.assign(driverTmp, driver)
+      const vehicleTmp = new Vehicle()
+      Object.assign(vehicleTmp, driver.vehicle)
+      driverTmp.vehicle = vehicleTmp
+      this.drivers.push(driverTmp)
     }
   }
 })
