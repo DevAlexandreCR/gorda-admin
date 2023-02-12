@@ -34,6 +34,10 @@
       ".read": "auth.uid != null",
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
     },
+    "settings": {
+      ".read": "auth.uid != null",
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
+    },
     "tokens": {
       ".read": "auth.uid != null",
       ".write": true

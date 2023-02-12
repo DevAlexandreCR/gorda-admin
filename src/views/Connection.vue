@@ -18,11 +18,19 @@
       <div class="card-footer pt-2">
         <div class="row">
           <div class="col" v-if="connected">
-            <button class="btn btn-secondary mx-2" @click="reset()">{{ $t('common.chatBot.reset') }}</button>
             <button class="btn btn-danger" @click="destroy()">{{ $t('common.chatBot.disconnect') }}</button>
           </div>
           <div class="col" v-else>
             <button class="btn btn-primary" @click="auth()">{{ $t('common.chatBot.connect') }}</button>
+          </div>
+        </div>
+        <div class="row mx-2">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="settings.wpNotifications"
+                   @change="enableWpNotifications(settings.wpNotifications? false : true)"/>
+            <label class="form-check-label">{{
+                $t('common.settings.wpNotifications')
+              }}</label>
           </div>
         </div>
       </div>
@@ -36,10 +44,14 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {onMounted, ref, Ref} from 'vue'
 import QRCode from 'qrcode'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
+import {useSettingsStore} from '@/services/stores/SettingsStore'
+import {storeToRefs} from 'pinia'
 
 const qr: Ref<string|null> = ref('')
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
+const {enableWpNotifications} = useSettingsStore()
+const {settings} = storeToRefs(useSettingsStore())
 
 let wpClient: WhatsAppClient
 
