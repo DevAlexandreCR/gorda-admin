@@ -20,7 +20,8 @@ export const useSettingsStore = defineStore('settingsStore', {
     },
 		
 		async getSettings(): Promise<void> {
-			this.settings = await SettingsRepository.getSettings()
+			const settings = await SettingsRepository.getSettings()
+			if (settings) this.settings = settings
 		}
   }
 })
