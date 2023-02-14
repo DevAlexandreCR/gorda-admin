@@ -33,6 +33,11 @@ class DBService {
   public dbPlaces(): DatabaseReference {
     return ref(this.db, 'places/')
   }
+	
+	/* istanbul ignore next */
+	public dbSettings(): DatabaseReference {
+		return ref(this.db, 'settings/')
+	}
 }
 
 export default new DBService()

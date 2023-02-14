@@ -62,13 +62,12 @@ export const useServicesStore = defineStore('servicesStore', {
       const to = DateHelper.getToDate(this.filter.to)
       setLoading(true)
       ServiceRepository.getHistory(from, to).then(snapshot => {
-        setLoading(false)
         if (!sync) this.history.splice(0)
         snapshot.forEach(dataSnapshot => {
           const service = setService(dataSnapshot)
           if (service.isEnd()) this.history.unshift(service)
         })
-      })
+      }).finally(() => setLoading(false))
     },
   }
 })
