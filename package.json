@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.14.3",
+    "@sentry/tracing": "^7.37.2",
+    "@sentry/vue": "^7.37.2",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
