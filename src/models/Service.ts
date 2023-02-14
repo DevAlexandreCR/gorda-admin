@@ -40,7 +40,7 @@ export default class Service implements ServiceInterface {
     return this.status === Service.STATUS_PENDING
   }
 
-  isinProgress(): boolean {
+  isInProgress(): boolean {
     return this.status === Service.STATUS_IN_PROGRESS
   }
 

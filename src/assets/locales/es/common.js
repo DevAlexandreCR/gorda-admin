@@ -75,5 +75,8 @@ export default {
     maroon: 'Marrón',
     beige: 'Beige',
     silver: 'Plateado'
+  },
+  settings: {
+    wpNotifications: 'Confirmaciones de WhatsApp'
   }
 }

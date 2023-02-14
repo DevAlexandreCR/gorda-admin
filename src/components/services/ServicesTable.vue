@@ -24,7 +24,7 @@
           <td class="py-1">{{ service.name }}</td>
           <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
             :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
-          <td class="py-1" v-if="getDriver(service.driver_id)">
+          <td class="py-1" v-if="service.driver_id">
             <div class="d-flex px-2 py-0">
               <div>
                 <img :src="getDriver(service.driver_id).photoUrl" class="avatar avatar-sm my-0 me-3"
@@ -46,10 +46,10 @@
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isinProgress()" @click="release(service)"
-              data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="release(service)"
+                    data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
               <em class="fas fa-car-crash"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isinProgress()" @click="end(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
           </td>
