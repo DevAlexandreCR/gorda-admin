@@ -3,6 +3,13 @@
     <div class="row" v-for="(service, key) in services" :key="key + service.id" :id="'row-' + key">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
+          <div class="col-12 col-md col-xl-1">
+            <div class="form-group">
+              <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode.dialCode">
+                <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode.dialCode">{{ $t(cCode.dialCode + ' ' + cCode.code) }}</option>
+              </select>
+            </div>
+          </div>
           <div class="col-12 col-md">
             <div class="form-group">
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id +1"
@@ -65,6 +72,8 @@ import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {PlaceInterface} from '@/types/PlaceInterface'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import {storeToRefs} from 'pinia'
+import {CountryCodeType} from '@/types/CountryCodeType'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById} = useClientsStore()
@@ -72,6 +81,8 @@ const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const services: Ref<Array<Partial<Service>>> = ref([new Service()])
 const {setLoading} = useLoadingState()
+const {countryCodes} = storeToRefs(useClientsStore())
+const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -110,7 +121,7 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
-  phone: yup.string().required().min(8),
+  phone: yup.number().required().min(8),
   start_address: yup.string().required(),
   comment: yup.string().nullable()
 })
@@ -178,6 +189,7 @@ function onClientSelected(element: AutoCompleteType, id: string): void {
 }
 
 function createClient(client: ClientInterface): Promise<ClientInterface> {
+
   return ClientRepository.create(client)
 }
 
