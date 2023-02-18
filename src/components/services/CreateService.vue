@@ -1,6 +1,6 @@
 <template>
   <div class="my-2">
-    <div class="row" v-for="(service, key) in services" :key="key + service.id" :id="'row-' + key">
+    <div class="row">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
           <div class="col-12 col-md col-xl-1">
@@ -13,9 +13,9 @@
           <div class="col-12 col-md">
             <div class="form-group">
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id +1"
-                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')"/>
+                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" @on-change="formatNumber" normalizer="formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
-                <input type="hidden" v-model="service.client_id" name="client_id" v-bind="field">
+                <input type="hidden" name="client_id" v-bind="field">
               </Field>
             </div>
           </div>
@@ -45,9 +45,6 @@
           </div>
           <div class="col-12 col-md">
             <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
-            <button class="btn btn-info ms-2" type="button" @click="add()" v-show="false"><em class="fas fa-plus"></em></button>
-            <button v-if="key > 0" class="btn btn-danger ms-2" :id="'button-' + key" type="button" @click="remove(key)">
-              <em class="fas fa-trash"></em></button>
           </div>
         </div>
       </Form>
@@ -79,7 +76,7 @@ const {places, findByName} = usePlacesStore()
 const {clients, findById} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
-const services: Ref<Array<Partial<Service>>> = ref([new Service()])
+const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
@@ -167,10 +164,8 @@ function createService(values: ServiceInterface): void {
   service.name = values.name
   service.phone = values.phone
   service.start_loc = start_loc
-  const index = services.value.findIndex(s => s.client_id = values.client_id)
   ServiceRepository.create(service).then(() => {
     setLoading(false)
-    services.value.splice(index, 1, new Service)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)
@@ -180,10 +175,9 @@ function createService(values: ServiceInterface): void {
 
 function onClientSelected(element: AutoCompleteType, id: string): void {
   let client = findById(element.id)
-  let serviceIndex = services.value.findIndex(service => service.id == id)
-  services.value[serviceIndex].phone = client.phone
-  services.value[serviceIndex].name = client.name
-  services.value[serviceIndex].client_id = client.id
+  service.value.phone = client.phone
+  service.value.name = client.name
+  service.value.client_id = client.id
   const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
   input?.focus()
 }
@@ -193,20 +187,14 @@ function createClient(client: ClientInterface): Promise<ClientInterface> {
   return ClientRepository.create(client)
 }
 
-function add(): void {
-  if (services.value.length < 5) {
-    services.value.push(new Service())
-  }
-}
-
-function remove(key: number): void {
-  services.value.splice(key, 1)
-}
-
 function locSelected(element: AutoCompleteType): void {
   let place = findByName(element.value)
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
+}
+
+function formatNumber(search: string): string {
+  return 'hola'
 }
 </script>

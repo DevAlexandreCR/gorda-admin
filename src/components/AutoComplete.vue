@@ -1,6 +1,6 @@
 <template>
   <div class="form-group mb-1">
-    <Field type="text" id="search" :name="props.fieldName ?? '12345'" @input="onChange" v-model="searchElement" :ref="input"
+    <input type="text" id="search" :name="props.fieldName ?? '12345'" @input="onChange" v-model="searchElement" :ref="input"
            @keyup="searchElements" :placeholder="props.placeholder" class="form-control" autocomplete="none"
     />
 
@@ -15,15 +15,15 @@
 </template>
 
 <script setup lang="ts">
-import {Field} from 'vee-validate'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
-import {onMounted, ref, Ref} from 'vue'
+import {onMounted, ref, Ref, watch} from 'vue'
 
 interface Props {
   elements: Array<AutoCompleteType>
   fieldName?: string
   placeholder?: string
   idField?: string
+  normalizer: (str: string) => string
 }
 
 const props = defineProps<Props>()
@@ -40,6 +40,17 @@ const callback = function (mutationsList: MutationRecord[]) {
       }
     }
   }
+}
+
+watch(searchElement, (newValue, oldValue) => {
+  searchElement.value = formatNumber(newValue)
+})
+
+function formatNumber(search: string): string {
+  return search
+      .replace(' ', '')
+      .replace(/[^\d]/g, "")
+      .slice(-10)
 }
 
 onMounted(() => {
