@@ -24,15 +24,15 @@
           <td class="py-1">{{ service.name }}</td>
           <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
             :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
-          <td class="py-1" v-if="service.driver_id">
+          <td class="py-1" v-if="service.driver">
             <div class="d-flex px-2 py-0">
               <div>
-                <img :src="getDriver(service.driver_id).photoUrl" class="avatar avatar-sm my-0 me-3"
+                <img :src="service.driver.photoUrl" class="avatar avatar-sm my-0 me-3"
                      alt="Profile image">
               </div>
               <div class="d-flex flex-column justify-content-center">
-                <h6 class="my-0 text-sm">{{ getDriver(service.driver_id).vehicle.plate }}</h6>
-                <p class="text-xs text-secondary my-0">{{ getDriver(service.driver_id).phone }}</p>
+                <h6 class="my-0 text-sm">{{ service.driver.vehicle.plate }}</h6>
+                <p class="text-xs text-secondary my-0">{{ service.driver.phone }}</p>
               </div>
             </div>
           </td>
@@ -67,19 +67,16 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
-import Driver from '@/models/Driver'
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
-import {useDriversStore} from '@/services/stores/DriversStore'
+import {ServiceList} from '@/models/ServiceList'
 
 interface Props {
-  services: Array<Service>
+  services: Array<ServiceList>
   isHistory?: boolean
-  drivers: Array<Driver>
 }
 const props = defineProps<Props>()
 const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
 let interval: number
-const {findById} = useDriversStore()
 const paginatedServices: Ref<Array<Service>> = ref([])
 const dataServices: Ref<Array<Service>> = ref([])
 
@@ -110,10 +107,6 @@ function release(service: Service): void {
 
 function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
-}
-
-function getDriver(driverId: string): Driver|undefined {
-    return findById(driverId)
 }
 
 function getPaginatedData(data: []): void {
