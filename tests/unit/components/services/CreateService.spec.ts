@@ -13,9 +13,11 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {getPlaces} from "../../../mocks/entities/PlaceMock"
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {StrHelper} from '@/helpers/StrHelper'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
+	StrHelper.formatNumber = jest.fn((str: string) => str)
   
   beforeEach(async () => {
     const placesStore = usePlacesStore()
@@ -44,44 +46,6 @@ describe('CreateService.vue', () => {
     expect(form.exists()).toBeTruthy()
     expect(input.length).toBe(4)
     expect(autoComplete.length).toBe(2)
-  })
-
-  it('an user can add another row to add service', async () => {
-    await nextTick()
-    const buttonAdd = wrapper.find('.btn-info')
-    await buttonAdd.trigger('click')
-    expect(wrapper.find('.btn-danger').exists()).toBeTruthy()
-    expect(wrapper.findAllComponents(Field).length).toBe(10)
-  })
-
-  it('an user can not add more than 5 rows', async () => {
-    await nextTick()
-    const buttonAdd = wrapper.find('.btn-info')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    expect(wrapper.findAll('.btn-danger').length).toBe(4)
-    expect(wrapper.findAllComponents(Field).length).toBe(25)
-  })
-
-  it('an user can remove a row to add service', async () => {
-    await nextTick()
-    const buttonAdd = wrapper.find('.btn-info')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await buttonAdd.trigger('click')
-    await wrapper.find('#row-3 input[name="comment"]').setValue('new Comment row 3')
-    await wrapper.find('#row-2 input[name="comment"]').setValue('new Comment row 2')
-    const buttonRemove = wrapper.find('#button-2')
-    await buttonRemove.trigger('click')
-
-    expect(wrapper.vm.services[2].comment).toBe('new Comment row 3')
-    expect(wrapper.find('#row-3 input[name="comment"]').exists()).toBeFalsy()
-    expect(wrapper.vm.services[3]).toBe(undefined)
   })
   
   it('an user can select location from neighborhoods', async () => {
@@ -114,6 +78,7 @@ describe('CreateService.vue', () => {
     })
     const li = wrapper.findAll('li').at(0)
     await li?.trigger('click')
+		await nextTick()
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -132,21 +97,18 @@ describe('CreateService.vue', () => {
   })
   
   it('an user can not create a new service without select a place', async () => {
-    const swal = jest.spyOn(Swal,'fire')
-    await nextTick()
-    const phone = '3100000000'
-    const name = 'Name User'
-    await wrapper.find('input[name="phone"]').setValue(phone)
-    await wrapper.find('input[name="name"]').setValue(name)
-    const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('mar')
-    const inputComment = document.querySelector('input[name="comment"]') as HTMLInputElement
-    await inputComment.focus()
-    await wrapper.find('input[name="comment"]').trigger('keydown.enter')
-    const buttonSave = wrapper.find('button[type="submit"]')
-    await buttonSave.trigger('click')
-    await flushPromises()
-    await waitForExpect(() => {
+		const swal = jest.spyOn(Swal,'fire')
+		await nextTick()
+		const phone = '3100000000'
+		const name = 'Name User'
+		const comment = 'New comment to service'
+		await wrapper.find('input[name="phone"]').setValue(phone)
+		await wrapper.find('input[name="name"]').setValue(name)
+		await wrapper.find('input[name="start_address"]').setValue('mari')
+		await wrapper.find('input[name="comment"]').setValue(comment)
+		const buttonSave = wrapper.find('button[type="submit"]')
+		await buttonSave.trigger('click')
+		await waitForExpect(() => {
       expect(swal).toBeCalledWith({
         icon: 'error',
         position: 'top-right',
@@ -157,7 +119,7 @@ describe('CreateService.vue', () => {
         toast: true
       })
     })
-    jest.resetAllMocks()
+		jest.resetAllMocks()
   })
   
   it('create client when not exists', async () => {
@@ -165,21 +127,21 @@ describe('CreateService.vue', () => {
     ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
     const swal = jest.spyOn(Swal,'fire')
     await nextTick()
-    const phone = '3100000000'
+    const phone = '3100000001'
     const name = 'Name User'
     const comment = 'New comment to service'
     await wrapper.find('input[name="phone"]').setValue(phone)
     await wrapper.find('input[name="name"]').setValue(name)
     const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('mar')
+    await input.setValue('mari')
     await input.trigger('keyup', {
       keyCode: 72
     })
     const li = wrapper.findAll('li').at(0)
     await li?.trigger('click')
-    await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
+		await flushPromises()
     
     await waitForExpect(() => {
       expect(swal).toBeCalledWith({
@@ -206,9 +168,9 @@ describe('CreateService.vue', () => {
     await wrapper.find('li').trigger('click')
     await nextTick()
     expect(wrapper.html()).toContain(ClientMock.phone)
-    expect(wrapper.vm.services[0].client_id).toBe(ClientMock.id)
-    expect(wrapper.vm.services[0].name).toBe(ClientMock.name)
-    expect(wrapper.vm.services[0].phone).toBe(ClientMock.phone)
+    expect(wrapper.vm.service.client_id).toBe(ClientMock.id)
+    expect(wrapper.vm.service.name).toBe(ClientMock.name)
+    expect(wrapper.vm.service.phone).toBe(ClientMock.phone)
   })
 
   it('show alert when error', async () => {
@@ -220,7 +182,7 @@ describe('CreateService.vue', () => {
     await wrapper.find('input[name="phone"]').setValue('3100000000')
     await wrapper.find('input[name="name"]').setValue('Name User')
     const input = wrapper.find('input[name="start_address"]')
-    await input.setValue('mar')
+    await input.setValue('mari')
     await input.trigger('keyup', {
       keyCode: 72
     })
