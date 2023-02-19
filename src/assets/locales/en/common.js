@@ -40,12 +40,15 @@ export default {
     address: 'Enter Address',
     comment: 'Enter comment',
     search: 'Search',
-    map: 'Map'
+    map: 'Map',
+    all: 'All'
   },
   filters: {
     title: 'Filters',
     from: 'From',
-    until: 'Until'
+    until: 'Until',
+    driver_plate: 'Driver\'s plate',
+    number_client: 'Client\'s number'
   },
   forms: {
     select_img: 'Choose image from files'

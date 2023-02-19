@@ -1,11 +1,18 @@
 import {defineStore} from 'pinia'
 import Client from '@/models/Client'
 import ClientRepository from '@/repositories/ClientRepository'
+import countryCodes from '../../assets/location/CountryCodes.json'
+import {CountryCodeType} from '@/types/CountryCodeType'
 
+interface ClientsState {
+	clients: Array<Client>
+	countryCodes: Array<CountryCodeType>
+}
 export const useClientsStore = defineStore('clientsStore', {
-  state: () => {
+  state: (): ClientsState => {
     return {
-      clients: Array<Client>()
+      clients: Array<Client>(),
+			countryCodes: countryCodes
     }
   },
   actions: {

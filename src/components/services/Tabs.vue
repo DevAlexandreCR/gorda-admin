@@ -30,14 +30,14 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :drivers="drivers" :services="pendings" @cancelService="cancel"></services-table>
+        <services-table :services="pendings" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :drivers="drivers" :services="inProgress" @cancelService="cancel" @endService="end"
+        <services-table :services="inProgress" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <History v-if="currentTap === 'history'" :drivers="drivers"></History>
+        <History v-if="currentTap === 'history'"></History>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         <DriverMap v-if="currentTap === 'mapTab'"/>

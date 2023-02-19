@@ -40,7 +40,8 @@ export default {
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
     search: 'Buscar',
-    map: 'Mapa'
+    map: 'Mapa',
+    all: 'Todos'
   },
   forms: {
     select_img: 'Choose image from files'
@@ -48,7 +49,9 @@ export default {
   filters: {
     title: 'Filtros',
     from: 'Desde',
-    until: 'Hasta'
+    until: 'Hasta',
+    driver_plate: 'Placa conductor',
+    number_client: 'Número del cliente'
   },
   chatBot: {
     connected: 'Conectado',
