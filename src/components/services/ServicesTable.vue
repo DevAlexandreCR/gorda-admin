@@ -86,7 +86,7 @@ watch(props.services, (newServices) => {
 
 onMounted(() => {
   // dataServices.value = Array.from(props.services)
-  interval = window.setInterval(getTime, 1000)
+  if(!props.isHistory) interval = window.setInterval(getTime, 1000)
 })
 
 onBeforeUnmount(() => {

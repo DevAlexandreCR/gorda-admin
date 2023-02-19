@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {DataSnapshot} from 'firebase/database'
 import {Filter} from '@/types/Filter'
