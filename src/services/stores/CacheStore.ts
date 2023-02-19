@@ -8,19 +8,14 @@ class CacheStore {
   getDrivers(drivers: Driver[]): Promise<void> {
     this.cachedDrivers = localStorage.getItem(this.ALL_DRIVERS)
     return new Promise((resolve, reject) => {
-      if (this.cachedDrivers == null) {
-        DriverRepository.getAll().then(driversDB => {
-          this.setDriverObject(driversDB, drivers)
-          localStorage.setItem(this.ALL_DRIVERS, JSON.stringify(drivers))
-        }).catch((reason) => {
-          reject(reason)
-        })
-      } else {
-        this.setDriverObject(JSON.parse(this.cachedDrivers), drivers)
-      }
-      resolve()
+			DriverRepository.getAll().then(driversDB => {
+				this.setDriverObject(driversDB, drivers)
+				localStorage.setItem(this.ALL_DRIVERS, JSON.stringify(drivers))
+				resolve()
+			}).catch((reason) => {
+				reject(reason)
+			})
     })
-
   }
 
   private setDriverObject(jsonDrivers: Array<any>, drivers: Driver[]): void {

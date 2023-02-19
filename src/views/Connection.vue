@@ -27,7 +27,7 @@
         <div class="row mx-2">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="settings.wpNotifications"
-                   @change="enableWpNotifications(settings.wpNotifications? false : true)"/>
+                   @change="enableWpNotifications(!settings.wpNotifications)"/>
             <label class="form-check-label">{{
                 $t('common.settings.wpNotifications')
               }}</label>
@@ -54,11 +54,6 @@ const {enableWpNotifications} = useSettingsStore()
 const {settings} = storeToRefs(useSettingsStore())
 
 let wpClient: WhatsAppClient
-
-function reset() {
-  qr.value = null
-  wpClient.reset()
-}
 
 function auth() {
   connecting.value = true

@@ -9,10 +9,11 @@ import {nextTick} from 'vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverRepository from '@/repositories/DriverRepository'
 import DateHelper from '@/helpers/DateHelper'
+import {ServiceList} from '@/models/ServiceList'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
-  const service = new Service()
+	const service = new ServiceList()
   Object.assign(service, ServiceMock)
   const options = {
     attachTo: '#root',
@@ -32,7 +33,7 @@ describe('ServicesTable.vue', () => {
     jest.useFakeTimers()
     DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
     const driverStore = useDriversStore()
-    driverStore.getDrivers()
+    await driverStore.getDrivers()
     wrapper = await mount(ServicesTable, options)
     await router.isReady()
   })
