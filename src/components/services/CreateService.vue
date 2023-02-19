@@ -180,7 +180,7 @@ function createService(values: ServiceInterface): void {
   })
 }
 
-function onClientSelected(element: AutoCompleteType, id: string): void {
+function onClientSelected(element: AutoCompleteType): void {
   let client = findById(element.id)
   service.value.phone = client.phone
   service.value.name = client.name
@@ -190,9 +190,7 @@ function onClientSelected(element: AutoCompleteType, id: string): void {
 }
 
 function createClient(client: ClientInterface): Promise<ClientInterface> {
-  const code = countryCode.value.dialCode.replace(/\D/g, "")
-  const key = countryCode.value.dialCode.concat(client.phone)
-  client.id = key.concat('@c.us')
+  client.id = countryCode.value.dialCode.replace(/\D/g, "").concat(client.phone).concat('@c.us')
   return ClientRepository.create(client)
 }
 

@@ -14,7 +14,7 @@ class ClientRepository {
   /* istanbul ignore next */
   async create(client: ClientInterface): Promise<ClientInterface> {
     return new Promise((resolve, rejected) => {
-      set(ref(DBService.db, 'clients/'.concat(client.id)), client).then(() => {
+      set(ref(DBService.db, 'clients/'.concat(client.id.replace('@c.us', ''))), client).then(() => {
         resolve(client)
       }).catch(e => {
         rejected(e)

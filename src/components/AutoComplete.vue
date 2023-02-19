@@ -49,7 +49,7 @@ const callback = function (mutationsList: MutationRecord[]) {
   }
 }
 
-watch(searchElement, (newValue, oldValue) => {
+watch(searchElement, (newValue) => {
   if (props.normalizer) searchElement.value = props.normalizer(newValue)
 })
 
