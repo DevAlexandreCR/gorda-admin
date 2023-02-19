@@ -125,7 +125,7 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
-  phone: yup.number().required().min(8),
+  phone: yup.string().required().min(10).max(10),
   start_address: yup.string().required(),
   comment: yup.string().nullable()
 })
