@@ -2,6 +2,7 @@ import {VueWrapper, mount} from '@vue/test-utils'
 import AutoComplete from "@/components/AutoComplete.vue"
 import {Field} from 'vee-validate'
 import locations from '@/assets/location/neighborhoods.json'
+import {nextTick} from 'vue'
 
 describe('AutoComplete.vue', () => {
   const neighborhoods: Array<any> = []
@@ -33,20 +34,21 @@ describe('AutoComplete.vue', () => {
   
   it('an user can show the list when write more than twice', async () => {
     await wrapper.vm.$nextTick()
-    const input = wrapper.findComponent(Field)
+    const input = wrapper.find('input[name="fieldName"]')
     await input.setValue('san')
     await input.trigger('keyup', {
       keyCode: 72
     })
     const list = wrapper.find('ul')
-    expect(list.exists()).toBeTruthy()
-    expect(wrapper.vm.foundElements.length).toBe(5)
+		console.log(list.html())
+		expect(list.exists()).toBeTruthy()
+		expect(wrapper.vm.foundElements.length).toBe(5)
   })
   
   it('emit on-change when write input', async () => {
     await wrapper.vm.$nextTick()
-    const input = wrapper.findComponent(Field)
-    await input.setValue('san')
+		const input = wrapper.find('input[name="fieldName"]')
+		await input.setValue('san')
     await input.trigger('input')
   
     expect(wrapper.emitted()).toHaveProperty('on-change')
@@ -54,8 +56,8 @@ describe('AutoComplete.vue', () => {
   
   it('an user can select a item from list and set the selectedElement', async () => {
     await wrapper.vm.$nextTick()
-    const input = wrapper.findComponent(Field)
-    await input.setValue('san')
+		const input = wrapper.find('input[name="fieldName"]')
+		await input.setValue('san')
     await input.trigger('keyup', {
       keyCode: 72
     })
@@ -67,9 +69,9 @@ describe('AutoComplete.vue', () => {
   })
 
   it('the user after seeing the list deletes what it contains inside it will return 0', async () => {
-    await wrapper.vm.$nextTick()
-    const input = wrapper.findComponent(Field)
-    await input.setValue('sa')
+    await nextTick()
+		const input = wrapper.find('input[name="fieldName"]')
+		await input.setValue('sa')
     await input.trigger('keyup', {
       keyCode: 72
     })

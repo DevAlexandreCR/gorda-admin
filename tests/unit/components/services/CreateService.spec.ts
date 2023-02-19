@@ -64,39 +64,6 @@ describe('CreateService.vue', () => {
 	
 	it('an user can create a new service', async () => {
 		ServiceRepository.create = jest.fn().mockResolvedValue('success')
-		const swal = jest.spyOn(Swal, 'fire')
-		await nextTick()
-		const phone = '3100000000'
-		const name = 'Name User'
-		const comment = 'New comment to service'
-		await wrapper.find('input[name="phone"]').setValue(phone)
-		await wrapper.find('input[name="name"]').setValue(name)
-		const input = wrapper.find('input[name="start_address"]')
-		await input.setValue('mari')
-		await input.trigger('keyup', {
-			keyCode: 72,
-		})
-		const li = wrapper.findAll('li').at(0)
-		await li?.trigger('click')
-		await nextTick()
-		await wrapper.find('input[name="comment"]').setValue(comment)
-		const buttonSave = wrapper.find('button[type="submit"]')
-		await buttonSave.trigger('click')
-		await waitForExpect(() => {
-			expect(swal).toBeCalledWith({
-				icon: 'success',
-				position: 'top-right',
-				title: i18n.global.t('common.messages.created'),
-				showConfirmButton: false,
-				text: undefined,
-				timer: 3000,
-				toast: true,
-			})
-		})
-	})
-	
-	it('an user can not create a new service without select a place', async () => {
-		ServiceRepository.create = jest.fn().mockResolvedValue('success')
 		ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
 		const swal = jest.spyOn(Swal, 'fire')
 		await nextTick()
@@ -112,7 +79,34 @@ describe('CreateService.vue', () => {
 		})
 		const li = wrapper.findAll('li').at(0)
 		await li?.trigger('click')
+		await wrapper.find('input[name="comment"]').setValue(comment)
+		const buttonSave = wrapper.find('button[type="submit"]')
+		await buttonSave.trigger('click')
+		await flushPromises()
+		await waitForExpect(() => {
+			expect(swal).toBeCalledWith({
+				icon: 'success',
+				position: 'top-right',
+				title: i18n.global.t('common.messages.created'),
+				showConfirmButton: false,
+				text: undefined,
+				timer: 3000,
+				toast: true,
+			})
+		})
+	})
+	
+	it('an user can not create a new service without select a place', async () => {
+		ServiceRepository.create = jest.fn().mockResolvedValue('success')
+		const swal = jest.spyOn(Swal, 'fire')
 		await nextTick()
+		const phone = '3100000000'
+		const name = 'Name User'
+		const comment = 'New comment to service'
+		await wrapper.find('input[name="phone"]').setValue(phone)
+		await wrapper.find('input[name="name"]').setValue(name)
+		const input = wrapper.find('input[name="start_address"]')
+		await input.setValue('mari')
 		await wrapper.find('input[name="comment"]').setValue(comment)
 		const buttonSave = wrapper.find('button[type="submit"]')
 		await buttonSave.trigger('click')
@@ -130,6 +124,7 @@ describe('CreateService.vue', () => {
 	})
 	
 	it('an user can not create a new service without select a valid number', async () => {
+		jest.clearAllMocks()
 		ServiceRepository.create = jest.fn().mockResolvedValue('success')
 		ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
 		const swal = jest.spyOn(Swal, 'fire')

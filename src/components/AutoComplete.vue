@@ -1,8 +1,8 @@
 <template>
   <div class="form-group mb-1">
-    <Field :name="props.fieldName ?? '12345'" @input="onChange" :ref="input" v-model="searchElement"
+    <Field :name="props.fieldName ?? '12345'" :ref="input" v-model="searchElement"
            v-slot="{ errorMessage, meta }">
-      <input :name="props.fieldName ?? '12345'" id="search" class="form-control" type="text"
+      <input :name="props.fieldName ?? '12345'" id="search" class="form-control" type="text" @input="onChange"
              :placeholder="props.placeholder" autocomplete="none" @keyup="searchElements" v-model="searchElement"/>
       <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
     </Field>
