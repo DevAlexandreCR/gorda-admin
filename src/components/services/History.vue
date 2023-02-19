@@ -191,7 +191,7 @@ onMounted(() => {
 
 function filterServiceByDriver(search: string): ServiceList[] {
   return history.filter(service => {
-    const plate = service.driver?.vehicle.plate.replace(' ', '')?? search
+    const plate = service.driver?.vehicle.plate.replace(' ', '')?? ''
     return plate.toLowerCase().includes(search.toLowerCase())
   })
 }
