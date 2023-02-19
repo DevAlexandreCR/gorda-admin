@@ -1,8 +1,14 @@
 <template>
   <div class="form-group mb-1">
-    <input type="text" id="search" :name="props.fieldName ?? '12345'" @input="onChange" v-model="searchElement" :ref="input"
-           @keyup="searchElements" :placeholder="props.placeholder" class="form-control" autocomplete="none"
-    />
+    <Field :name="props.fieldName ?? '12345'" @input="onChange" :ref="input" v-model="searchElement"
+           v-slot="{ errorMessage, meta }">
+      <input :name="props.fieldName ?? '12345'" id="search" class="form-control" type="text"
+             :placeholder="props.placeholder" autocomplete="none" @keyup="searchElements" v-model="searchElement"/>
+      <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
+    </Field>
+    <ErrorMessage :name="props.fieldName?? '12345'" v-slot="{ message }">
+      <span class="is-invalid">{{ message }}</span>
+    </ErrorMessage>
 
     <ul v-show="foundElements.length > 0"
         class="list-group autocomplete-list shadow-sm" :id="'list-' + props.idField + props.fieldName">
@@ -15,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+import {Field, ErrorMessage} from 'vee-validate'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {onMounted, ref, Ref, watch} from 'vue'
 
@@ -23,11 +30,11 @@ interface Props {
   fieldName?: string
   placeholder?: string
   idField?: string
-  normalizer: (str: string) => string
+  normalizer?: (str: string) => string
 }
 
 const props = defineProps<Props>()
-const input = ref<HTMLInputElement|null>(null)
+const input = ref<HTMLInputElement | null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const emit = defineEmits(['on-change', 'selected'])
@@ -43,15 +50,8 @@ const callback = function (mutationsList: MutationRecord[]) {
 }
 
 watch(searchElement, (newValue, oldValue) => {
-  searchElement.value = formatNumber(newValue)
+  if (props.normalizer) searchElement.value = props.normalizer(newValue)
 })
-
-function formatNumber(search: string): string {
-  return search
-      .replace(' ', '')
-      .replace(/[^\d]/g, "")
-      .slice(-10)
-}
 
 onMounted(() => {
   const targetNode = document.body
@@ -113,6 +113,7 @@ function addListener(): void {
           liSelected = ul.getElementsByClassName('selected')[0] as HTMLLIElement
           liSelected.click()
           liSelected.remove()
+          liSelected.remove()
         }
         break
       default:
@@ -126,7 +127,7 @@ function onChange(): void {
 }
 
 function removeClass(el: HTMLLIElement, className: string) {
-  if(!el.className.includes(className)) return
+  if (!el.className.includes(className)) return
   if (el.classList) {
     el.classList.remove(className)
   } else {
@@ -144,7 +145,7 @@ function addClass(el: HTMLLIElement, ul: HTMLElement, className: string) {
       removeClass(li, 'selected')
     }
   }
-  if(el.className.includes(className)) return
+  if (el.className.includes(className)) return
   if (el.classList) {
     el.classList.add(className)
   } else {

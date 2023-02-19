@@ -7,9 +7,10 @@ export class StrHelper {
 		}
 		return arr.join(' ')
 	}
-	
-	static formatNumber(number: string): string {
-		number = number.replace(/\s/g, '')
-		return ''
+	static formatNumber(search: string): string {
+		return search
+			.replace(' ', '')
+			.replace(/[^\d]/g, "")
+			.slice(-10)
 	}
 }

@@ -5,15 +5,15 @@
         <div class="row">
           <div class="col-12 col-md col-xl-1">
             <div class="form-group">
-              <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode.dialCode">
-                <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode.dialCode">{{ $t(cCode.dialCode + ' ' + cCode.code) }}</option>
+              <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
+                <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode">{{ cCode.dialCode + ' ' + cCode.code }}</option>
               </select>
             </div>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone" :key="service.id +1"
-                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" @on-change="formatNumber" normalizer="formatNumber"/>
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
+                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
               </Field>
@@ -26,11 +26,14 @@
                        v-bind="field" autocomplete="off"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
               </Field>
+              <ErrorMessage name="name" v-slot="{ message }">
+                <span class="is-invalid">{{ message }}</span>
+              </ErrorMessage>
             </div>
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :idField="service.id" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete" :key="service.id + 2"
+              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
@@ -41,6 +44,9 @@
                        v-bind="field" autocomplete="none"/>
                 <span class="is-invalid" v-if="errorMessage">{{ errorMessage }}</span>
               </Field>
+              <ErrorMessage name="comment" v-slot="{ message }">
+                <span class="is-invalid">{{ message }}</span>
+              </ErrorMessage>
             </div>
           </div>
           <div class="col-12 col-md">
@@ -52,7 +58,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {Field, Form, FormActions} from 'vee-validate'
+import {Field, Form, FormActions, ErrorMessage} from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import AutoComplete from '@/components/AutoComplete.vue'
@@ -71,6 +77,7 @@ import {PlaceInterface} from '@/types/PlaceInterface'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
+import {StrHelper} from '@/helpers/StrHelper'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById} = useClientsStore()
@@ -183,7 +190,9 @@ function onClientSelected(element: AutoCompleteType, id: string): void {
 }
 
 function createClient(client: ClientInterface): Promise<ClientInterface> {
-
+  const code = countryCode.value.dialCode.replace(/\D/g, "")
+  const key = countryCode.value.dialCode.concat(client.phone)
+  client.id = key.concat('@c.us')
   return ClientRepository.create(client)
 }
 
@@ -192,9 +201,5 @@ function locSelected(element: AutoCompleteType): void {
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
-}
-
-function formatNumber(search: string): string {
-  return 'hola'
 }
 </script>

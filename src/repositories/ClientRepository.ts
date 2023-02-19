@@ -13,10 +13,8 @@ class ClientRepository {
   
   /* istanbul ignore next */
   async create(client: ClientInterface): Promise<ClientInterface> {
-    const key = '57'.concat(client.phone)
-    client.id = key.concat('@c.us')
     return new Promise((resolve, rejected) => {
-      set(ref(DBService.db, 'clients/'.concat(key)), client).then(() => {
+      set(ref(DBService.db, 'clients/'.concat(client.id)), client).then(() => {
         resolve(client)
       }).catch(e => {
         rejected(e)
