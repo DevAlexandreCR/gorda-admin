@@ -51,7 +51,7 @@ export default {
     from: 'Desde',
     until: 'Hasta',
     driver_plate: 'Placa conductor',
-    number_client: 'Número de teléfono'
+    number_client: 'Número del cliente'
   },
   chatBot: {
     connected: 'Conectado',

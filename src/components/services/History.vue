@@ -176,23 +176,30 @@ watch(history, (newDrivers) => {
 
 watch(searchDriver, (plate) => {
   filteredServices.value.splice(0, filteredServices.value.length)
-  filterService(plate).forEach(service => filteredServices.value.push(service))
+  filterServiceByDriver(plate).forEach(service => filteredServices.value.push(service))
 })
 
 watch(searchClient, (number) => {
   filteredServices.value.splice(0, filteredServices.value.length)
   searchClient.value = StrHelper.formatNumber(number)
-  filterService(searchClient.value).forEach(service => filteredServices.value.push(service))
+  filterServiceByClient(searchClient.value).forEach(service => filteredServices.value.push(service))
 })
 
 onMounted(() => {
   history.forEach(service => filteredServices.value.push(service))
 })
 
-function filterService(search: string): ServiceList[] {
+function filterServiceByDriver(search: string): ServiceList[] {
   return history.filter(service => {
-    return service.driver?.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
-        service.phone.toLowerCase().includes(search.toLowerCase())
+    const plate = service.driver?.vehicle.plate.replace(' ', '')?? search
+    return plate.toLowerCase().includes(search.toLowerCase())
+  })
+}
+
+function filterServiceByClient(search: string): ServiceList[] {
+  return history.filter(service => {
+    const phone = StrHelper.formatNumber(service.phone)
+    return phone.includes(search)
   })
 }
 
@@ -210,5 +217,7 @@ onBeforeMount(() => {
 
 function getServices(): void {
   getHistoryServices()
+  searchClient.value = ''
+  searchDriver.value = ''
 }
 </script>
