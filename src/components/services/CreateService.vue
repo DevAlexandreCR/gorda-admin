@@ -96,6 +96,10 @@ watch(places, (newPlaces) => {
   updateAutocompletePlaces(newPlaces)
 })
 
+watch(service, (newService) => {
+  service.value.name = StrHelper.toCamelCase(newService.name?? '')
+}, {deep: true})
+
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()

@@ -94,16 +94,15 @@
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
-                <Field name="model" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.model">
-                  <input class="form-control form-control-sm" id="model" aria-label="Model" aria-describedby="model-addon"
-                         v-model="field.value" :placeholder="$t('drivers.placeholders.model')" v-bind="field"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model" v-slot="{ errorMessage, meta }">
+                  <option v-for="(year) in DateHelper.arrayYears()" :key="year" :value="year">{{ year }}</option>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
-                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
+                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
+                  <input class="form-control form-control-sm" v-model="driver.vehicle.plate" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" autocomplete="none"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -203,6 +202,7 @@ import DateHelper from '@/helpers/DateHelper'
 import {mixed, object, date, string} from 'yup'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
+import {StrHelper} from '@/helpers/StrHelper'
 
 
 const driver: Ref<Driver> = ref(new Driver)
@@ -229,6 +229,15 @@ const schema = object().shape({
   soat_exp: date().required(),
   tec_exp: date().required()
 })
+
+watch(driver, (newDriver) => {
+  driver.value.name = StrHelper.toCamelCase(newDriver.name ?? '')
+  driver.value.vehicle.brand = StrHelper.toCamelCase(newDriver.vehicle?.brand ?? '')
+  driver.value.vehicle.model = StrHelper.toCamelCase(newDriver.vehicle?.model ?? '')
+  console.log(newDriver.vehicle.plate)
+  driver.value.vehicle.plate = StrHelper.formatPlate(newDriver.vehicle?.plate ?? '')
+  driver.value.phone = StrHelper.formatNumber(newDriver.phone ?? '')
+}, {deep: true})
 
 const schemaEmail = object().shape({
   email: string().required().email()

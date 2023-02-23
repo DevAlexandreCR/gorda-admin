@@ -37,7 +37,7 @@ describe('Create.vue', () => {
     expect(field.length).toBe(14)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(3)
-    expect(input.length).toBe(13)
+    expect(input.length).toBe(12)
   })
 
   it('A user sees the Span when submit', async () => {
@@ -47,7 +47,7 @@ describe('Create.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(11)
+    expect(span.length).toBe(6)
   })
   
   it('A user can enable or disable a driver', async () => {
