@@ -31,6 +31,17 @@ export default class DateHelper {
   public static dateToUnix(date: string): number {
     return dayjs(date).unix()
   }
+	
+	public static arrayYears(): number[] {
+		const year = dayjs().year()
+		
+		const years = []
+		
+		for(let i = (year - 20); i <= year + 1; i++) {
+			years.push(i)
+		}
+		return years.reverse()
+	}
 
   public static stringNow(format = 'YYYY-MM-DD'): string
   {

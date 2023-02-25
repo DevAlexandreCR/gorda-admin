@@ -20,8 +20,9 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
                 <Field name="name" type="text" v-model="driver.name" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" id="name" v-model="field.value" :placeholder="$t('common.placeholders.name')" aria-label="Name" aria-describedby="name-addon" v-bind="field"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  <input class="form-control form-control-sm" id="name" v-model="driver.name" :placeholder="$t('common.placeholders.name')"
+                         aria-label="Name" aria-describedby="name-addon" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
                </Field>
               </div>
               <div class="form-group">
@@ -34,15 +35,15 @@
               <div class="form-group">
                 <label>{{ $t('users.fields.password') }}</label>
                 <Field name="password" type="password" v-slot="{ field, errorMessage, meta }" v-model="password">
-                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('users.fields.password')" id="password" aria-label="Password" aria-describedby="password-addon" v-bind="field"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('users.fields.password')" id="password" aria-label="Password" aria-describedby="password-addon" v-bind="field"/>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div> 
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
-                <Field name="phone" type="phone"  v-model="driver.phone" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('common.placeholders.phone')" id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <Field name="phone" type="phone"  v-model="driver.phone" v-slot="{ errorMessage, meta }">
+                <input class="form-control form-control-sm" v-model="driver.phone" :placeholder="$t('common.placeholders.phone')" id="phone" aria-label="Phone" aria-describedby="phone-addon"/>
+                  <span class="is-invalid" v-if="errorMessage && !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
@@ -82,23 +83,23 @@
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
-                <Field name="brand" type="text"  v-model="driver.vehicle.brand" v-slot="{ field, errorMessage, meta }">
-                 <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" id="brand" aria-label="Brand" aria-describedby="brand-addon" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <Field name="brand" type="text"  v-model="driver.vehicle.brand" v-slot="{ errorMessage, meta }">
+                 <input class="form-control form-control-sm" v-model="driver.vehicle.brand" :placeholder="$t('drivers.placeholders.brand')" id="brand" aria-label="Brand" aria-describedby="brand-addon" autocomplete="none"/>
+                <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
                  </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
-                <Field name="model" type="text" class="form-control" v-model="driver.vehicle.model" v-slot="{ field, errorMessage, meta }">
-                 <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.model')" id="model" aria-label="Model" aria-describedby="model-addon" v-bind="field" autocomplete="none"/>
-                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
-                 </Field>
+                <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model" v-slot="{ errorMessage, meta }">
+                  <option v-for="(year, key) in DateHelper.arrayYears()" :key="key" :value="year">{{ year }}</option>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
+                </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
-                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ field, errorMessage, meta }">
-                  <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" v-bind="field" autocomplete="none"/>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
+                  <input class="form-control form-control-sm" v-model="driver.vehicle.plate" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" autocomplete="none"/>
+                  <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="row">
@@ -158,10 +159,12 @@ import {Constants} from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
-import {ref, Ref, watch} from 'vue'
+import {onMounted, ref, Ref, watch} from 'vue'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import router from '@/router'
 import {useDriversStore} from '@/services/stores/DriversStore'
+import {StrHelper} from '@/helpers/StrHelper'
+import DateHelper from '@/helpers/DateHelper'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -187,6 +190,19 @@ const schema: ObjectSchema<any> = object().shape({
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
   photoVehicleUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })
+
+onMounted(() => {
+  driver.value.docType = Constants.DOC_TYPE_CC
+  driver.value.vehicle.model = DateHelper.arrayYears()[0].toString()
+})
+
+watch(driver, (newDriver) => {
+  driver.value.name = StrHelper.toCamelCase(newDriver.name ?? '')
+  driver.value.vehicle.brand = StrHelper.toCamelCase(newDriver.vehicle?.brand ?? '')
+  driver.value.vehicle.model = StrHelper.toCamelCase(newDriver.vehicle?.model ?? '')
+  driver.value.vehicle.plate = StrHelper.formatPlate(newDriver.vehicle?.plate ?? '')
+  driver.value.phone = StrHelper.formatNumber(newDriver.phone ?? '')
+}, {deep: true})
 
 watch(color, (newColor) => {
   driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor)?? Constants.COLORS[0]
