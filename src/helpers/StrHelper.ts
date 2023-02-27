@@ -18,7 +18,7 @@ export class StrHelper {
 	static formatPlate(plate: string): string {
 		return plate
 			.toUpperCase()
-			.replace(' ', '')
+			.replace(/\s+/g, '')
 			.trim()
 	}
 }
