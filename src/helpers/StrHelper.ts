@@ -11,7 +11,7 @@ export class StrHelper {
 	static formatNumber(search: string): string {
 		return search
 			.replace(' ', '')
-			.replace(/[^\d]/g, "")
+			.replace(/\D/g, "")
 			.slice(-10)
 	}
 	
