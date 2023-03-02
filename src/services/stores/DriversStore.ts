@@ -25,7 +25,8 @@ export const useDriversStore = defineStore('driverStore', {
       return this.drivers.filter(driver => {
         return driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
           driver.email.toLowerCase().includes(search.toLowerCase()) ||
-          driver.phone.toLowerCase().includes(search.toLowerCase())
+          driver.phone.toLowerCase().includes(search.toLowerCase()) ||
+					driver.document.toLowerCase().includes(search.toLowerCase())
       })
     },
     getOnlineDrivers(): void {
