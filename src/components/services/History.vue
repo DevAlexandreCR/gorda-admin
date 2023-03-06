@@ -138,11 +138,12 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
 import Service from '@/models/Service'
-import {computed, onBeforeMount, onMounted, ref, Ref, watch} from 'vue'
+import {computed, onMounted, ref, Ref, watch} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
+
 const {getHistoryServices, history} = useServicesStore()
 const {filter} = storeToRefs(useServicesStore())
 const searchDriver: Ref<string> = ref('')
@@ -186,8 +187,13 @@ watch(searchClient, (number) => {
   filterServiceByClient(searchClient.value).forEach(service => filteredServices.value.push(service))
 })
 
-onMounted(() => {
-  history.forEach(service => filteredServices.value.push(service))
+onMounted(async () => {
+  if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
+    const lastService = history[0]
+    filter.value.from = DateHelper.unixToDate(lastService.created_at - 7200)
+    await getHistoryServices(true)
+    history.forEach(service => filteredServices.value.push(service))
+  }
 })
 
 function filterServiceByDriver(search: string): ServiceList[] {
@@ -208,16 +214,8 @@ function isWhatPercent(x: number): number {
   return Math.round((x / (filteredServices.value.length === 0 ? 1 : filteredServices.value.length)) * 100)
 }
 
-onBeforeMount(() => {
-  if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
-    const lastService = history[0]
-    filter.value.from = DateHelper.unixToDate(lastService.created_at, 'YYYY-MM-DD HH:mm:ss')
-    getHistoryServices(true)
-  }
-})
-
-function getServices(): void {
-  getHistoryServices()
+async function getServices(): Promise<void> {
+  await getHistoryServices()
   searchClient.value = ''
   searchDriver.value = ''
 }

@@ -50,13 +50,20 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    getHistoryServices(sync = false): void {
+    async getHistoryServices(sync = false): Promise<void> {
       const {setLoading} = useLoadingState()
       const from = DateHelper.getFromDate(this.filter.from , sync? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
       const to = DateHelper.getToDate(this.filter.to)
       setLoading(true)
-      ServiceRepository.getHistory(from, to).then(snapshot => {
-        if (!sync) this.history.splice(0)
+			if (!sync) this.history.splice(0)
+			else {
+				const filtered = this.history.filter(filter => filter.created_at > from)
+				filtered.forEach(filter => {
+					const index = this.history.indexOf(filter)
+					if (index > 0) this.history.splice(index, 1)
+				})
+			}
+			ServiceRepository.getHistory(from, to).then(snapshot => {
         snapshot.forEach(dataSnapshot => {
           const service = this.setService(dataSnapshot)
           if (service.isEnd()) this.history.unshift(service)
