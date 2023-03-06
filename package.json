@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode development --port 5000",
