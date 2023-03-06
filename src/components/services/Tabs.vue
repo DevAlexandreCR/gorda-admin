@@ -30,10 +30,10 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :services="pendings" @cancelService="cancel"></services-table>
+        <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :services="inProgress" @cancelService="cancel" @endService="end"
+        <services-table :table="Tables.inProgress" :services="inProgress" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
@@ -61,6 +61,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverMap from '@/components/DriverMap.vue'
 import History from '@/components/services/History.vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
+import {Tables} from '@/constants/Tables'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()

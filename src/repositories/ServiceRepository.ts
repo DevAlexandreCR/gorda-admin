@@ -60,10 +60,13 @@ class ServiceRepository {
   }
 
   /* istanbul ignore next */
-  async create(service: ServiceInterface): Promise<void> {
-    const res = await push(DBService.dbServices(), service)
-    service.id = res.key
-    return this.update(service);
+  async create(service: ServiceInterface, count = 1): Promise<void> {
+		for (let time = 1; time <= count; time ++ ) {
+			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))
+			service.id = res.key
+			await this.update(service).catch(e => Promise.reject(e));
+		}
+		await Promise.resolve()
   }
 }
 

@@ -13,6 +13,7 @@ export default {
     phone: 'Phone',
     name: 'Name',
     driver: 'Driver',
+    driver_name: 'Driver name',
     lat: 'Latitude',
     lng: 'Longitude',
     comment: 'Comment'

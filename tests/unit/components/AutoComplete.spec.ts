@@ -40,7 +40,6 @@ describe('AutoComplete.vue', () => {
       keyCode: 72
     })
     const list = wrapper.find('ul')
-		console.log(list.html())
 		expect(list.exists()).toBeTruthy()
 		expect(wrapper.vm.foundElements.length).toBe(5)
   })

@@ -50,7 +50,18 @@
             </div>
           </div>
           <div class="col-12 col-md">
-            <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
+            <div class="row row-cols-2">
+              <div class="col">
+                <div class="form-group">
+                  <select name="countryCode" class="form-select pe-0" id="color" v-model="count">
+                    <option v-for="(count) in [1, 2, 3, 4, 5]" :key="count" :value="count">{{ count }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col">
+                <button class="btn btn-primary d-inline-flex" type="submit">{{ $t('common.actions.create') }}</button>
+              </div>
+            </div>
           </div>
         </div>
       </Form>
@@ -87,6 +98,7 @@ const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
+const count: Ref<number> = ref(1)
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -175,8 +187,10 @@ function createService(values: ServiceInterface): void {
   service.name = values.name
   service.phone = values.phone
   service.start_loc = start_loc
-  ServiceRepository.create(service).then(() => {
+  ServiceRepository.create(service, count.value).then(() => {
     setLoading(false)
+    count.value = 1
+    countryCode.value = countryCodes.value[31]
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)
