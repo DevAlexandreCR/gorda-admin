@@ -105,7 +105,8 @@ function cancel(service: Service): void {
   emit(Service.EVENT_CANCEL, service.id)
 }
 
-function release(service: Service): void {
+function release(service: ServiceList): void {
+  service.driver = null
   emit(Service.EVENT_RELEASE, service)
 }
 
