@@ -234,7 +234,6 @@ watch(driver, (newDriver) => {
   driver.value.name = StrHelper.toCamelCase(newDriver.name ?? '')
   driver.value.vehicle.brand = StrHelper.toCamelCase(newDriver.vehicle?.brand ?? '')
   driver.value.vehicle.model = StrHelper.toCamelCase(newDriver.vehicle?.model ?? '')
-  console.log(newDriver.vehicle.plate)
   driver.value.vehicle.plate = StrHelper.formatPlate(newDriver.vehicle?.plate ?? '')
   driver.value.phone = StrHelper.formatNumber(newDriver.phone ?? '')
 }, {deep: true})

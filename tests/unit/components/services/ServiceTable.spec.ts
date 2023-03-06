@@ -10,6 +10,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverRepository from '@/repositories/DriverRepository'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
+import {Tables} from '@/constants/Tables'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -20,7 +21,7 @@ describe('ServicesTable.vue', () => {
     props: {
       services: [service, service],
       drivers: [DriverMock],
-      isHistory: false
+      table: Tables.history
     },
     global: {
       plugins: [router, i18n],
@@ -53,7 +54,7 @@ describe('ServicesTable.vue', () => {
   })
   
   it('an user can see date in history', async () => {
-    options.props.isHistory = true
+    options.props.table = Tables.history
     wrapper = await mount(ServicesTable, options)
     await nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
@@ -61,7 +62,7 @@ describe('ServicesTable.vue', () => {
   })
   
   it('show release and terminate buttons when service is in in_progress status', async () => {
-    options.props.isHistory = false
+    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
     options.props.services = [service]
     wrapper = await mount(ServicesTable, options)
@@ -73,7 +74,7 @@ describe('ServicesTable.vue', () => {
   })
   
   it('emmit events cancel when make click in button cancel', async () => {
-    options.props.isHistory = false
+    options.props.table = Tables.pendings
     service.status = Service.STATUS_PENDING
     options.props.services = [service]
     wrapper = await mount(ServicesTable, options)
@@ -85,7 +86,7 @@ describe('ServicesTable.vue', () => {
   })
   
   it('emmit events when make click in buttons release and terminate', async () => {
-    options.props.isHistory = false
+    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
     options.props.services = [service]
     wrapper = await mount(ServicesTable, options)

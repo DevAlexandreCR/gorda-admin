@@ -32,13 +32,13 @@ export default class DateHelper {
     return dayjs(date).unix()
   }
 	
-	public static arrayYears(): number[] {
+	public static arrayYears(): string[] {
 		const year = dayjs().year()
 		
 		const years = []
 		
 		for(let i = (year - 20); i <= year + 1; i++) {
-			years.push(i)
+			years.push(i.toString())
 		}
 		return years.reverse()
 	}
