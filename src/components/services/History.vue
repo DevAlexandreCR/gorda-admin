@@ -138,7 +138,7 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
 import Service from '@/models/Service'
-import {computed, onMounted, ref, Ref, watch} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watch} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {StrHelper} from '@/helpers/StrHelper'
@@ -187,10 +187,10 @@ watch(searchClient, (number) => {
   filterServiceByClient(searchClient.value).forEach(service => filteredServices.value.push(service))
 })
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
     const lastService = history[0]
-    filter.value.from = DateHelper.unixToDate(lastService.created_at - 7200)
+    filter.value.from = DateHelper.unixToDate(lastService.created_at - 3600, 'YYYY-MM-DD HH:mm:ss')
     await getHistoryServices(true)
     history.forEach(service => filteredServices.value.push(service))
   }
