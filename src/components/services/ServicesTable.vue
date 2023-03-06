@@ -12,12 +12,13 @@
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.driver') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="!props.isHistory"></th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.pendings">{{ $t('services.fields.driver_name') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.history"></th>
         </thead>
         <tbody class="text-sm text-opacity-25">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
           <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
-          <td class="py-1 col-1">{{ props.isHistory ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
+          <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
@@ -36,10 +37,12 @@
               </div>
             </div>
           </td>
+          <td class="py-1 text-truncate" v-if="service.driver" style="max-width: 100px" data-bs-target="tooltip"
+              :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
           <td class="py-1" v-else>
-              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="!props.isHistory"
+              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td class="py-1 col-1" v-show="!props.isHistory">
+          <td class="py-1 col-1" v-show="props.table !== Tables.history">
             <button v-if="service.a_go < 1800" class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
@@ -69,10 +72,11 @@ import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
+import {Tables} from '@/constants/Tables'
 
 interface Props {
   services: Array<ServiceList>
-  isHistory?: boolean
+  table: Tables
 }
 const props = defineProps<Props>()
 const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
@@ -86,7 +90,7 @@ watch(props.services, (newServices) => {
 
 onMounted(() => {
   // dataServices.value = Array.from(props.services)
-  if(!props.isHistory) interval = window.setInterval(getTime, 1000)
+  if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
 })
 
 onBeforeUnmount(() => {

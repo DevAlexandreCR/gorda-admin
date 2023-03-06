@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <services-table :isHistory="true" :services="filteredServices"></services-table>
+    <services-table :table="Tables.history" :services="filteredServices"></services-table>
   </div>
 </template>
 
@@ -142,6 +142,7 @@ import {computed, onBeforeMount, onMounted, ref, Ref, watch} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {StrHelper} from '@/helpers/StrHelper'
+import {Tables} from '@/constants/Tables'
 const {getHistoryServices, history} = useServicesStore()
 const {filter} = storeToRefs(useServicesStore())
 const searchDriver: Ref<string> = ref('')
