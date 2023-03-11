@@ -17,6 +17,7 @@ export const useDriversStore = defineStore('driverStore', {
   actions: {
     async getDrivers() {
       await CacheStore.getDrivers(this.drivers)
+			this._order()
     },
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
@@ -69,6 +70,14 @@ export const useDriversStore = defineStore('driverStore', {
       Object.assign(vehicleTmp, driver.vehicle)
       driverTmp.vehicle = vehicleTmp
       this.drivers.push(driverTmp)
-    }
+    },
+		
+		_order(): void {
+			this.drivers.sort((a,b) => {
+				if(a.name < b.name) { return -1; }
+				if(a.name > b.name) { return 1; }
+				return 0;
+			})
+		}
   }
 })

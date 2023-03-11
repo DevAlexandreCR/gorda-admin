@@ -88,7 +88,7 @@
             </tbody>
           </table>
           <div class="container text-center mt-2">
-            <Paginator :data="filteredDrivers" :perPage="10" @paginatedData="getPaginatedData"/>
+            <Paginator :data="filteredDrivers" :perPage="30" @paginatedData="getPaginatedData"/>
           </div>
         </div>
       </div>
