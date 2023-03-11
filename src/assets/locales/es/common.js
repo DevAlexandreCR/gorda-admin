@@ -1,5 +1,6 @@
 export default {
   fields: {
+    createdAt: 'Creado',
     status: 'Estado',
     enabled: 'Habilitado',
     disabled: 'Inhabilitado',
@@ -21,7 +22,8 @@ export default {
     release: 'Liberar',
     assign: 'Asignar',
     terminate: 'Terminar',
-    filter: 'Filtrar'
+    filter: 'Filtrar',
+    see: 'Ver'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
