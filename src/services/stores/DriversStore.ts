@@ -22,8 +22,18 @@ export const useDriversStore = defineStore('driverStore', {
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
     },
-    filter(search: string): Driver[] {
-      return this.drivers.filter(driver => {
+    filter(search: string, enabled = -1): Driver[] {
+			const drivers = this.drivers.filter(driver => {
+				switch (enabled) {
+					case 1:
+						return driver.enabled_at > 0
+					case 0:
+						return driver.enabled_at == 0
+					default:
+						return driver
+				}
+			})
+      return drivers.filter(driver => {
         return driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
           driver.email.toLowerCase().includes(search.toLowerCase()) ||
           driver.phone.toLowerCase().includes(search.toLowerCase()) ||

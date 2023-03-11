@@ -1,20 +1,32 @@
 <template>
   <div class="mx-3">
       <div class="card mb-4">
-      <div class="pt-3 d-inline-flex mx-3">
-        <h6 class="col-6 col-lg-9 ms-2">{{ $t('common.models.drivers', 2) }}</h6>
-        <div class="col-6 col-lg-3 d-flex justify-content-end">
-          <div class="form-group me-2 w-100">
-            <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
-              <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
-                     :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
-              <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-            </Field>
+      <div class="row m-3">
+        <div class="col-4">
+          <h6 class="ms-2">{{ $t('common.models.drivers', filteredDrivers.length) + ' ' + filteredDrivers.length }}</h6>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <div class="form-group d-inline-flex">
+            <label class="me-2">{{ $t('common.actions.see') }}</label>
+            <select class="form-select form-select-sm" v-model="enabled">
+              <option :value="-1">{{ $t('common.placeholders.all') }}</option>
+              <option :value="1">{{ $t('common.fields.enabled') }}</option>
+              <option :value="0">{{ $t('common.fields.disabled') }}</option>
+            </select>
           </div>
-          <router-link :to="{ name: 'drivers.create'}" tag="a" class="btn btn-sm btn-primary btn-rounded float-end"
-                       data-original-title="Create Driver">
-            <em class="fas fa-plus"></em>
-          </router-link>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+            <div class="form-group me-2 w-100 col">
+              <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
+                <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
+                       :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
+                <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+              </Field>
+            </div>
+            <router-link :to="{ name: 'drivers.create'}" tag="a" class="btn btn-sm btn-primary btn-rounded float-end"
+                         data-original-title="Create Driver">
+              <em class="fas fa-plus"></em>
+            </router-link>
         </div>
       </div>
       <div class="card-body px-0 pt-0 pb-2">
@@ -114,6 +126,7 @@ const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
+const enabled: Ref<number> = ref(-1)
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
@@ -126,6 +139,11 @@ function getPaginatedData(data: []): void {
 watch(drivers, (newDrivers) => {
   filteredDrivers.value.splice(0, filteredDrivers.value.length)
   newDrivers.forEach(driver => filteredDrivers.value.push(driver))
+})
+
+watch(enabled, (newEnabled) => {
+  filteredDrivers.value.splice(0, filteredDrivers.value.length)
+  filter('', newEnabled).forEach(driver => filteredDrivers.value.push(driver))
 })
 
 watch(searchDriver, (plate) => {

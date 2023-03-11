@@ -21,7 +21,8 @@ export default {
     release: 'Liberar',
     assign: 'Asignar',
     terminate: 'Terminar',
-    filter: 'Filtrar'
+    filter: 'Filtrar',
+    see: 'Ver'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
