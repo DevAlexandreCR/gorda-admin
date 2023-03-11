@@ -1,15 +1,15 @@
 import {
-  child,
-  DataSnapshot,
-  get,
-  onChildChanged,
-  onChildAdded,
-  onChildRemoved,
-  orderByKey,
-  query,
-  ref,
-  set,
-  off
+	child,
+	DataSnapshot,
+	get,
+	onChildChanged,
+	onChildAdded,
+	onChildRemoved,
+	orderByKey,
+	query,
+	ref,
+	set,
+	off, remove,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import {DriverInterface} from '@/types/DriverInterface'
@@ -45,7 +45,10 @@ class DriverRepository {
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
       UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
-        set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(() => {
+        set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(async () => {
+					if (enabledAt == 0) await remove(ref(DBService.db, 'online_drivers/' + driverId)).catch(e => {
+						reject(new Error(e.message))
+					})
           resolve()
           CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
