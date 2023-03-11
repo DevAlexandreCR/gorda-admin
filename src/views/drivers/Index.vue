@@ -40,6 +40,7 @@
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('drivers.fields.vehicle') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('drivers.fields.plate') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.status') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.createdAt') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -148,7 +149,7 @@ watch(enabled, (newEnabled) => {
 
 watch(searchDriver, (plate) => {
   filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filter(plate).forEach(driver => filteredDrivers.value.push(driver))
+  filter(plate, enabled.value).forEach(driver => filteredDrivers.value.push(driver))
 })
 
 onMounted(() => {

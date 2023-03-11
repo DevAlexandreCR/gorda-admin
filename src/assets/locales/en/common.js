@@ -1,5 +1,6 @@
 export default {
   fields: {
+    createdAt: 'Created',
     status: 'Status',
     enabled: 'Enabled',
     disabled: 'Disabled',
