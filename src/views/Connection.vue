@@ -10,8 +10,8 @@
         <div class="container text-center">
           <em v-if="connecting" class="fa-solid fa-spinner fa-10x circle my-0"></em>
           <img v-if="connected && !connecting" class="img w-25  mx-auto" src="../assets/img/svg/whatsapp.svg" alt="Connected">
-          <em v-if="!connecting && !connected && qr === ''" class="fa-solid fa-circle-exclamation fa-10x mt-5"></em>
-          <canvas class="img img-fluid h-25 h-auto" v-show="qr !== '' && !connected" id="canvas"></canvas>
+          <em v-if="!connecting && !connected && !qr" class="fa-solid fa-circle-exclamation fa-10x mt-5"></em>
+          <canvas class="img img-fluid h-25 h-auto" v-show="qr && !connected" id="canvas"></canvas>
         </div>
       </div>
 
@@ -57,7 +57,6 @@ let wpClient: WhatsAppClient
 
 function auth() {
   connecting.value = true
-  qr.value = ''
   wpClient.auth()
 }
 
@@ -71,7 +70,6 @@ const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = false
   qr.value = socket.qr
   if (qr.value) QRCode.toCanvas(document.getElementById('canvas'), qr.value as string, (e) => {console.log(e)})
-  socket.qr = ''
   connected.value = socket.isConnected()
 }
 

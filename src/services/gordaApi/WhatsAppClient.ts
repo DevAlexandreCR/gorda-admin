@@ -2,14 +2,16 @@ import {io, Socket} from 'socket.io-client'
 import {WPSubject} from '@/services/gordaApi/interfaces/WPSubject'
 import {WPObserver} from '@/services/gordaApi/interfaces/WPObserver'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
+import {LoadingType} from '@/types/LoadingType'
 
 export default class WhatsAppClient implements WPSubject {
   
   private static instance: WhatsAppClient
   private socket: Socket
   public state = WhatsApp.STATUS_DISCONNECTED
-  public qr = ''
+  public qr: string|null = null
   private observers: WPObserver[] = []
+	public loading: LoadingType|null
   
   constructor() {
     const url = process.env.VUE_APP_WP_CLIENT_API_URL as string ?? 'http://localhost'
@@ -44,6 +46,8 @@ export default class WhatsAppClient implements WPSubject {
     })
     this.socket.on(WhatsApp.EVENT_GET_STATE, (state: string) => {
       this.state = state
+			this.loading = null
+			this.qr = null
       this.notify()
     })
   }
@@ -54,10 +58,20 @@ export default class WhatsAppClient implements WPSubject {
       this.notify()
     })
   }
+	
+	onLoadingScreen(): void {
+		this.socket.on(WhatsApp.LOADING_SCREEN, (loading: LoadingType) => {
+			this.loading = loading
+			this.qr = null
+			this.notify()
+		})
+	}
   
   onReady(): void {
     this.socket.on(WhatsApp.EVENT_READY, () => {
       this.state = WhatsApp.STATUS_CONNECTED
+			this.qr = null
+			this.loading = null
       this.notify()
     })
   }
@@ -65,6 +79,8 @@ export default class WhatsAppClient implements WPSubject {
   onChangeState(): void {
     this.socket.on(WhatsApp.EVENT_CHANGE_STATE, (message) => {
       this.state = message
+			this.qr = null
+			this.loading = null
       this.notify()
     })
   }
@@ -72,6 +88,8 @@ export default class WhatsAppClient implements WPSubject {
   onAuthenticationFailure(): void {
     this.socket.on(WhatsApp.EVENT_AUTH_FAILURE, () => {
       this.state = WhatsApp.STATUS_DISCONNECTED
+			this.qr = null
+			this.loading = null
       this.notify()
     })
   }
@@ -79,6 +97,8 @@ export default class WhatsAppClient implements WPSubject {
   onDisconnected(): void {
     this.socket.on(WhatsApp.EVENT_DISCONNECTED, (message) => {
       this.state = message
+			this.qr = null
+			this.loading = null
       this.notify()
     })
   }
@@ -91,6 +111,8 @@ export default class WhatsAppClient implements WPSubject {
     this.socket.emit(WhatsApp.EVENT_RESET)
     this.socket.on(WhatsApp.EVENT_RESET, (state) => {
       this.state = state
+			this.qr = null
+			this.loading = null
       this.notify()
     })
   }
