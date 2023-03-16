@@ -82,6 +82,7 @@ export default {
     silver: 'Plateado'
   },
   settings: {
-    wpNotifications: 'Confirmaciones de WhatsApp'
+    wpNotifications: 'Confirmaciones de WhatsApp',
+    alert_notifications: 'No se enviarán mensajes hasta que las confirmaciones estén habilitadas'
   }
 }
