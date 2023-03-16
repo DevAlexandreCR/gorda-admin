@@ -8,7 +8,7 @@ export default class WhatsAppClient implements WPSubject {
   private static instance: WhatsAppClient
   private socket: Socket
   public state = WhatsApp.STATUS_DISCONNECTED
-  public qr: string
+  public qr = ''
   private observers: WPObserver[] = []
   
   constructor() {
