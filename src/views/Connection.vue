@@ -62,7 +62,6 @@ function auth() {
 
 function destroy() {
   connecting.value = true
-  qr.value = ''
   wpClient.destroy()
 }
 
