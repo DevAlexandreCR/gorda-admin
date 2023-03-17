@@ -70,6 +70,7 @@ const {settings} = storeToRefs(useSettingsStore())
 let wpClient: WhatsAppClient
 
 function auth() {
+  connecting.value = true
   wpClient.auth()
 }
 
