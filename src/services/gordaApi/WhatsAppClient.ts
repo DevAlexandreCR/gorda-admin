@@ -56,6 +56,8 @@ export default class WhatsAppClient implements WPSubject {
   onQRCode(): void {
     this.socket.on(WhatsApp.EVENT_QR_CODE, (qr: string) => {
       this.qr = qr
+			this.loading = null
+			this.state = WhatsApp.STATUS_DISCONNECTED
       this.notify()
     })
   }

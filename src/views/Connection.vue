@@ -51,12 +51,14 @@
 
 <script setup lang="ts">
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {onMounted, ref, Ref} from 'vue'
+import {onBeforeUnmount, onMounted, ref, Ref} from 'vue'
 import QRCode from 'qrcode'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 import {useSettingsStore} from '@/services/stores/SettingsStore'
 import {storeToRefs} from 'pinia'
 import {LoadingType} from '@/types/LoadingType'
+import SettingsRepository from '@/repositories/SettingsRepository'
+import {DataSnapshot} from 'firebase/database'
 
 const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
@@ -68,7 +70,6 @@ const {settings} = storeToRefs(useSettingsStore())
 let wpClient: WhatsAppClient
 
 function auth() {
-  connecting.value = true
   wpClient.auth()
 }
 
@@ -86,7 +87,14 @@ const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = socket.isConnecting()
 }
 
+onBeforeUnmount(() => {
+  SettingsRepository.offWpNotifications()
+})
+
 onMounted(() => {
+  SettingsRepository.onWpNotifications((snapshot: DataSnapshot) => {
+    settings.value.wpNotifications = snapshot.val()
+  })
   wpClient = WhatsAppClient.getInstance()
   const observer = new ClientObserver(onUpdate)
   wpClient.attach(observer)
