@@ -51,6 +51,7 @@ jest.mock('firebase/database', () => {
 		onValue: jest.fn().mockResolvedValue({
 			val: () => {return false}
 		}),
+		off: jest.fn(),
 		set: jest.fn(),
     child: jest.fn()
   }
