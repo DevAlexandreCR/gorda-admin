@@ -48,7 +48,11 @@ jest.mock('firebase/database', () => {
       val: () => {return {}},
       forEach: (callback: any): void => {callback()}
     }),
-    set: jest.fn(),
+		onValue: jest.fn().mockResolvedValue({
+			val: () => {return false}
+		}),
+		off: jest.fn(),
+		set: jest.fn(),
     child: jest.fn()
   }
 })
@@ -75,7 +79,7 @@ AuthService.currentUser = Object.assign(new User(), UserMock)
 let socket: Server
 let server: httpServer
 
-function openServer(done: Function): void{
+function openServer(done: () => void): void{
   server = createServer()
   socket = new Server(server)
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
