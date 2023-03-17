@@ -82,6 +82,7 @@ export default {
     silver: 'Silver'
   },
   settings: {
-    wpNotifications: 'WhatsApp Confirmations'
+    wpNotifications: 'WhatsApp Confirmations',
+    alert_notifications: 'Until confirmations are enabled won\'t send messages'
   }
 }
