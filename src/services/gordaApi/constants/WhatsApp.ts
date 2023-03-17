@@ -12,4 +12,5 @@ export class WhatsApp {
   public static readonly EVENT_CLIENT = 'client'
   public static EVENT_AUTH_FAILURE = 'auth_failure'
 	public static LOADING_SCREEN = 'loading_screen'
+	public static STATUS_OPENING = 'OPENING'
 }

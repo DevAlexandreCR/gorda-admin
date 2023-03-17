@@ -125,6 +125,10 @@ export default class WhatsAppClient implements WPSubject {
   isConnected(): boolean {
     return this.state === WhatsApp.STATUS_CONNECTED
   }
+	
+	isConnecting(): boolean {
+		return this.state === WhatsApp.STATUS_OPENING
+	}
   
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)

@@ -58,7 +58,7 @@ import {useSettingsStore} from '@/services/stores/SettingsStore'
 import {storeToRefs} from 'pinia'
 import {LoadingType} from '@/types/LoadingType'
 
-const qr: Ref<string|null> = ref('')
+const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
@@ -83,6 +83,7 @@ const onUpdate = (socket: WhatsAppClient): void => {
   loading.value = socket.loading
   if (qr.value) QRCode.toCanvas(document.getElementById('canvas'), qr.value as string, (e) => {console.log(e)})
   connected.value = socket.isConnected()
+  connecting.value = socket.isConnecting()
 }
 
 onMounted(() => {
