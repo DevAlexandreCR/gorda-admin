@@ -43,7 +43,7 @@
               <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
           <td class="py-1 col-1" v-show="props.table !== Tables.history">
-            <button v-if="service.a_go < 1800" class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
