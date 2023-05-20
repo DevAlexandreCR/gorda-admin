@@ -16,6 +16,8 @@ import {
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import Service from '@/models/Service'
+import FSService from '@/services/FSService'
+import { DocumentData, QuerySnapshot, getDocs } from 'firebase/firestore'
 
 class ServiceRepository {
 
@@ -27,8 +29,9 @@ class ServiceRepository {
 
   /* istanbul ignore next */
   async getAll(): Promise<Array<ServiceInterface>> {
-    const snapshot: DataSnapshot = await get(DBService.dbServices())
-    return <Array<ServiceInterface>>snapshot.val()
+    const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.servicesCollection());
+    const services: Array<ServiceInterface> = querySnapshot.docs.map((doc) => doc.data() as ServiceInterface);
+    return services;
   }
 
   /* istanbul ignore next */
@@ -41,7 +44,7 @@ class ServiceRepository {
   updateStatus(serviceId: string, status: string): Promise<void> {
     return set(ref(DBService.db, 'services/' + serviceId + '/status'), status);
   }
-  
+
   /* istanbul ignore next */
   getHistory(startAtl: number, endAt: number): Promise<DataSnapshot> {
     return get(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl), endBefore(endAt)))
