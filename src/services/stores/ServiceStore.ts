@@ -1,13 +1,12 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import ServiceRepository from '@/repositories/ServiceRepository';
-import { DataSnapshot } from 'firebase/database';
-import { Filter } from '@/types/Filter';
+import {DataSnapshot} from 'firebase/database';
+import {Filter} from '@/types/Filter';
 import DateHelper from '@/helpers/DateHelper';
-import { useLoadingState } from '@/services/stores/LoadingState';
-import { ServiceList } from '@/models/ServiceList';
-import { useDriversStore } from '@/services/stores/DriversStore';
-import { query, where, getDocs } from 'firebase/firestore';
-import FSService from '@/services/FSService';
+import {useLoadingState} from '@/services/stores/LoadingState';
+import {ServiceList} from '@/models/ServiceList';
+import {useDriversStore} from '@/services/stores/DriversStore';
+import {DocumentData} from 'firebase/firestore';
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -24,12 +23,12 @@ export const useServicesStore = defineStore('servicesStore', {
   actions: {
     async getPendingServices(): Promise<void> {
       const added = (snapshot: DataSnapshot): void => {
-        const service = this.setService(snapshot)
+        const service = this.setServiceFromDB(snapshot)
         this.pendings.unshift(service)
       }
 
       const removed = (snapshot: DataSnapshot): void => {
-        const service = this.setService(snapshot)
+        const service = this.setServiceFromDB(snapshot)
         const index = this.pendings.findIndex(serv => serv.id === service.id)
         this.pendings.splice(index, 1)
       }
@@ -39,12 +38,12 @@ export const useServicesStore = defineStore('servicesStore', {
 
     async getInProgressServices(): Promise<void> {
       const added = (snapshot: DataSnapshot): void => {
-        const service = this.setService(snapshot)
+        const service = this.setServiceFromDB(snapshot)
         this.inProgress.unshift(service)
       }
 
       const removed = (snapshot: DataSnapshot): void => {
-        const service = this.setService(snapshot)
+        const service = this.setServiceFromDB(snapshot)
         const index = this.inProgress.findIndex(serv => serv.id === service.id)
         this.inProgress.splice(index, 1)
       }
@@ -65,17 +64,28 @@ export const useServicesStore = defineStore('servicesStore', {
           if (index > 0) this.history.splice(index, 1)
         })
       }
-      const servicesQuery = query(FSService.servicesCollection(),where('created_at', '>=', from),where('created_at', '<=', to));
-      const querySnapshot = await getDocs(servicesQuery);
+      const querySnapshot = await ServiceRepository.getAll(from, to);
 
       querySnapshot.forEach(documentData => {
-        const service = this.setService(documentData)
-        if (service.isEnd()) this.history.unshift(service);
+				const service  = this.setServiceFromFS(documentData)
+				this.history.unshift(service);
       })
       setLoading(false);
     },
+	
+		setServiceFromFS(snapshot: DocumentData): ServiceList {
+			const {findById} = useDriversStore()
+			const service = new ServiceList()
+			Object.assign(service, snapshot.data())
+			if (service.driver_id != null) {
+				const driver = findById(service.driver_id)
+				service.driver = driver?? null
+			}
+			service.id = snapshot?.key as string
+			return  service
+		},
 
-		setService(snapshot?: DataSnapshot): ServiceList {
+		setServiceFromDB(snapshot?: DataSnapshot): ServiceList {
 			const {findById} = useDriversStore()
 			const service = new ServiceList()
 			Object.assign(service, snapshot?.val())
