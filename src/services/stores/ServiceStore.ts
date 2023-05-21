@@ -63,7 +63,7 @@ export const useServicesStore = defineStore('servicesStore', {
         const filtered = this.history.filter(filter => filter.created_at > from)
         filtered.forEach(filter => {
           const index = this.history.indexOf(filter)
-          if (index > 0) this.history.splice(index, 1)
+          if (index > -1) this.history.splice(index, 1)
         })
       }
       const querySnapshot = await ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId);

@@ -67,8 +67,8 @@
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
-                    {{ filteredServices.length }}
-                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', filteredServices.length) }}</span>
+                    {{ history.length }}
+                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length) }}</span>
                   </h5>
                 </div>
               </div>
@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <services-table :table="Tables.history" :services="filteredServices"></services-table>
+    <ServicesTable :table="Tables.history" :services="history"></ServicesTable>
   </div>
 </template>
 
@@ -138,9 +138,8 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
 import Service from '@/models/Service'
-import {computed, onBeforeMount, ref, Ref, watch, watchEffect} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
-import {ServiceList} from '@/models/ServiceList'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
 import AutoComplete from '@/components/AutoComplete.vue'
@@ -148,15 +147,13 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 
-const {getHistoryServices, history} = useServicesStore()
+const {getHistoryServices} = useServicesStore()
+const {history} = storeToRefs(useServicesStore())
 const {drivers} = useDriversStore()
-const {clients, findById} = useClientsStore()
+const {clients} = useClientsStore()
 const {filter} = storeToRefs(useServicesStore())
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-const searchDriver: Ref<string> = ref('')
-const searchClient: Ref<string> = ref('')
-const filteredServices: Ref<Array<ServiceList>> = ref([])
 
 const schema = object().shape({
   from: date().required(),
@@ -164,7 +161,7 @@ const schema = object().shape({
 })
 
 const completed = computed(() =>
-    filteredServices.value.filter(s => s.status === Service.STATUS_TERMINATED).length
+    history.value.filter(s => s.status === Service.STATUS_TERMINATED).length
 )
 
 const completedPercent = computed(() =>
@@ -172,17 +169,12 @@ const completedPercent = computed(() =>
 )
 
 const canceled = computed(() =>
-    filteredServices.value.filter(s => s.status === Service.STATUS_CANCELED).length
+    history.value.filter(s => s.status === Service.STATUS_CANCELED).length
 )
 
 const canceledPercent = computed(() =>
     isWhatPercent(canceled.value)
 )
-
-watch(history, (newDrivers) => {
-  filteredServices.value.splice(0, filteredServices.value.length)
-  newDrivers.forEach(service => filteredServices.value.push(service))
-})
 
 watchEffect(async () => {
   drivers.forEach(driver => {
@@ -200,10 +192,9 @@ watchEffect(async () => {
 
 onBeforeMount(async () => {
   if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
-    const lastService = history[0]
+    const lastService = history.value[0]
     filter.value.from = DateHelper.unixToDate(lastService.created_at - 3600, 'YYYY-MM-DD HH:mm:ss')
     await getHistoryServices(true)
-    history.forEach(service => filteredServices.value.push(service))
   }
 })
 
@@ -215,20 +206,11 @@ function onClientSelected(element: AutoCompleteType): void {
   filter.value.clientId = element.id
 }
 
-function filterServiceByClient(search: string): ServiceList[] {
-  return history.filter(service => {
-    const phone = StrHelper.formatNumber(service.phone)
-    return phone.includes(search)
-  })
-}
-
 function isWhatPercent(x: number): number {
-  return Math.round((x / (filteredServices.value.length === 0 ? 1 : filteredServices.value.length)) * 100)
+  return Math.round((x / (history.value.length === 0 ? 1 : history.value.length)) * 100)
 }
 
 async function getServices(): Promise<void> {
   await getHistoryServices()
-  searchClient.value = ''
-  searchDriver.value = ''
 }
 </script>
