@@ -52,8 +52,8 @@ class ServiceRepository {
   /* istanbul ignore next */
   async getAll(from: number, to: number, driverId: string|null = null, clientId: string|null = null): Promise<QuerySnapshot> {
 		let query = this.betweenDate(from, to)
-		if (clientId) query = this.byClientId(clientId)
-		if (driverId) query = this.byDriverId(driverId)
+		if (clientId) query = this.byClientId(clientId, query)
+		if (driverId) query = this.byDriverId(driverId, query)
 		return await getDocs(query)
   }
 
