@@ -66,7 +66,7 @@ export const useServicesStore = defineStore('servicesStore', {
           if (index > 0) this.history.splice(index, 1)
         })
       }
-      const querySnapshot = await ServiceRepository.getAll(from, to, 'Z3GMDsXArButPWOnxEB7nnZsLpZu', this.filter.clientId);
+      const querySnapshot = await ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId);
 
       querySnapshot.forEach(documentData => {
 				const service  = this.setServiceFromFS(documentData)

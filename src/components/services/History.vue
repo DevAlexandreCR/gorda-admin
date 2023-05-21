@@ -14,23 +14,23 @@
           </div>
         </div>
       <div class="card-body collapse show" id="collapse-filter">
-        <Form @submit="getServices" :validation-schema="schema">
+        <Form @submit="getServices" :validation-schema="schema" @keydown.enter="$event.preventDefault()">
           <div class="row">
             <div class="col-md-2">
-              <label class="form-control-label" for="from">{{ $t('common.filters.driver_plate') }}</label>
-              <Field name="driver" type="search" v-slot="{ errorMessage, meta }" v-model="searchDriver">
-                <input class="form-control form-control-sm me-2" type="search" v-model="searchDriver"
-                       :placeholder="$t('common.placeholders.all')"  autocomplete="off"/>
-                <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
-              </Field>
+              <div class="form-group">
+                <label class="form-control-label" for="from">{{ $t('common.filters.driver_plate') }}</label>
+                <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected" :key="'driverId'"
+                              :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'"
+                :classes="'form-control form-control-sm'"/>
+              </div>
             </div>
             <div class="col-md-2">
-              <label class="form-control-label" for="from">{{ $t('common.filters.number_client') }}</label>
-              <Field name="client" type="search" v-slot="{ errorMessage, meta }" v-model="searchClient">
-                <input class="form-control form-control-sm me-2" type="search" v-model="searchClient"
-                       :placeholder="$t('common.placeholders.all')" autocomplete="off"/>
-                <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
-              </Field>
+              <div class="form-group">
+                <label class="form-control-label" for="from">{{ $t('common.filters.number_client') }}</label>
+                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" :key="'clientId'"
+                              :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
+                              :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'"/>
+              </div>
             </div>
             <div class="col-md-2">
               <label class="form-control-label" for="from">{{ $t('common.filters.from') }}</label>
@@ -138,14 +138,22 @@ import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
 import Service from '@/models/Service'
-import {computed, onBeforeMount, ref, Ref, watch} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watch, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
+import AutoComplete from '@/components/AutoComplete.vue'
+import {useDriversStore} from '@/services/stores/DriversStore'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {useClientsStore} from '@/services/stores/ClientsStore'
 
 const {getHistoryServices, history} = useServicesStore()
+const {drivers} = useDriversStore()
+const {clients, findById} = useClientsStore()
 const {filter} = storeToRefs(useServicesStore())
+const plates: Ref<Array<AutoCompleteType>> = ref([])
+const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const searchClient: Ref<string> = ref('')
 const filteredServices: Ref<Array<ServiceList>> = ref([])
@@ -176,15 +184,18 @@ watch(history, (newDrivers) => {
   newDrivers.forEach(service => filteredServices.value.push(service))
 })
 
-watch(searchDriver, (plate) => {
-  filteredServices.value.splice(0, filteredServices.value.length)
-  filterServiceByDriver(plate).forEach(service => filteredServices.value.push(service))
-})
+watchEffect(async () => {
+  drivers.forEach(driver => {
+    if (driver.id) plates.value.push({id: driver.id, value: driver.vehicle.plate})
+  })
 
-watch(searchClient, (number) => {
-  filteredServices.value.splice(0, filteredServices.value.length)
-  searchClient.value = StrHelper.formatNumber(number)
-  filterServiceByClient(searchClient.value).forEach(service => filteredServices.value.push(service))
+  clientsPhone.value = []
+  clients.forEach(clientDB => {
+    clientsPhone.value.push({
+      id: clientDB.id,
+      value: clientDB.phone
+    })
+  })
 })
 
 onBeforeMount(async () => {
@@ -196,11 +207,12 @@ onBeforeMount(async () => {
   }
 })
 
-function filterServiceByDriver(search: string): ServiceList[] {
-  return history.filter(service => {
-    const plate = service.driver?.vehicle.plate.replace(' ', '')?? ''
-    return plate.toLowerCase().includes(search.toLowerCase())
-  })
+function onDriverSelected(element: AutoCompleteType): void {
+  filter.value.driverId = element.id
+}
+
+function onClientSelected(element: AutoCompleteType): void {
+  filter.value.clientId = element.id
 }
 
 function filterServiceByClient(search: string): ServiceList[] {
