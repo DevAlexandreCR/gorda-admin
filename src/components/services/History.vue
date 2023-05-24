@@ -1,18 +1,18 @@
 <template>
   <div>
     <div class="card mb-2">
-        <div class="row mx-2 mt-2">
-          <div class="col col-md-2 text-bold">{{ $t('common.filters.title') }}</div>
-          <div class="col col-md-4">
-          </div>
-          <div class="col col-md-4"></div>
-          <div class="col col-md-2 text-end">
-            <button class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#collapse-filter"
-               aria-expanded="true" aria-controls="collapse-filter">
-              <em class="fa-solid fa-bars"></em>
-            </button>
-          </div>
+      <div class="row mx-2 mt-2">
+        <div class="col col-md-2 text-bold">{{ $t('common.filters.title') }}</div>
+        <div class="col col-md-4">
         </div>
+        <div class="col col-md-4"></div>
+        <div class="col col-md-2 text-end">
+          <button class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#collapse-filter"
+            aria-expanded="true" aria-controls="collapse-filter">
+            <em class="fa-solid fa-bars"></em>
+          </button>
+        </div>
+      </div>
       <div class="card-body collapse show" id="collapse-filter">
         <Form @submit="getServices" :validation-schema="schema" @keydown.enter="$event.preventDefault()">
           <div class="row">
@@ -20,38 +20,44 @@
               <div class="form-group">
                 <label class="form-control-label" for="from">{{ $t('common.filters.driver_plate') }}</label>
                 <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected" :key="'driverId'"
-                              :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'"
-                :classes="'form-control form-control-sm'"/>
+                  :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'"
+                  :classes="'form-control form-control-sm'" />
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label class="form-control-label" for="from">{{ $t('common.filters.number_client') }}</label>
-                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" :key="'clientId'"
-                              :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
-                              :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'"/>
+                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected"
+                  :key="'clientId'" :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
+                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'" />
               </div>
             </div>
             <div class="col-md-2">
               <label class="form-control-label" for="from">{{ $t('common.filters.from') }}</label>
               <Field name="from" type="date" v-model="filter.from" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')"
-                       id="from" aria-label="Pec_from" aria-describedby="from-addon" v-bind="field" autocomplete="none"/>
+                <input class="form-control form-control-sm" type="date" v-model="field.value"
+                  :placeholder="$t('drivers.placeholders.tec_exp')" id="from" aria-label="Pec_from"
+                  aria-describedby="from-addon" v-bind="field" :fieldName="'from'" autocomplete="none" />
                 <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
               </Field>
             </div>
             <div class="col-md-2">
               <label class="form-control-label" for="to">{{ $t('common.filters.until') }}</label>
               <Field name="to" type="date" v-model="filter.to" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')"
-                       id="to" aria-label="Pec_to" aria-describedby="to-addon" v-bind="field" autocomplete="none"/>
+                <input class="form-control form-control-sm" type="date" v-model="field.value"
+                  :placeholder="$t('drivers.placeholders.tec_exp')" id="to" aria-label="Pec_to"
+                  aria-describedby="to-addon" v-bind="field" autocomplete="none" />
                 <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
               </Field>
             </div>
             <div class="col-md-4">
               <label class="form-control-label" for="submit"></label>
               <div class="form-group">
-                <button class="btn btn-sm btn-info mt-1" name="submit">{{ $t('common.actions.filter') }}</button>
+                <div class="d-flex">
+                  <button class="btn btn-sm btn-info mt-1 me-2" name="submit">{{ $t('common.actions.filter') }}</button>
+                  <button class="btn btn-primary mt-1 me-2" name="clear" @click="clearFilters">{{
+                    $t('common.actions.clear_filters') }}</button>
+                </div>
               </div>
             </div>
           </div>
@@ -68,7 +74,8 @@
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
                     {{ history.length }}
-                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length) }}</span>
+                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length)
+                    }}</span>
                   </h5>
                 </div>
               </div>
@@ -133,25 +140,25 @@
 <script setup lang="ts">
 
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import {storeToRefs} from 'pinia'
-import {useServicesStore} from '@/services/stores/ServiceStore'
-import {Field, Form} from 'vee-validate'
-import {date, object} from 'yup'
+import { storeToRefs } from 'pinia'
+import { useServicesStore } from '@/services/stores/ServiceStore'
+import { Field, Form } from 'vee-validate'
+import { date, object } from 'yup'
 import Service from '@/models/Service'
-import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
+import { computed, onBeforeMount, ref, Ref, watchEffect } from 'vue'
 import DateHelper from '@/helpers/DateHelper'
-import {StrHelper} from '@/helpers/StrHelper'
-import {Tables} from '@/constants/Tables'
+import { StrHelper } from '@/helpers/StrHelper'
+import { Tables } from '@/constants/Tables'
 import AutoComplete from '@/components/AutoComplete.vue'
-import {useDriversStore} from '@/services/stores/DriversStore'
-import {AutoCompleteType} from '@/types/AutoCompleteType'
-import {useClientsStore} from '@/services/stores/ClientsStore'
+import { useDriversStore } from '@/services/stores/DriversStore'
+import { AutoCompleteType } from '@/types/AutoCompleteType'
+import { useClientsStore } from '@/services/stores/ClientsStore'
 
-const {getHistoryServices} = useServicesStore()
-const {history} = storeToRefs(useServicesStore())
-const {drivers} = useDriversStore()
-const {clients} = useClientsStore()
-const {filter} = storeToRefs(useServicesStore())
+const { getHistoryServices } = useServicesStore()
+const { history } = storeToRefs(useServicesStore())
+const { drivers } = useDriversStore()
+const { clients } = useClientsStore()
+const { filter } = storeToRefs(useServicesStore())
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 
@@ -161,24 +168,24 @@ const schema = object().shape({
 })
 
 const completed = computed(() =>
-    history.value.filter(s => s.status === Service.STATUS_TERMINATED).length
+  history.value.filter(s => s.status === Service.STATUS_TERMINATED).length
 )
 
 const completedPercent = computed(() =>
-    isWhatPercent(completed.value)
+  isWhatPercent(completed.value)
 )
 
 const canceled = computed(() =>
-    history.value.filter(s => s.status === Service.STATUS_CANCELED).length
+  history.value.filter(s => s.status === Service.STATUS_CANCELED).length
 )
 
 const canceledPercent = computed(() =>
-    isWhatPercent(canceled.value)
+  isWhatPercent(canceled.value)
 )
 
 watchEffect(async () => {
   drivers.forEach(driver => {
-    if (driver.id) plates.value.push({id: driver.id, value: driver.vehicle.plate})
+    if (driver.id) plates.value.push({ id: driver.id, value: driver.vehicle.plate })
   })
 
   clientsPhone.value = []
@@ -200,10 +207,28 @@ onBeforeMount(async () => {
 
 function onDriverSelected(element: AutoCompleteType): void {
   filter.value.driverId = element.id
+  const input = document.querySelector('input[name="driver"]') as HTMLInputElement
+  input?.blur()
 }
 
 function onClientSelected(element: AutoCompleteType): void {
   filter.value.clientId = element.id
+  const input = document.querySelector('input[name="client"]') as HTMLInputElement
+  input?.blur()
+}
+
+async function clearFilters(): Promise<void> {
+  filter.value.from = DateHelper.stringNow()
+  filter.value.to = DateHelper.stringNow()
+  await getHistoryServices()
+  const driverInput = document.querySelector('input[name="driver"]') as HTMLInputElement
+  const clientInput = document.querySelector('input[name="client"]') as HTMLInputElement
+  if (driverInput) {
+    driverInput.value = ''
+  }
+  if (clientInput) {
+    clientInput.value = ''
+  }
 }
 
 function isWhatPercent(x: number): number {
