@@ -139,19 +139,19 @@
 <script setup lang="ts">
 
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import { storeToRefs } from 'pinia'
-import { useServicesStore } from '@/services/stores/ServiceStore'
-import { Field, Form } from 'vee-validate'
-import { date, object } from 'yup'
+import {storeToRefs} from 'pinia'
+import {useServicesStore} from '@/services/stores/ServiceStore'
+import {Field, Form} from 'vee-validate'
+import {date, object} from 'yup'
 import Service from '@/models/Service'
-import {computed, getCurrentInstance, nextTick, onBeforeMount, ref, Ref, watchEffect} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
-import { StrHelper } from '@/helpers/StrHelper'
-import { Tables } from '@/constants/Tables'
+import {StrHelper} from '@/helpers/StrHelper'
+import {Tables} from '@/constants/Tables'
 import AutoComplete from '@/components/AutoComplete.vue'
-import { useDriversStore } from '@/services/stores/DriversStore'
-import { AutoCompleteType } from '@/types/AutoCompleteType'
-import { useClientsStore } from '@/services/stores/ClientsStore'
+import {useDriversStore} from '@/services/stores/DriversStore'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {useClientsStore} from '@/services/stores/ClientsStore'
 
 const { getHistoryServices } = useServicesStore()
 const { history } = storeToRefs(useServicesStore())
