@@ -2,7 +2,7 @@
   <div class="form-group mb-1">
     <Field :name="props.fieldName ?? '12345'" :ref="input" v-model="searchElement"
            v-slot="{ errorMessage, meta }">
-      <input :name="props.fieldName ?? '12345'" id="search" :class="classes?? 'form-control'" type="text" @input="onChange"
+      <input :name="props.fieldName ?? '12345'" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
              :placeholder="props.placeholder" autocomplete="none" @keyup="searchElements" v-model="searchElement"/>
       <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
     </Field>

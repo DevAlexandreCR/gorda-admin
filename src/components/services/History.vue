@@ -19,17 +19,17 @@
             <div class="col-md-2">
               <div class="form-group">
                 <label class="form-control-label" for="from">{{ $t('common.filters.driver_plate') }}</label>
-                <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected" :key="'driverId'"
-                  :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'"
+                <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected"
+                  :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'" :key="plate"
                   :classes="'form-control form-control-sm'" />
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label class="form-control-label" for="from">{{ $t('common.filters.number_client') }}</label>
-                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected"
-                  :key="'clientId'" :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
-                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'" />
+                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" :key="clientPhone"
+                  :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
+                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'"/>
               </div>
             </div>
             <div class="col-md-2">
@@ -54,9 +54,8 @@
               <label class="form-control-label" for="submit"></label>
               <div class="form-group">
                 <div class="d-flex">
-                  <button class="btn btn-sm btn-info mt-1 me-2" name="submit">{{ $t('common.actions.filter') }}</button>
-                  <button class="btn btn-primary mt-1 me-2" name="clear" @click="clearFilters">{{
-                    $t('common.actions.clear_filters') }}</button>
+                  <button class="btn btn-sm btn-primary mt-1 me-2" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
+                  <button class="btn btn-sm btn-dark mt-1 me-2" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
                 </div>
               </div>
             </div>
@@ -145,7 +144,7 @@ import { useServicesStore } from '@/services/stores/ServiceStore'
 import { Field, Form } from 'vee-validate'
 import { date, object } from 'yup'
 import Service from '@/models/Service'
-import { computed, onBeforeMount, ref, Ref, watchEffect } from 'vue'
+import {computed, getCurrentInstance, nextTick, onBeforeMount, ref, Ref, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import { StrHelper } from '@/helpers/StrHelper'
 import { Tables } from '@/constants/Tables'
@@ -161,6 +160,8 @@ const { clients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
+const plate: Ref<number> = ref(0)
+const clientPhone: Ref<number> = ref(0)
 
 const schema = object().shape({
   from: date().required(),
@@ -220,15 +221,11 @@ function onClientSelected(element: AutoCompleteType): void {
 async function clearFilters(): Promise<void> {
   filter.value.from = DateHelper.stringNow()
   filter.value.to = DateHelper.stringNow()
+  filter.value.clientId = null
+  filter.value.driverId = null
+  clientPhone.value++
+  plate.value++
   await getHistoryServices()
-  const driverInput = document.querySelector('input[name="driver"]') as HTMLInputElement
-  const clientInput = document.querySelector('input[name="client"]') as HTMLInputElement
-  if (driverInput) {
-    driverInput.value = ''
-  }
-  if (clientInput) {
-    clientInput.value = ''
-  }
 }
 
 function isWhatPercent(x: number): number {
