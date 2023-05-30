@@ -1,7 +1,6 @@
 import {
 	child,
 	DataSnapshot,
-	endBefore,
 	equalTo,
 	get,
 	onChildAdded,
@@ -11,7 +10,6 @@ import {
 	query,
 	ref,
 	set,
-	startAfter,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
@@ -27,6 +25,7 @@ class ServiceRepository {
     return <ServiceInterface>snapshot.val()
   }
 	
+	/* istanbul ignore next */
 	betweenDate(from: number, to: number, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
 		return queryFS(query,
@@ -35,6 +34,7 @@ class ServiceRepository {
 		);
 	}
 	
+	/* istanbul ignore next */
 	byClientId(clientId: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
 		return queryFS(query,
@@ -42,6 +42,7 @@ class ServiceRepository {
 		);
 	}
 	
+	/* istanbul ignore next */
 	byDriverId(driverId: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
 		return queryFS(query,
@@ -66,11 +67,6 @@ class ServiceRepository {
   /* istanbul ignore next */
   updateStatus(serviceId: string, status: string): Promise<void> {
     return set(ref(DBService.db, 'services/' + serviceId + '/status'), status)
-  }
-
-  /* istanbul ignore next */
-  getHistory(startAtl: number, endAt: number): Promise<DataSnapshot> {
-    return get(query(DBService.dbServices(), orderByChild('created_at'), startAfter(startAtl), endBefore(endAt)))
   }
 
   /* istanbul ignore next */
