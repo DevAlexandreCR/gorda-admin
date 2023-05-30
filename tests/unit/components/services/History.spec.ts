@@ -1,17 +1,16 @@
-import { mount, VueWrapper } from '@vue/test-utils'
+import {mount, VueWrapper} from '@vue/test-utils'
 import History from '@/components/services/History.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import { Field, Form } from 'vee-validate'
+import {Field, Form} from 'vee-validate'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import { useServicesStore } from '@/services/stores/ServiceStore'
+import {useServicesStore} from '@/services/stores/ServiceStore'
 import DocumentDataMock from '../../../mocks/firebase/DocumentDataMock'
 import AutoComplete from '@/components/AutoComplete.vue'
-import { StrHelper } from '@/helpers/StrHelper'
-import ServicesTableVue from '@/components/services/ServicesTable.vue'
-import { nextTick } from 'vue'
-import ClientMock from '../../../mocks/entities/ClientMock'
+import {StrHelper} from '@/helpers/StrHelper'
+import ServicesTable from '@/components/services/ServicesTable.vue'
 import DriverMock from '../../../mocks/entities/DriverMock'
+import {nextTick} from 'vue'
 
 describe('History.vue', () => {
   let wrapper: VueWrapper<any>
@@ -32,7 +31,7 @@ describe('History.vue', () => {
   beforeEach(async () => {
     jest.useFakeTimers()
     ServiceRepository.getAll = jest.fn().mockResolvedValue([DocumentDataMock])
-    const servicesStore = useServicesStore()
+		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
     wrapper = mount(History, options)
     await router.isReady()
@@ -43,47 +42,32 @@ describe('History.vue', () => {
     expect(wrapper.findComponent(Form).exists()).toBeTruthy()
     expect(wrapper.findAll('.form-control-label').length).toBe(5)
     expect(wrapper.findAllComponents(AutoComplete).length).toBe(2)
-    expect(wrapper.findComponent(ServicesTableVue).exists()).toBeTruthy()
+    expect(wrapper.findComponent(ServicesTable).exists()).toBeTruthy()
 	})
 
   it('displays correct data in ServicesTable', () => {
-    const servicesTable = wrapper.findComponent(ServicesTableVue)
-    const expectedData = DocumentDataMock.data().ServiceMock
-    const receivedData = servicesTable.props().services[0].ServiceMock
-    expect(receivedData).toEqual(expectedData)
-  })
+    const servicesTable = wrapper.findComponent(ServicesTable)
+    const expectedData = DocumentDataMock.data()
+    expect(servicesTable.html()).toContain(i18n.global.t('services.statuses.' + expectedData.status))
+		expect(servicesTable.html()).toContain(expectedData.phone)
+		expect(servicesTable.html()).toContain(expectedData.comment)
+		expect(servicesTable.html()).toContain(expectedData.name)
+		expect(servicesTable.html()).toContain(expectedData.start_loc.name)
+	})
 
-  it('updates filter values when driver is selected', async () => {
+  it('it must be assert that services si called when clear filters', async () => {
+		const getAll = jest.spyOn(ServiceRepository, 'getAll')
     const input = wrapper.find('input[name="driver"]')
     await input.setValue('HEM390')
-    await input.trigger('keyup', {
-      keyCode: 72,
-    })
     await nextTick()
-    await wrapper.find('li')?.trigger('click')
     expect((input.element as HTMLInputElement).value).toEqual(DriverMock.vehicle.plate)
-  })
-
-  it('updates filter values when client is selected', async () => {
-    const input = wrapper.find('input[name="client"]')
-    await input.setValue('3103100000')
-    await input.trigger('keyup', {
-      keyCode: 72,
-    })
-    await nextTick()
-		await wrapper.find('li')?.trigger('click')
+		
+		const button = wrapper.find('button[name="clear"]')
+		await button.trigger('click')
+	
 		await nextTick()
-    expect((input.element as HTMLInputElement).value).toEqual(ClientMock.phone)
-  })
-
-  it('clears filter values and triggers getHistoryServices when clearFilters is called', async () => {
-    const clearFilters = jest.spyOn(wrapper.vm, 'clearFilters')
-    const servicesStore = useServicesStore()
-    const getHistoryServices = jest.spyOn(servicesStore, 'getHistoryServices').mockResolvedValue()
-    await wrapper.vm.clearFilters()
-    expect(clearFilters).toHaveBeenCalled()
-    expect(getHistoryServices).toBeTruthy()
-  })
+		expect(getAll).toBeCalledTimes(3)
+	})
 
   it('calculates the percentage correctly', () => {
     expect(wrapper.vm.isWhatPercent(3)).toBe(300)

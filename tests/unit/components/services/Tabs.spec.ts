@@ -4,7 +4,6 @@ import i18n from '@/plugins/i18n'
 import Tabs from '@/components/services/Tabs.vue'
 import CreateService from '@/components/services/CreateService.vue'
 import ServicesTable from '@/components/services/ServicesTable.vue'
-import {DataSnapshot} from '../../../mocks/firebase/FirebaseMock'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
@@ -27,8 +26,11 @@ describe('Tabs.vue', () => {
       })
     await router.isReady()
   })
+	afterEach(async () => {
+		await flushPromises()
+	})
   it('an user can show services taps', async () => {
-    await wrapper.vm.$nextTick()
+    await nextTick()
     const tables = wrapper.findAllComponents(ServicesTable)
     const form = wrapper.findComponent(CreateService)
     const tabs = wrapper.findAll('.nav-item')
@@ -84,13 +86,13 @@ describe('Tabs.vue', () => {
           }
         }
       })
-    await wrapper.vm.$nextTick()
+    await nextTick()
     
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
-    await wrapper.vm.$nextTick()
+    await nextTick()
     tables.at(1)?.vm.$emit(Service.EVENT_RELEASE, ServiceMock)
-    await wrapper.vm.$nextTick()
+    await nextTick()
     tables.at(1)?.vm.$emit(Service.EVENT_TERMINATE)
     await flushPromises()
     expect(swat).toBeCalledTimes(3)

@@ -3,9 +3,7 @@ import ServiceMock from '../entities/ServiceMock'
 
 class DocumentDataMock implements DocumentData {
 	data = () => {
-		return {
-			ServiceMock
-		}
+		return ServiceMock
 	}
 }
 
