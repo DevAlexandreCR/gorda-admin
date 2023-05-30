@@ -26,9 +26,7 @@ describe('Tabs.vue', () => {
       })
     await router.isReady()
   })
-	afterEach(async () => {
-		await flushPromises()
-	})
+
   it('an user can show services taps', async () => {
     await nextTick()
     const tables = wrapper.findAllComponents(ServicesTable)
