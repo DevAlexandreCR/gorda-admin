@@ -23,7 +23,8 @@ export default {
     assign: 'Assign',
     terminate: 'Terminate',
     filter: 'Filter',
-    see: 'See'
+    see: 'See',
+    clear_filters: 'Clear Filters'
   },
   messages: {
     updated: 'Resource updated successfully',

@@ -21,6 +21,7 @@ database-debug.log
 firebase-debug.log
 firebaseAccount.json
 firebase.json
+firestore-debug.log
 
 # Editor directories and files
 .idea

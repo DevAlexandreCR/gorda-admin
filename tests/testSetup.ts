@@ -56,6 +56,30 @@ jest.mock('firebase/database', () => {
     child: jest.fn()
   }
 })
+jest.mock('firebase/firestore', () => {
+  return {
+    getFirestore: jest.fn(),
+    connectFirestoreEmulator: jest.fn(),
+    collection: jest.fn(),
+    doc: jest.fn(),
+    getDoc: jest.fn().mockResolvedValue({
+      data: () => { return {} }
+    }),
+    getDocs: jest.fn().mockResolvedValue({
+      forEach: (callback: any): void => { callback() }
+    }),
+    query: jest.fn(),
+    where: jest.fn(),
+    orderBy: jest.fn(),
+    limit: jest.fn(),
+    onSnapshot: jest.fn().mockReturnValue({
+      forEach: (callback: any): void => { callback() }
+    }),
+    addDoc: jest.fn(),
+    updateDoc: jest.fn(),
+    deleteDoc: jest.fn(),
+  };
+});
 jest.mock('firebase/storage')
 jest.mock('qrcode')
 

@@ -32,6 +32,10 @@
       "port": 9000,
       "host": "127.0.0.1"
     },
+    "firestore": {
+      "port": 8080,
+      "host": "127.0.0.1"
+    },
     "ui": {
       "enabled": true,
       "host": "127.0.0.1"

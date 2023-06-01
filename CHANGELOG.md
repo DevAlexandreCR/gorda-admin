@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.1.x
 
+## [1.2.0 (2023-05-31)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.0...1.1.8)
+
+### Changed
+- Remove cancel timeout. [#82](https://github.com/DevAlexandreCR/admin-driver/pull/82)
+
 ## [1.1.8 (2023-05-2)](https://github.com/DevAlexandreCR/admin-driver/compare/1.1.8...1.1.7)
 
 ### Changed
