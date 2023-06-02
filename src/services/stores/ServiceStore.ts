@@ -7,6 +7,8 @@ import {useLoadingState} from '@/services/stores/LoadingState';
 import {ServiceList} from '@/models/ServiceList';
 import {useDriversStore} from '@/services/stores/DriversStore';
 import {DocumentData} from 'firebase/firestore';
+import ToastService from '@/services/ToastService'
+import i18n from '@/plugins/i18n'
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -66,13 +68,20 @@ export const useServicesStore = defineStore('servicesStore', {
           if (index > -1) this.history.splice(index, 1)
         })
       }
-      const querySnapshot = await ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId);
+      ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId)
+				.then(snapshot => {
+					snapshot.forEach(documentData => {
+						const service  = this.setServiceFromFS(documentData)
+						this.history.unshift(service);
+					})
+				})
+				.catch((e) => {
+					ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+				})
+				.finally(() => {
+					setLoading(false)
+				})
 
-      querySnapshot.forEach(documentData => {
-				const service  = this.setServiceFromFS(documentData)
-				this.history.unshift(service);
-      })
-      setLoading(false);
     },
 	
 		setServiceFromFS(snapshot: DocumentData): ServiceList {
