@@ -75,8 +75,8 @@ export const useServicesStore = defineStore('servicesStore', {
 						this.history.unshift(service);
 					})
 				})
-				.catch((e) => {
-					ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+				.catch(async (e) => {
+					await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
 				})
 				.finally(() => {
 					setLoading(false)
