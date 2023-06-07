@@ -109,10 +109,10 @@ watch(inProgress.value, (services) => {
 })
 
 function cancel(serviceId: string): void {
-  ServiceRepository.updateStatus(serviceId, Service.STATUS_CANCELED).then(() => {
-    ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
-  }).catch(e => {
-    ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+  ServiceRepository.updateStatus(serviceId, Service.STATUS_CANCELED).then(async () => {
+    await ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
+  }).catch(async (e) => {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
 }
 
@@ -121,18 +121,18 @@ function release(service: Service): void {
   service.driver_id = null
   service.applicants = null
   service.metadata = null
-  ServiceRepository.update(service).then(() => {
-    ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
-  }).catch(e => {
-    ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+  ServiceRepository.update(service).then(async () => {
+    await ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
+  }).catch(async (e) => {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
 }
 
 function end(serviceId: string): void {
-  ServiceRepository.updateStatus(serviceId, Service.STATUS_TERMINATED).then(() => {
-    ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
-  }).catch(e => {
-    ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+  ServiceRepository.updateStatus(serviceId, Service.STATUS_TERMINATED).then(async () => {
+    await ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
+  }).catch(async (e) => {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
 }
 
