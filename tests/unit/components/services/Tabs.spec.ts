@@ -39,7 +39,8 @@ describe('Tabs.vue', () => {
     expect(wrapper.html()).toContain(i18n.global.t('services.statuses.in_progress'))
     expect(wrapper.html()).toContain(i18n.global.t('services.history'))
     expect(wrapper.html()).toContain(i18n.global.t('common.placeholders.map'))
-  })
+		expect(wrapper.html()).toContain(i18n.global.t('common.placeholders.search'))
+	})
 
   it('should exec functions when children emmit events', async () => {
     ServiceRepository.updateStatus = jest.fn().mockResolvedValue({})

@@ -37,7 +37,7 @@
         <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <div class="form-group me-2 w-100 col">
+        <div class="form-group me-2 col-sm-4">
           <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchService">
             <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
                    :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
