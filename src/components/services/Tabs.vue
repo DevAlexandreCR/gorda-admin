@@ -33,7 +33,14 @@
         <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <services-table :table="Tables.inProgress" :services="inProgress" @cancelService="cancel" @endService="end"
+        <div class="form-group me-2 w-100 col">
+          <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchService">
+            <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
+                   :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
+            <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+          </Field>
+        </div>
+        <services-table :table="Tables.inProgress" :services="filteredInProgress" @cancelService="cancel" @endService="end"
                         @releaseService="release"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
@@ -54,7 +61,7 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {ref, Ref} from 'vue'
+import {onBeforeUpdate, onMounted, ref, Ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -62,12 +69,39 @@ import DriverMap from '@/components/DriverMap.vue'
 import History from '@/components/services/History.vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Tables} from '@/constants/Tables'
+import {ServiceList} from '@/models/ServiceList'
+import {Field} from 'vee-validate'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
 const {pendings, inProgress} = storeToRefs(useServicesStore())
+const {filterInProgressServices} = useServicesStore()
 const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')
+const searchService: Ref<string> = ref('')
+const filteredInProgress: Ref<Array<ServiceList>> = ref([])
+
+watch(searchService, (search) => {
+  filteredInProgress.value.splice(0, filteredInProgress.value.length)
+  if (search.length > 2) {
+    filterInProgressServices(search).forEach(service => {
+      filteredInProgress.value.push(service)
+    })
+  } else {
+    inProgress.value.forEach(service => {
+      filteredInProgress.value.push(service)
+    })
+  }
+})
+
+watch(inProgress.value, (services) => {
+  if (searchService.value.length <= 2) {
+    filteredInProgress.value.splice(0, filteredInProgress.value.length)
+    services.forEach(service => {
+      filteredInProgress.value.push(service)
+    })
+  }
+})
 
 function cancel(serviceId: string): void {
   ServiceRepository.updateStatus(serviceId, Service.STATUS_CANCELED).then(() => {
@@ -96,4 +130,11 @@ function end(serviceId: string): void {
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
 }
+
+onMounted(() => {
+  filteredInProgress.value.splice(0, filteredInProgress.value.length)
+  inProgress.value.forEach(service => {
+    filteredInProgress.value.push(service)
+  })
+})
 </script>

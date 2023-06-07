@@ -83,6 +83,14 @@ export const useServicesStore = defineStore('servicesStore', {
 				})
 
     },
+		
+		filterInProgressServices(search: string): Array<ServiceList> {
+			return this.inProgress.filter(service => {
+				if (service.driver)
+					return service.driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
+						service.phone.toLowerCase().includes(search.toLowerCase())
+			})
+		},
 	
 		setServiceFromFS(snapshot: DocumentData): ServiceList {
 			const {findById} = useDriversStore()
