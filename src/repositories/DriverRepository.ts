@@ -1,24 +1,24 @@
 import {
-	child,
-	DataSnapshot,
-	get,
-	onChildChanged,
-	onChildAdded,
-	onChildRemoved,
-	orderByKey,
-	query,
-	ref,
-	set,
-	off, remove,
+  child,
+  DataSnapshot,
+  get,
+  onChildChanged,
+  onChildAdded,
+  onChildRemoved,
+  orderByKey,
+  query,
+  ref,
+  set,
+  off, remove,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
-import {DriverInterface} from '@/types/DriverInterface'
+import { DriverInterface } from '@/types/DriverInterface'
 import Driver from '@/models/Driver'
-import {UserRequestType} from '@/types/UserRequestType'
-import {UserResponse} from '@/types/UserResponse'
+import { UserRequestType } from '@/types/UserRequestType'
+import { UserResponse } from '@/types/UserResponse'
 import UserRepository from '@/repositories/UserRepository'
-import {AxiosError} from 'axios'
-import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
+import { AxiosError } from 'axios'
+import { DriverConnectedInterface } from '@/types/DriverConnectedInterface'
 import CacheStore from '@/services/stores/CacheStore'
 
 class DriverRepository {
@@ -46,9 +46,9 @@ class DriverRepository {
     return new Promise((resolve, reject) => {
       UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
         set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(async () => {
-					if (enabledAt == 0) await remove(ref(DBService.db, 'online_drivers/' + driverId)).catch(e => {
-						reject(new Error(e.message))
-					})
+          if (enabledAt == 0) await remove(ref(DBService.db, 'online_drivers/' + driverId)).catch(e => {
+            reject(new Error(e.message))
+          })
           resolve()
           CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
@@ -73,9 +73,23 @@ class DriverRepository {
   }
 
   /* istanbul ignore next */
+  updatePassword(driverId: string, password: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      UserRepository.passwordAuth(driverId, password).then(() => {
+        set(ref(DBService.db, 'drivers/' + driverId + '/password/'), password).then(() => {
+          resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS);
+        })
+      }).catch((e) => {
+        reject(new Error(e.message));
+      })
+    })
+  }
+
+  /* istanbul ignore next */
   onlineDriverListener(onAdded: (driver: DriverConnectedInterface) => void,
-                       onChanged: (driver: DriverConnectedInterface) => void,
-                       onRemoved: (driver: DriverConnectedInterface) => void): void {
+    onChanged: (driver: DriverConnectedInterface) => void,
+    onRemoved: (driver: DriverConnectedInterface) => void): void {
     onChildAdded(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
       const driver = data.val() as DriverConnectedInterface
       onAdded(driver)
@@ -112,7 +126,7 @@ class DriverRepository {
         CacheStore.clear(CacheStore.ALL_DRIVERS)
         return resolve(id)
       }).catch((e: AxiosError<UserResponse>) => {
-        reject(new Error(e.response?.data.data as string?? e.message))
+        reject(new Error(e.response?.data.data as string ?? e.message))
       })
     })
   }

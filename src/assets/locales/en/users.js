@@ -31,6 +31,7 @@ export default {
   platform_settings: 'Platform Settings',
   forms: {
     edit: 'Edit user information',
+    edit_password: 'Enter your new password',
     upload: 'Upload photo profile',
     select_img: 'Choose image from files'
   },

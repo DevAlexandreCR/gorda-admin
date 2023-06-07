@@ -16,32 +16,45 @@
                 <em class="fa-solid fa-user-astronaut fa-10x"></em>
               </div>
               <button class="btn btn-sm btn-info btn-edit-img py-1 px-2" type="button" data-bs-toggle="modal"
-                      data-bs-target="#image-driver">
+                data-bs-target="#image-driver">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
               </button>
               <div class="form-group">
                 <label>{{ $t('users.fields.name') }}</label>
                 <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.name">
                   <input class="form-control form-control-sm" id="name" aria-label="Name" aria-describedby="name-addon"
-                         v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field"/>
+                    v-model="field.value" :placeholder="$t('common.placeholders.name')" v-bind="field" />
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.email') }}</label>
                 <div class="input-group">
-                  <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')" readonly
-                    aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
-                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal" data-bs-target="#editGmail">
+                  <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')"
+                    readonly aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
+                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
+                    data-bs-target="#editGmail">
                     {{ $t('common.actions.edit') }}
                   </button>
-                  </div>
-              </div>            
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('users.fields.password') }}</label>
+                <div class="input-group">
+                  <input type="password" class="form-control form-control-sm"
+                    :placeholder="$t('common.placeholders.password')" readonly aria-label="Password" name="password"
+                    aria-describedby="password-addon" v-model="driver.password">
+                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
+                    data-bs-target="#editPassword">
+                    {{ $t('common.actions.edit') }}
+                  </button>
+                </div>
+              </div>
               <div class="form-group">
                 <label>{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
                   <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
-                         v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" disabled/>
+                    v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" disabled />
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -49,15 +62,17 @@
                 <div class="row">
                   <div class="col-sm-3">
                     <label>{{ $t('drivers.fields.doc_type') }}</label>
-                    <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select" v-model="driver.docType">
+                    <Field name="docType" class="form-select form-select-sm" id="doc_type" as="select"
+                      v-model="driver.docType">
                       <option v-for="(type, key) in types" :key="key" :value="type" selected>{{ type }}</option>
                     </Field>
                   </div>
                   <div class="col-sm-9">
                     <label>{{ $t('drivers.fields.document') }}</label>
                     <Field name="document" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.document">
-                      <input class="form-control form-control-sm" id="document" aria-label="Document" aria-describedby="doc-addon"
-                             v-model="field.value" :placeholder="$t('drivers.placeholders.document')" v-bind="field"/>
+                      <input class="form-control form-control-sm" id="document" aria-label="Document"
+                        aria-describedby="doc-addon" v-model="field.value"
+                        :placeholder="$t('drivers.placeholders.document')" v-bind="field" />
                       <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
                   </div>
@@ -65,44 +80,48 @@
               </div>
               <div class="form-check form-switch">
                 <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
-                       id="flexSwitchCheckDefault" @change="onEnable"/>
+                  id="flexSwitchCheckDefault" @change="onEnable" />
                 <label class="form-check-label">{{
-                    $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
-                  }}</label>
-                <ErrorMessage name="enable"/>
+                  $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
+                }}</label>
+                <ErrorMessage name="enable" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="card-header text-center text-capitalize">
                 <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
               </div>
-              <img v-if="driver.vehicle.photoUrl" :src="driver.vehicle.photoUrl" class="card-img-top img-driver" alt="profile_photo">
+              <img v-if="driver.vehicle.photoUrl" :src="driver.vehicle.photoUrl" class="card-img-top img-driver"
+                alt="profile_photo">
               <div v-else class="container-fluid text-center">
                 <em class="fa-solid fa-car-side fa-10x"></em>
               </div>
               <button class="btn btn-sm btn-info btn-edit-img py-1 px-2" type="button" data-bs-toggle="modal"
-                      data-bs-target="#image-vehicle">
+                data-bs-target="#image-vehicle">
                 <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
               </button>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.brand') }}</label>
-                <Field name="brand" type="text" v-slot="{ field, errorMessage, meta}" v-model="driver.vehicle.brand">
+                <Field name="brand" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.vehicle.brand">
                   <input class="form-control form-control-sm" id="brand" aria-label="Brand" aria-describedby="brand-addon"
-                         v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field"/>
+                    v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field" />
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.model') }}</label>
-                <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model" v-slot="{ errorMessage, meta }">
+                <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model"
+                  v-slot="{ errorMessage, meta }">
                   <option v-for="(year) in DateHelper.arrayYears()" :key="year" :value="year">{{ year }}</option>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{  errorMessage }}</span>
+                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
               <div class="form-group">
                 <label>{{ $t('drivers.vehicle.plate') }}</label>
                 <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
-                  <input class="form-control form-control-sm" v-model="driver.vehicle.plate" :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate" aria-describedby="plate-addon" autocomplete="none"/>
+                  <input class="form-control form-control-sm" v-model="driver.vehicle.plate"
+                    :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate"
+                    aria-describedby="plate-addon" autocomplete="none" />
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                 </Field>
               </div>
@@ -110,13 +129,15 @@
                 <div class="form-group col-sm-8">
                   <label>{{ $t('drivers.placeholders.color') }}</label>
                   <select class="form-select form-select-sm" id="color" v-model="color">
-                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.' + color.name) }}</option>
+                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.'
+                      + color.name) }}</option>
                   </select>
                 </div>
                 <div class="form-group col-sm-4">
                   <label>{{ $t('drivers.vehicle.color') }}</label>
                   <Field name="color" v-model="driver.vehicle.color.hex" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm p-0" type="color" disabled v-model="field.value" aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none"/>
+                    <input class="form-control form-control-sm p-0" type="color" disabled v-model="field.value"
+                      aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none" />
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
@@ -125,14 +146,18 @@
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
                   <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp" aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none"/>
+                    <input class="form-control form-control-sm" type="date" v-model="field.value"
+                      :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp"
+                      aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none" />
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
                   <Field name="tec_exp" type="date" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value" :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp" aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none"/>
+                    <input class="form-control form-control-sm" type="date" v-model="field.value"
+                      :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp"
+                      aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none" />
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
@@ -147,66 +172,102 @@
       </div>
     </Form>
     <ImageLoader :id="'image-vehicle'" :resourceId="driver.id" :path="pathVehicle" :event="vehicleEvent"
-                 @imageVehicleLoaded="uploadImgVehicle"></ImageLoader>
+      @imageVehicleLoaded="uploadImgVehicle"></ImageLoader>
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
-                 @imageDriverLoaded="uploadImgDriver"></ImageLoader>
+      @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
-      <!-- Modal -->
-      <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <Form @submit="updateEmail" :validation-schema="schemaEmail">
-        <div class="modal-body">
-          <div class="mb-3">
-            <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
-              <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                v-model="field.value" :placeholder="$t('common.placeholders.email')"
-                v-bind="field" />
-            </Field>
-            <ErrorMessage name="email"/>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-            {{ $t('common.actions.close') }}
+  <!-- Modal -->
+  <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
           </button>
-          <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
         </div>
-      </Form>
+        <Form @submit="updateEmail" :validation-schema="schemaEmail">
+          <div class="modal-body">
+            <div class="mb-3">
+              <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
+                <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
+                  v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field" />
+              </Field>
+              <ErrorMessage name="email" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+              {{ $t('common.actions.close') }}
+            </button>
+            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          </div>
+        </Form>
+      </div>
     </div>
   </div>
-</div>
+  <!-- Modal -->
+  <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit_password') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <Form @submit="updatePassword" :validation-schema="schemaPassword">
+          <div class="modal-body">
+            <div class="mb-3">
+              <Field name="password" type="password" v-slot="{ field }" v-model="driver.password">
+                <div class="input-group">
+                  <input class="form-control form-control-sm" id="password" aria-label="Password" aria-describedby="password-addon" v-model="field.value"
+                    :placeholder="$t('common.placeholders.password')" v-bind="field"
+                    :type="showPassword ? 'text' : 'password'" />
+                  <span style="cursor: pointer" class="input-group-text" @click="showPassword = !showPassword">
+                    <i class="fa" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+                  </span>
+                </div>
+              </Field>
+              <ErrorMessage name="password" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+              {{ $t('common.actions.close') }}
+            </button>
+            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          </div>
+        </Form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import StorageService from '@/services/StorageService'
-import {ErrorMessage, Field, Form} from 'vee-validate'
+import { ErrorMessage, Field, Form } from 'vee-validate'
 import dayjs from 'dayjs'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
-import {Constants} from '@/constants/Constants'
+import { Constants } from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import i18n from '@/plugins/i18n'
-import {onBeforeMount, ref, Ref, watch} from 'vue'
-import {useRoute} from 'vue-router'
-import {useDriversStore} from '@/services/stores/DriversStore'
+import { onBeforeMount, ref, Ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useDriversStore } from '@/services/stores/DriversStore'
 import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
-import {mixed, object, date, string} from 'yup'
-import {useLoadingState} from '@/services/stores/LoadingState'
+import { mixed, object, date, string } from 'yup'
+import { useLoadingState } from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
-import {StrHelper} from '@/helpers/StrHelper'
+import { StrHelper } from '@/helpers/StrHelper'
 
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
+const showPassword = ref(false);
 const driverEvent = 'image-driver-loaded'
 const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
@@ -216,7 +277,7 @@ const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
-const {setLoading} = useLoadingState()
+const { setLoading } = useLoadingState()
 const schema = object().shape({
   name: string().required().min(3),
   phone: string().required().min(8),
@@ -236,18 +297,23 @@ watch(driver, (newDriver) => {
   driver.value.vehicle.model = StrHelper.toCamelCase(newDriver.vehicle?.model ?? '')
   driver.value.vehicle.plate = StrHelper.formatPlate(newDriver.vehicle?.plate ?? '')
   driver.value.phone = StrHelper.formatNumber(newDriver.phone ?? '')
-}, {deep: true})
+}, { deep: true })
 
 const schemaEmail = object().shape({
   email: string().required().email()
 })
+
+const schemaPassword = object().shape({
+  password: string().required()
+})
+
 
 watch(soatExp, (newValue: string) => {
   driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
 })
 
 watch(color, (newColor) => {
-  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor)?? Constants.COLORS[0]
+  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor) ?? Constants.COLORS[0]
 })
 
 watch(tecExp, (newValue: string) => {
@@ -265,7 +331,7 @@ onBeforeMount(() => {
     color.value = driverTmp.vehicle.color.hex
   }
   else {
-    router.push({name: 'drivers'})
+    router.push({ name: 'drivers' })
   }
 })
 
@@ -302,14 +368,26 @@ function updateEmail(): void {
   })
 }
 
+function updatePassword(): void {
+  setLoading(true)
+  DriverRepository.updatePassword(driver.value.id, driver.value.password).then(() => {
+    setLoading(false)
+    hide('editPassword')
+    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(e => {
+    setLoading(false)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
 function onEnable(event: Event): void {
   setLoading(true)
   const target = event.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
-  DriverRepository.enable(driver.value.id?? '', driver.value.enabled_at).then(() => {
+  DriverRepository.enable(driver.value.id ?? '', driver.value.enabled_at).then(() => {
     setLoading(false)
     const message = driver.value.enabled_at == 0 ?
-        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+      i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
     setLoading(false)
