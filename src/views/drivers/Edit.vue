@@ -358,13 +358,13 @@ function updateDriver(): void {
 
 function updateEmail(): void {
   setLoading(true)
-  DriverRepository.updateEmail(driver.value.id, driver.value.email).then(() => {
+  DriverRepository.updateEmail(driver.value.id, driver.value.email).then(async () => {
     setLoading(false)
     hide('editGmail')
-    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
-  }).catch(e => {
+   await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
     setLoading(false)
-    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+   await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
