@@ -23,7 +23,7 @@ export default {
     confirm_password: 'Confirma tu contraseña',
     phone: 'Teléfono',
     roles: 'Roles',
-    admin: 'Administrador', 
+    admin: 'Administrador',
     operator: 'Operador',
     role: 'Role',
     status: 'Status'
@@ -31,6 +31,7 @@ export default {
   platform_settings: 'Configuraciones',
   forms: {
     edit: 'Editar información del usuario',
+    edit_password: 'Ingresa tu nueva contraseña',
     upload: 'Subir foto de perfil',
     select_img: 'Seleccione una imagen del archivo'
   },
