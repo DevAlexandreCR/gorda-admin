@@ -38,11 +38,8 @@
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
         <div class="form-group me-2 col-sm-4">
-          <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchService">
-            <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
-                   :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
-            <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-          </Field>
+          <input class="form-control form-control-sm me-2" type="search" v-model="searchService" name="search"
+                 :placeholder="$t('common.placeholders.search')"  autocomplete="off"/>
         </div>
         <services-table :table="Tables.inProgress" :services="filteredInProgress" @cancelService="cancel"
                         @endService="end"
@@ -75,7 +72,6 @@ import History from '@/components/services/History.vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Tables} from '@/constants/Tables'
 import {ServiceList} from '@/models/ServiceList'
-import {Field} from 'vee-validate'
 
 const {t} = useI18n()
 const driverStore = useDriversStore()

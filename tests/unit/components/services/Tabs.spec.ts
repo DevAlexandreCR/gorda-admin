@@ -16,7 +16,7 @@ describe('Tabs.vue', () => {
   beforeEach(async () => {
     wrapper = shallowMount(Tabs,
       {
-        attachTo: '#root',
+        attachTo: document.body,
         global: {
           plugins: [router, i18n],
           provide: {
@@ -39,7 +39,6 @@ describe('Tabs.vue', () => {
     expect(wrapper.html()).toContain(i18n.global.t('services.statuses.in_progress'))
     expect(wrapper.html()).toContain(i18n.global.t('services.history'))
     expect(wrapper.html()).toContain(i18n.global.t('common.placeholders.map'))
-		expect(wrapper.html()).toContain(i18n.global.t('common.placeholders.search'))
 	})
 
   it('should exec functions when children emmit events', async () => {
@@ -97,4 +96,13 @@ describe('Tabs.vue', () => {
     expect(swat).toBeCalledTimes(3)
     jest.clearAllMocks()
   })
+	
+	it('an user can show search button in progress tab', async () => {
+		await nextTick()
+		const tab = wrapper.find('#progress-tab')
+		await tab.trigger('click')
+		await wrapper.vm.$nextTick()
+		
+		expect(wrapper.find('input[name="search"]').isVisible()).toBeTruthy()
+	})
 })
