@@ -10,19 +10,20 @@ export default class Driver implements DriverInterface {
   docType: string
   document: string
   email: string
+  password: string
   enabled_at = 0
   name: string
   phone: string
   photoUrl: string | null
   vehicle: VehicleInterface
-  
+
   constructor() {
     this.id = ''
     this.created_at = dayjs().unix()
     this.photoUrl = null
     this.vehicle = new Vehicle()
   }
-  
+
   isEnabled(): boolean {
     return !!this.enabled_at
   }
