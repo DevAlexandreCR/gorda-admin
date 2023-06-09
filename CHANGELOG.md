@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Edit password. [#87](https://github.com/DevAlexandreCR/admin-driver/pull/87)
+- Search driver on in progress tab. [#86](https://github.com/DevAlexandreCR/admin-driver/pull/86)
+
 # Release Notes for 1.2.x
 
 ## [1.2.1 (2023-06-01)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.1...1.2.0)
