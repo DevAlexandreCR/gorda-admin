@@ -6,7 +6,8 @@ class DriverMock implements DriverInterface{
   id = 'DriverID'
   name = 'Admin 1'
   email = 'admin@admin.com'
-  phone = '310374656'
+	password = '123456'
+	phone = '310374656'
   photoUrl = 'https://fakeUrl.com'
   created_at =  dayjs().unix()
   enabled_at = 0

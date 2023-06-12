@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.2.x
 
+## [1.2.3(2023-06-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.3...1.2.2)
+
+### Fixed
+- Error editing password. [#89](https://github.com/DevAlexandreCR/admin-driver/pull/89)
+
 ## [1.2.2 (2023-06-08)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.2...1.2.1)
 
 ### Added
