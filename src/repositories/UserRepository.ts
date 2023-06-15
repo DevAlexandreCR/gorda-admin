@@ -62,6 +62,19 @@ class UserRepository {
   }
 
   /* istanbul ignore next */
+  updatePassword(userId: string, password: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.passwordAuth(userId, password).then(() => {
+        set(ref(DBService.db, 'users/' + userId + '/password/'), password).then(() => {
+          resolve()
+        })
+      }).catch((e) => {
+        reject(new Error(e.message));
+      })
+    })
+  }
+
+  /* istanbul ignore next */
   async createAuth(userData: UserRequestType): Promise<AxiosResponse> {
     return axios.post(this.base_url + '/auth/create-user/', userData)
   }
