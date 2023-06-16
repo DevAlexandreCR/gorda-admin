@@ -218,15 +218,15 @@ function onEnable(event: Event): void {
   setLoading(true)
   const target = event.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
-  UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
+  UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(async () => {
     setLoading(false)
     const message = user.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') :
         i18n.global.t('users.messages.enabled')
-    ToastService.toast(ToastService.SUCCESS, message)
-  }).catch(e => {
+    await ToastService.toast(ToastService.SUCCESS, message)
+  }).catch(async e => {
     setLoading(false)
-    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
@@ -253,10 +253,9 @@ function assignRole(e: Event): void {
   }
 }
 
-onBeforeMount(() => {
-  UserRepository.getUser(route.params.id as string).then(userDB => {
+onBeforeMount(async () => {
+  const userDB = await UserRepository.getUser(route.params.id as string)
     Object.assign(user.value, userDB)
     user.value.photoUrl = user.value.photoUrl ?? '../../assets/img/logo.png'
-  })
 })
 </script>
