@@ -110,9 +110,11 @@ describe('Edit.vue', () => {
     await flushPromises()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
   })
-
-  it('should render the modal', () => {
+  it('should render the modal and input', async () => {
+    await wrapper.vm.$nextTick()
     const modal = wrapper.find('#editPassword')
     expect(modal.exists()).toBe(true)
-    })
+    const input = modal.find('input[type="password"]')
+    expect(input.exists()).toBe(true)
+  })
 })
