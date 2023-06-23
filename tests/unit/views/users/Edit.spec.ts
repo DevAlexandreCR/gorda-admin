@@ -12,9 +12,11 @@ import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import StorageService from '@/services/StorageService'
 import dayjs from "dayjs";
+import ToastService from "@/services/ToastService"
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
+UserRepository.updatePassword = jest.fn().mockResolvedValue(UserInterface)
 StorageService.getStorageReference = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
@@ -41,6 +43,8 @@ describe('Edit.vue', () => {
     const form = wrapper.findComponent(Form)
     const error = wrapper.findComponent(ErrorMessage)
     const labels = wrapper.findAll('.form-control-label, .custom-control-label, .form-check-label')
+    const inputs = wrapper.findAll('input')
+    expect(inputs.length).toBe(8)
     expect(labels.length).toBe(7)
     expect(field.exists()).toBeTruthy()
     expect(form.exists()).toBeTruthy()
@@ -85,6 +89,16 @@ describe('Edit.vue', () => {
         title: i18n.global.t('common.messages.error'),
         text: 'New Error',
       })
+    })
+  })
+
+  it('should show toast error when updatePassword fail', async () => {
+    const error =  jest.spyOn(ToastService, 'toast')
+    UserRepository.updatePassword = jest.fn().mockRejectedValue(new Error('new Error'))
+    await wrapper.vm.updatePassword()
+
+    await waitForExpect(() => {
+      expect(error).toHaveBeenCalledWith('error', i18n.global.t('common.messages.error'), 'new Error')
     })
   })
 
