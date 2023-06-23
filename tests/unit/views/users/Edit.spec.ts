@@ -40,6 +40,8 @@ describe('Edit.vue', () => {
     const field = wrapper.findComponent(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findComponent(ErrorMessage)
+    const labels = wrapper.findAll('.form-control-label, .custom-control-label, .form-check-label')
+    expect(labels.length).toBe(7)
     expect(field.exists()).toBeTruthy()
     expect(form.exists()).toBeTruthy()
     expect(error.exists()).toBeTruthy()

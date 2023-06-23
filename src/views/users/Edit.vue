@@ -18,7 +18,7 @@
             </div>
             <div class="col-md-7">
               <div class="form-group">
-                <label>{{ $t('users.fields.name') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.name') }}</label>
                 <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="user.name">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
                          id="name" aria-label="Name" aria-describedby="name-addon" v-bind="field"/>
@@ -26,7 +26,7 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.email') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" v-slot="{ field, errorMessage, meta }" v-model="user.email">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.email')"
                          id="email" aria-label="Email" aria-describedby="email-addon" v-bind="field"/>
@@ -39,7 +39,7 @@
                 </a>
             </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.phone') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="user.phone">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.phone')"
                          id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field"/>
@@ -47,7 +47,7 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.role') }}:</label>
+                <label class="form-control-label">{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
                   <input class="form-check-input" type="checkbox" @change="assignRole" name="role" id="operator"
                          :value="'operator'" :checked="user.roles.operator"/>
