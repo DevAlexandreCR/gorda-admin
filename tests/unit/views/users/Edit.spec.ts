@@ -110,11 +110,40 @@ describe('Edit.vue', () => {
     await flushPromises()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
   })
-  it('should render the modal and input', async () => {
+
+  it('img should render the modal and input ', async () => {
+    await wrapper.vm.$nextTick()
+    const modal = wrapper.find('#imgModal')
+    expect(modal.exists()).toBe(true)
+    const label = modal.find('label.form-label')
+    expect(label.exists()).toBe(true)
+  })
+
+  it('editPassword should render the modal and input ', async () => {
     await wrapper.vm.$nextTick()
     const modal = wrapper.find('#editPassword')
     expect(modal.exists()).toBe(true)
     const input = modal.find('input[type="password"]')
     expect(input.exists()).toBe(true)
+  })
+
+  it('should close the modal when clicking the close button', async () => {
+    await wrapper.vm.$nextTick()
+    const openModalLink = wrapper.find('#openEditPasswordModalButton')
+    expect(openModalLink.exists()).toBe(true)
+    await openModalLink.trigger('click')
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    const modal2 = wrapper.find('#editPassword')
+    expect(modal2.exists()).toBe(true)
+    expect(modal2.classes('show')).toBe(true)
+
+    const closeButton = wrapper.find('#closeEditPasswordModalButton')
+    expect(closeButton.exists()).toBe(true)
+    await closeButton.trigger('click')
+
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(modal2.classes('show')).toBe(false)
   })
 })

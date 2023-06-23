@@ -34,7 +34,7 @@
                 </Field>
               </div>
               <div class="form-group editLink">
-                <a class="button-link" href="#" data-bs-toggle="modal" data-bs-target="#editPassword">
+                <a class="button-link" href="#" id="openEditPasswordModalButton" data-bs-toggle="modal" data-bs-target="#editPassword">
                   {{ $t('common.placeholders.restore_password') }}
                 </a>
             </div>
@@ -112,7 +112,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit_password') }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <button type="button" id="closeEditPasswordModalButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
