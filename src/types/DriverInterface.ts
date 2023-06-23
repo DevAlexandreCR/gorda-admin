@@ -4,7 +4,8 @@ export interface DriverInterface {
   id: string
   name: string
   email: string
-  phone: string
+	password: string|null
+	phone: string
   docType: string
   document: string
   photoUrl: string|null
