@@ -135,12 +135,19 @@ describe('Edit.vue', () => {
     expect(label.exists()).toBe(true)
   })
 
-  it('editPassword should render the modal and input ', async () => {
+  it('should render the modal and  password field and iconButton password visibility', async () => {
     await wrapper.vm.$nextTick()
     const modal = wrapper.find('#editPassword')
-    expect(modal.exists()).toBe(true)
     const input = modal.find('input[type="password"]')
+    const iconButton = modal.find('.input-group-text')
+    expect(modal.exists()).toBe(true)
     expect(input.exists()).toBe(true)
+    expect(iconButton.exists()).toBe(true)
+    expect(input.attributes('type')).toBe('password')
+    await iconButton.trigger('click')
+    expect(input.attributes('type')).toBe('text')
+    await iconButton.trigger('click')
+    expect(input.attributes('type')).toBe('password')
   })
 
   it('should close the modal when clicking the close button', async () => {
