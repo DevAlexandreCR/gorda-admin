@@ -24,7 +24,8 @@ export default {
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
-    clear_filters: 'Clear Filters'
+    clear_filters: 'Clear Filters',
+    update: 'Update Message'
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -32,7 +33,9 @@ export default {
     deleted: 'Resource deleted successfully',
     error: 'Something went wrong!',
     waiting: 'Please wait ...',
-    forbidden: 'Permission denied'
+    forbidden: 'Permission denied',
+    update_message: 'Update the message here !',
+    menssage: 'Message:'
   },
   placeholders: {
     name: 'Enter name',

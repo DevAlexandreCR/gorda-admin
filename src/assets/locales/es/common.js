@@ -24,7 +24,8 @@ export default {
     terminate: 'Terminar',
     filter: 'Filtrar',
     see: 'Ver',
-    clear_filters: 'Limpiar Filtros'
+    clear_filters: 'Limpiar Filtros',
+    update: 'Actualizar Mensaje'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -32,7 +33,9 @@ export default {
     deleted: 'Recurso eliminado correctamente',
     error: 'Algo salió mal!',
     waiting: 'Por favor espere...',
-    forbidden: 'Permiso denegado!'
+    forbidden: 'Permiso denegado!',
+    update_message: 'Actualiza el mensaje aqui !',
+    menssage: 'Mensaje:'
   },
   placeholders: {
     name: 'Ingrese el nombre',
