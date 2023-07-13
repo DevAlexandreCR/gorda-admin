@@ -11,7 +11,8 @@ export const useDriversStore = defineStore('driverStore', {
 
     return {
       drivers: Array<Driver>(),
-      connectedDrivers: Array<PlaceInterface>()
+      connectedDrivers: Array<PlaceInterface>(),
+			occupiedDrivers: Array<string>(),
     }
   },
   actions: {
@@ -43,11 +44,14 @@ export const useDriversStore = defineStore('driverStore', {
     getOnlineDrivers(): void {
       const onDriverConnected = (partialDriver: DriverConnectedInterface): void => {
         const driver = this.findById(partialDriver.id ?? '') ?? new Driver()
+				const index = this.occupiedDrivers.findIndex(driverId => driverId === partialDriver.id)
+				const color = index >= 0 ? 'danger' : undefined
         this.connectedDrivers.push({
           key: driver.id,
           name: driver.vehicle.plate,
           lat: partialDriver.location.lat,
-          lng: partialDriver.location.lng
+          lng: partialDriver.location.lng,
+					color: color
         })
       }
 
@@ -81,6 +85,15 @@ export const useDriversStore = defineStore('driverStore', {
       driverTmp.vehicle = vehicleTmp
       this.drivers.push(driverTmp)
     },
+		
+		setOccupiedDriver(driverId: string): void {
+			this.occupiedDrivers.push(driverId)
+		},
+	
+		removeOccupiedDriver(driverId: string): void {
+			const index = this.occupiedDrivers.findIndex(id => id === driverId)
+			delete this.occupiedDrivers[index]
+		},
 		
 		_order(): void {
 			this.drivers.sort((a,b) => {

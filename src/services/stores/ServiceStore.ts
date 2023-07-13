@@ -41,15 +41,21 @@ export const useServicesStore = defineStore('servicesStore', {
     },
 
     async getInProgressServices(): Promise<void> {
+			const {setOccupiedDriver} = useDriversStore()
+			const {removeOccupiedDriver} = useDriversStore()
       const added = (snapshot: DataSnapshot): void => {
         const service = this.setServiceFromDB(snapshot)
         this.inProgress.unshift(service)
+				if (service.driver_id !== null) {
+					setOccupiedDriver(service.driver_id)
+				}
       }
 
       const removed = (snapshot: DataSnapshot): void => {
         const service = this.setServiceFromDB(snapshot)
         const index = this.inProgress.findIndex(serv => serv.id === service.id)
         this.inProgress.splice(index, 1)
+				if (service.driver_id) removeOccupiedDriver(service.driver_id)
       }
 
       ServiceRepository.inProgressListener(added, removed)
