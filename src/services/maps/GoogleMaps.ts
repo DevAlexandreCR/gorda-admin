@@ -48,7 +48,13 @@ export class GoogleMaps {
       optimized: true
     }
     const marker = new google.maps.Marker(markerOptions)
-    infoWindow.open({
+	
+		let content = `<div>${place.name}</div>`
+		if (place.color !== undefined) {
+			content = `<span class="badge bg-${place.color}">${place.name}</span>`
+		}
+		infoWindow.setContent(content)
+		infoWindow.open({
       anchor: marker,
       map: this.map,
       shouldFocus: false
