@@ -1,6 +1,7 @@
 export interface PlaceInterface {
-  key: string|null
-  name: string
-  lat: number
-  lng: number
+	key: string | null
+	color?: string
+	name: string
+	lat: number
+	lng: number
 }
