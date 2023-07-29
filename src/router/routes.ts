@@ -13,6 +13,7 @@ import Places from '@/views/places/Places.vue'
 import UserCreate from '@/views/users/Create.vue'
 import adminGuard from "@/router/guards/AdminGuard";
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
+import Metrics from '@/views/metrics/Metrics.vue'
 
 
 const routes: Array<any> = [
@@ -103,7 +104,20 @@ const routes: Array<any> = [
         path: 'dashboard/connection',
         name: 'connection',
         component: Connection
-      }
+      },
+			{
+				path: 'dashboard/metrics',
+				name: 'metrics',
+				redirect: {name: 'metrics.index'},
+				component: Metrics,
+				children: [
+					{
+						path: '/dashboard/metrics/index/',
+						name: 'metrics.index',
+						component: Metrics
+					},
+				]
+			},
     ]
   },
   {
