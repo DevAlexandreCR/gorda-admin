@@ -1,24 +1,23 @@
 <template>
   <div class="mt-4 ms-2 px-2">
-    <div class="col-12 col-md ">
+    <div class="col-12 col-md">
       <div class="row">
         <div class="col-md-6">
           <div class="card px-2 py-1">
             <div class="table-responsive">
               <table class="table table-sm table-borderless align-items-center mb-0">
                 <caption hidden></caption>
-                <thead>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-2">#</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-2">#</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-2">#</th>
-                </thead>
                 <tbody class="text-sm text-opacity-25">
-                  <tr v-for="user in users" :key="user.id">
-                    <td class="py-1 col-1">{{ user.name }} - {{ user.email }}</td>
-                    <td class="py-1 col-1">{{ user.name }} - {{ user.email }}</td>
-                    <td class="py-1">
-                <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" data-bs-placement="top"  data-bs-toggle="modal"
-                data-bs-target="#messagesWp"><em class="fas fa-pencil"></em></button></td>
+                  <tr v-for="(message, index) in messages" :key="message.id">
+                    <td class="text-secondary font-weight-bolder opacity-7 w-1">{{ index + 1 }}</td>
+                    <td class="py-1 col-1">{{ message.message }}</td>
+                    <!-- Agregar la condición v-if al botón -->
+                    <td class="py-1 col-1 text-end" v-if="messages.length > 0">
+                      <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" data-bs-placement="top"
+                        data-bs-toggle="modal" data-bs-target="#messagesWp" @click="openEditModal(message)">
+                        <em class="fas fa-pencil"></em>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -80,57 +79,68 @@
     </div>
   </div>
   <!-- Modal -->
-  <div class="modal fade" id="messagesWp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ $t('common.messages.update_message') }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <Form >
-          <div class="modal-body">
-            <div class="mb-3">
-              <Field name="password" type="password" v-slot="{ field }">
-                <div class="input-group">
-                  <textarea class="form-control form-control-sm" id="message-text" aria-label="Message" aria-describedby="message-addon" v-model="field.value" 
-                  :placeholder="$t('common.messages.menssage')" v-bind="field"/>
-                </div>
-              </Field>
-              <ErrorMessage name="password" />
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-              {{ $t('common.actions.close') }}
-            </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.update') }}</button>
-          </div>
-        </Form>
+<div class="modal fade" id="messagesWp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ $t('common.messages.update_message') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <Form  :validation-schema="messageSchema">
+        <div class="modal-body">
+          <div class="mb-3">
+            <Field name="message" type="message" v-slot="{ field }" v-model="selectedMessage.message">
+              <div class="input-group">
+                <textarea class="form-control form-control-sm" id="message-text" aria-label="Message"
+                  aria-describedby="message-addon" v-model="field.value" :placeholder="$t('common.messages.menssage')"
+                  v-bind="field" />
+              </div>
+            </Field>
+            <ErrorMessage name="message" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.update') }}</button>
+        </div>
+      </Form>
     </div>
   </div>
+</div>
 </template>
 
 <script setup lang="ts">
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import { onBeforeUnmount, onMounted, ref, Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, Ref} from 'vue'
 import QRCode from 'qrcode'
 import { ClientObserver } from '@/services/gordaApi/ClientObserver'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { LoadingType } from '@/types/LoadingType'
+import { object, string } from 'yup'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import { DataSnapshot } from 'firebase/database'
 import { ErrorMessage, Field, Form } from 'vee-validate'
-
+import { DocumentData } from 'firebase/firestore'
+import WhatsappRepository from '@/repositories/WhatsappRepository'
 const qr: Ref<string | null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType | null> = ref(null)
+const messages = ref<DocumentData[] | null>(null)
+const selectedMessage = ref<DocumentData | null>(null);
+
 const { enableWpNotifications } = useSettingsStore()
 const { settings } = storeToRefs(useSettingsStore())
+
+
+const messageSchema = object().shape({
+  message: string().required().trim().max(1000),
+});
 
 let wpClient: WhatsAppClient
 
@@ -144,18 +154,16 @@ function destroy() {
   wpClient.destroy()
 }
 
-interface User {
-  id: number
-  name: string
-  email: string
+function openEditModal(message: MessageInterface): void {
+  selectedMessage.value = message;
 }
 
-const users = ref<User[] | null>(null);
-
 onMounted(async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users")
-  users.value = await response.json()
-  console.log(users.value)
+  try {
+    messages.value = await WhatsappRepository.getAll()
+  } catch (error) {
+    console.error('Error al obtener los mensajes:', error)
+  }
 })
 
 const onUpdate = (socket: WhatsAppClient): void => {
