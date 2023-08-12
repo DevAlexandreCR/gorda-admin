@@ -14,6 +14,7 @@
 
 "use strict";
 (function() {
+  require('./plugins/chartjs.min')
   var isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
   if (isWindows) {
