@@ -13,7 +13,8 @@ export const useMetricsStore = defineStore('metricsStore', {
 			globalMetric: Array<Metric>(),
 			globalYearMetric: new Map<string, number>(),
 			completedYearMetric: new Map<string, number>(),
-			canceledYearMetric: new Map<string, number>()
+			canceledYearMetric: new Map<string, number>(),
+			percentYearMetric: new Map<string, number>()
 		}
 	},
 	actions: {
@@ -58,6 +59,11 @@ export const useMetricsStore = defineStore('metricsStore', {
 			this.setMapMetric(globalData, this.globalYearMetric)
 			this.setMapMetric(canceledData, this.canceledYearMetric)
 			this.setMapMetric(completedData, this.completedYearMetric)
+			this.globalYearMetric.forEach((value, month) => {
+				const canceledCount = this.canceledYearMetric.get(month)	?? 0
+				const percent = Math.round((canceledCount/value) * 100)
+				this.percentYearMetric.set(month, percent)
+			})
 		},
 		
 		setMapMetric(data: MetricItem[], metric: Map<string, number>): void {

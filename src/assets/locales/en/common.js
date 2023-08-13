@@ -44,7 +44,8 @@ export default {
     comment: 'Enter comment',
     search: 'Search',
     map: 'Map',
-    all: 'All'
+    all: 'All',
+    cancel_percent: 'Canceled index'
   },
   filters: {
     title: 'Filters',

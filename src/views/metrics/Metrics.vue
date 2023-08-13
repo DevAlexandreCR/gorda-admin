@@ -10,15 +10,20 @@
     </div>
     <div class="col-sm-6">
       <div class="chart">
-        <canvas id="chart-bar" class="chart-canvas" height="170"></canvas>
+        <Bar
+            v-if="loaded"
+            id="percent-chart"
+            :options="chartOptions"
+            :data="percentChartData"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {Line} from 'vue-chartjs'
-import {onBeforeMount, onMounted, ref, Ref} from 'vue'
+import {Bar, Line} from 'vue-chartjs'
+import {onBeforeMount, ref, Ref} from 'vue'
 import {useMetricsStore} from '@/services/stores/MetricsStore'
 import {
   Chart,
@@ -34,7 +39,7 @@ import {
 import {useI18n} from 'vue-i18n'
 
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
-const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric} = useMetricsStore()
+const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric} = useMetricsStore()
 const {t} = useI18n()
 const chartOptions: ChartOptions = {
   responsive: true,
@@ -43,6 +48,7 @@ const chartOptions: ChartOptions = {
 const loaded: Ref<boolean> = ref(false)
 
 let globalChartData: ChartData
+let percentChartData: ChartData
 
 onBeforeMount(async () => {
   await getCurrentYearMetric()
@@ -53,10 +59,10 @@ onBeforeMount(async () => {
       {
         label: t('services.total'),
         data: Array.from(globalYearMetric.values()),
-        backgroundColor: '#0c0808'
+        backgroundColor: '#ffd500'
       },
       {
-        label: t('services.statuses.completed'),
+        label: t('services.statuses.terminated'),
         data: Array.from(completedYearMetric.values()),
         backgroundColor: '#00ff05'
       },
@@ -64,6 +70,16 @@ onBeforeMount(async () => {
         label: t('services.statuses.canceled'),
         data: Array.from(canceledYearMetric.values()),
         backgroundColor: '#ff0000'
+      }
+    ]
+  }
+  percentChartData = {
+    labels: Array.from(globalYearMetric.keys()),
+    datasets: [
+      {
+        label: t('common.placeholders.cancel_percent'),
+        data: Array.from(percentYearMetric.values()),
+        backgroundColor: '#e81022'
       }
     ]
   }
