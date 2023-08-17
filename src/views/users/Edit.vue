@@ -18,7 +18,7 @@
             </div>
             <div class="col-md-7">
               <div class="form-group">
-                <label>{{ $t('users.fields.name') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.name') }}</label>
                 <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="user.name">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
                          id="name" aria-label="Name" aria-describedby="name-addon" v-bind="field"/>
@@ -26,16 +26,20 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.email') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.email') }}</label>
                 <Field name="email" type="email" v-slot="{ field, errorMessage, meta }" v-model="user.email">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.email')"
                          id="email" aria-label="Email" aria-describedby="email-addon" v-bind="field"/>
                   <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-
                 </Field>
               </div>
+              <div class="form-group editLink">
+                <a class="button-link" href="#" id="openEditPasswordModalButton" data-bs-toggle="modal" data-bs-target="#editPassword">
+                  {{ $t('common.placeholders.restore_password') }}
+                </a>
+            </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.phone') }}</label>
+                <label class="form-control-label">{{ $t('users.fields.phone') }}</label>
                 <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="user.phone">
                   <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.phone')"
                          id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field"/>
@@ -43,7 +47,7 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.role') }}:</label>
+                <label class="form-control-label">{{ $t('users.fields.role') }}:</label>
                 <div class="form-check mb-4 d-inline-block ms-4">
                   <input class="form-check-input" type="checkbox" @change="assignRole" name="role" id="operator"
                          :value="'operator'" :checked="user.roles.operator"/>
@@ -102,6 +106,42 @@
         </div>
       </div>
     </div>
+    <!-- Modal -->
+  <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit_password') }}</h5>
+          <button type="button" id="closeEditPasswordModalButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <Form @submit="updatePassword" :validation-schema="schemaPassword">
+          <div class="modal-body">
+            <div class="mb-3">
+              <Field name="password" type="password" v-slot="{ field }">
+                <div class="input-group">
+                  <input class="form-control form-control-sm" id="password" aria-label="Password" aria-describedby="password-addon" v-model="user.password"
+                    :placeholder="$t('common.placeholders.password')" v-bind="field"
+                    :type="showPassword ? 'text' : 'password'" />
+                  <span style="cursor: pointer" class="input-group-text" @click="showPassword = !showPassword">
+                    <i class="fa" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+                  </span>
+                </div>
+              </Field>
+              <ErrorMessage name="password" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+              {{ $t('common.actions.close') }}
+            </button>
+            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          </div>
+        </Form>
+      </div>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -111,7 +151,7 @@ import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
-import {ObjectSchema} from 'yup'
+import {ObjectSchema, object, string} from 'yup'
 import CustomValidator from '@/assets/validatiions/validators'
 import * as bootstrap from 'bootstrap'
 import StorageService from '@/services/StorageService'
@@ -121,6 +161,7 @@ import ToastService from '@/services/ToastService'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import { hide } from '@/helpers/ModalHelper'
 
 const user: Ref<User> = ref(new User)
 const route = useRoute()
@@ -128,12 +169,17 @@ const schemaImg: ObjectSchema<any> = yup.object().shape({
   photo: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
 })
 const image: Ref<File[]> = ref([])
+const showPassword = ref(false);
 const {setLoading} = useLoadingState()
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
   phone: yup.string().required().min(8),
   role: yup.array()
+})
+
+const schemaPassword = object().shape({
+  password: string().required()
 })
 
 function uploadImg(): void {
@@ -172,15 +218,27 @@ function onEnable(event: Event): void {
   setLoading(true)
   const target = event.target as HTMLInputElement
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
-  UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(() => {
+  UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(async () => {
     setLoading(false)
     const message = user.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') :
         i18n.global.t('users.messages.enabled')
-    ToastService.toast(ToastService.SUCCESS, message)
-  }).catch(e => {
+    await ToastService.toast(ToastService.SUCCESS, message)
+  }).catch(async e => {
     setLoading(false)
-    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function updatePassword(): void {
+  setLoading(true)
+  UserRepository.updatePassword(user.value.id ?? '', user.value.password).then(async () => {
+    setLoading(false)
+    hide('editPassword')
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
+    setLoading(false)
+   await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
@@ -195,10 +253,9 @@ function assignRole(e: Event): void {
   }
 }
 
-onBeforeMount(() => {
-  UserRepository.getUser(route.params.id as string).then(userDB => {
+onBeforeMount(async () => {
+  const userDB = await UserRepository.getUser(route.params.id as string)
     Object.assign(user.value, userDB)
     user.value.photoUrl = user.value.photoUrl ?? '../../assets/img/logo.png'
-  })
 })
 </script>

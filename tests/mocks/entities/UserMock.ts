@@ -5,6 +5,7 @@ class UserMock {
   id = 'id'
   name = 'Admin 1'
   email = 'admin@admin.com'
+  password = '123456'
   phone = '310374656'
   photoUrl = 'https://fakeUrl.com'
   created_at =  dayjs().unix()

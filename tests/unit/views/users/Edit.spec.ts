@@ -12,9 +12,11 @@ import waitForExpect from 'wait-for-expect'
 import Swal from 'sweetalert2'
 import StorageService from '@/services/StorageService'
 import dayjs from "dayjs";
+import ToastService from "@/services/ToastService"
 
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
+UserRepository.updatePassword = jest.fn().mockResolvedValue(UserInterface)
 StorageService.getStorageReference = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
@@ -40,6 +42,10 @@ describe('Edit.vue', () => {
     const field = wrapper.findComponent(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findComponent(ErrorMessage)
+    const labels = wrapper.findAll('.form-control-label, .custom-control-label, .form-check-label')
+    const inputs = wrapper.findAll('input')
+    expect(inputs.length).toBe(8)
+    expect(labels.length).toBe(7)
     expect(field.exists()).toBeTruthy()
     expect(form.exists()).toBeTruthy()
     expect(error.exists()).toBeTruthy()
@@ -86,6 +92,16 @@ describe('Edit.vue', () => {
     })
   })
 
+  it('should show toast error when updatePassword fail', async () => {
+    const error =  jest.spyOn(ToastService, 'toast')
+    UserRepository.updatePassword = jest.fn().mockRejectedValue(new Error('new Error'))
+    await wrapper.vm.updatePassword()
+
+    await waitForExpect(() => {
+      expect(error).toHaveBeenCalledWith('error', i18n.global.t('common.messages.error'), 'new Error')
+    })
+  })
+
   it('user can enable or disable user', async () => {
     const enable =  wrapper.find('input[name="enable"]')
     await enable.trigger('click')
@@ -109,5 +125,48 @@ describe('Edit.vue', () => {
     await wrapper.vm.uploadImg()
     await flushPromises()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
+  })
+
+  it('img should render the modal and input ', async () => {
+    await wrapper.vm.$nextTick()
+    const modal = wrapper.find('#imgModal')
+    expect(modal.exists()).toBe(true)
+    const label = modal.find('label.form-label')
+    expect(label.exists()).toBe(true)
+  })
+
+  it('should render the modal and  password field and iconButton password visibility', async () => {
+    await wrapper.vm.$nextTick()
+    const modal = wrapper.find('#editPassword')
+    const input = modal.find('input[type="password"]')
+    const iconButton = modal.find('.input-group-text')
+    expect(modal.exists()).toBe(true)
+    expect(input.exists()).toBe(true)
+    expect(iconButton.exists()).toBe(true)
+    expect(input.attributes('type')).toBe('password')
+    await iconButton.trigger('click')
+    expect(input.attributes('type')).toBe('text')
+    await iconButton.trigger('click')
+    expect(input.attributes('type')).toBe('password')
+  })
+
+  it('should close the modal when clicking the close button', async () => {
+    await wrapper.vm.$nextTick()
+    const openModalLink = wrapper.find('#openEditPasswordModalButton')
+    expect(openModalLink.exists()).toBe(true)
+    await openModalLink.trigger('click')
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    const modal2 = wrapper.find('#editPassword')
+    expect(modal2.exists()).toBe(true)
+    expect(modal2.classes('show')).toBe(true)
+
+    const closeButton = wrapper.find('#closeEditPasswordModalButton')
+    expect(closeButton.exists()).toBe(true)
+    await closeButton.trigger('click')
+
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(modal2.classes('show')).toBe(false)
   })
 })

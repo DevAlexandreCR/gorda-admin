@@ -40,6 +40,7 @@ export default {
     phone: 'Ingrese el teléfono',
     password: 'Contraseña',
     confirm_password: 'Confirmar contraseña',
+    restore_password: '¿Restablecer Contraseña?',
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
     search: 'Buscar',
