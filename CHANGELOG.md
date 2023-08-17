@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 1.2.x
+
+## [1.2.5(2023-08-17)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.5...1.2.4)
+
 ### Added
 - Add metrics view. [#94](https://github.com/DevAlexandreCR/admin-driver/pull/94)
-
-# Release Notes for 1.2.x
+- Add reset password to users. [#93](https://github.com/DevAlexandreCR/admin-driver/pull/93)
 
 ## [1.2.4(2023-07-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.4...1.2.3)
 

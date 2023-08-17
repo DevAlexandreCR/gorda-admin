@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode development --port 5000",
@@ -43,7 +43,6 @@
     "@intlify/vue-i18n-loader": "^3.0.0",
     "@popperjs/core": "^2.11.0",
     "@types/bootstrap": "^5.2.6",
-    "@types/firebase": "^3.2.1",
     "@types/google.maps": "^3.49.2",
     "@types/jest": "^27.4.1",
     "@types/qrcode": "^1.4.2",
