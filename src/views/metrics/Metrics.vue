@@ -3,7 +3,7 @@
     <div class="col-sm-6 chart">
       <Line
           v-if="loaded"
-          id="my-chart-id"
+          id="global-chart"
           :options="chartOptions"
           :data="globalChartData"
       />

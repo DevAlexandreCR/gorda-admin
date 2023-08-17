@@ -48,7 +48,7 @@ describe('Metrics.vue', () => {
 		await nextTick()
 		await flushPromises()
 		await waitForExpect(() => {
-			expect(wrapper.find('#my-chart-id').exists()).toBeTruthy()
+			expect(wrapper.find('#global-chart').exists()).toBeTruthy()
 			expect(wrapper.find('#percent-chart').exists()).toBeTruthy()
 		})
 	})
