@@ -15,7 +15,8 @@ export const useMetricsStore = defineStore('metricsStore', {
 			globalYearMetric: new Map<string, number>(),
 			completedYearMetric: new Map<string, number>(),
 			canceledYearMetric: new Map<string, number>(),
-			percentYearMetric: new Map<string, number>()
+			percentYearMetric: new Map<string, number>(),
+			loaded: false,
 		}
 	},
 	actions: {
@@ -30,6 +31,7 @@ export const useMetricsStore = defineStore('metricsStore', {
 					},
 				}).then((res) => {
 					setLoading(false)
+					this.loaded = true
 					res.data.data.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
