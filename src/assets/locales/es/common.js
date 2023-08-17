@@ -45,7 +45,8 @@ export default {
     comment: 'Ingrese un comentario (opcional)',
     search: 'Buscar',
     map: 'Mapa',
-    all: 'Todos'
+    all: 'Todos',
+    cancel_percent: 'Índice de cancelación'
   },
   forms: {
     select_img: 'Choose image from files'
