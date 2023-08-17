@@ -4,6 +4,7 @@ import {Metric} from '@/types/Metric'
 import DateHelper from '@/helpers/DateHelper'
 import {MetricItem} from '@/types/MetricItem'
 import {ServiceStatus} from '@/types/ServiceStatus'
+import {useLoadingState} from '@/services/stores/LoadingState'
 
 const GLOBAL_METRIC_PATH = '/metrics/global'
 
@@ -19,19 +20,23 @@ export const useMetricsStore = defineStore('metricsStore', {
 	},
 	actions: {
 		getGlobalMetric(startDate: string, endDate: string): Promise<void> {
+			const {setLoading} = useLoadingState()
 			return new Promise((resolve, reject) => {
+				setLoading(true)
 				axios.get(process.env.VUE_APP_GORDA_API_URL + GLOBAL_METRIC_PATH, {
 					params: {
 						startDate: startDate,
 						endDate: endDate,
 					},
 				}).then((res) => {
+					setLoading(false)
 					console.log(res.data)
 					res.data.data.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
 					resolve()
 				}).catch(e => {
+					setLoading(false)
 					console.log(e.message)
 					reject(e)
 				})

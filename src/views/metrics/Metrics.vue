@@ -13,7 +13,7 @@
         <Bar
             v-if="loaded"
             id="percent-chart"
-            :options="chartOptions"
+            :options="globalChartOptions"
             :data="percentChartData"
         />
       </div>
@@ -41,9 +41,31 @@ import {useI18n} from 'vue-i18n'
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
 const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric} = useMetricsStore()
 const {t} = useI18n()
+const globalChartOptions: ChartOptions = {
+  responsive: true,
+  maintainAspectRatio: true,
+  scales: {
+    y: {
+      ticks: {
+        callback: function(value, index, ticks) {
+          return value + '%';
+        }
+      }
+    }
+  }
+}
 const chartOptions: ChartOptions = {
   responsive: true,
   maintainAspectRatio: true,
+  scales: {
+    y: {
+      ticks: {
+        callback: function(value, index, ticks) {
+          return value + '%';
+        }
+      }
+    }
+  }
 }
 const loaded: Ref<boolean> = ref(false)
 
