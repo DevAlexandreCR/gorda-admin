@@ -1,0 +1,19 @@
+.editLink {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.editLink a.button-link {
+    color: #f200d6e1;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease-in-out;
+}
+
+.editLink a.button-link:hover {
+    text-decoration: underline;
+}
+
+.editLink a.button-link:focus,
+.editLink a.button-link:active {
+    outline: none;
+}
