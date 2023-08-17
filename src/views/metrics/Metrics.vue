@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-6 chart">
       <Line
-          v-if="loaded"
+          v-if="isLoaded"
           id="global-chart"
           :options="chartOptions"
           :data="globalChartData"
@@ -11,9 +11,9 @@
     <div class="col-sm-6">
       <div class="chart">
         <Bar
-            v-if="loaded"
+            v-if="isLoaded"
             id="percent-chart"
-            :options="globalChartOptions"
+            :options="percentChartOptions"
             :data="percentChartData"
         />
       </div>
@@ -39,9 +39,9 @@ import {
 import {useI18n} from 'vue-i18n'
 
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
-const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric} = useMetricsStore()
+const {getCurrentYearMetric, loaded, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric} = useMetricsStore()
 const {t} = useI18n()
-const globalChartOptions: ChartOptions = {
+const percentChartOptions: ChartOptions = {
   responsive: true,
   maintainAspectRatio: true,
   scales: {
@@ -56,25 +56,16 @@ const globalChartOptions: ChartOptions = {
 }
 const chartOptions: ChartOptions = {
   responsive: true,
-  maintainAspectRatio: true,
-  scales: {
-    y: {
-      ticks: {
-        callback: function(value, index, ticks) {
-          return value + '%';
-        }
-      }
-    }
-  }
+  maintainAspectRatio: true
 }
-const loaded: Ref<boolean> = ref(false)
+const isLoaded: Ref<boolean> = ref(false)
 
 let globalChartData: ChartData
 let percentChartData: ChartData
 
 onBeforeMount(async () => {
-  await getCurrentYearMetric()
-  loaded.value = true
+  if (!loaded) await getCurrentYearMetric()
+  isLoaded.value = true
   globalChartData = {
     labels: Array.from(globalYearMetric.keys()),
     datasets: [
