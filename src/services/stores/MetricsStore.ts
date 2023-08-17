@@ -30,7 +30,6 @@ export const useMetricsStore = defineStore('metricsStore', {
 					},
 				}).then((res) => {
 					setLoading(false)
-					console.log(res.data)
 					res.data.data.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
