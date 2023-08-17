@@ -9,7 +9,8 @@ export default {
     dashboard: 'Dashboard',
     users: 'Usuarios',
     drivers: 'Conductores',
-    places: 'Lugares'
+    places: 'Lugares',
+    metrics: 'Métricas'
   },
   users: users,
   common: common,

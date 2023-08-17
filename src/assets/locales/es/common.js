@@ -40,11 +40,13 @@ export default {
     phone: 'Ingrese el teléfono',
     password: 'Contraseña',
     confirm_password: 'Confirmar contraseña',
+    restore_password: '¿Restablecer Contraseña?',
     address: 'Ingrese la dirección',
     comment: 'Ingrese un comentario (opcional)',
     search: 'Buscar',
     map: 'Mapa',
-    all: 'Todos'
+    all: 'Todos',
+    cancel_percent: 'Índice de cancelación'
   },
   forms: {
     select_img: 'Choose image from files'

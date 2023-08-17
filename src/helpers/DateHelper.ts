@@ -52,9 +52,19 @@ export default class DateHelper {
   {
     return dayjs(date, format).unix()
   }
+	
+	public static getDayjsFromDate(date: string, format = 'YYYY-MM-DD'): dayjs.Dayjs
+	{
+		return dayjs(date, format)
+	}
 
   public static getToDate(date: string, format = 'YYYY-MM-DD'): number
   {
     return dayjs(date, format).endOf('day').unix()
   }
+	
+	public static lastYear(): string
+	{
+		return dayjs().subtract(11, 'month').startOf('month').format('YYYY-MM-DD').toString()
+	}
 }
