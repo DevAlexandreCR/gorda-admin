@@ -91,7 +91,7 @@ class UserRepository {
 
   /* istanbul ignore next */
   async passwordAuth(uid: string, password: string): Promise<AxiosResponse> {
-    return axios.post(this.base_url + '/auth/update-password/', { uid: uid, password: password as string })
+    return axios.post(this.base_url + '/auth/update-password/', { uid: uid, password: password })
   }
 }
 
