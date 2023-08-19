@@ -1,44 +1,6 @@
-// =========================================================
-// Soft UI Dashboard - v1.0.7
-// =========================================================
-
-// Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
-// Copyright 2023 Creative Tim (https://www.creative-tim.com)
-// Licensed under MIT (https://github.com/creativetimofficial/soft-ui-dashboard/blob/main/LICENSE)
-
-// Coded by www.creative-tim.com
-
-// =========================================================
-
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 "use strict";
-(function() {
-  var isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
-  if (isWindows) {
-    // if we are on windows OS we activate the perfectScrollbar function
-    if (document.getElementsByClassName('main-content')[0]) {
-      var mainpanel = document.querySelector('.main-content');
-      // var ps = new PerfectScrollbar(mainpanel);
-    };
-
-    if (document.getElementsByClassName('sidenav')[0]) {
-      var sidebar = document.querySelector('.sidenav');
-      // var ps1 = new PerfectScrollbar(sidebar);
-    };
-
-    if (document.getElementsByClassName('navbar-collapse')[0]) {
-      var fixedplugin = document.querySelector('.navbar:not(.navbar-expand-lg) .navbar-collapse');
-      // var ps2 = new PerfectScrollbar(fixedplugin);
-    };
-
-    if (document.getElementsByClassName('fixed-plugin')[0]) {
-      var fixedplugin = document.querySelector('.fixed-plugin');
-      // var ps3 = new PerfectScrollbar(fixedplugin);
-    };
-  };
-})();
+const bootstrap = require('bootstrap')
 
 // Verify navbar blur on scroll
 navbarBlurOnScroll('navbarBlur');
@@ -234,17 +196,15 @@ function sidebarColor(a) {
   var sidebar = document.querySelector('.sidenav');
   sidebar.setAttribute("data-color", color);
 
-  if (document.querySelector('#sidenavCard')) {
-    var sidenavCard = document.querySelector('#sidenavCard');
-    let sidenavCardClasses = ['card', 'card-background', 'shadow-none', 'card-background-mask-' + color];
-    sidenavCard.className = '';
-    sidenavCard.classList.add(...sidenavCardClasses);
+  var sidenavCard = document.querySelector('#sidenavCard');
+  let sidenavCardClasses = ['card', 'card-background', 'shadow-none', 'card-background-mask-' + color];
+  sidenavCard.className = '';
+  sidenavCard.classList.add(...sidenavCardClasses);
 
-    var sidenavCardIcon = document.querySelector('#sidenavCardIcon');
-    let sidenavCardIconClasses = ['ni', 'ni-diamond', 'text-gradient', 'text-lg', 'top-0', 'text-' + color];
-    sidenavCardIcon.className = '';
-    sidenavCardIcon.classList.add(...sidenavCardIconClasses);
-  }
+  var sidenavCardIcon = document.querySelector('#sidenavCardIcon');
+  let sidenavCardIconClasses = ['ni', 'ni-diamond', 'text-gradient', 'text-lg', 'top-0', 'text-' + color];
+  sidenavCardIcon.className = '';
+  sidenavCardIcon.classList.add(...sidenavCardIconClasses);
 
 }
 
@@ -267,7 +227,6 @@ function navbarFixed(el) {
 };
 
 // Navbar blur on scroll
-
 function navbarBlurOnScroll(id) {
   const navbar = document.getElementById(id);
   let navbarScrollActive = navbar ? navbar.getAttribute("navbar-scroll") : false;
@@ -297,12 +256,10 @@ function navbarBlurOnScroll(id) {
   }
 
   function transparentNavbar() {
-    if (navbar) {
-      navbar.classList.remove(...classes)
-      navbar.classList.add(...toggleClasses)
+    navbar.classList.remove(...classes)
+    navbar.classList.add(...toggleClasses)
 
-      toggleNavLinksColor('transparent');
-    }
+    toggleNavLinksColor('transparent');
   }
 
   function toggleNavLinksColor(type) {
@@ -328,7 +285,6 @@ function navbarBlurOnScroll(id) {
     }
   }
 }
-
 
 // Debounce Function
 // Returns a function, that, as long as it continues to be invoked, will not
@@ -356,11 +312,8 @@ function sidebarType(a) {
   var parent = a.parentElement.children;
   var color = a.getAttribute("data-class");
 
-  var colors = [];
-
   for (var i = 0; i < parent.length; i++) {
     parent[i].classList.remove('active');
-    colors.push(parent[i].getAttribute('data-class'));
   }
 
   if (!a.classList.contains('active')) {
@@ -370,10 +323,8 @@ function sidebarType(a) {
   }
 
   var sidebar = document.querySelector('.sidenav');
-
-  for (var i = 0; i < colors.length; i++) {
-    sidebar.classList.remove(colors[i]);
-  }
+  sidebar.classList.remove('bg-transparent');
+  sidebar.classList.remove('bg-white');
 
   sidebar.classList.add(color);
 }
@@ -381,6 +332,7 @@ function sidebarType(a) {
 
 // Toggle Sidenav
 const iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
+const iconNavbarSidenavLg = document.getElementById('iconNavbarSidenavLg');
 const iconSidenav = document.getElementById('iconSidenav');
 const sidenav = document.getElementById('sidenav-main');
 let body = document.getElementsByTagName('body')[0];
@@ -388,6 +340,7 @@ let className = 'g-sidenav-pinned';
 
 if (iconNavbarSidenav) {
   iconNavbarSidenav.addEventListener("click", toggleSidenav);
+  iconNavbarSidenavLg.addEventListener("click", toggleSidenav);
 }
 
 if (iconSidenav) {
@@ -395,39 +348,40 @@ if (iconSidenav) {
 }
 
 function toggleSidenav() {
-  if (body.classList.contains(className)) {
+  if (body && body.classList.contains(className)) {
     body.classList.remove(className);
     setTimeout(function() {
       sidenav.classList.remove('bg-white');
     }, 100);
     sidenav.classList.remove('bg-transparent');
+    sidenav.classList.remove('sidenav-closed')
 
   } else {
     body.classList.add(className);
     sidenav.classList.add('bg-white');
     sidenav.classList.remove('bg-transparent');
-    iconSidenav.classList.remove('d-none');
+    sidenav.classList.add('sidenav-closed')
   }
 }
 
 // Resize navbar color depends on configurator active type of sidenav
 
-let referenceButtons = document.querySelector('[data-class]');
-
-window.addEventListener("resize", navbarColorOnResize);
-
-function navbarColorOnResize() {
-  if (window.innerWidth > 1200) {
-    if (referenceButtons.classList.contains('active') && referenceButtons.getAttribute('data-class') === 'bg-transparent') {
-      sidenav.classList.remove('bg-white');
-    } else {
-      sidenav.classList.add('bg-white');
-    }
-  } else {
-    sidenav.classList.add('bg-white');
-    sidenav.classList.remove('bg-transparent');
-  }
-}
+// let referenceButtons = document.querySelector('[data-class]');
+//
+// window.addEventListener("resize", navbarColorOnResize);
+//
+// function navbarColorOnResize() {
+//   if (window.innerWidth > 1200) {
+//     if (referenceButtons.classList.contains('active') && referenceButtons.getAttribute('data-class') === 'bg-transparent') {
+//       sidenav.classList.remove('bg-white');
+//     } else {
+//       sidenav.classList.add('bg-white');
+//     }
+//   } else {
+//     sidenav.classList.add('bg-white');
+//     sidenav.classList.remove('bg-transparent');
+//   }
+// }
 
 // Deactivate sidenav type buttons on resize and small screens
 window.addEventListener("resize", sidenavTypeOnResize);

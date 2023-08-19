@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.2.x
 
+## [1.2.7(2023-08-18)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.7...1.2.6)
+
+### Fixed
+- Styles and update dependencies. [#98](https://github.com/DevAlexandreCR/admin-driver/pull/98)
+
 ## [1.2.6(2023-08-17)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.6...1.2.5)
 
 ### Fixed

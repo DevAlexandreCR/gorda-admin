@@ -3,6 +3,7 @@ import Client from '@/models/Client'
 import ClientRepository from '@/repositories/ClientRepository'
 import countryCodes from '../../assets/location/CountryCodes.json'
 import {CountryCodeType} from '@/types/CountryCodeType'
+import {ClientInterface} from '@/types/ClientInterface'
 
 interface ClientsState {
 	clients: Array<Client>
@@ -16,14 +17,21 @@ export const useClientsStore = defineStore('clientsStore', {
     }
   },
   actions: {
-    async getClients() {
-      ClientRepository.onAll(async (client) => {
+    getClients(): void {
+      ClientRepository.onAll((client) => {
         this.clients.push(client)
       })
     },
     findById(id: string): Client {
       const client = this.clients.find(el => el.id == id)
       return client ?? new Client()
-    }
+    },
+		
+		updateClient(client: ClientInterface): void {
+			const index = this.clients.findIndex(cl => client.id === cl.id)
+			if (index >= 0) {
+				this.clients[index] = client
+			}
+		}
   }
 })
