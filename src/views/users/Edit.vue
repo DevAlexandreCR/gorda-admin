@@ -121,12 +121,12 @@
             <div class="mb-3">
               <Field name="password" type="password" v-slot="{ field }">
                 <div class="input-group">
-                  <input class="form-control form-control-sm" id="password" aria-label="Password" aria-describedby="password-addon" v-model="user.password"
-                    :placeholder="$t('common.placeholders.password')" v-bind="field"
-                    :type="showPassword ? 'text' : 'password'" />
                   <span style="cursor: pointer" class="input-group-text" @click="showPassword = !showPassword">
                     <i class="fa" :class="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
                   </span>
+                  <input class="form-control form-control-sm" id="password" aria-label="Password" aria-describedby="password-addon" v-model="user.password"
+                    :placeholder="$t('common.placeholders.password')" v-bind="field"
+                    :type="showPassword ? 'text' : 'password'" />
                 </div>
               </Field>
               <ErrorMessage name="password" />
