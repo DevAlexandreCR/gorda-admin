@@ -47,7 +47,7 @@ const percentChartOptions: ChartOptions = {
   scales: {
     y: {
       ticks: {
-        callback: function(value, index, ticks) {
+        callback: function(value) {
           return value + '%';
         }
       }
