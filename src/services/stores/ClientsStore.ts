@@ -17,8 +17,8 @@ export const useClientsStore = defineStore('clientsStore', {
     }
   },
   actions: {
-    async getClients(): void {
-      ClientRepository.onAll(async (client) => {
+    getClients(): void {
+      ClientRepository.onAll((client) => {
         this.clients.push(client)
       })
     },
