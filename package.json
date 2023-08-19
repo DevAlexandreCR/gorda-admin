@@ -31,7 +31,7 @@
     "qrcode": "^1.5.0",
     "socket.io-client": "^4.4.1",
     "sweetalert2": "^11.3.6",
-    "vee-validate": "4.5.6",
+    "vee-validate": "~4.6.0",
     "vue": "^3.0.0",
     "vue-chartjs": "^5.2.0",
     "vue-class-component": "^8.0.0-0",
