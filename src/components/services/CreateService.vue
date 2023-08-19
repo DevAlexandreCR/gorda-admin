@@ -91,7 +91,7 @@ import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
-const {clients, findById} = useClientsStore()
+const {clients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
@@ -156,7 +156,7 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
     return
   }
-  if (!values.client_id) {
+  if (!values.client_id || findById(values.client_id).name !== values.name) {
     setLoading(true)
     await createClient({
       id: '',
@@ -166,15 +166,20 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
       setLoading(false)
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
-      clientsPhone.value.push({
-        id: client.id,
-        value: client.phone
-      })
+      if (!findById(values.client_id)) {
+        clientsPhone.value.push({
+          id: client.id,
+          value: client.phone
+        })
+      } else {
+        updateClient(client)
+      }
     }).catch(e => {
       setLoading(false)
       ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
     })
   }
+
   createService(values)
   event.resetForm()
 }
