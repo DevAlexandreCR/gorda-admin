@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.2.x
 
+## [1.2.8(2023-08-30)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.8...1.2.7)
+
+### Added
+- Admin can remove driver's devices. [#100](https://github.com/DevAlexandreCR/admin-driver/pull/100)
+
 ## [1.2.7(2023-08-18)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.7...1.2.6)
 
 ### Fixed
