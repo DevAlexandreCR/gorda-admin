@@ -26,6 +26,7 @@ export default {
     admin: 'Administrador',
     operator: 'Operador',
     role: 'Role',
+    device: 'Dispositivo',
     status: 'Status'
   },
   platform_settings: 'Configuraciones',

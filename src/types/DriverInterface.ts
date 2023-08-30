@@ -1,4 +1,5 @@
 import {VehicleInterface} from "@/types/VehicleInterface";
+import {DeviceType} from '@/types/DeviceType'
 
 export interface DriverInterface {
   id: string
@@ -10,6 +11,7 @@ export interface DriverInterface {
   document: string
   photoUrl: string|null
   vehicle: VehicleInterface
+	device: DeviceType|null
   enabled_at: number
   created_at: number
 }

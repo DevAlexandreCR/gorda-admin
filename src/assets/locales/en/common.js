@@ -46,6 +46,7 @@ export default {
     search: 'Search',
     map: 'Map',
     all: 'All',
+    device: 'Driver has not device registered',
     cancel_percent: 'Canceled index'
   },
   filters: {
