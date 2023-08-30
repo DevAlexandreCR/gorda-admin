@@ -2,6 +2,7 @@ import {DriverInterface} from "@/types/DriverInterface";
 import Vehicle from "@/models/Vehicle";
 import {VehicleInterface} from "@/types/VehicleInterface";
 import dayjs from 'dayjs'
+import {DeviceType} from '@/types/DeviceType'
 
 export default class Driver implements DriverInterface {
 
@@ -16,6 +17,7 @@ export default class Driver implements DriverInterface {
   phone: string
   photoUrl: string | null
   vehicle: VehicleInterface
+	device: DeviceType|null = null
 
   constructor() {
     this.id = ''

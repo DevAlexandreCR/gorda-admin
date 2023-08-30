@@ -46,6 +46,7 @@ export default {
     search: 'Buscar',
     map: 'Mapa',
     all: 'Todos',
+    device: 'No tiene dispositivo registrado',
     cancel_percent: 'Índice de cancelación'
   },
   forms: {

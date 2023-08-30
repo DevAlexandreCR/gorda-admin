@@ -17,7 +17,7 @@
     },
     "drivers": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
+      ".write": "auth.uid != null"
     },
     "clients": {
       ".read": "auth.uid != null",

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import Vehicle from "@/models/Vehicle";
 import {DriverInterface} from "@/types/DriverInterface";
+import {DeviceType} from '@/types/DeviceType'
 
 class DriverMock implements DriverInterface{
   id = 'DriverID'
@@ -22,6 +23,11 @@ class DriverMock implements DriverInterface{
     tec_exp: 0,
     photoUrl: 'https://fakeUrl.com'
   }
+	
+	device: DeviceType = {
+		id: '1234567890',
+		name: 'Iphone XS'
+	}
 }
 
 export default new DriverMock()

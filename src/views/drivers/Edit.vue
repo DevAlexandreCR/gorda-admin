@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid pb-4">
     <Form @submit="updateDriver" :validation-schema="schema">
-      <div class="card w-75 mx-auto">
+      <div class="card mx-auto mx-xxl-5">
         <div class="card-header text-center text-capitalize">
           <h6>{{ $t('drivers.forms.create') }}</h6>
         </div>
@@ -28,35 +28,57 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.email') }}</label>
-                <div class="input-group">
-                  <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')"
-                    readonly aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
-                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
-                    data-bs-target="#editGmail">
-                    {{ $t('common.actions.edit') }}
-                  </button>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>{{ $t('users.fields.email') }}</label>
+                    <div class="input-group">
+                      <input type="email" class="form-control form-control-sm" :placeholder="$t('common.placeholders.email')"
+                             readonly aria-label="Email" name="email" aria-describedby="email-addon" v-model="driver.email">
+                      <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
+                              data-bs-target="#editGmail">
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label>{{ $t('users.fields.password') }}</label>
+                    <div class="input-group">
+                      <input type="password" class="form-control form-control-sm"
+                             :placeholder="$t('common.placeholders.password')" readonly aria-label="Password" name="password"
+                             aria-describedby="password-addon" v-model="driver.password">
+                      <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
+                              data-bs-target="#editPassword">
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="form-group">
-                <label>{{ $t('users.fields.password') }}</label>
-                <div class="input-group">
-                  <input type="password" class="form-control form-control-sm"
-                    :placeholder="$t('common.placeholders.password')" readonly aria-label="Password" name="password"
-                    aria-describedby="password-addon" v-model="driver.password">
-                  <button class="badge bg-secondary border-0" type="button" data-bs-toggle="modal"
-                    data-bs-target="#editPassword">
-                    {{ $t('common.actions.edit') }}
-                  </button>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>{{ $t('users.fields.phone') }}</label>
+                    <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
+                      <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
+                             v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" />
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                    </Field>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>{{ $t('users.fields.device') }}</label>
+                    <div class="input-group" v-if="driver.device">
+                      <input type="text" class="form-control form-control-sm disabled"
+                             disabled aria-label="Device" name="device.name"
+                             aria-describedby="device-addon" v-model="driver.device.name">
+                      <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()">
+                        <em class="fa fa-solid fa-trash"></em>
+                      </button>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" v-else
+                           :placeholder="$t('common.placeholders.device')" disabled aria-label="Device" name="device"
+                           aria-describedby="password-addon" v-model="driver.device">
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label>{{ $t('users.fields.phone') }}</label>
-                <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
-                  <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
-                    v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" disabled />
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
               </div>
               <div class="form-group">
                 <div class="row">
@@ -109,21 +131,25 @@
                 </Field>
               </div>
               <div class="form-group">
-                <label>{{ $t('drivers.vehicle.model') }}</label>
-                <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model"
-                  v-slot="{ errorMessage, meta }">
-                  <option v-for="(year) in DateHelper.arrayYears()" :key="year" :value="year">{{ year }}</option>
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.plate') }}</label>
-                <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
-                  <input class="form-control form-control-sm" v-model="driver.vehicle.plate"
-                    :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate"
-                    aria-describedby="plate-addon" autocomplete="none" />
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.vehicle.model') }}</label>
+                    <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model"
+                           v-slot="{ errorMessage, meta }">
+                      <option v-for="(year) in DateHelper.arrayYears()" :key="year" :value="year">{{ year }}</option>
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                    </Field>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.vehicle.plate') }}</label>
+                    <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
+                      <input class="form-control form-control-sm" v-model="driver.vehicle.plate"
+                             :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate"
+                             aria-describedby="plate-addon" autocomplete="none" />
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                    </Field>
+                  </div>
+                </div>
               </div>
               <div class="row">
                 <div class="form-group col-sm-8">
@@ -393,5 +419,9 @@ function onEnable(event: Event): void {
     setLoading(false)
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
+}
+
+function removeDevice(): void {
+  driver.value.device = null
 }
 </script>
