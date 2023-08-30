@@ -56,12 +56,6 @@ describe('Edit.vue', () => {
     await router.push('/dashboard/drivers/DriverID/edit')
     DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
     DriverRepository.update = jest.fn().mockResolvedValue(null)
-    wrapper = mount(Edit, {
-      attachTo: '#root',
-      global: {
-        plugins: [router, i18n]
-      },
-    })
     const unix = dayjs().unix()
     DriverMock.vehicle.soat_exp = unix
     DriverMock.vehicle.tec_exp = unix
@@ -78,6 +72,11 @@ describe('Edit.vue', () => {
     const error = wrapper.findAllComponents(ErrorMessage)
     const imageLoader = wrapper.findAllComponents(ImageLoader)
     const dates = wrapper.findAll('input[type="date"]')
+		const device = wrapper.find('input[name="device.name"]')
+		const deviceButton = wrapper.find('#removeDevice')
+		expect(deviceButton.exists()).toBeTruthy()
+		expect(device.exists()).toBeTruthy()
+		expect(field.length).toBe(14)
     expect(field.length).toBe(14)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(5)
@@ -117,6 +116,28 @@ describe('Edit.vue', () => {
     
     expect(success).toHaveBeenCalledWith('success', i18n.global.t('users.messages.enabled'))
   })
+	
+	it('should set null device and remove input', async () => {
+		await router.push('/dashboard/drivers/DriverID/edit')
+		DriverRepository.update = jest.fn().mockResolvedValue(null)
+		DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
+		DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
+		wrapper = mount(Edit, {
+			attachTo: '#root',
+			global: {
+				plugins: [router, i18n]
+			},
+		})
+		await nextTick()
+		const deviceButton = wrapper.find('#removeDevice')
+		await deviceButton.trigger('click')
+		await nextTick()
+		
+		const input = wrapper.find('input[name="device.name"]')
+		
+		expect(input.exists()).toBeFalsy()
+		expect(wrapper.vm.driver.device).toBeNull()
+	})
   
   it('should show toast error when enable driver', async () => {
     DriverRepository.enable = jest.fn().mockRejectedValue(new Error('new Error'))

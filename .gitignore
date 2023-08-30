@@ -34,3 +34,4 @@ pubsub-debug.log
 *.sln
 *.sw?
 /coverage/
+./.firebase

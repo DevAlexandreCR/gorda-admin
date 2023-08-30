@@ -70,7 +70,7 @@
                       <input type="text" class="form-control form-control-sm disabled"
                              disabled aria-label="Device" name="device.name"
                              aria-describedby="device-addon" v-model="driver.device.name">
-                      <button class="badge bg-danger border-0" type="button" @click="removeDevice()">
+                      <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()">
                         <em class="fa fa-solid fa-trash"></em>
                       </button>
                     </div>
