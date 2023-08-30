@@ -60,7 +60,7 @@
                     <label>{{ $t('users.fields.phone') }}</label>
                     <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
                       <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
-                             v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" disabled />
+                             v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" />
                       <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
                   </div>
