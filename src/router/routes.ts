@@ -14,6 +14,7 @@ import UserCreate from '@/views/users/Create.vue'
 import adminGuard from "@/router/guards/AdminGuard";
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import Metrics from '@/views/metrics/Metrics.vue'
+import Settings from '@/views/settings/SettingsApp.vue'
 
 
 const routes: Array<any> = [
@@ -118,6 +119,19 @@ const routes: Array<any> = [
 					},
 				]
 			},
+      {
+        path: 'dashboard/settings',
+        name: 'settings',
+        redirect: {name: 'settings.index'},
+        component: Settings,
+        children: [
+          {
+            path: '/dashboard/settings/index/',
+            name: 'settings.index',
+            component: Settings
+          },
+        ]
+      }
     ]
   },
   {
