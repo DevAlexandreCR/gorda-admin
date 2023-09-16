@@ -3,124 +3,131 @@
     <ul class="nav nav-tabs" id="myTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="tarifas-tab" data-bs-toggle="tab" data-bs-target="#tarifas" type="button"
-          role="tab" aria-controls="tarifas" aria-selected="true">Tarifas</button>
+          role="tab" aria-controls="tarifas" aria-selected="true">{{ $t('common.settings.Ride_Fees') }}</button>
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
       <div class="tab-pane fade show active" role="tabpanel" id="tarifas" aria-labelledby="tarifas-tab">
         <div class="card">
-          <div class="card-body">
+          <div class="card-body pt-2">
             <form>
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Precio por Kilómetro</label>
-                    <input type="number" class="form-control form-control-sm"
-                      :disabled="campoEditado !== 'price_kilometer'" v-model="rideFees.price_kilometer" />
+                    <label class="form label">{{ $t('common.settings.price_kilometer') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'price_kilometer'" v-model="rideFees.price_kilometer" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('price_kilometer')"
+                        :disabled="campoEditado === 'price_kilometer'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('price_kilometer')"
-                    :disabled="campoEditado === 'price_kilometer'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Precio por Minuto</label>
-                    <input type="number" class="form-control form-control-sm" :disabled="campoEditado !== 'price_minute'"
-                      v-model="rideFees.price_minute" />
+                    <label class="form label">{{ $t('common.settings.price_minute') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'price_minute'" v-model="rideFees.price_minute" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('price_minute')"
+                        :disabled="campoEditado === 'price_minute'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('price_minute')"
-                    :disabled="campoEditado === 'price_minute'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Tarifa Base</label>
-                    <input type="number" class="form-control form-control-sm" :disabled="campoEditado !== 'fees_base'"
-                      v-model="rideFees.fees_base" />
+                    <label class="form label">{{ $t('common.settings.fees_base') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_base'" v-model="rideFees.fees_base" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_base')"
+                        :disabled="campoEditado === 'fees_base'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_base')"
-                    :disabled="campoEditado === 'fees_base'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Tarifas Adicionales</label>
-                    <input type="number" class="form-control form-control-sm"
-                      :disabled="campoEditado !== 'fees_additional'" v-model="rideFees.fees_additional" />
+                    <label class="form label">{{ $t('common.settings.fees_additional') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_additional'" v-model="rideFees.fees_additional" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_additional')"
+                        :disabled="campoEditado === 'fees_additional'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_additional')"
-                    :disabled="campoEditado === 'fees_additional'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Tarifa Mínima</label>
-                    <input type="number" class="form-control form-control-sm" :disabled="campoEditado !== 'fees_minimum'"
-                      v-model="rideFees.fees_minimum" />
+                    <label class="form label">{{ $t('common.settings.fees_minimum') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_minimum'" v-model="rideFees.fees_minimum" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_minimum')"
+                        :disabled="campoEditado === 'fees_minimum'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_minimum')"
-                    :disabled="campoEditado === 'fees_minimum'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Nocturno</label>
-                    <input type="number" class="form-control form-control-sm" :disabled="campoEditado !== 'fees_night'"
-                      v-model="rideFees.fees_night" />
+                    <label class="form label">{{ $t('common.settings.fees_night') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_night'" v-model="rideFees.fees_night" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_night')"
+                        :disabled="campoEditado === 'fees_night'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_night')"
-                    :disabled="campoEditado === 'fees_night'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Domingos y Festivos</label>
-                    <input type="number" class="form-control form-control-sm" :disabled="campoEditado !== 'fees_DxF'"
-                      v-model="rideFees.fees_DxF" />
+                    <label class="form label">{{ $t('common.settings.fees_DxF') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_DxF'" v-model="rideFees.fees_DxF" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_DxF')"
+                        :disabled="campoEditado === 'fees_DxF'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_DxF')"
-                    :disabled="campoEditado === 'fees_DxF'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                   <div class="form-group">
-                    <label>Domingos y Festivos Nocturnos</label>
-                    <input type="number" class="form-control form-control-sm"
-                      :disabled="campoEditado !== 'fees_night_DxF'" v-model="rideFees.fees_night_DxF" />
+                    <label class="form label">{{ $t('common.settings.fees_night_DxF') }}</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control form-control-sm"
+                        :disabled="campoEditado !== 'fees_night_DxF'" v-model="rideFees.fees_night_DxF" />
+                      <button class="badge bg-secondary border-0" @click="editarCampo('fees_night_DxF')"
+                        :disabled="campoEditado === 'fees_night_DxF'">
+                        <i class="fas fa-pencil"></i>
+                        {{ $t('common.actions.edit') }}
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div class="col-sm-3 align-self-center">
-                  <button class="btn btn-sm btn-primary" @click="editarCampo('fees_night_DxF')"
-                    :disabled="campoEditado === 'fees_night_DxF'">
-                    <i class="fas fa-pencil"></i>
-                  </button>
                 </div>
               </div>
               <div class="mt-4">
-                <button type="button" class="btn btn-primary"
-                  @click="actualizarCampo(campoEditado, rideFees[campoEditado])">
-                  Guardar Configuración
+                <button type="button" class="btn btn-primary" @click="actualizarTodosLosCampos" :disabled="!buttonSubmitEdit">
+                  {{ $t('common.actions.submit') }}
                 </button>
               </div>
             </form>
@@ -137,22 +144,24 @@ import SettingsRepository from '@/repositories/SettingsRepository'
 
 const rideFees = ref({})
 const campoEditado = ref('')
+const buttonSubmitEdit = ref(false)
 
 const editarCampo = (fieldName) => {
   campoEditado.value = campoEditado.value === fieldName ? '' : fieldName
+  buttonSubmitEdit.value = true
 }
 
-const actualizarCampo = async (fieldName, value) => {
+const actualizarTodosLosCampos = async () => {
   try {
-    await SettingsRepository.updateRideFeeField(fieldName, value)
-    rideFees.value[fieldName] = value
+    for (const fieldName in rideFees.value) {
+      await SettingsRepository.updateRideFeeField(fieldName, rideFees.value[fieldName])
+    }
   } catch (error) {
-    console.error('Error al actualizar el campo', error)
+    console.error('Error al actualizar los campos', error)
   }
-};
+}
 
 onMounted(async () => {
-  const rideFeesData = await SettingsRepository.getRideFees()
-  rideFees.value = rideFeesData
+  rideFees.value = await SettingsRepository.getRideFees()
 })
 </script>

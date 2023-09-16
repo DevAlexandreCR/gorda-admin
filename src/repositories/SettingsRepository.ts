@@ -1,6 +1,7 @@
-import { SettingsInterface, SettingsRideFees } from '@/types/SettingsInterface'
 import DBService from '@/services/DBService'
 import { DataSnapshot, get, off, onValue, query, ref, set } from 'firebase/database'
+import { SettingsInterface } from '@/types/SettingsInterface'
+import { RideFeeInterface } from '@/types/RideFeeInterface'
 
 class SettingsRepository {
 
@@ -16,9 +17,9 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	async getRideFees(): Promise<SettingsRideFees> {
+	async getRideFees(): Promise<RideFeeInterface> {
 		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/ride_fees'))
-		return <SettingsRideFees>snapshot.val()
+		return <RideFeeInterface>snapshot.val()
 	}
 
 	/* istanbul ignore next */

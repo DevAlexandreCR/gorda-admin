@@ -87,6 +87,15 @@ export default {
   },
   settings: {
     wpNotifications: 'WhatsApp Confirmations',
-    alert_notifications: 'Until confirmations are enabled won\'t send messages'
+    alert_notifications: 'Until confirmations are enabled won\'t send messages',
+    Ride_Fees: 'Ride Fees',
+    price_kilometer: 'price for kilometer',
+    price_minute: 'price for minute',
+    fees_base: 'base fee',
+    fees_additional: 'fee additional',
+    fees_minimum: 'fee for minimum',
+    fees_night: 'fee of night',
+    fees_DxF: 'Sundays and holidays',
+    fees_night_DxF: 'Sundays and night holidays'
   }
 }
