@@ -62,7 +62,7 @@
                         :disabled="campoEditado !== 'fees_additional'" v-model="rideFees.fees_additional" />
                       <button class="badge bg-secondary border-0" @click="editarCampo('fees_additional')"
                         :disabled="campoEditado === 'fees_additional'">
-                        <i class="fas fa-pencil"></i>
+                        <em class="fas fa-pencil"></em>
                         {{ $t('common.actions.edit') }}
                       </button>
                     </div>
@@ -141,8 +141,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
+import {RideFeeInterface} from '@/types/RideFeeInterface'
+import {Ref} from "vue";
 
-const rideFees = ref({})
+const rideFees: Ref<RideFeeInterface> = ref({})
 const campoEditado = ref('')
 const buttonSubmitEdit = ref(false)
 
@@ -152,13 +154,10 @@ const editarCampo = (fieldName) => {
 }
 
 const actualizarTodosLosCampos = async () => {
-  try {
-    for (const fieldName in rideFees.value) {
-      await SettingsRepository.updateRideFeeField(fieldName, rideFees.value[fieldName])
-    }
-  } catch (error) {
-    console.error('Error al actualizar los campos', error)
-  }
+  //set loadinf
+  await SettingsRepository.updateRideFee(rideFees.value)
+      .then()
+      .catch()
 }
 
 onMounted(async () => {

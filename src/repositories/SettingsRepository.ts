@@ -12,8 +12,8 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	async updateRideFeeField(fieldName: string, value: number): Promise<void> {
-		await set(ref(DBService.db, `settings/ride_fees/${fieldName}`), value)
+	async updateRideFee(rideFee: RideFeeInterface): Promise<void> {
+		await set(ref(DBService.db, `settings/ride_fees/`), rideFee)
 	}
 
 	/* istanbul ignore next */
