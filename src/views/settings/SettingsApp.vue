@@ -138,7 +138,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import {RideFeeInterface} from '@/types/RideFeeInterface'
