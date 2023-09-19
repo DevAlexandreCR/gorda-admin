@@ -148,7 +148,7 @@ const rideFees: Ref<RideFeeInterface> = ref({})
 const campoEditado = ref('')
 const buttonSubmitEdit = ref(false)
 
-const editarCampo = (fieldName) => {
+const editarCampo = (fieldName: string) => {
   campoEditado.value = campoEditado.value === fieldName ? '' : fieldName
   buttonSubmitEdit.value = true
 }
