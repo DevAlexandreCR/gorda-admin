@@ -139,10 +139,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref, Ref } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
-import { Ref } from "vue"
 import { useLoadingState } from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
