@@ -151,9 +151,9 @@ import { Form } from 'vee-validate'
 const { setLoading } = useLoadingState()
 
 const rideFees: Ref<RideFeeInterface> = ref({})
-const fieldEdited = ref('')
-const submitButtonEnabled = ref(false)
-const allFieldsDisabled = ref(true);
+const fieldEdited: Ref<string> = ref('')
+const submitButtonEnabled: Ref<boolean> = ref(false)
+const allFieldsDisabled: Ref<boolean> = ref(true);
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
