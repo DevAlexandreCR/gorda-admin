@@ -5,6 +5,16 @@ coverage:
   precision: 2
   round: down
   range: "80...100"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        paths:
+          - src/
+        flags:
+          - frontend
 
 comment:
   layout: "reach,diff,flags,files,footer"

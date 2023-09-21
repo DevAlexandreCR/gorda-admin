@@ -51,6 +51,18 @@
     "functions": {
       "port": 5001,
       "host": "127.0.0.1"
+    },
+    "hub": {
+      "host": "0.0.0.0",
+      "port": 4400
+    },
+    "logging": {
+      "host": "0.0.0.0",
+      "port": 4500
+    },
+    "eventarc": {
+      "host": "0.0.0.0",
+      "port": 9299
     }
   },
   "storage": {
