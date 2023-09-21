@@ -86,6 +86,16 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link :to="{ name: 'settings'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/settings/') ? 'nav-link active': 'nav-link'">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-solid fa-screwdriver-wrench"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('routes.settings') }}</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" @click="signOut" href="" id="signOut">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">

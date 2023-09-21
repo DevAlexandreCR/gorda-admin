@@ -10,7 +10,8 @@ export default {
     users: 'Usuarios',
     drivers: 'Conductores',
     places: 'Lugares',
-    metrics: 'Métricas'
+    metrics: 'Métricas',
+    settings: 'Ajustes'
   },
   users: users,
   common: common,

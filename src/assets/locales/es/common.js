@@ -87,6 +87,15 @@ export default {
   },
   settings: {
     wpNotifications: 'Confirmaciones de WhatsApp',
-    alert_notifications: 'No se enviarán mensajes hasta que las confirmaciones estén habilitadas'
+    alert_notifications: 'No se enviarán mensajes hasta que las confirmaciones estén habilitadas',
+    Ride_Fees: 'Tarifas',
+    price_kilometer: 'Precio por kilómetro',
+    price_minute: 'Precio por Minuto',
+    fees_base: 'Tarifa Base',
+    fees_additional: 'Tarifas Adicionales',
+    fees_minimum: 'Tarifa Mínima',
+    fees_night: 'Nocturno',
+    fees_DxF: 'Domingos y Festivos',
+    fees_night_DxF: 'Domingos y Festivos Nocturnos'
   }
 }
