@@ -4,30 +4,54 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">
-          {{ $t('services.statuses.pending') }}
-          <span class="badge badge-circle bg-danger"
-                v-show="pendings.length > 0">{{ pendings.length }}</span>
+                <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-regular fa-clock"></em>
+            </div>
+            <span class="d-none d-sm-inline">{{ $t('services.statuses.pending') }}</span>
+            <div class="p-1">
+              <span class="badge badge-circle bg-danger" v-show="pendings.length > 0">{{ pendings.length }}</span>
+            </div>
+          </div>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">
-          {{ $t('services.statuses.in_progress') }}
-          <span class="badge badge-circle bg-success"
-                v-show="inProgress.length > 0">{{ inProgress.length }}</span>
+                <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <em class="fa-solid fa-spinner"></em>
+            </div>
+            <span class="d-none d-sm-inline">{{ $t('services.statuses.in_progress') }}</span>
+            <div class="p-1">
+              <span class="badge badge-circle bg-success" v-show="inProgress.length > 0">{{ inProgress.length }}</span>
+            </div>
+          </div>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="history-tab" data-bs-toggle="tab" @click="currentTap = 'history'"
                 data-bs-target="#history" type="button"
                 role="tab"
-                aria-controls="history" aria-selected="false">{{ $t('services.history') }}
+                aria-controls="history" aria-selected="false">
+                <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-regular fa-folder-open"></em>
+            </div>
+            <span class="d-none d-sm-inline">{{ $t('services.history') }}</span>
+          </div>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'"
                 data-bs-target="#mapTab" type="button" role="tab"
-                aria-controls="map" aria-selected="false">{{ $t('common.placeholders.map') }}
+                aria-controls="map" aria-selected="false">
+                <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-solid fa-map-location-dot"></em>
+            </div>
+            <span class="d-none d-sm-inline">{{ $t('common.placeholders.map') }}</span>
+          </div>
         </button>
       </li>
     </ul>
