@@ -5,7 +5,7 @@
         <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">
                 <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'pending' }">
               <em class="fa-regular fa-clock"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.statuses.pending') }}</span>
@@ -19,7 +19,7 @@
         <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">
                 <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'progress' }">
                 <em class="fa-solid fa-spinner"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.statuses.in_progress') }}</span>
@@ -35,7 +35,7 @@
                 role="tab"
                 aria-controls="history" aria-selected="false">
                 <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'history' }">
               <em class="fa-regular fa-folder-open"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.history') }}</span>
@@ -47,7 +47,7 @@
                 data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">
                 <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'mapTab' }">
               <em class="fa-solid fa-map-location-dot"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('common.placeholders.map') }}</span>
