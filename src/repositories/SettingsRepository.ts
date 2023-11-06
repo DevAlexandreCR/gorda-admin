@@ -45,5 +45,9 @@ class WpClientRepository {
 	createClient(client: WpClient): Promise<void> {
 		return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), client)
 	}
+
+	deleteClient(client: WpClient): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), null)
+	}
 }
 export default new WpClientRepository()

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row container-fluid">
+    <div class="container-fluid d-flex justify-content-end">
       <button class="btn btn-primary" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
     </div>
     <div class="row container-fluid">
@@ -47,10 +47,12 @@
 import {useWpClientsStore} from "@/services/stores/WpClientStore"
 import Connection from "@/views/Connection.vue"
 import {storeToRefs} from "pinia"
-import {reactive} from "vue";
+import {reactive, watch} from "vue";
 import {WpClient} from "@/types/WpClient";
 import {ErrorMessage, Field, Form} from "vee-validate";
 import * as yup from "yup";
+import {StrHelper} from "@/helpers/StrHelper";
+import {hide} from "@/helpers/ModalHelper";
 
 const {clients} = storeToRefs(useWpClientsStore())
 const {createClient} = useWpClientsStore()
@@ -65,7 +67,11 @@ const schema = yup.object().shape({
   alias: yup.string().required().min(3)
 })
 
+watch(newClient, (client) => {
+  newClient.alias = StrHelper.toCamelCase(client.alias?? '')
+}, {deep: true})
+
 function create(): void {
-  createClient(newClient)
+  createClient(newClient).finally(() => hide('create-client'))
 }
 </script>

@@ -40,6 +40,15 @@ export const useWpClientsStore = defineStore('settingsStore', {
       await SettingsRepository.createClient(client).then(() => {
         this.clients[client.id] = client
       }).finally(() => setLoading(false))
+    },
+
+    async deleteClient(client: WpClient): Promise<void> {
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      await SettingsRepository.deleteClient(client).then(() => {
+        delete this.clients[client.id]
+        console.log(this.clients)
+      }).finally(() => setLoading(false))
     }
   }
 })
