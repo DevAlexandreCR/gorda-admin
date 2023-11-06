@@ -4,7 +4,7 @@
       <h4>
         {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
       </h4>
-      <h6>{{client.id}}</h6>
+      <h6>{{client.alias}}</h6>
     </div>
     <div class="card-body p-0 mx-3 mt-3 position-relative z-index-1">
       <div class="container text-center">
@@ -20,6 +20,7 @@
         </div>
         <canvas class="img img-fluid h-25 h-auto" v-show="qr && !connected" id="canvas"></canvas>
       </div>
+      <div class="container text-center">{{client.id}}</div>
     </div>
 
     <div class="card-footer pt-2">
