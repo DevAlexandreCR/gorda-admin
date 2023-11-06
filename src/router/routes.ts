@@ -8,7 +8,7 @@ import UserEdit from '@/views/users/Edit.vue'
 import DriverCreate from '@/views/drivers/Create.vue'
 import DriverIndex from '@/views/drivers/Index.vue'
 import DriverEdit from '@/views/drivers/Edit.vue'
-import Connection from '@/views/Connection.vue'
+import WpClientIndex from '@/views/whatsapp/Index.vue'
 import Places from '@/views/places/Places.vue'
 import UserCreate from '@/views/users/Create.vue'
 import adminGuard from "@/router/guards/AdminGuard";
@@ -102,23 +102,23 @@ const routes: Array<any> = [
         component: Profile
       },
       {
-        path: 'dashboard/connection',
-        name: 'connection',
-        component: Connection
+        path: 'dashboard/wp-clients',
+        name: 'wpClients',
+        component: WpClientIndex
       },
-			{
-				path: 'dashboard/metrics',
-				name: 'metrics',
-				redirect: {name: 'metrics.index'},
-				component: Metrics,
-				children: [
-					{
-						path: '/dashboard/metrics/index/',
-						name: 'metrics.index',
-						component: Metrics
-					},
-				]
-			},
+      {
+        path: 'dashboard/metrics',
+        name: 'metrics',
+        redirect: {name: 'metrics.index'},
+        component: Metrics,
+        children: [
+          {
+            path: '/dashboard/metrics/index/',
+            name: 'metrics.index',
+            component: Metrics
+          },
+        ]
+      },
       {
         path: 'dashboard/settings',
         name: 'settings',

@@ -61,8 +61,8 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link :to="{ name: 'connection'}" tag="a"
-                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ?
+          <router-link :to="{ name: 'wpClients'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/wp-clients/') ?
                        'nav-link active': 'nav-link'">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">

@@ -23,14 +23,14 @@ import {useClientsStore} from '@/services/stores/ClientsStore'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {onMounted} from 'vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
-import {useSettingsStore} from '@/services/stores/SettingsStore'
+import {useWpClientsStore} from '@/services/stores/WpClientStore'
 
 const {getPlaces} = usePlacesStore()
 const {getClients} = useClientsStore()
 const {getDrivers} = useDriversStore()
 const {getHistoryServices} = useServicesStore()
 const {getPendingServices, getInProgressServices} = useServicesStore()
-const {getSettings} = useSettingsStore()
+const {getWpClients} = useWpClientsStore()
 
 getPlaces()
 getClients()
@@ -38,7 +38,7 @@ getDrivers()
 getHistoryServices()
 getPendingServices()
 getInProgressServices()
-getSettings()
+getWpClients()
 
 onMounted(() => {
   require('@/vendor/js/soft-ui-dashboard')

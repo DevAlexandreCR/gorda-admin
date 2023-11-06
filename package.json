@@ -14,7 +14,7 @@
     "lint-check": "vue-cli-service lint --no-fix --ignore-path .eslintignore src/",
     "serve:firebase": "firebase serve",
     "start:emulators": "firebase emulators:start --import dataEmulators --export-on-exit",
-    "watch": "run-p build:watch"
+    "watch": "build:watch"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.14.3",

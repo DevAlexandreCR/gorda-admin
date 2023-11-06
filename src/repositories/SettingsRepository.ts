@@ -1,14 +1,19 @@
 import DBService from '@/services/DBService'
 import { DataSnapshot, get, off, onValue, query, ref, set } from 'firebase/database'
-import { SettingsInterface } from '@/types/SettingsInterface'
+import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
+import {ClientDictionary} from "@/types/ClientDiccionary";
 
-class SettingsRepository {
+class WpClientRepository {
 
 	/* istanbul ignore next */
-	async getSettings(): Promise<SettingsInterface> {
-		const snapshot: DataSnapshot = await get(DBService.dbSettings())
-		return <SettingsInterface>snapshot.val()
+	async getWpClients(): Promise<ClientDictionary> {
+		const snapshot: DataSnapshot = await get(DBService.dbWpClients())
+		const clients: ClientDictionary = {}
+		snapshot.forEach(data => {
+			if (data.key) clients[data.key] = <WpClient>data.val()
+		})
+		return clients
 	}
 
 	/* istanbul ignore next */
@@ -23,18 +28,18 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	enableWpNotifications(enable: boolean): Promise<void> {
-		return set(ref(DBService.db, 'settings/wpNotifications'), enable);
+	enableWpNotifications(clientId: string, enable: boolean): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${clientId}/wpNotifications/`), enable);
 	}
 
 	/* istanbul ignore next */
-	onWpNotifications(listener: (enable: DataSnapshot) => void): void {
-		onValue(query(ref(DBService.db, 'settings/wpNotifications')), listener)
+	onWpNotifications(client: WpClient, listener: (enable: DataSnapshot) => void): void {
+		onValue(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), listener)
 	}
 
 	/* istanbul ignore next */
-	offWpNotifications(): void {
-		off(query(ref(DBService.db, 'settings/wpNotifications')), 'value')
+	offWpNotifications(client: WpClient): void {
+		off(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), 'value')
 	}
 }
-export default new SettingsRepository()
+export default new WpClientRepository()

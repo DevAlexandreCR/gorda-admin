@@ -11,7 +11,7 @@ export default {
     drivers: 'Drivers',
     places: 'Places',
     metrics: 'Metrics',
-    settings: 'Settings'
+    clients: 'Settings'
   },
   users: users,
   common: common,

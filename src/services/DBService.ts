@@ -35,8 +35,8 @@ class DBService {
   }
 	
 	/* istanbul ignore next */
-	public dbSettings(): DatabaseReference {
-		return ref(this.db, 'settings/')
+	public dbWpClients(): DatabaseReference {
+		return ref(this.db, 'settings/wp_clients')
 	}
 }
 
