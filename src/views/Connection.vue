@@ -1,10 +1,10 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <h4>
+      <h4>{{client.alias}}</h4>
+      <h6>
         {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
-      </h4>
-      <h6>{{client.alias}}</h6>
+      </h6>
     </div>
     <div class="card-body p-0 mx-3 mt-3 position-relative z-index-1">
       <div class="container text-center">

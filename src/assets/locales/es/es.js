@@ -3,6 +3,7 @@ import common from './common'
 import validations from '@/assets/locales/es/validations'
 import services from '@/assets/locales/es/services'
 import drivers from "@/assets/locales/es/drivers";
+import wp from "@/assets/locales/es/wp";
 
 export default {
   routes: {
@@ -11,11 +12,12 @@ export default {
     drivers: 'Conductores',
     places: 'Lugares',
     metrics: 'Métricas',
-    clients: 'Ajustes'
+    settings: 'Ajustes'
   },
   users: users,
   common: common,
   validations: validations,
   services: services,
-  drivers: drivers
+  drivers: drivers,
+  wp: wp
 }

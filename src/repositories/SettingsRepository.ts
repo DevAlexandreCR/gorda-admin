@@ -41,5 +41,9 @@ class WpClientRepository {
 	offWpNotifications(client: WpClient): void {
 		off(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), 'value')
 	}
+
+	createClient(client: WpClient): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), client)
+	}
 }
 export default new WpClientRepository()

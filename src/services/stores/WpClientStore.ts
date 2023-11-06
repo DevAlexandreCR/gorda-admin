@@ -22,7 +22,6 @@ export const useWpClientsStore = defineStore('settingsStore', {
 		
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
-      console.log(this.clients)
     },
 
     onWpNotification(client: WpClient): void {
@@ -33,6 +32,14 @@ export const useWpClientsStore = defineStore('settingsStore', {
 
     offWpNotifications(client: WpClient): void {
       SettingsRepository.offWpNotifications(client)
+    },
+
+    async createClient(client: WpClient): Promise<void> {
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      await SettingsRepository.createClient(client).then(() => {
+        this.clients[client.id] = client
+      }).finally(() => setLoading(false))
     }
   }
 })
