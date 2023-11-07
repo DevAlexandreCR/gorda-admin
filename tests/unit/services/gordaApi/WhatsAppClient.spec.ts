@@ -2,12 +2,18 @@ import {openServer, server, socket} from '../../../testSetup'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
+import {WpClient} from "@/types/WpClient";
 
 describe('WhatsAppClient.ts', () => {
   let client: WhatsAppClient
   
   beforeEach((done) => {
-    client = WhatsAppClient.getInstance()
+    client = WhatsAppClient.getInstance({
+      id: '31037904656',
+      wpNotifications: false,
+      chatBot: false,
+      alias: 'Test'
+    } as WpClient)
     openServer(done)
   }, 10000)
   

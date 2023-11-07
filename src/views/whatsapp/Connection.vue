@@ -127,7 +127,7 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
   onWpNotification(props.client)
-  wpClient = WhatsAppClient.getInstance()
+  wpClient = WhatsAppClient.getInstance(props.client)
   const observer = new ClientObserver(onUpdate)
   wpClient.attach(observer)
   connected.value = wpClient.isConnected()

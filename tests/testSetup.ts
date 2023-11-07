@@ -6,6 +6,7 @@ import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {enableAutoUnmount, config} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
+import {WpClient} from "@/types/WpClient";
 
 require('./mocks/maps/googleMaps')
 
@@ -111,7 +112,12 @@ function openServer(done: () => void): void{
       done()
     })
   })
-  WhatsAppClient.getInstance()
+  WhatsAppClient.getInstance({
+    id: '31037904656',
+    wpNotifications: false,
+    chatBot: false,
+    alias: 'Test'
+  } as WpClient)
 }
 
 export {
