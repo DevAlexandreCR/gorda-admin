@@ -4,7 +4,7 @@
       <button class="btn btn-primary" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
     </div>
     <div class="row container-fluid">
-      <div class="col-sm-6 mt-2" v-for="client in clients" :key="client.id">
+      <div class="col-md-6 mt-2" v-for="client in clients" :key="client.id">
         <Connection :client="client"></Connection>
       </div>
     </div>
@@ -45,7 +45,7 @@
 </template>
 <script setup lang="ts">
 import {useWpClientsStore} from "@/services/stores/WpClientStore"
-import Connection from "@/views/Connection.vue"
+import Connection from "@/views/whatsapp/Connection.vue"
 import {storeToRefs} from "pinia"
 import {reactive, watch} from "vue";
 import {WpClient} from "@/types/WpClient";

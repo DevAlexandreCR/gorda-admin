@@ -1,5 +1,5 @@
 import {shallowMount, VueWrapper} from '@vue/test-utils'
-import Connection from '@/views/Connection.vue'
+import Connection from '@/views/whatsapp/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {openServer, server, socket} from '../../testSetup'
