@@ -4,16 +4,18 @@ import {WPObserver} from '@/services/gordaApi/interfaces/WPObserver'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {LoadingType} from '@/types/LoadingType'
 import {WpClient} from "@/types/WpClient";
+import {ClientDictionary} from "@/types/ClientDiccionary";
+import {WPClientDictionary} from "@/types/WPClientDiccionary";
 
 export default class WhatsAppClient implements WPSubject {
   
-  private static instance: WhatsAppClient
   private socket: Socket
   private wpClient: WpClient
   public state = WhatsApp.STATUS_DISCONNECTED
   public qr: string|null = null
   private observers: WPObserver[] = []
 	public loading: LoadingType|null
+  private static instances: WPClientDictionary = {}
   
   constructor(wpClient: WpClient) {
     this.wpClient = wpClient
@@ -37,9 +39,11 @@ export default class WhatsAppClient implements WPSubject {
   }
   
   public static getInstance(wpClient: WpClient): WhatsAppClient {
-    WhatsAppClient.instance = new WhatsAppClient(wpClient)
+    if (!WhatsAppClient.instances[wpClient.id]) {
+      WhatsAppClient.instances[wpClient.id] = new WhatsAppClient(wpClient)
+    }
 
-    return WhatsAppClient.instance
+    return WhatsAppClient.instances[wpClient.id]
   }
   
   auth(): void {
@@ -140,6 +144,7 @@ export default class WhatsAppClient implements WPSubject {
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)
     if (!isExist) this.observers.push(observer)
+    console.log(this.observers)
   }
   
   detach(observer: WPObserver): void {

@@ -107,6 +107,7 @@ const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient
 const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient
+let observer: ClientObserver
 
 function auth() {
   connecting.value = true
@@ -134,12 +135,13 @@ async function deleteWpClient(): Promise<void> {
 
 onBeforeUnmount(() => {
   offWpNotifications(props.client)
+  wpClient.detach(observer)
 })
 
 onMounted(() => {
   onWpNotification(props.client)
   wpClient = WhatsAppClient.getInstance(props.client)
-  const observer = new ClientObserver(onUpdate)
+  observer = new ClientObserver(onUpdate)
   wpClient.attach(observer)
   connected.value = wpClient.isConnected()
 })
