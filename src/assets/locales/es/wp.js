@@ -7,6 +7,8 @@ export default {
         alias: 'Alias'
     },
     placeholders: {
-        delete: 'El cliente se eliminará, ¿desea continuar?'
+        delete: 'El cliente se eliminará, ¿desea continuar?',
+        default: 'Cliente por defecto para las confirmaciones',
+        select_default: 'Selecccionar como cliente por defecto'
     }
 }

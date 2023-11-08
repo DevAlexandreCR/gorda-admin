@@ -22,7 +22,7 @@
                    :aria-valuenow="loading.percent" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
           </div>
-          <canvas class="img img-fluid h-25 h-auto" v-show="qr && !connected" id="canvas"></canvas>
+          <canvas class="img img-fluid h-25 h-auto" v-show="qr && !connected" :id="props.client.id"></canvas>
         </div>
         <div class="container text-center">{{client.id}}</div>
       </div>
@@ -46,6 +46,15 @@
           </div>
           <div v-if="connected && !props.client.wpNotifications" class="alert alert-warning" role="alert">
             {{ $t('common.settings.alert_notifications') }}
+          </div>
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="defaultClient === client.id"
+                   :disabled="defaultClient === client.id" @change="setDefault(props.client)"/>
+            <label class="form-check-label">{{
+                defaultClient === client.id ? $t('wp.placeholders.default') : $t('wp.placeholders.select_default')
+              }}</label>
           </div>
         </div>
       </div>
@@ -82,6 +91,7 @@ import {useWpClientsStore} from '@/services/stores/WpClientStore'
 import {LoadingType} from '@/types/LoadingType'
 import {WpClient} from "@/types/WpClient";
 import {hide} from "@/helpers/ModalHelper";
+import {storeToRefs} from "pinia";
 
 
 interface Props {
@@ -93,7 +103,8 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault} = useWpClientsStore()
+const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient
 
@@ -111,7 +122,7 @@ const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = false
   qr.value = socket.qr
   loading.value = socket.loading
-  if (qr.value) QRCode.toCanvas(document.getElementById('canvas'), qr.value as string, (e) => {console.log(e)})
+  if (qr.value) QRCode.toCanvas(document.getElementById(props.client.id), qr.value as string, (e) => {console.log(e)})
   connected.value = socket.isConnected()
   connecting.value = socket.isConnecting()
 }

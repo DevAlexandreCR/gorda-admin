@@ -4,11 +4,13 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import {WpClient} from "@/types/WpClient";
 import {ClientDictionary} from "@/types/ClientDiccionary";
 import {DataSnapshot} from "firebase/database";
+import {Constants} from "@/constants/Constants";
 
 export const useWpClientsStore = defineStore('settingsStore', {
   state: () => {
     return {
-      clients: {} as ClientDictionary
+      clients: {} as ClientDictionary,
+      defaultClient: null as string|null
     }
   },
   actions: {
@@ -22,6 +24,17 @@ export const useWpClientsStore = defineStore('settingsStore', {
 		
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
+      this.defaultClient = sessionStorage.getItem(Constants.DEFAULT_CLIENT)?? Object.values(this.clients)[0].id
+      this.setDefault(this.getDefault())
+    },
+
+    setDefault(client: WpClient): void {
+      this.defaultClient = client.id
+      sessionStorage.setItem(Constants.DEFAULT_CLIENT, client.id)
+    },
+
+    getDefault(): WpClient {
+      return this.clients[this.defaultClient as string]
     },
 
     onWpNotification(client: WpClient): void {
