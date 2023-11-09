@@ -29,6 +29,9 @@ export default class WhatsAppClient implements WPSubject {
         clientId: this.wpClient.id
       }
     })
+    this.socket.on('client', info => {
+      console.log(info)
+    })
     this.onQRCode()
     this.getState()
     this.onReady()
@@ -144,7 +147,6 @@ export default class WhatsAppClient implements WPSubject {
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)
     if (!isExist) this.observers.push(observer)
-    console.log(this.observers)
   }
   
   detach(observer: WPObserver): void {

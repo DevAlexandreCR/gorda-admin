@@ -24,7 +24,11 @@ export const useWpClientsStore = defineStore('settingsStore', {
 		
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
-      this.defaultClient = sessionStorage.getItem(Constants.DEFAULT_CLIENT)?? Object.values(this.clients)[0].id
+      this.defaultClient = sessionStorage.getItem(Constants.DEFAULT_CLIENT)
+      if (!this.clients[this.defaultClient?? '']) {
+        this.defaultClient = Object.values(this.clients)[0].id
+      }
+
       this.setDefault(this.getDefault())
     },
 
