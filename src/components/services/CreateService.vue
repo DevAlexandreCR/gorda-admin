@@ -3,6 +3,21 @@
     <div class="row">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
+          <div class="col-md-2">
+            wp por defecto
+          </div>
+          <div class="col-md-3">
+            <div class="row row-cols-2">
+              <div class="form-group">
+                <select name="wpClient" class="form-select pe-0" id="color" v-model="service.wp_client_id">
+                  <option v-for="client in wpClients" :key="client.id" :value="client.id"
+                          :selected="client.id == defaultClient">{{ client.alias }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-12 col-md col-xl-1">
             <div class="form-group">
               <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
@@ -89,6 +104,7 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
@@ -99,6 +115,7 @@ const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 const count: Ref<number> = ref(1)
+const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
