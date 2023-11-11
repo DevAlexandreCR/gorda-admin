@@ -112,21 +112,21 @@
 <script setup lang="ts">
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator.vue'
-import {useDriversStore} from '@/services/stores/DriversStore'
-import {Field} from 'vee-validate'
+import { useDriversStore } from '@/services/stores/DriversStore'
+import { Field } from 'vee-validate'
 import Driver from '@/models/Driver'
-import {onMounted, ref, Ref, watch} from 'vue'
+import { onMounted, ref, Ref, watchEffect } from 'vue'
 import dayjs from 'dayjs'
 import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
-import {useLoadingState} from '@/services/stores/LoadingState'
+import { useLoadingState } from '@/services/stores/LoadingState'
 
-const {drivers, filter, findById} = useDriversStore()
+const { drivers, filter, findById } = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
-const {setLoading} = useLoadingState()
+const { setLoading } = useLoadingState()
 const enabled: Ref<number> = ref(-1)
 
 function format(unix: number): string {
@@ -137,23 +137,24 @@ function getPaginatedData(data: []): void {
   paginatedDrivers.value = data
 }
 
-watch(drivers, (newDrivers) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  newDrivers.forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
-watch(enabled, (newEnabled) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filter('', newEnabled).forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
-watch(searchDriver, (plate) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filter(plate, enabled.value).forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
 onMounted(() => {
-  drivers.forEach(driver => filteredDrivers.value.push(driver))
+  const allDrivers = drivers;
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...allDrivers)
 })
 
 function onEnable(event: Event): void {
@@ -164,7 +165,7 @@ function onEnable(event: Event): void {
   DriverRepository.enable(driver.id, driver.enabled_at).then(() => {
     setLoading(false)
     const message = driver.enabled_at == 0 ?
-        i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
+      i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
     ToastService.toast(ToastService.SUCCESS, message)
   }).catch(e => {
     setLoading(false)
