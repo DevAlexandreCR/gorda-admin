@@ -3,29 +3,22 @@
     <div class="row">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
-          <div class="col-md-2">
-            wp por defecto
-          </div>
-          <div class="col-md-3">
-            <div class="row row-cols-2">
-              <div class="form-group">
-                <select name="wpClient" class="form-select pe-0" id="color" v-model="service.wp_client_id">
-                  <option v-for="client in wpClients" :key="client.id" :value="client.id"
-                          :selected="client.id == defaultClient">{{ client.alias }}</option>
-                </select>
-              </div>
+          <div class="col-12 col-md col-xl-1 px-1">
+            <div class="form-group">
+              <select name="wpClient" class="form-select pe-0" id="color" v-model="service.wp_client_id">
+                <option v-for="client in wpClients" :key="client.id" :value="client.id"
+                        :selected="client.id == defaultClient">{{ client.alias }}</option>
+              </select>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-md col-xl-1">
+          <div class="col-12 col-md col-xl-1 px-1">
             <div class="form-group">
               <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
                 <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode">{{ cCode.dialCode + ' ' + cCode.code }}</option>
               </select>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
@@ -34,7 +27,7 @@
               </Field>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="service.name">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
@@ -46,13 +39,13 @@
               </ErrorMessage>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
@@ -64,7 +57,7 @@
               </ErrorMessage>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="row row-cols-2">
               <div class="col">
                 <div class="form-group">
@@ -73,7 +66,7 @@
                   </select>
                 </div>
               </div>
-              <div class="col">
+              <div class="col px-1">
                 <button class="btn btn-primary d-inline-flex" type="submit">{{ $t('common.actions.create') }}</button>
               </div>
             </div>
