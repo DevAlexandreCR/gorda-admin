@@ -5,6 +5,9 @@ import {WpClient} from "@/types/WpClient";
 import {ClientDictionary} from "@/types/ClientDiccionary";
 import {DataSnapshot} from "firebase/database";
 import {Constants} from "@/constants/Constants";
+import ToastService from "@/services/ToastService";
+import i18n from "@/plugins/i18n";
+import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 
 export const useWpClientsStore = defineStore('settingsStore', {
   state: () => {
@@ -24,17 +27,19 @@ export const useWpClientsStore = defineStore('settingsStore', {
 		
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
-      this.defaultClient = sessionStorage.getItem(Constants.DEFAULT_CLIENT)
-      if (!this.clients[this.defaultClient?? '']) {
-        this.defaultClient = Object.values(this.clients)[0].id
-      }
+      if (Object.values(this.clients).length) {
+        this.defaultClient = sessionStorage.getItem(Constants.DEFAULT_CLIENT)??
+          Object.values(this.clients)[0].id
 
-      this.setDefault(this.getDefault())
+        this.setDefault(this.defaultClient)
+      } else {
+        sessionStorage.removeItem(Constants.DEFAULT_CLIENT)
+      }
     },
 
-    setDefault(client: WpClient): void {
-      this.defaultClient = client.id
-      sessionStorage.setItem(Constants.DEFAULT_CLIENT, client.id)
+    setDefault(client: string): void {
+      this.defaultClient = client
+      sessionStorage.setItem(Constants.DEFAULT_CLIENT, client)
     },
 
     getDefault(): WpClient {
@@ -64,7 +69,18 @@ export const useWpClientsStore = defineStore('settingsStore', {
       setLoading(true)
       await SettingsRepository.deleteClient(client).then(() => {
         delete this.clients[client.id]
-      }).finally(() => setLoading(false))
+        if (client.id === this.defaultClient) {
+          this.defaultClient = null
+          sessionStorage.removeItem(Constants.DEFAULT_CLIENT)
+          const socket = WhatsAppClient.getInstance(client)
+          socket.clientDeleted()
+        }
+      })
+      .catch(async (e) => {
+        console.log(e.message)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .finally(() => setLoading(false))
     }
   }
 })

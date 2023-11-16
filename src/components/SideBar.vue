@@ -140,13 +140,15 @@ const onUpdate = (socket: WhatsAppClient): void => {
 onMounted(async () => {
   user.value = AuthService.getCurrentUser()
   isAdmin.value = user.value.isAdmin()
-  socket = WhatsAppClient.getInstance(getDefault())
-  observer = new ClientObserver(onUpdate)
-  socket.attach(observer)
+  if (getDefault()) {
+    socket = WhatsAppClient.getInstance(getDefault())
+    observer = new ClientObserver(onUpdate)
+    socket.attach(observer)
+  }
 })
 
 onUnmounted(() => {
-  socket.detach(observer)
+  if (socket) socket.detach(observer)
 })
 </script>
 

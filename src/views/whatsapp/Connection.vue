@@ -51,7 +51,7 @@
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="defaultClient === client.id"
-                   :disabled="defaultClient === client.id" @change="setDefault(props.client)"/>
+                   :disabled="defaultClient === client.id" @change="setDefault(props.client.id)"/>
             <label class="form-check-label">{{
                 defaultClient === client.id ? $t('wp.placeholders.default') : $t('wp.placeholders.select_default')
               }}</label>
@@ -130,6 +130,7 @@ const onUpdate = (socket: WhatsAppClient): void => {
 
 async function deleteWpClient(): Promise<void> {
   hide('delete-client')
+  wpClient.destroy()
   await deleteClient(props.client)
 }
 

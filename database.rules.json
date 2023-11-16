@@ -36,7 +36,12 @@
     },
     "settings": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true",
+      "wp_clients": {
+        "$uid" : {
+          ".validate": "newData.hasChildren(['id', 'alias', 'wpNotifications', 'chatBot'])"
+        }
+      }
     },
     "tokens": {
       ".read": "auth.uid != null",

@@ -4,7 +4,6 @@ import {WPObserver} from '@/services/gordaApi/interfaces/WPObserver'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {LoadingType} from '@/types/LoadingType'
 import {WpClient} from "@/types/WpClient";
-import {ClientDictionary} from "@/types/ClientDiccionary";
 import {WPClientDictionary} from "@/types/WPClientDiccionary";
 
 export default class WhatsAppClient implements WPSubject {
@@ -29,9 +28,6 @@ export default class WhatsAppClient implements WPSubject {
         clientId: this.wpClient.id
       }
     })
-    this.socket.on('client', info => {
-      console.log(info)
-    })
     this.onQRCode()
     this.getState()
     this.onReady()
@@ -51,6 +47,13 @@ export default class WhatsAppClient implements WPSubject {
   
   auth(): void {
     this.socket.emit(WhatsApp.EVENT_AUTH)
+  }
+
+  clientDeleted(): void {
+    this.state = WhatsApp.STATUS_DISCONNECTED
+    this.qr = null
+    this.loading = null
+    this.notify()
   }
   
   getState(): void {

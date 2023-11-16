@@ -1,5 +1,5 @@
 import DBService from '@/services/DBService'
-import { DataSnapshot, get, off, onValue, query, ref, set } from 'firebase/database'
+import {DataSnapshot, get, off, onValue, query, ref, remove, set} from 'firebase/database'
 import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
 import {ClientDictionary} from "@/types/ClientDiccionary";
@@ -47,7 +47,7 @@ class WpClientRepository {
 	}
 
 	deleteClient(client: WpClient): Promise<void> {
-		return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), null)
+		return remove(ref(DBService.db, `settings/wp_clients/${client.id}/`))
 	}
 }
 export default new WpClientRepository()
