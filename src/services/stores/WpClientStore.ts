@@ -60,7 +60,12 @@ export const useWpClientsStore = defineStore('settingsStore', {
       const {setLoading} = useLoadingState()
       setLoading(true)
       await SettingsRepository.createClient(client).then(() => {
-        this.clients[client.id] = client
+        this.clients[client.id] = {
+          id: client.id,
+          alias: client.alias,
+          wpNotifications: false,
+          chatBot: false
+        }
       }).finally(() => setLoading(false))
     },
 

@@ -49,7 +49,7 @@ import Connection from "@/views/whatsapp/Connection.vue"
 import {storeToRefs} from "pinia"
 import {reactive, watch} from "vue";
 import {WpClient} from "@/types/WpClient";
-import {ErrorMessage, Field, Form} from "vee-validate";
+import {ErrorMessage, Field, Form, FormActions} from "vee-validate";
 import * as yup from "yup";
 import {StrHelper} from "@/helpers/StrHelper";
 import {hide} from "@/helpers/ModalHelper";
@@ -67,11 +67,14 @@ const schema = yup.object().shape({
   alias: yup.string().required().min(3)
 })
 
-watch(newClient, (client) => {
-  newClient.alias = StrHelper.toCamelCase(client.alias?? '')
+watch(newClient, (clientNew) => {
+  newClient.alias = StrHelper.toCamelCase(clientNew.alias?? '')
 }, {deep: true})
 
-function create(): void {
-  createClient(newClient).finally(() => hide('create-client'))
+function create(_values: WpClient, event: FormActions<any>): void {
+  createClient(newClient).finally(() => {
+    hide('create-client')
+    event.resetForm()
+  })
 }
 </script>
