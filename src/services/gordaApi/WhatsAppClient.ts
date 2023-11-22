@@ -35,6 +35,7 @@ export default class WhatsAppClient implements WPSubject {
     this.onDisconnected()
     this.onAuthenticationFailure()
 		this.onLoadingScreen()
+    this.setConnecting()
   }
   
   public static getInstance(wpClient: WpClient): WhatsAppClient {
@@ -146,7 +147,17 @@ export default class WhatsAppClient implements WPSubject {
 	isConnecting(): boolean {
 		return this.state === WhatsApp.STATUS_OPENING
 	}
-  
+
+  setConnecting(): void {
+    this.socket.emit('starting')
+    this.socket.on('starting', (starting: boolean) => {
+      if (starting) {
+        this.state = WhatsApp.STATUS_OPENING
+        this.notify()
+      }
+    })
+  }
+
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)
     if (!isExist) this.observers.push(observer)
