@@ -5,10 +5,13 @@
         <div class="row">
           <div class="col-12 col-md col-xl-1 px-1">
             <div class="form-group">
-              <select name="wpClient" class="form-select pe-0" id="color" v-model="service.wp_client_id">
+              <Field name="wp_client_id" class="form-select pe-0" v-model="service.wp_client_id" as="select">
                 <option v-for="client in wpClients" :key="client.id" :value="client.id"
                         :selected="client.id == defaultClient">{{ client.alias }}</option>
-              </select>
+              </Field>
+              <ErrorMessage name="wp_client_id" v-slot="{ message }">
+                <span class="is-invalid">{{ message }}</span>
+              </ErrorMessage>
             </div>
           </div>
           <div class="col-12 col-md col-xl-1 px-1">
@@ -150,6 +153,7 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 }
 
 const schema = yup.object().shape({
+  wp_client_id: yup.string().required().min(10).max(10),
   name: yup.string().required().min(3),
   phone: yup.string().required().min(10).max(10),
   start_address: yup.string().required(),
@@ -196,16 +200,18 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
-  const service: Service = new Service()
-  service.comment = values.comment ?? null
-  service.client_id = values.client_id
-  service.name = values.name
-  service.phone = values.phone
-  service.start_loc = start_loc
-  ServiceRepository.create(service, count.value).then(() => {
+  const newService: Service = new Service()
+  newService.comment = values.comment ?? null
+  newService.client_id = values.client_id
+  newService.name = values.name
+  newService.phone = values.phone
+  newService.start_loc = start_loc
+  newService.wp_client_id = values.wp_client_id
+  ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
     count.value = 1
     countryCode.value = countryCodes.value[31]
+    service.value.wp_client_id = defaultClient.value as string
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)
