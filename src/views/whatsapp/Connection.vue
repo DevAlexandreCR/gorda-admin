@@ -29,11 +29,10 @@
 
       <div class="card-footer pt-2">
         <div class="row">
-          <div class="col" v-if="connected">
-            <button class="btn btn-danger" @click="destroy()" :disabled="connecting || loading">{{ $t('common.chatBot.disconnect') }}</button>
+          <div class="col" v-if="!connected">
+            <button class="btn btn-primary" @click="auth()" :disabled="connecting || loading || qr">{{ $t('common.chatBot.connect') }}</button>
           </div>
           <div class="col" v-else>
-            <button class="btn btn-primary" @click="auth()" :disabled="connecting || loading || qr">{{ $t('common.chatBot.connect') }}</button>
           </div>
         </div>
         <div class="row mx-1 mt-3">
