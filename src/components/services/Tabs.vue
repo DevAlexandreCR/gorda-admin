@@ -2,10 +2,12 @@
   <div class="container-fluid">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
+        <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">
-                <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'pending' }">
+          <div class="d-flex align-items-center">
+            <div
+                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+                :class="{ 'shadow': currentTap === 'pending' }">
               <em class="fa-regular fa-clock"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.statuses.pending') }}</span>
@@ -13,46 +15,52 @@
               <span class="badge badge-circle bg-danger" v-show="pendings.length > 0">{{ pendings.length }}</span>
             </div>
           </div>
-        </button>
+        </a>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
+        <a class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">
-                <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'progress' }">
-                <em class="fa-solid fa-spinner"></em>
+          <div class="d-flex align-items-center">
+            <div
+                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+                :class="{ 'shadow': currentTap === 'progress' }">
+              <em class="fa-solid fa-spinner"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.statuses.in_progress') }}</span>
             <div class="p-1">
               <span class="badge badge-circle bg-success" v-show="inProgress.length > 0">{{ inProgress.length }}</span>
             </div>
           </div>
-        </button>
+        </a>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="history-tab" data-bs-toggle="tab" @click="currentTap = 'history'"
+        <a class="nav-link" id="history-tab" data-bs-toggle="tab" @click="currentTap = 'history'"
                 data-bs-target="#history" type="button"
                 role="tab"
                 aria-controls="history" aria-selected="false">
-                <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'history' }">
+          <div class="d-flex align-items-center">
+            <div
+                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+                :class="{ 'shadow': currentTap === 'history' }">
               <em class="fa-regular fa-folder-open"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('services.history') }}</span>
           </div>
-        </button>
+        </a>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'"
+        <a class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'"
                 data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">
-                <div class="d-flex align-items-center">
-            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" :class="{ 'shadow': currentTap === 'mapTab' }">
+          <div class="d-flex align-items-center">
+            <div
+                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+                :class="{ 'shadow': currentTap === 'mapTab' }">
               <em class="fa-solid fa-map-location-dot"></em>
             </div>
             <span class="d-none d-sm-inline">{{ $t('common.placeholders.map') }}</span>
           </div>
-        </button>
+        </a>
       </li>
     </ul>
     <div class="tab-content pt-2" id="myTabContent">
@@ -63,7 +71,7 @@
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
         <div class="form-group me-2 col-sm-4">
           <input class="form-control form-control-sm me-2" type="search" v-model="searchService" name="search"
-                 :placeholder="$t('common.placeholders.search')"  autocomplete="off"/>
+                 :placeholder="$t('common.placeholders.search')" autocomplete="off"/>
         </div>
         <services-table :table="Tables.inProgress" :services="filteredInProgress" @cancelService="cancel"
                         @endService="end"
