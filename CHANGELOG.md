@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 1.3.x
+
+## [1.3.0(2023-11-25)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.0...1.2.9)
+
+### Added
+- Now admin can set 2 or more whatsapp clients. [#112](https://github.com/DevAlexandreCR/admin-driver/pull/112)
+
 # Release Notes for 1.2.x
 
 ## [1.2.9(2023-09-19)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.9...1.2.8)
