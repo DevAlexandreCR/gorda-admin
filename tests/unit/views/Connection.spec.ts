@@ -6,6 +6,7 @@ import {openServer, server, socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {nextTick} from "vue";
+import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -22,6 +23,7 @@ describe('Connection.vue', () => {
   })
 
   beforeEach((done) => {
+    WhatsAppClient.getInstance()
     openServer(done)
   }, 10000)
 
