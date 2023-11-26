@@ -82,7 +82,7 @@ jest.mock('firebase/firestore', () => {
 });
 jest.mock('firebase/storage')
 jest.mock('qrcode')
-jest.setTimeout(60000)
+jest.setTimeout(10000)
 
 const pinia = createPinia()
 
@@ -108,9 +108,7 @@ function openServer(done: () => void): void {
   server = createServer()
   socket = new Server(server)
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
-    socket.on('connection', () => {
-      done()
-    })
+    done()
     WhatsAppClient.getInstance()
   })
 }
