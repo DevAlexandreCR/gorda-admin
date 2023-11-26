@@ -22,7 +22,6 @@ describe('Connection.vue', () => {
   })
 
   beforeAll((done) => {
-    jest.setTimeout(10000)
     openServer(done)
   })
 
