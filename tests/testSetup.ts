@@ -106,7 +106,7 @@ let server: httpServer
 function openServer(done: () => void): void{
   server = createServer()
   socket = new Server(server)
-  server.listen(3000,() => {
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
     socket.on('connection', () => {
       done()
     })
