@@ -106,7 +106,7 @@ let server: httpServer
 function openServer(done: () => void): void{
   server = createServer()
   socket = new Server(server)
-  server.listen(80,() => {
+  server.listen(3000,() => {
     socket.on('connection', () => {
       done()
     })
