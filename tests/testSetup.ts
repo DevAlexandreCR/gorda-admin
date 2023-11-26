@@ -106,14 +106,12 @@ let server: httpServer
 function openServer(done: () => void): void {
   server = createServer()
   socket = new Server(server)
-  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT,() => {
-    done()
-    socket.on('connection', () => {
-    })
-  })
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT, done)
 }
 beforeAll((done) => {
-  openServer(done)
+  server = createServer()
+  socket = new Server(server)
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT, done)
 }, 10000)
 
 afterAll(() => {
