@@ -22,8 +22,8 @@ describe('Connection.vue', () => {
   })
 
   beforeAll((done) => {
-    WhatsAppClient.getInstance()
     openServer(done)
+    WhatsAppClient.getInstance()
   })
 
   afterAll(() => {
