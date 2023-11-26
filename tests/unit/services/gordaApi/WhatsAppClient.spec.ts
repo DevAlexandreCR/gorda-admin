@@ -1,20 +1,11 @@
-import {openServer, server, socket} from '../../../testSetup'
+import {socket} from '../../../testSetup'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
-import waitForExpect from 'wait-for-expect'
+import waitForExpect from "wait-for-expect";
 
 describe('WhatsAppClient.ts', () => {
-  let client: WhatsAppClient
+  const client: WhatsAppClient = WhatsAppClient.getInstance()
   
-  beforeEach((done) => {
-    client = WhatsAppClient.getInstance()
-    openServer(done)
-  }, 10000)
-  
-  afterEach(() => {
-    server.close()
-    socket.close()
-  })
   test('must change status to connected when receive ready event', async () => {
     client.state = WhatsApp.STATUS_DISCONNECTED
     socket.emit(WhatsApp.EVENT_READY)

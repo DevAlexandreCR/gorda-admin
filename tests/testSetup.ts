@@ -112,6 +112,15 @@ function openServer(done: () => void): void {
     })
   })
 }
+beforeAll((done) => {
+  WhatsAppClient.getInstance()
+  openServer(done)
+}, 10000)
+
+afterAll(() => {
+  server.close()
+  socket.close()
+},10000)
 
 export {
   socket,

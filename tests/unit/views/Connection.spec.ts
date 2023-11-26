@@ -22,16 +22,6 @@ describe('Connection.vue', () => {
     await router.isReady()
   })
 
-  beforeEach((done) => {
-    WhatsAppClient.getInstance()
-    openServer(done)
-  }, 10000)
-
-  afterEach(() => {
-    server.close()
-    socket.close()
-  },10000)
-
   test('connected var is initialized when mounted', (done) => {
     nextTick().then(() => {
       expect(wrapper.find('h4').text()).toMatch('Disconnected')

@@ -3,7 +3,7 @@ import SideBar from '@/components/SideBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
-import {openServer, server, socket} from '../../testSetup'
+import {socket} from '../../testSetup'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
 
@@ -20,16 +20,7 @@ describe('SideBar.vue', () => {
       })
     await router.isReady()
   })
-  
-  beforeEach((done) => {
-    openServer(done)
-  }, 10000)
-  
-  afterEach(() => {
-    server.close()
-    socket.close()
-  })
-  
+
   it('an user can show buttons to users and dashboard', async () => {
     expect(wrapper.find('#sidenav-main').exists()).toBeTruthy()
     expect(wrapper.html()).toContain(i18n.global.t('routes.users'))
