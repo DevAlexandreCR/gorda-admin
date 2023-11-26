@@ -103,15 +103,14 @@ AuthService.currentUser = Object.assign(new User(), UserMock)
 let socket: Server
 let server: httpServer
 
-function openServer(done: () => void): void {
+function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
-  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT,() => {
     socket.on('connection', () => {
       done()
     })
   })
-  WhatsAppClient.getInstance()
 }
 
 export {
