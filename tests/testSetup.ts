@@ -106,18 +106,13 @@ let server: httpServer
 function openServer(done: () => void): void {
   server = createServer()
   socket = new Server(server)
-  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT, done)
+  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
+    socket.on('connection', () => {
+      done()
+    })
+  })
+  WhatsAppClient.getInstance()
 }
-beforeAll((done) => {
-  server = createServer()
-  socket = new Server(server)
-  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT, done)
-}, 10000)
-
-afterAll(() => {
-  server.close()
-  socket.close()
-},10000)
 
 export {
   socket,

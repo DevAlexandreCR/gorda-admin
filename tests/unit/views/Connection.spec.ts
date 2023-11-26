@@ -5,8 +5,6 @@ import i18n from '@/plugins/i18n'
 import {openServer, server, socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
-import {nextTick} from "vue";
-import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -22,12 +20,19 @@ describe('Connection.vue', () => {
     await router.isReady()
   })
 
-  test('connected var is initialized when mounted', (done) => {
-    nextTick().then(() => {
-      expect(wrapper.find('h4').text()).toMatch('Disconnected')
-      expect(wrapper.vm.connected).toBeFalsy()
-      done()
-    })
+  beforeEach((done) => {
+    openServer(done)
+  })
+
+  afterEach(() => {
+    server.close()
+    socket.close()
+  })
+
+  test('connected var is initialized when mounted', async () => {
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('h4').text()).toMatch('Disconnected')
+    expect(wrapper.vm.connected).toBeFalsy()
   })
   
   test('it must throw event when click buttons', async () => {
