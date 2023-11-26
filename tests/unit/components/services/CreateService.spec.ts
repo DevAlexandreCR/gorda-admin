@@ -14,6 +14,7 @@ import {getPlaces} from '../../../mocks/entities/PlaceMock'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {StrHelper} from '@/helpers/StrHelper'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 describe('CreateService.vue', () => {
 	let wrapper: VueWrapper<any>
@@ -22,6 +23,7 @@ describe('CreateService.vue', () => {
 	beforeEach(async () => {
 		const placesStore = usePlacesStore()
 		const clientsStore = useClientsStore()
+		const wpClient = useWpClientsStore()
 		wrapper = mount(CreateService,
 			{
 				attachTo: document.body,
@@ -35,6 +37,14 @@ describe('CreateService.vue', () => {
 		await router.isReady()
 		clientsStore.clients = [ClientMock]
 		placesStore.places = getPlaces()
+		wpClient.clients = {
+			3103794656: {
+				id: '3103794656',
+				alias: 'Principal',
+				wpNotifications: false,
+				chatBot: false
+			}
+		}
 	})
 	it('an user can show inputs to add service', async () => {
 		await nextTick()
@@ -42,7 +52,7 @@ describe('CreateService.vue', () => {
 		const form = wrapper.findComponent(Form)
 		const input = wrapper.findAll('.form-control')
 		const autoComplete = wrapper.findAllComponents(AutoComplete)
-		expect(field.length).toBe(5)
+		expect(field.length).toBe(6)
 		expect(form.exists()).toBeTruthy()
 		expect(input.length).toBe(4)
 		expect(autoComplete.length).toBe(2)
@@ -72,6 +82,7 @@ describe('CreateService.vue', () => {
 		const comment = 'New comment to service'
 		await wrapper.find('input[name="phone"]').setValue(phone)
 		await wrapper.find('input[name="name"]').setValue(name)
+		await wrapper.find('select[name="wp_client_id"]').setValue(phone)
 		const input = wrapper.find('input[name="start_address"]')
 		await input.setValue('mari')
 		await input.trigger('keyup', {
