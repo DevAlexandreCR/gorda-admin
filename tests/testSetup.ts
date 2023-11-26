@@ -114,8 +114,10 @@ function openServer(done: () => void): void {
   })
 }
 
-export {
-  socket,
-  server,
-  openServer
-}
+beforeAll((done) => {
+  openServer(done)
+})
+
+afterAll(() => {
+  socket.close()
+})
