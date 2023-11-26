@@ -17,6 +17,9 @@ import ToastService from "@/services/ToastService"
 UserRepository.getUser = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.update = jest.fn().mockResolvedValue(UserInterface)
 UserRepository.updatePassword = jest.fn().mockResolvedValue(UserInterface)
+UserRepository.emailAuth = jest.fn().mockResolvedValue(null)
+UserRepository.passwordAuth = jest.fn().mockResolvedValue(null)
+UserRepository.enableAuth = jest.fn().mockResolvedValue(null)
 StorageService.getStorageReference = jest.fn().mockImplementation()
 StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost')
 
