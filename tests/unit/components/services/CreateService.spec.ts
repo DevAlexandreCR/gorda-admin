@@ -82,7 +82,7 @@ describe('CreateService.vue', () => {
 		const comment = 'New comment to service'
 		await wrapper.find('input[name="phone"]').setValue(phone)
 		await wrapper.find('input[name="name"]').setValue(name)
-		await wrapper.find('select[name="wp_client_id"]').setValue(phone)
+		await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
 		const input = wrapper.find('input[name="start_address"]')
 		await input.setValue('mari')
 		await input.trigger('keyup', {
@@ -116,6 +116,7 @@ describe('CreateService.vue', () => {
 		const comment = 'New comment to service'
 		await wrapper.find('input[name="phone"]').setValue(phone)
 		await wrapper.find('input[name="name"]').setValue(name)
+		await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
 		const input = wrapper.find('input[name="start_address"]')
 		await input.setValue('mari')
 		await wrapper.find('input[name="comment"]').setValue(comment)
@@ -163,6 +164,7 @@ describe('CreateService.vue', () => {
 		const phone = '3100000001'
 		const name = 'Name User'
 		await wrapper.find('input[name="phone"]').setValue(phone)
+		await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
 		await wrapper.find('input[name="name"]').setValue(name)
 		const input = wrapper.find('input[name="start_address"]')
 		await input.setValue('mari')
@@ -209,7 +211,8 @@ describe('CreateService.vue', () => {
 		ClientRepository.create = jest.fn().mockRejectedValue(new Error('New Error'))
 		const swal = jest.spyOn(Swal, 'fire')
 		await nextTick()
-		
+
+		await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
 		await wrapper.find('input[name="phone"]').setValue('3100000000')
 		await wrapper.find('input[name="name"]').setValue('Name User')
 		const input = wrapper.find('input[name="start_address"]')
