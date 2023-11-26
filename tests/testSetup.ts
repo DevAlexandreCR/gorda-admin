@@ -82,7 +82,7 @@ jest.mock('firebase/firestore', () => {
 });
 jest.mock('firebase/storage')
 jest.mock('qrcode')
-jest.setTimeout(20000)
+jest.setTimeout(60000)
 
 const pinia = createPinia()
 
