@@ -107,8 +107,9 @@ function openServer(done: () => void): void {
   server = createServer()
   socket = new Server(server)
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT,() => {
-    done()
-    WhatsAppClient.getInstance()
+    socket.on('connection', () => {
+      done()
+    })
   })
 }
 
