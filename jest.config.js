@@ -4,7 +4,7 @@ module.exports = {
     "^.+\\.js$": "babel-jest",
     '^.+\\.vue$': '@vue/vue3-jest'
   },
-  collectCoverage: true,
+  collectCoverage: false,
   collectCoverageFrom: [
     'src/**/*.{js,vue,ts}',
     '!src/assets/**',
