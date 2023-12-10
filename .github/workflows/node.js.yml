@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -37,6 +37,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
     env:
       CI: true
+      VUE_APP_WP_CLIENT_API_PORT: 3000
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest

@@ -16,7 +16,7 @@ describe('WhatsAppClient.ts', () => {
     } as WpClient)
     openServer(done)
   }, 10000)
-  
+
   afterEach(() => {
     server.close()
     socket.close()

@@ -4,7 +4,7 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {enableAutoUnmount, config} from '@vue/test-utils'
+import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 import {WpClient} from "@/types/WpClient";
 
@@ -104,7 +104,7 @@ AuthService.currentUser = Object.assign(new User(), UserMock)
 let socket: Server
 let server: httpServer
 
-function openServer(done: () => void): void{
+function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
   server.listen(3000,() => {
