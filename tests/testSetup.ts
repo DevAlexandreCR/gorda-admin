@@ -113,7 +113,14 @@ function openServer(done: jest.DoneCallback): void {
   })
   WhatsAppClient.getInstance()
 }
+beforeAll((done) => {
+  openServer(done)
+}, 10000)
 
+afterAll(() => {
+  server.close()
+  socket.close()
+})
 export {
   socket,
   server,
