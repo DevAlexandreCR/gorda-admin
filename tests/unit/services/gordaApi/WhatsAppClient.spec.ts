@@ -7,8 +7,8 @@ describe('WhatsAppClient.ts', () => {
   let client: WhatsAppClient
   
   beforeEach((done) => {
-    client = WhatsAppClient.getInstance()
     openServer(done)
+    client = WhatsAppClient.getInstance()
   }, 10000)
 
   afterEach(() => {
