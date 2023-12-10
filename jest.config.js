@@ -5,7 +5,7 @@ module.exports = {
     '^.+\\.vue$': '@vue/vue3-jest',
     "^.+\\.(t|j)sx?$": ['ts-jest', { isolatedModules: true }]
   },
-  collectCoverage: false,
+  collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,vue,ts}',
     '!src/assets/**',
