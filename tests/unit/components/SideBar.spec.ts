@@ -26,8 +26,8 @@ describe('SideBar.vue', () => {
   }, 10000)
 
   afterAll(() => {
-    server.close()
     socket.close()
+    server.close()
   })
 
   it('an user can show buttons to users and dashboard', async () => {

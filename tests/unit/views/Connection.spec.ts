@@ -25,8 +25,8 @@ describe('Connection.vue', () => {
   }, 10000)
 
   afterAll(() => {
-    server.close()
     socket.close()
+    server.close()
   }, 10000)
 
   test('connected var is initialized when mounted', async () => {
