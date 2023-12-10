@@ -23,7 +23,7 @@ describe('Connection.vue', () => {
 
   beforeAll((done) => {
     openServer(done)
-  }, 10000)
+  })
 
   afterAll(() => {
     server.close()
@@ -45,7 +45,6 @@ describe('Connection.vue', () => {
   })
   
   test('set qr when io emit event qr', async () => {
-    WhatsAppClient.getInstance()
     socket.emit(WhatsApp.EVENT_QR_CODE, 'fake-qr')
     await wrapper.vm.$nextTick()
     await waitForExpect(() => {
