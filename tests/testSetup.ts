@@ -107,11 +107,11 @@ function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
+    WhatsAppClient.getInstance()
     socket.on('connection', () => {
       done()
     })
   })
-  WhatsAppClient.getInstance()
 }
 beforeAll((done) => {
   openServer(done)
