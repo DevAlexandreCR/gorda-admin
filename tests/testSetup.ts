@@ -106,8 +106,8 @@ let server: httpServer
 function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
+  WhatsAppClient.getInstance()
   server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT?? 5000, () => {
-    WhatsAppClient.getInstance()
     done()
   })
 }

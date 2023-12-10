@@ -37,7 +37,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
     env:
       CI: true
-      VUE_APP_WP_CLIENT_API_PORT: 5000
+      VUE_APP_WP_CLIENT_API_PORT: 3000
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
