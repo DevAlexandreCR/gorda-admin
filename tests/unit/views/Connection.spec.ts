@@ -23,7 +23,7 @@ describe('Connection.vue', () => {
 
   beforeAll((done) => {
     openServer(done)
-  })
+  }, 10000)
 
   afterAll(() => {
     server.close()
