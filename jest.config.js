@@ -12,7 +12,7 @@ module.exports = {
     '!src/vendor/**',
     '!src/main.ts'
   ],
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   setupFiles: ['core-js'],
   setupFilesAfterEnv: ['<rootDir>/tests/testSetup.ts']
 }
