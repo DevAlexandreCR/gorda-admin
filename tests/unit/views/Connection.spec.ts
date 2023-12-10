@@ -21,14 +21,14 @@ describe('Connection.vue', () => {
     await router.isReady()
   })
 
-  // beforeAll((done) => {
-  //   openServer(done)
-  // })
-  //
-  // afterAll(() => {
-  //   server.close()
-  //   socket.close()
-  // })
+  beforeAll((done) => {
+    openServer(done)
+  })
+
+  afterAll(() => {
+    server.close()
+    socket.close()
+  })
 
   test('connected var is initialized when mounted', async () => {
     await wrapper.vm.$nextTick()
