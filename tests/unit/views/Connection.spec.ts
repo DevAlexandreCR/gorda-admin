@@ -5,7 +5,6 @@ import i18n from '@/plugins/i18n'
 import {openServer, server, socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
-import WhatsAppClient from "@/services/gordaApi/WhatsAppClient";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -23,12 +22,12 @@ describe('Connection.vue', () => {
 
   beforeAll((done) => {
     openServer(done)
-  })
+  }, 10000)
 
   afterAll(() => {
     server.close()
     socket.close()
-  })
+  }, 10000)
 
   test('connected var is initialized when mounted', async () => {
     await wrapper.vm.$nextTick()
