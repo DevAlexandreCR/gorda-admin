@@ -4,7 +4,7 @@ import UserMock from './mocks/entities/UserMock'
 import {createServer, Server as httpServer} from 'http'
 import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {enableAutoUnmount, config} from '@vue/test-utils'
+import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 
 require('./mocks/maps/googleMaps')
@@ -113,13 +113,7 @@ function openServer(done: jest.DoneCallback): void {
     })
   })
 }
-beforeAll((done) => {
-  openServer(done)
-}, 10000)
 
-afterAll((done) => {
-  socket.close(done)
-}, 10000)
 export {
   socket,
   server,

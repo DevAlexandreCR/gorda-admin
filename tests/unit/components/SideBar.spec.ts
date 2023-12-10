@@ -21,14 +21,13 @@ describe('SideBar.vue', () => {
     await router.isReady()
   })
 
-  // beforeAll((done) => {
-  //   openServer(done)
-  // }, 10000)
-  //
-  // afterAll(() => {
-  //   socket.close()
-  //   server.close()
-  // }, 10000)
+  beforeAll((done) => {
+    openServer(done)
+  }, 10000)
+
+  afterAll((done) => {
+    socket.close(done)
+  }, 10000)
 
   it('an user can show buttons to users and dashboard', async () => {
     expect(wrapper.find('#sidenav-main').exists()).toBeTruthy()
