@@ -21,11 +21,11 @@ describe('SideBar.vue', () => {
     await router.isReady()
   })
 
-  beforeEach((done) => {
+  beforeAll((done) => {
     openServer(done)
   }, 10000)
 
-  afterEach(() => {
+  afterAll(() => {
     server.close()
     socket.close()
   })
