@@ -2,7 +2,8 @@ module.exports = {
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   transform: {
     "^.+\\.js$": "babel-jest",
-    '^.+\\.vue$': '@vue/vue3-jest'
+    '^.+\\.vue$': '@vue/vue3-jest',
+    "^.+\\.(t|j)sx?$": ['ts-jest', { isolatedModules: true }]
   },
   collectCoverage: false,
   collectCoverageFrom: [

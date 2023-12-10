@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --mode development --port 5000",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit --coverage",
+    "test:unit": "jest --coverage",
     "test:watch": "vue-cli-service test:unit --watchAll",
     "lint": "vue-cli-service lint",
     "build:dev": "vue-cli-service build --mode development",
