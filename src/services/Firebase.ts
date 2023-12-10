@@ -17,7 +17,7 @@ export default class Firebase {
       const st = getStorage(Firebase.app)
       const fs = getFirestore(Firebase.app)
       if (process.env.NODE_ENV !== 'production') {
-				localStorage.clear()
+				// localStorage.clear()
         connectDatabaseEmulator(db, 'localhost', 9000)
         connectAuthEmulator(auth, 'http://127.0.0.1:9099')
         connectStorageEmulator(st, 'localhost', 9199)
