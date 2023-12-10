@@ -118,9 +118,7 @@ beforeAll((done) => {
 }, 10000)
 
 afterAll((done) => {
-  socket.close(() => {
-    server.close(done)
-  })
+  socket.close(done)
 }, 10000)
 export {
   socket,
