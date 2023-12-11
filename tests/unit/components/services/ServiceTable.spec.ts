@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {ComponentMountingOptions, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import ServicesTable from "@/components/services/ServicesTable.vue"
@@ -11,31 +11,47 @@ import DriverRepository from '@/repositories/DriverRepository'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
+import SettingsRepository from "@/repositories/SettingsRepository";
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
-	const service = new ServiceList()
-  Object.assign(service, ServiceMock)
-  const options = {
-    attachTo: '#root',
-    props: {
-      services: [service, service],
-      drivers: [DriverMock],
-      table: Tables.history
-    },
-    global: {
-      plugins: [router, i18n],
-      provide: {
-        'appName': 'test'
-      }
-    },
+  const wpClient = useWpClientsStore()
+  wpClient.clients = {
+    3103794656: {
+      id: '3103794656',
+      alias: 'Principal',
+      wpNotifications: false,
+      chatBot: false
+    }
   }
+
+  let options: ComponentMountingOptions<any>
+  let service: ServiceList
+
   beforeEach(async () => {
+    service = new ServiceList()
+    Object.assign(service, ServiceMock)
+    options = {
+      attachTo: '#root',
+      props: {
+        services: [service, service],
+        drivers: [DriverMock],
+        table: Tables.history
+      },
+      global: {
+        plugins: [router, i18n],
+        provide: {
+          'appName': 'test'
+        }
+      },
+    }
     jest.useFakeTimers()
-    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
+    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props?.drivers)
+    SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
     const driverStore = useDriversStore()
     await driverStore.getDrivers()
-    wrapper = await mount(ServicesTable, options)
+    wrapper = mount(ServicesTable, options)
     await router.isReady()
   })
   it('an user can see all services passed by props', async () => {
@@ -55,7 +71,7 @@ describe('ServicesTable.vue', () => {
   
   it('an user can see date in history', async () => {
     options.props.table = Tables.history
-    wrapper = await mount(ServicesTable, options)
+    wrapper = mount(ServicesTable, options)
     await nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
     await nextTick()
