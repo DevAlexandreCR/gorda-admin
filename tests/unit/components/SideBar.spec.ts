@@ -21,6 +21,7 @@ describe('SideBar.vue', () => {
         chatBot: false
       }
     }
+    wpClient.defaultClient = '3103794656'
     wrapper = mount(SideBar,
       {
         attachTo: '#root',

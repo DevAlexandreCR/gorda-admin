@@ -113,7 +113,7 @@ function openServer(done: jest.DoneCallback): void {
     })
   })
   WhatsAppClient.getInstance({
-    id: '31037904656',
+    id: '3103794656',
     wpNotifications: false,
     chatBot: false,
     alias: 'Test'
