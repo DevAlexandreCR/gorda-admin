@@ -93,7 +93,9 @@ describe('ServicesTable.vue', () => {
       table: Tables.inProgress
     }
     wrapper = mount(ServicesTable, options)
-  
+
+    await nextTick()
+
     expect(wrapper.find('.fa-car-crash').exists()).toBeTruthy()
     expect(wrapper.find('.fa-check').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
@@ -108,6 +110,8 @@ describe('ServicesTable.vue', () => {
       table: Tables.pendings
     }
     wrapper = mount(ServicesTable, options)
+
+    await nextTick()
     
     const buttonCancel = wrapper.find('.btn-danger')
     await buttonCancel.trigger('click')
@@ -123,6 +127,8 @@ describe('ServicesTable.vue', () => {
       table: Tables.inProgress
     }
     wrapper = mount(ServicesTable, options)
+
+    await nextTick()
     
     const buttons = wrapper.findAll('.btn-dark')
     await buttons.at(0)?.trigger('click')
