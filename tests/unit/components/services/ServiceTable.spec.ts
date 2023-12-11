@@ -44,14 +44,14 @@ describe('ServicesTable.vue', () => {
 
   beforeEach(async () => {
     service = new ServiceList()
-    Object.assign(service, ServiceMock)
+    Object.assign(service, new ServiceMock)
     options.props = {
       services: [service, service],
       drivers: [DriverMock],
       table: Tables.history
     }
     jest.useFakeTimers()
-    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props?.drivers)
+    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
     SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
     const driverStore = useDriversStore()
     await driverStore.getDrivers()
