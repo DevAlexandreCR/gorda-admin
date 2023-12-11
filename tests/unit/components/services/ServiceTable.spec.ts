@@ -26,25 +26,29 @@ describe('ServicesTable.vue', () => {
     }
   }
 
-  let options: ComponentMountingOptions<any>
+  const options: ComponentMountingOptions<any>= {
+    attachTo: '#root',
+    props: {
+      services: [],
+      drivers: [DriverMock],
+      table: Tables.history
+    },
+    global: {
+      plugins: [router, i18n],
+      provide: {
+        'appName': 'test'
+      }
+    }
+  }
   let service: ServiceList
 
   beforeEach(async () => {
     service = new ServiceList()
     Object.assign(service, ServiceMock)
-    options = {
-      attachTo: '#root',
-      props: {
-        services: [service, service],
-        drivers: [DriverMock],
-        table: Tables.history
-      },
-      global: {
-        plugins: [router, i18n],
-        provide: {
-          'appName': 'test'
-        }
-      },
+    options.props = {
+      services: [service, service],
+      drivers: [DriverMock],
+      table: Tables.history
     }
     jest.useFakeTimers()
     DriverRepository.getAll = jest.fn().mockResolvedValue(options.props?.drivers)
@@ -70,7 +74,11 @@ describe('ServicesTable.vue', () => {
   })
   
   it('an user can see date in history', async () => {
-    options.props.table = Tables.history
+    options.props = {
+      services: [service, service],
+      drivers: [DriverMock],
+      table: Tables.history
+    }
     wrapper = mount(ServicesTable, options)
     await nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
@@ -78,10 +86,13 @@ describe('ServicesTable.vue', () => {
   })
   
   it('show release and terminate buttons when service is in in_progress status', async () => {
-    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.inProgress
+    }
+    wrapper = mount(ServicesTable, options)
   
     expect(wrapper.find('.fa-car-crash').exists()).toBeTruthy()
     expect(wrapper.find('.fa-check').exists()).toBeTruthy()
@@ -90,10 +101,13 @@ describe('ServicesTable.vue', () => {
   })
   
   it('emmit events cancel when make click in button cancel', async () => {
-    options.props.table = Tables.pendings
     service.status = Service.STATUS_PENDING
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.pendings
+    }
+    wrapper = mount(ServicesTable, options)
     
     const buttonCancel = wrapper.find('.btn-danger')
     await buttonCancel.trigger('click')
@@ -102,10 +116,13 @@ describe('ServicesTable.vue', () => {
   })
   
   it('emmit events when make click in buttons release and terminate', async () => {
-    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.inProgress
+    }
+    wrapper = mount(ServicesTable, options)
     
     const buttons = wrapper.findAll('.btn-dark')
     await buttons.at(0)?.trigger('click')
