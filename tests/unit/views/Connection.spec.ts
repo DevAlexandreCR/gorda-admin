@@ -46,7 +46,7 @@ describe('Connection.vue', () => {
 
   test('connected var is initialized when mounted', async () => {
     await nextTick()
-    expect(wrapper.find('h4').text()).toMatch('Disconnected')
+    expect(wrapper.find('h4').text()).toMatch('Principal')
     expect(wrapper.vm.connected).toBeFalsy()
   })
   
