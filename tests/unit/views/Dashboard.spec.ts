@@ -7,11 +7,13 @@ import UserInterface from '../../mocks/entities/UserMock'
 import DriverRepository from '@/repositories/DriverRepository'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import DocumentDataMock from '../../mocks/firebase/DocumentDataMock'
+import SettingsRepository from "@/repositories/SettingsRepository";
 
 describe('Dashboard.vue', () => {
   Object.assign(AuthService.currentUser, UserInterface)
   DriverRepository.onlineDriverListener = jest.fn()
 	ServiceRepository.getAll = jest.fn().mockResolvedValue([DocumentDataMock])
+  SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
 	let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,
