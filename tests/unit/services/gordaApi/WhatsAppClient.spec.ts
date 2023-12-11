@@ -1,4 +1,4 @@
-import {openServer, server, socket} from '../../../testSetup'
+import {openServer, socket} from '../../../testSetup'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
