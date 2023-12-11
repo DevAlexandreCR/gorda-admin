@@ -7,9 +7,9 @@ import {WpClient} from "@/types/WpClient";
 describe('WhatsAppClient.ts', () => {
   let client: WhatsAppClient
   
-  beforeEach((done) => {
+  beforeAll((done) => {
     client = WhatsAppClient.getInstance({
-      id: '31037904656',
+      id: '3103794656',
       wpNotifications: false,
       chatBot: false,
       alias: 'Test'
@@ -17,9 +17,8 @@ describe('WhatsAppClient.ts', () => {
     openServer(done)
   }, 10000)
 
-  afterEach(() => {
-    server.close()
-    socket.close()
+  afterAll((done) => {
+    socket.close(done)
   })
   test('must change status to connected when receive ready event', async () => {
     client.state = WhatsApp.STATUS_DISCONNECTED
