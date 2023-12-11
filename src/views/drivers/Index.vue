@@ -115,7 +115,7 @@ import Paginator from '@/components/Paginator.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
-import {onMounted, ref, Ref, watch} from 'vue'
+import {onMounted, ref, Ref, watchEffect} from 'vue'
 import dayjs from 'dayjs'
 import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
@@ -137,23 +137,24 @@ function getPaginatedData(data: []): void {
   paginatedDrivers.value = data
 }
 
-watch(drivers, (newDrivers) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  newDrivers.forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
-watch(enabled, (newEnabled) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filter('', newEnabled).forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
-watch(searchDriver, (plate) => {
-  filteredDrivers.value.splice(0, filteredDrivers.value.length)
-  filter(plate, enabled.value).forEach(driver => filteredDrivers.value.push(driver))
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
 onMounted(() => {
-  drivers.forEach(driver => filteredDrivers.value.push(driver))
+  const allDrivers = drivers;
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...allDrivers)
 })
 
 function onEnable(event: Event): void {

@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Now admin can set 2 or more whatsapp clients. [#112](https://github.com/DevAlexandreCR/admin-driver/pull/112)
 
+### Fixed
+- Fix filtered drivers when update [#111](https://github.com/DevAlexandreCR/admin-driver/pull/111)
+
 ### Changed
 - Add responsive tabs to dashboard. [#107](https://github.com/DevAlexandreCR/admin-driver/pull/107)
 
