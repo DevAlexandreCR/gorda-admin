@@ -16,15 +16,6 @@ import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
-  const wpClient = useWpClientsStore()
-  wpClient.clients = {
-    3103794656: {
-      id: '3103794656',
-      alias: 'Principal',
-      wpNotifications: false,
-      chatBot: false
-    }
-  }
 
   const options: ComponentMountingOptions<any>= {
     attachTo: '#root',
@@ -43,6 +34,15 @@ describe('ServicesTable.vue', () => {
   let service: ServiceList
 
   beforeEach(async () => {
+    const wpClient = useWpClientsStore()
+    wpClient.clients = {
+      3103794656: {
+        id: '3103794656',
+        alias: 'Principal',
+        wpNotifications: false,
+        chatBot: false
+      }
+    }
     service = new ServiceList()
     Object.assign(service, new ServiceMock)
     options.props = {
