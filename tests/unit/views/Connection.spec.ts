@@ -5,11 +5,22 @@ import i18n from '@/plugins/i18n'
 import {openServer, socket} from '../../testSetup'
 import waitForExpect from 'wait-for-expect'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
+
   
   beforeEach(async () => {
+    const wpClient = useWpClientsStore()
+    wpClient.clients = {
+      3103794656: {
+        id: '3103794656',
+        alias: 'Principal',
+        wpNotifications: false,
+        chatBot: false
+      }
+    }
     wrapper = shallowMount(Connection,
       {
         attachTo: '#root',
