@@ -113,11 +113,6 @@ function auth() {
   wpClient.auth()
 }
 
-function destroy() {
-  connecting.value = true
-  wpClient.destroy()
-}
-
 const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = false
   qr.value = socket.qr
