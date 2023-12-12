@@ -66,4 +66,15 @@ describe('Connection.vue', () => {
       expect(wrapper.vm.qr).toBe('fake-qr')
     })
   })
+
+  test('an user can delete a wp-client', async () => {
+    await nextTick()
+    const fn = jest.spyOn(wrapper.vm, 'deleteWpClient')
+    await wrapper.find('.btn-danger').trigger('click')
+    const button = wrapper.find('.btn-info')
+    await button.trigger('click')
+    await waitForExpect(() => {
+      expect(fn).toBeCalled()
+    })
+  })
 })
