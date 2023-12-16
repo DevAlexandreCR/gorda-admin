@@ -1,4 +1,4 @@
-import {shallowMount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, shallowMount, VueWrapper} from '@vue/test-utils'
 import Connection from '@/views/whatsapp/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
@@ -8,18 +8,19 @@ import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import {nextTick} from "vue";
 import {WpClient} from "@/types/WpClient";
+import SettingsRepository from "@/repositories/SettingsRepository";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
+  const client: WpClient = {
+    id: '3103794656',
+    alias: 'Principal',
+    wpNotifications: false,
+    chatBot: false
+  }
 
   beforeEach(async () => {
     const wpClient = useWpClientsStore()
-    const client: WpClient = {
-      id: '3103794656',
-      alias: 'Principal',
-      wpNotifications: false,
-      chatBot: false
-    }
     wpClient.clients = {
       3103794656: client
     }
@@ -47,6 +48,8 @@ describe('Connection.vue', () => {
   test('connected var is initialized when mounted', async () => {
     await nextTick()
     expect(wrapper.find('h4').text()).toMatch('Principal')
+    expect(wrapper.find('.btn-danger').exists()).toBeTruthy()
+    expect(wrapper.find('.btn-primary').exists()).toBeTruthy()
     expect(wrapper.vm.connected).toBeFalsy()
   })
   
@@ -68,13 +71,15 @@ describe('Connection.vue', () => {
   })
 
   test('an user can delete a wp-client', async () => {
-    await nextTick()
     const fn = jest.spyOn(wrapper.vm, 'deleteWpClient')
+    SettingsRepository.deleteClient = jest.fn().mockResolvedValue(null)
+    await nextTick()
     await wrapper.find('.btn-danger').trigger('click')
-    const button = wrapper.find('.btn-info')
-    await button.trigger('click')
+    await wrapper.find('.btn-info').trigger('click')
+    await nextTick()
+    await flushPromises()
     await waitForExpect(() => {
-      expect(fn).toBeCalled()
+      expect(fn).toBeCalledTimes(1)
     })
   })
 })
