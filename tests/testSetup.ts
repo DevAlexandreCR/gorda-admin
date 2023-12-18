@@ -54,6 +54,7 @@ jest.mock('firebase/database', () => {
 		}),
 		off: jest.fn(),
 		set: jest.fn(),
+    remove: jest.fn(),
     child: jest.fn()
   }
 })
