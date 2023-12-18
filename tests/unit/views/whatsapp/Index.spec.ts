@@ -7,6 +7,7 @@ import Index from "@/views/whatsapp/Index.vue";
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import {WpClient} from "@/types/WpClient";
 import Connection from "@/views/whatsapp/Connection.vue";
+import waitForExpect from "wait-for-expect";
 
 describe('Index.vue', () => {
   let wrapper: VueWrapper<any>
@@ -57,8 +58,10 @@ describe('Index.vue', () => {
     await inputPhone.setValue('3100000000')
     await wrapper.find('.btn-info').trigger('click')
     await nextTick()
-    expect(wrapper.findAllComponents(Connection).length).toBe(2)
-    expect(wrapper.html()).toContain('Name')
-    expect(wrapper.html()).toContain('3100000000')
+    await waitForExpect(() => {
+      expect(wrapper.findAllComponents(Connection).length).toBe(2)
+      expect(wrapper.html()).toContain('Name')
+      expect(wrapper.html()).toContain('3100000000')
+    })
   })
 })
