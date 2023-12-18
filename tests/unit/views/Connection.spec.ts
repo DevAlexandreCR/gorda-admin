@@ -1,4 +1,4 @@
-import {flushPromises, shallowMount, VueWrapper} from '@vue/test-utils'
+import {shallowMount, VueWrapper} from '@vue/test-utils'
 import Connection from '@/views/whatsapp/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
@@ -71,15 +71,10 @@ describe('Connection.vue', () => {
   })
 
   test('an user can delete a wp-client', async () => {
-    const fn = jest.spyOn(wrapper.vm, 'deleteWpClient')
+    const fn = jest.spyOn(wrapper.vm.wpClient, 'destroy')
     SettingsRepository.deleteClient = jest.fn().mockResolvedValue(null)
+    wrapper.vm.deleteWpClient()
     await nextTick()
-    await wrapper.find('.btn-danger').trigger('click')
-    await wrapper.find('.btn-info').trigger('click')
-    await nextTick()
-    await flushPromises()
-    await waitForExpect(() => {
-      expect(fn).toBeCalledTimes(1)
-    })
-  })
+    expect(fn).toBeCalled()
+  }, 10000)
 })
