@@ -1,9 +1,6 @@
-import {mount, shallowMount, VueWrapper} from '@vue/test-utils'
+import {mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import {socket} from '../../../testSetup'
-import waitForExpect from 'wait-for-expect'
-import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {nextTick} from "vue";
 import SettingsRepository from "@/repositories/SettingsRepository";
 import Index from "@/views/whatsapp/Index.vue";
