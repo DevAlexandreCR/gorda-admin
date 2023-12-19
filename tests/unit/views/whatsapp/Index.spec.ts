@@ -57,6 +57,7 @@ describe('Index.vue', () => {
     const inputPhone =  wrapper.find('input[name="id"]')
     await inputPhone.setValue('3100000000')
     await wrapper.find('.btn-info').trigger('click')
+    await wrapper.find('form').trigger('submit')
     await nextTick()
     await flushPromises()
     await waitForExpect(() => {
