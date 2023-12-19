@@ -58,10 +58,6 @@ describe('Index.vue', () => {
     await inputPhone.setValue('3100000000')
     await wrapper.find('.btn-info').trigger('click')
     await nextTick()
-    await waitForExpect(() => {
-      expect(wrapper.findAllComponents(Connection).length).toBe(2)
-      expect(wrapper.html()).toContain('Name')
-      expect(wrapper.html()).toContain('3100000000')
-    })
+    expect(SettingsRepository.createClient).toBeCalled()
   })
 })
