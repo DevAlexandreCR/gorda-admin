@@ -6,7 +6,6 @@ import SettingsRepository from "@/repositories/SettingsRepository";
 import Index from "@/views/whatsapp/Index.vue";
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import {WpClient} from "@/types/WpClient";
-import Connection from "@/views/whatsapp/Connection.vue";
 import waitForExpect from "wait-for-expect";
 
 describe('Index.vue', () => {
