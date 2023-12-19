@@ -1,4 +1,4 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {nextTick} from "vue";
@@ -51,13 +51,14 @@ describe('Index.vue', () => {
   test('it must create a new Client', async () => {
     SettingsRepository.createClient = jest.fn().mockResolvedValue(null)
     await nextTick()
-    await wrapper.find('#bbb').trigger('click')
+    await wrapper.find('.btn-primary').trigger('click')
     const inputAlias =  wrapper.find('input[name="alias"]')
     await inputAlias.setValue('name')
     const inputPhone =  wrapper.find('input[name="id"]')
     await inputPhone.setValue('3100000000')
     await wrapper.find('.btn-info').trigger('click')
     await nextTick()
+    await flushPromises()
     await waitForExpect(() => {
       expect(SettingsRepository.createClient).toBeCalled()
       expect(wrapper.findAllComponents(Connection).length).toBe(2)
