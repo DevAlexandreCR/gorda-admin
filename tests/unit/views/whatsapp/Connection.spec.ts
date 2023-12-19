@@ -1,4 +1,4 @@
-import {shallowMount, VueWrapper} from '@vue/test-utils'
+import {flushPromises, shallowMount, VueWrapper} from '@vue/test-utils'
 import Connection from '@/views/whatsapp/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
@@ -9,6 +9,7 @@ import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import {nextTick} from "vue";
 import {WpClient} from "@/types/WpClient";
 import SettingsRepository from "@/repositories/SettingsRepository";
+import Swal from "sweetalert2";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -43,6 +44,19 @@ describe('Connection.vue', () => {
 
   afterAll((done) => {
     socket.close(done)
+  }, 10000)
+
+  test('an user cannot delete a wp-client when error', async () => {
+    const swal = jest.spyOn(Swal,'fire')
+    SettingsRepository.deleteClient = jest.fn().mockRejectedValue(new Error('new error'))
+    await nextTick()
+    wrapper.vm.deleteWpClient()
+    await nextTick()
+    await flushPromises()
+    await waitForExpect(() => {
+      expect(swal).toBeCalled()
+      expect(SettingsRepository.deleteClient).rejects.toThrow('new error')
+    })
   }, 10000)
 
   test('connected var is initialized when mounted', async () => {
