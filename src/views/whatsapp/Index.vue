@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container-fluid d-flex justify-content-end">
-      <button class="btn btn-primary" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
+      <button id="bbb" class="btn btn-primary" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
     </div>
     <div class="row container-fluid">
       <div class="col-md-6 mt-2" v-for="client in clients" :key="client.id">
