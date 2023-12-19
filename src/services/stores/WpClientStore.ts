@@ -66,7 +66,11 @@ export const useWpClientsStore = defineStore('settingsStore', {
           wpNotifications: false,
           chatBot: false
         }
-      }).finally(() => setLoading(false))
+      })
+      .catch(async (e) => {
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .finally(() => setLoading(false))
     },
 
     async deleteClient(client: WpClient): Promise<void> {
@@ -82,7 +86,6 @@ export const useWpClientsStore = defineStore('settingsStore', {
         }
       })
       .catch(async (e) => {
-        console.log(e.message)
         await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
       })
       .finally(() => setLoading(false))
