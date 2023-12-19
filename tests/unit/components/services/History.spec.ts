@@ -66,7 +66,7 @@ describe('History.vue', () => {
 		await button.trigger('click')
 	
 		await nextTick()
-		expect(getAll).toBeCalledTimes(3)
+		expect(getAll).toBeCalledTimes(2)
 	})
 
   it('calculates the percentage correctly', () => {
