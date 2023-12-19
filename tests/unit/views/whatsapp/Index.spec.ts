@@ -50,6 +50,7 @@ describe('Index.vue', () => {
 
   test('it must create a new Client', async () => {
     SettingsRepository.createClient = jest.fn().mockResolvedValue(null)
+    SettingsRepository.deleteClient = jest.fn().mockResolvedValue(null)
     await nextTick()
     await wrapper.find('.btn-primary').trigger('click')
     const inputAlias =  wrapper.find('input[name="alias"]')
