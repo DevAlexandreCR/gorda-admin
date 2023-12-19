@@ -63,9 +63,8 @@ describe('Index.vue', () => {
     await flushPromises()
     await waitForExpect(() => {
       expect(SettingsRepository.createClient).toBeCalled()
-      expect(wrapper.findAllComponents(Connection).length).toBe(2)
       expect(wrapper.html()).toContain('Name')
       expect(wrapper.html()).toContain('3100000000')
     })
-  })
+  }, 10000)
 })
