@@ -15,7 +15,7 @@ import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import Service from '@/models/Service'
 import FSService from '@/services/FSService'
-import {getDocs, query as queryFS, Query, QuerySnapshot, where} from 'firebase/firestore'
+import {getDocs, query as queryFS, Query, QuerySnapshot, where, startAfter, orderBy, limit, endBefore, limitToLast, DocumentData, CollectionReference} from 'firebase/firestore'
 
 class ServiceRepository {
 
@@ -50,12 +50,33 @@ class ServiceRepository {
 		);
 	}
 
-  /* istanbul ignore next */
-  async getAll(from: number, to: number, driverId: string|null = null, clientId: string|null = null): Promise<QuerySnapshot> {
-		let query = this.betweenDate(from, to)
-		if (clientId) query = this.byClientId(clientId, query)
-		if (driverId) query = this.byDriverId(driverId, query)
-		return await getDocs(query)
+/* istanbul ignore next */
+async getAll(
+	from: number,
+	to: number,
+	driverId: string | null = null,
+	clientId: string | null = null,
+	limit: number, 
+	startAfterCursor?: string, 
+	endBeforeCursor?: string, 
+  ): Promise<QuerySnapshot<DocumentData>> {
+	let query: Query | CollectionReference = this.betweenDate(from, to);
+  
+	if (clientId) query = this.byClientId(clientId, query);
+	if (driverId) query = this.byDriverId(driverId, query);
+
+	query = queryFS(query, orderBy('created_at'))
+  
+	if (startAfterCursor) {
+	query = queryFS(query, startAfter(query, startAfterCursor));
+	} else if (endBeforeCursor) {
+	query = queryFS(query, endBefore(query, endBeforeCursor));
+	}
+  
+	query = queryFS(query, limitToLast(limit));
+  
+	const snapshot: QuerySnapshot<DocumentData> = await getDocs(query);
+	return snapshot;
   }
 
   /* istanbul ignore next */

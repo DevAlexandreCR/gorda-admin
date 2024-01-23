@@ -21,7 +21,10 @@ export const useServicesStore = defineStore('servicesStore', {
         to: DateHelper.stringNow(),
 				clientId: null,
 				driverId: null
-      }
+      },
+      currentPage: 1,
+      totalPages: 1,
+      limit: 10
     }
   },
   actions: {
@@ -62,32 +65,50 @@ export const useServicesStore = defineStore('servicesStore', {
     },
 
     async getHistoryServices(sync = false): Promise<void> {
-      const {setLoading} = useLoadingState()
-      const from = DateHelper.getFromDate(this.filter.from , sync? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
-      const to = DateHelper.getToDate(this.filter.to)
-      setLoading(true)
-      if (!sync) this.history.splice(0)
-       else {
-        const filtered = this.history.filter(filter => filter.created_at > from)
-        filtered.forEach(filter => {
-          const index = this.history.indexOf(filter)
-          if (index > -1) this.history.splice(index, 1)
-        })
-      }
-      ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId)
-				.then(snapshot => {
-					snapshot.forEach(documentData => {
-						const service  = this.setServiceFromFS(documentData)
-						this.history.unshift(service);
-					})
-				})
-				.catch(async (e) => {
-					await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
-				})
-				.finally(() => {
-					setLoading(false)
-				})
+      const { setLoading } = useLoadingState();
+      const from = DateHelper.getFromDate(
+        this.filter.from,
+        sync ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
+      );
+      const to = DateHelper.getToDate(this.filter.to);
+      setLoading(true);
 
+      if (!sync) {
+        this.history.splice(0);
+        this.currentPage = 1; 
+      } else {
+        const filtered = this.history.filter((filter) => filter.created_at > from);
+        filtered.forEach((filter) => {
+          const index = this.history.indexOf(filter);
+          if (index > -1) this.history.splice(index, 1);
+        });
+      }
+      ServiceRepository.getAll(
+        from,
+        to,
+        this.filter.driverId,
+        this.filter.clientId,
+        this.limit
+      )
+        .then((snapshot) => {
+          this.currentPage = 1; 
+          this.totalPages = Math.ceil(snapshot.size / this.limit);
+
+          snapshot.forEach((documentData) => {
+            const service = this.setServiceFromFS(documentData);
+            this.history.unshift(service);
+          });
+        })
+        .catch(async (e) => {
+          await ToastService.toast(
+            ToastService.ERROR,
+            i18n.global.t('common.messages.error'),
+            e.message
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     },
 		
 		filterInProgressServices(search: string): Array<ServiceList> {
