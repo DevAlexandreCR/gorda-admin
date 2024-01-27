@@ -15,7 +15,19 @@ import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import Service from '@/models/Service'
 import FSService from '@/services/FSService'
-import {getDocs, query as queryFS, Query, QuerySnapshot, where, startAfter, orderBy, limit, endBefore, DocumentData, CollectionReference} from 'firebase/firestore'
+import {
+	CollectionReference,
+	DocumentData,
+	getCountFromServer,
+	getDocs,
+	limit,
+	orderBy,
+	query as queryFS,
+	Query,
+	QuerySnapshot,
+	startAfter,
+	where
+} from 'firebase/firestore'
 
 class ServiceRepository {
 
@@ -41,7 +53,24 @@ class ServiceRepository {
 			where('client_id', '==', clientId)
 		);
 	}
-	
+
+	async getCount(from: number, to: number, clientId: string|null, driverId?: string|null): Promise<number> {
+		let query = this.betweenDate(
+			from,
+			to
+		)
+
+		if (clientId) query = this.byClientId(clientId, query)
+
+		if (driverId) query = this.byDriverId(driverId, query)
+
+		return getCountFromServer(query).then(snapshot => {
+			return Promise.resolve(snapshot.data().count)
+		}).catch(e => {
+			return Promise.reject(e)
+		})
+	}
+
 	/* istanbul ignore next */
 	byDriverId(driverId: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
@@ -56,31 +85,21 @@ async getAll(options: {
     to: number;
     driverId: string | null;
     clientId: string | null;
-    limit: number;
-    startAfterCursor?: string;
-    endBeforeCursor?: string;
+		perPage: number;
+    startAfterCursor: number;
   }): Promise<QuerySnapshot<DocumentData>> {
     let query: Query | CollectionReference = this.betweenDate(
       options.from,
       options.to
     );
 
-    if (options.clientId) query = this.byClientId(options.clientId, query);
-    
-    if (options.driverId) query = this.byDriverId(options.driverId, query);
+    if (options.clientId) query = this.byClientId(options.clientId, query)
 
-    query = queryFS(query, orderBy('created_at'));
+    if (options.driverId) query = this.byDriverId(options.driverId, query)
 
-    if (options.startAfterCursor) {
-      query = queryFS(query, startAfter(query, options.startAfterCursor));
-    } else if (options.endBeforeCursor) {
-      query = queryFS(query, endBefore(query, options.endBeforeCursor));
-    }
+    query = queryFS(query, orderBy('created_at'), startAfter(options.startAfterCursor) , limit(options.perPage))
 
-    query = queryFS(query, limit(options.limit));
-
-    const snapshot: QuerySnapshot<DocumentData> = await getDocs(query);
-    return snapshot;
+		return await getDocs(query)
   }
 
   /* istanbul ignore next */

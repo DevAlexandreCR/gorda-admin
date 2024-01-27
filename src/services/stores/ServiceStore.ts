@@ -9,7 +9,7 @@ import {useDriversStore} from '@/services/stores/DriversStore';
 import {DocumentData} from 'firebase/firestore';
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
-import { pagination } from '@/types/pagination'
+import {Pagination} from '@/types/pagination'
 
 
 export const useServicesStore = defineStore('servicesStore', {
@@ -18,6 +18,12 @@ export const useServicesStore = defineStore('servicesStore', {
       pendings: Array<ServiceList>(),
       inProgress: Array<ServiceList>(),
       history: Array<ServiceList>(),
+      pagination: <Pagination>{
+        currentPage: 1,
+        perPage: 2,
+        totalCount: 0,
+        limit: 20
+      },
       filter: <Filter>{
         from: DateHelper.stringNow(),
         to: DateHelper.stringNow(),
@@ -63,37 +69,27 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    async getHistoryServices(sync = false): Promise<void> {
+    async getHistoryServices(): Promise<void> {
       const { setLoading } = useLoadingState();
-      const from = DateHelper.getFromDate(
-        this.filter.from,
-        sync ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
-      );
+      const from = DateHelper.getFromDate(this.filter.from, 'YYYY-MM-DD')
       const to = DateHelper.getToDate(this.filter.to);
       setLoading(true);
     
-      if (!sync) {
-        this.history.splice(0);
-        pagination.currentPage.value = 1
-      } else {
-        const filtered = this.history.filter((filter) => filter.created_at > from);
-        filtered.forEach((filter) => {
-          const index = this.history.indexOf(filter);
-          if (index > -1) this.history.splice(index, 1);
-        });
-      }
       const options = {
         from: from,
         to: to,
         driverId: this.filter.driverId,
         clientId: this.filter.clientId,
-        limit: pagination.limit.value, 
-        perPage: (pagination.currentPage.value - 1) * pagination.perPage.value,
-      };
-    
+        perPage: this.pagination.limit,
+        startAfterCursor: this.pagination.currentPage
+      }
+
+      this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
+      console.log(this.pagination.totalCount)
+
+          setLoading(false);
       ServiceRepository.getAll(options)
         .then((snapshot) => {
-          pagination.totalCount.value = snapshot.size;
           snapshot.forEach((documentData) => {
             const service = this.setServiceFromFS(documentData);
             this.history.unshift(service);

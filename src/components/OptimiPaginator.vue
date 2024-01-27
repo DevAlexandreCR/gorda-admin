@@ -49,34 +49,32 @@ const currentPage = ref(props.currentPage)
 function nextPage(): void {
   if (currentPage.value < totalPages.value) {
     currentPage.value += 1
-    emitPageData()
+    emitPageData(currentPage.value)
   }
 }
 
 function backPage(): void {
   if (currentPage.value > 1) {
     currentPage.value -= 1
-    emitPageData()
+    emitPageData(currentPage.value)
   }
 }
 
 function goToPage(numPage: number): void {
   if (numPage >= 1 && numPage <= totalPages.value) {
     currentPage.value = numPage
-    emitPageData()
+    emitPageData(numPage)
   }
 }
 
-function emitPageData(): void {
-  const start = (currentPage.value - 1) * props.perPage
-  const end = Math.min(start + props.perPage, props.totalCount)
-  const paginatedData = props.data.slice(start, end)
-  emit('paginatedData', paginatedData)
+function emitPageData(page: number): void {
+
+  emit('paginatedData', page)
 }
 
 watch(() => props.currentPage, () => {
   currentPage.value = props.currentPage
-  emitPageData()
+  emitPageData(currentPage.value)
 })
 </script>
 

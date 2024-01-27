@@ -63,7 +63,8 @@
         <Paginator :data="props.services" :perPage="20" @paginatedData="getPaginatedData"/>
       </div>
       <div class="container-fluid mt-2">
-    <OptimiPaginator :totalCount="totalCount" :perPage="perPage" :currentPage="currentPage" :data="props.services" @paginatedData="getPaginatedData"/>
+    <OptimiPaginator :totalCount="props.pagination.totalCount" :perPage="props.pagination.perPage"
+                     :currentPage="props.pagination.currentPage" :data="props.services" @paginatedData="getPaginatedData"/>
   </div>
     </div>
   </div>
@@ -76,19 +77,18 @@ import Service from '@/models/Service'
 import { ref, Ref, onBeforeUnmount, onMounted, watch, defineProps, defineEmits } from 'vue'
 import { ServiceList } from '@/models/ServiceList'
 import { Tables } from '@/constants/Tables'
-import { pagination } from '@/types/pagination'
 import OptimiPaginator from '@/components/OptimiPaginator'
-
+import {useServicesStore} from "@/services/stores/ServiceStore";
+import {get} from "firebase/database";
 
 interface Props {
   services: Array<ServiceList>
   table: Tables
+  pagination: Paginator
 }
 
+const { getHistoryServices, pagination } = useServicesStore()
 const props = defineProps<Props>()
-const currentPage = pagination.currentPage
-const perPage = pagination.perPage
-const totalCount = pagination.totalCount
 const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
 let interval: number
 const paginatedServices: Ref<Array<Service>> = ref([])
@@ -96,7 +96,6 @@ const dataServices: Ref<Array<Service>> = ref([])
 
 watch(props.services, (newServices) => {
   dataServices.value = Array.from(newServices)
-  totalCount.value = newServices.length;
 })
 
 
@@ -125,9 +124,9 @@ function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
 }
 
-function getPaginatedData(data: []): void {
-  const start = (currentPage.value - 1) * perPage.value;
-  paginatedServices.value = data.slice(start, start + perPage.value);
+function getPaginatedData(page: number): void {
+  pagination.currentPage = page
+  getHistoryServices()
 }
 
 function getTime(): void {

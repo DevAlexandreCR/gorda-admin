@@ -72,8 +72,8 @@
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
-                    {{ history.length }}
-                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length)
+                    {{ pagination.totalCount }}
+                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', pagination.totalCount)
                     }}</span>
                   </h5>
                 </div>
@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <ServicesTable :table="Tables.history" :services="history"></ServicesTable>
+    <ServicesTable :table="Tables.history" :services="history" :pagination="pagination"></ServicesTable>
   </div>
 </template>
 
@@ -154,7 +154,7 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 
 const { getHistoryServices } = useServicesStore()
-const { history } = storeToRefs(useServicesStore())
+const { history, pagination } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const { clients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
@@ -202,7 +202,7 @@ onBeforeMount(async () => {
   if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
     const lastService = history.value[0]
     filter.value.from = DateHelper.unixToDate(lastService.created_at - 3600, 'YYYY-MM-DD HH:mm:ss')
-    await getHistoryServices(true)
+    await getHistoryServices()
   }
 })
 
