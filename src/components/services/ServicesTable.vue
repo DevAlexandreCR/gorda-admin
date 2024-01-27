@@ -63,7 +63,7 @@
         <Paginator :data="props.services" :perPage="20" @paginatedData="getPaginatedData"/>
       </div>
       <div class="container-fluid mt-2">
-    <OptimiPaginator :totalCount="props.pagination.totalCount" :perPage="props.pagination.perPage"
+    <OptimePaginator :totalCount="props.pagination.totalCount" :perPage="props.pagination.perPage"
                      :currentPage="props.pagination.currentPage" :data="props.services" @paginatedData="getPaginatedData"/>
   </div>
     </div>
@@ -77,14 +77,15 @@ import Service from '@/models/Service'
 import { ref, Ref, onBeforeUnmount, onMounted, watch, defineProps, defineEmits } from 'vue'
 import { ServiceList } from '@/models/ServiceList'
 import { Tables } from '@/constants/Tables'
-import OptimiPaginator from '@/components/OptimiPaginator'
+import OptimePaginator from '@/components/OptimiPaginator'
 import {useServicesStore} from "@/services/stores/ServiceStore";
-import {get} from "firebase/database";
+import {Pagination} from '@/types/Pagination'
+
 
 interface Props {
   services: Array<ServiceList>
   table: Tables
-  pagination: Paginator
+  pagination: Pagination
 }
 
 const { getHistoryServices, pagination } = useServicesStore()

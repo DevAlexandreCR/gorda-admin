@@ -9,7 +9,7 @@ import {useDriversStore} from '@/services/stores/DriversStore';
 import {DocumentData} from 'firebase/firestore';
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
-import {Pagination} from '@/types/pagination'
+import {Pagination} from '@/types/Pagination'
 
 
 export const useServicesStore = defineStore('servicesStore', {
