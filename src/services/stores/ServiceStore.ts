@@ -9,6 +9,8 @@ import {useDriversStore} from '@/services/stores/DriversStore';
 import {DocumentData} from 'firebase/firestore';
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
+import { pagination } from '@/types/pagination'
+
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -21,10 +23,7 @@ export const useServicesStore = defineStore('servicesStore', {
         to: DateHelper.stringNow(),
 				clientId: null,
 				driverId: null
-      },
-      currentPage: 1,
-      totalPages: 1,
-      limit: 10
+      }
     }
   },
   actions: {
@@ -72,10 +71,10 @@ export const useServicesStore = defineStore('servicesStore', {
       );
       const to = DateHelper.getToDate(this.filter.to);
       setLoading(true);
-
+    
       if (!sync) {
         this.history.splice(0);
-        this.currentPage = 1; 
+        pagination.currentPage.value = 1
       } else {
         const filtered = this.history.filter((filter) => filter.created_at > from);
         filtered.forEach((filter) => {
@@ -83,17 +82,18 @@ export const useServicesStore = defineStore('servicesStore', {
           if (index > -1) this.history.splice(index, 1);
         });
       }
-      ServiceRepository.getAll(
-        from,
-        to,
-        this.filter.driverId,
-        this.filter.clientId,
-        this.limit
-      )
+      const options = {
+        from: from,
+        to: to,
+        driverId: this.filter.driverId,
+        clientId: this.filter.clientId,
+        limit: pagination.limit.value, 
+        perPage: (pagination.currentPage.value - 1) * pagination.perPage.value,
+      };
+    
+      ServiceRepository.getAll(options)
         .then((snapshot) => {
-          this.currentPage = 1; 
-          this.totalPages = Math.ceil(snapshot.size / this.limit);
-
+          pagination.totalCount.value = snapshot.size;
           snapshot.forEach((documentData) => {
             const service = this.setServiceFromFS(documentData);
             this.history.unshift(service);

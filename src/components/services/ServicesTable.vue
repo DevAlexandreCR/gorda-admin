@@ -62,6 +62,9 @@
       <div class="container-fluid mt-2">
         <Paginator :data="props.services" :perPage="20" @paginatedData="getPaginatedData"/>
       </div>
+      <div class="container-fluid mt-2">
+    <OptimiPaginator :totalCount="totalCount" :perPage="perPage" :currentPage="currentPage" :data="props.services" @paginatedData="getPaginatedData"/>
+  </div>
     </div>
   </div>
 </template>
@@ -70,15 +73,22 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
-import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
-import {ServiceList} from '@/models/ServiceList'
-import {Tables} from '@/constants/Tables'
+import { ref, Ref, onBeforeUnmount, onMounted, watch, defineProps, defineEmits } from 'vue'
+import { ServiceList } from '@/models/ServiceList'
+import { Tables } from '@/constants/Tables'
+import { pagination } from '@/types/pagination'
+import OptimiPaginator from '@/components/OptimiPaginator'
+
 
 interface Props {
   services: Array<ServiceList>
   table: Tables
 }
+
 const props = defineProps<Props>()
+const currentPage = pagination.currentPage
+const perPage = pagination.perPage
+const totalCount = pagination.totalCount
 const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
 let interval: number
 const paginatedServices: Ref<Array<Service>> = ref([])
@@ -86,11 +96,12 @@ const dataServices: Ref<Array<Service>> = ref([])
 
 watch(props.services, (newServices) => {
   dataServices.value = Array.from(newServices)
+  totalCount.value = newServices.length;
 })
 
+
 onMounted(() => {
-  // dataServices.value = Array.from(props.services)
-  if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
+  if (props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
 })
 
 onBeforeUnmount(() => {
@@ -115,7 +126,8 @@ function end(service: Service): void {
 }
 
 function getPaginatedData(data: []): void {
-  paginatedServices.value = data
+  const start = (currentPage.value - 1) * perPage.value;
+  paginatedServices.value = data.slice(start, start + perPage.value);
 }
 
 function getTime(): void {
@@ -124,3 +136,4 @@ function getTime(): void {
   })
 }
 </script>
+
