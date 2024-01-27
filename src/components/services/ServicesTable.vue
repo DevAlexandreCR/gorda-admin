@@ -77,7 +77,7 @@ import Service from '@/models/Service'
 import { ref, Ref, onBeforeUnmount, onMounted, watch, defineProps, defineEmits } from 'vue'
 import { ServiceList } from '@/models/ServiceList'
 import { Tables } from '@/constants/Tables'
-import OptimePaginator from '@/components/OptimiPaginator'
+import OptimePaginator from '@/components/OptimePaginator'
 import {useServicesStore} from "@/services/stores/ServiceStore";
 import {Pagination} from '@/types/Pagination'
 
