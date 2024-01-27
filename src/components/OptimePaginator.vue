@@ -72,10 +72,10 @@ function emitPageData(page: number): void {
   emit('paginatedData', page)
 }
 
-watch(() => props.currentPage, () => {
-  currentPage.value = props.currentPage
-  emitPageData(currentPage.value)
-})
+// watch(() => props.currentPage, () => {
+//   currentPage.value = props.currentPage
+//   emitPageData(currentPage.value)
+// })
 </script>
 
 

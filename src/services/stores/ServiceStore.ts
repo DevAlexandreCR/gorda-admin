@@ -85,9 +85,8 @@ export const useServicesStore = defineStore('servicesStore', {
       }
 
       this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
-      console.log(this.pagination.totalCount)
-
-          setLoading(false);
+      console.log(this.pagination)
+      setLoading(false)
       ServiceRepository.getAll(options)
         .then((snapshot) => {
           snapshot.forEach((documentData) => {

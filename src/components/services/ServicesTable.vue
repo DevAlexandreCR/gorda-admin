@@ -126,8 +126,8 @@ function end(service: Service): void {
 }
 
 function getPaginatedData(page: number): void {
-  pagination.currentPage = page
-  getHistoryServices()
+  // pagination.currentPage = page
+  // getHistoryServices()
 }
 
 function getTime(): void {

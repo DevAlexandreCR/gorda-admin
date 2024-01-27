@@ -26,6 +26,7 @@ import {
 	Query,
 	QuerySnapshot,
 	startAfter,
+	startAt,
 	where
 } from 'firebase/firestore'
 
@@ -97,7 +98,7 @@ async getAll(options: {
 
     if (options.driverId) query = this.byDriverId(options.driverId, query)
 
-    query = queryFS(query, orderBy('created_at'), startAfter(options.startAfterCursor) , limit(options.perPage))
+    query = queryFS(query, orderBy('created_at'), startAt(options.from) , limit(options.perPage))
 
 		return await getDocs(query)
   }
