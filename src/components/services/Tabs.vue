@@ -66,7 +66,7 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel"></services-table>
+        <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel" :pagination="paginationPendings"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
         <div class="form-group me-2 col-sm-4">
@@ -75,7 +75,7 @@
         </div>
         <services-table :table="Tables.inProgress" :services="filteredInProgress" @cancelService="cancel"
                         @endService="end"
-                        @releaseService="release"></services-table>
+                        @releaseService="release" :pagination="paginationInProgress"></services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
         <History v-if="currentTap === 'history'"></History>
@@ -95,7 +95,7 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import Service from '@/models/Service'
 import ToastService from '@/services/ToastService'
 import AssignDriver from '@/components/services/AssingDriver.vue'
-import {onMounted, ref, Ref, watch} from 'vue'
+import {onMounted, reactive, ref, Ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -104,6 +104,7 @@ import History from '@/components/services/History.vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Tables} from '@/constants/Tables'
 import {ServiceList} from '@/models/ServiceList'
+import {Pagination} from "@/types/Pagination";
 
 const {t} = useI18n()
 const driverStore = useDriversStore()
@@ -113,16 +114,33 @@ const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')
 const searchService: Ref<string> = ref('')
 const filteredInProgress: Ref<Array<ServiceList>> = ref([])
+const paginationInProgress = reactive<Pagination>({
+  totalCount: 0,
+  currentPage: 1,
+  perPage: 20,
+  limit: 20
+})
+const paginationPendings = reactive<Pagination>({
+  totalCount: 0,
+  currentPage: 1,
+  perPage: 20,
+  limit: 20
+})
 
+watch(pendings, (newPendings) => {
+  paginationPendings.totalCount = newPendings.length
+})
 watch(searchService, (search) => {
   filteredInProgress.value.splice(0, filteredInProgress.value.length)
   if (search.length > 2) {
     filterInProgressServices(search).forEach(service => {
       filteredInProgress.value.push(service)
+      paginationInProgress.totalCount = filteredInProgress.value.length
     })
   } else {
     inProgress.value.forEach(service => {
       filteredInProgress.value.push(service)
+      paginationInProgress.totalCount = filteredInProgress.value.length
     })
   }
 })
@@ -132,6 +150,7 @@ watch(inProgress.value, (services) => {
     filteredInProgress.value.splice(0, filteredInProgress.value.length)
     services.forEach(service => {
       filteredInProgress.value.push(service)
+      paginationInProgress.totalCount = filteredInProgress.value.length
     })
   }
 })
