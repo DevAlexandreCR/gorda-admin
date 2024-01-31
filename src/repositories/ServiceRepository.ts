@@ -26,7 +26,7 @@ import {
 	Query,
 	QuerySnapshot,
 	startAfter,
-	startAt,
+	endBefore,
 	where
 } from 'firebase/firestore'
 
@@ -81,13 +81,14 @@ class ServiceRepository {
 	}
 
 /* istanbul ignore next */
-async getAll(options: {
-    from: number;
-    to: number;
-    driverId: string | null;
-    clientId: string | null;
-		perPage: number;
-    startAfterCursor: number;
+async getPaginated(options: {
+    from: number
+    to: number
+    driverId: string | null
+    clientId: string | null
+		perPage: number
+    cursor: string
+		next: boolean
   }): Promise<QuerySnapshot<DocumentData>> {
     let query: Query | CollectionReference = this.betweenDate(
       options.from,
@@ -98,7 +99,13 @@ async getAll(options: {
 
     if (options.driverId) query = this.byDriverId(options.driverId, query)
 
-    query = queryFS(query, orderBy('created_at'), startAt(options.from) , limit(options.perPage))
+    query = queryFS(
+			query,
+			orderBy('created_at'),
+			orderBy('id'),
+			options.next? startAfter(options.from, options.cursor) : endBefore(options.from, options.cursor),
+			limit(options.perPage)
+		)
 
 		return await getDocs(query)
   }

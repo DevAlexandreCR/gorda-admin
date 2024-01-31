@@ -22,7 +22,7 @@ export const useServicesStore = defineStore('servicesStore', {
         currentPage: 1,
         perPage: 2,
         totalCount: 0,
-        limit: 20
+        cursor: ''
       },
       filter: <Filter>{
         from: DateHelper.stringNow(),
@@ -69,9 +69,9 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    async getHistoryServices(): Promise<void> {
+    async getHistoryServices(next = true): Promise<void> {
       const { setLoading } = useLoadingState();
-      const from = DateHelper.getFromDate(this.filter.from, 'YYYY-MM-DD')
+      const from = DateHelper.getFromDate(this.filter.from)
       const to = DateHelper.getToDate(this.filter.to);
       setLoading(true);
     
@@ -80,21 +80,26 @@ export const useServicesStore = defineStore('servicesStore', {
         to: to,
         driverId: this.filter.driverId,
         clientId: this.filter.clientId,
-        perPage: this.pagination.limit,
-        startAfterCursor: this.pagination.currentPage
+        perPage: this.pagination.perPage,
+        cursor: this.pagination.cursor,
+        next: next
       }
 
-      this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
       console.log(this.pagination)
+
+      this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
       setLoading(false)
-      ServiceRepository.getAll(options)
+      ServiceRepository.getPaginated(options)
         .then((snapshot) => {
+          this.history.splice(0)
           snapshot.forEach((documentData) => {
             const service = this.setServiceFromFS(documentData);
             this.history.unshift(service);
+            console.log(this.history)
           });
         })
         .catch(async (e) => {
+          console.log(e.message)
           await ToastService.toast(
             ToastService.ERROR,
             i18n.global.t('common.messages.error'),
@@ -122,7 +127,7 @@ export const useServicesStore = defineStore('servicesStore', {
 				const driver = findById(service.driver_id)
 				service.driver = driver?? null
 			}
-			service.id = snapshot?.key as string
+			service.id = snapshot?.id
 			return  service
 		},
 

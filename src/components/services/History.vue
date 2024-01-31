@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <ServicesTable :table="Tables.history" :services="history" :pagination="pagination"></ServicesTable>
+    <ServicesTable :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
   </div>
 </template>
 
@@ -199,11 +199,7 @@ watchEffect(async () => {
 })
 
 onBeforeMount(async () => {
-  if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
-    const lastService = history.value[0]
-    filter.value.from = DateHelper.unixToDate(lastService.created_at - 3600, 'YYYY-MM-DD HH:mm:ss')
     await getHistoryServices()
-  }
 })
 
 function onDriverSelected(element: AutoCompleteType): void {
@@ -234,5 +230,11 @@ function isWhatPercent(x: number): number {
 
 async function getServices(): Promise<void> {
   await getHistoryServices()
+}
+
+async function paginateData(page: number, cursor: string, next: boolean): Promise<void> {
+  pagination.value.cursor = cursor
+  pagination.value.currentPage = page
+  await getHistoryServices(next)
 }
 </script>

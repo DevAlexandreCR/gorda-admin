@@ -117,14 +117,12 @@ const filteredInProgress: Ref<Array<ServiceList>> = ref([])
 const paginationInProgress = reactive<Pagination>({
   totalCount: 0,
   currentPage: 1,
-  perPage: 20,
-  limit: 20
+  perPage: 20
 })
 const paginationPendings = reactive<Pagination>({
   totalCount: 0,
   currentPage: 1,
-  perPage: 20,
-  limit: 20
+  perPage: 20
 })
 
 watch(pendings, (newPendings) => {

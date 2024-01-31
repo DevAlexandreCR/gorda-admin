@@ -30,7 +30,7 @@ describe('History.vue', () => {
 
   beforeEach(async () => {
     jest.useFakeTimers()
-    ServiceRepository.getAll = jest.fn().mockResolvedValue([DocumentDataMock])
+    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([DocumentDataMock])
 		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
     wrapper = mount(History, options)
@@ -56,7 +56,7 @@ describe('History.vue', () => {
 	})
 
   it('it must be assert that services si called when clear filters', async () => {
-		const getAll = jest.spyOn(ServiceRepository, 'getAll')
+		const getAll = jest.spyOn(ServiceRepository, 'getPaginated')
     const input = wrapper.find('input[name="driver"]')
     await input.setValue('HEM390')
     await nextTick()

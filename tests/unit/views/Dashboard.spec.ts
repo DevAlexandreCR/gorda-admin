@@ -11,7 +11,7 @@ import DocumentDataMock from '../../mocks/firebase/DocumentDataMock'
 describe('Dashboard.vue', () => {
   Object.assign(AuthService.currentUser, UserInterface)
   DriverRepository.onlineDriverListener = jest.fn()
-	ServiceRepository.getAll = jest.fn().mockResolvedValue([DocumentDataMock])
+	ServiceRepository.getPaginated = jest.fn().mockResolvedValue([DocumentDataMock])
 	let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Dashboard,

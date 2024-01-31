@@ -12,7 +12,7 @@
           <li v-if="item === 1 || item === totalPages || (item >= currentPage - 1 && item <= currentPage + 1)"
               class="page-item cursor-pointer"
               :class="{ active: currentPage === item }">
-            <a class="page-link" @click="goToPage(item)">{{ item }} <span class="sr-only">(current)</span></a>
+            <span class="page-link">{{ item }} <span class="sr-only">(current)</span></span>
           </li>
           <li v-else-if="item === totalPages - 1 || item === 2" :key="`dots-${index}`" class="page-item disabled">
             <span class="page-link">...</span>
@@ -31,51 +31,36 @@
 
 
 <script setup lang="ts">
-import { ref, computed, defineProps, defineEmits, watch } from 'vue'
+import { ref, computed, defineProps, defineEmits } from 'vue'
+import {Pagination} from "@/types/Pagination";
 
 interface Props {
-  totalCount: number
-  perPage: number
-  currentPage: number
-  data: []
+  pagination: Pagination
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['paginatedData'])
 
-const totalPages = computed(() => Math.ceil(props.totalCount / props.perPage))
-const currentPage = ref(props.currentPage)
+const totalPages = computed(() => Math.ceil(props.pagination.totalCount / props.pagination.perPage))
+const currentPage = ref(props.pagination.currentPage)
 
 function nextPage(): void {
   if (currentPage.value < totalPages.value) {
-    currentPage.value += 1
-    emitPageData(currentPage.value)
+    currentPage.value ++
+    emitPageData(currentPage.value, true)
   }
 }
 
 function backPage(): void {
   if (currentPage.value > 1) {
-    currentPage.value -= 1
-    emitPageData(currentPage.value)
+    currentPage.value--
+    emitPageData(currentPage.value, false)
   }
 }
 
-function goToPage(numPage: number): void {
-  if (numPage >= 1 && numPage <= totalPages.value) {
-    currentPage.value = numPage
-    emitPageData(numPage)
-  }
+function emitPageData(page: number, next: boolean): void {
+  emit('paginatedData', page, next)
 }
-
-function emitPageData(page: number): void {
-
-  emit('paginatedData', page)
-}
-
-// watch(() => props.currentPage, () => {
-//   currentPage.value = props.currentPage
-//   emitPageData(currentPage.value)
-// })
 </script>
 
 

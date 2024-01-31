@@ -5,46 +5,26 @@
         <caption hidden></caption>
         <thead>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-2">#</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.hour') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.status') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.start_address') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.phone') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.name') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.comment') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-          {{ $t('services.fields.driver') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            v-if="props.table !== Tables.pendings">{{ $t('services.fields.driver_name') }}
-        </th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            v-if="props.table !== Tables.history"></th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.hour') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.status') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.start_address') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
+        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
+        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.driver') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.pendings">{{ $t('services.fields.driver_name') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.history"></th>
         </thead>
-        <tbody class="text-sm text-opacity-25">
+        <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
-          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index + 1 }}</td>
-          <td class="py-1 col-1">
-            {{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}
-          </td>
+          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
+          <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
           <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
-              :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}
-          </td>
+            :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
           <td class="py-1" v-if="service.driver">
             <div class="d-flex px-2 py-0">
               <div>
@@ -58,41 +38,32 @@
             </div>
           </td>
           <td class="py-1 text-truncate" v-if="service.driver" style="max-width: 100px" data-bs-target="tooltip"
-              :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}
-          </td>
+              :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
           <td class="py-1" v-else>
-            <button class="btn btn-link py-1 my-0" data-bs-placement="top" data-bs-toggle="modal" :id="service.id"
-                    v-if="props.table !== Tables.history"
-                    data-bs-target="#driverModal">{{ $t('common.actions.assign') }}
-            </button>
-          </td>
+              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
+                data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
           <td class="py-1 col-1" v-show="props.table !== Tables.history">
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
-                    data-bs-placement="top" :title="$t('common.actions.assign')" data-bs-toggle="modal" :id="service.id"
-                    data-bs-target="#driverModal">
+              data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()"
-                    @click="release(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="release(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
               <em class="fas fa-car-crash"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()"
-                    @click="end(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
           </td>
         </tr>
         </tbody>
       </table>
-      <div class="container-fluid mt-2">
-        <Paginator :data="props.services" :perPage="pagination.perPage" @paginatedData="getPaginatedData"/>
+      <div v-if="props.table === Tables.history" class="container-fluid mt-2">
+        <OptimePaginator :pagination="props.pagination" @paginatedData="paginatedData"/>
       </div>
-      <div class="container-fluid mt-2">
-        <OptimePaginator :totalCount="props.pagination.totalCount" :perPage="props.pagination.perPage"
-                         :currentPage="props.pagination.currentPage" :data="props.services"
-                         @paginatedData="paginatedData"/>
+      <div v-else class="container-fluid mt-2">
+        <Paginator :data="props.services" :perPage="pagination.perPage" @paginatedData="getPaginatedData"/>
       </div>
     </div>
   </div>
@@ -102,7 +73,7 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
-import {ref, Ref, onBeforeUnmount, onMounted, watch, defineProps, defineEmits} from 'vue'
+import {defineEmits, defineProps, onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import OptimePaginator from '@/components/OptimePaginator'
@@ -116,18 +87,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
+const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE, 'paginate'])
 let interval: number
-const paginatedServices: Ref<Array<Service>> = ref([])
-const dataServices: Ref<Array<Service>> = ref([])
+const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
 
 watch(props.services, (newServices) => {
-  dataServices.value = Array.from(newServices)
+  paginatedServices.value = Array.from(newServices)
 })
 
 
 onMounted(() => {
-  if (props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
+  if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
 })
 
 onBeforeUnmount(() => {
@@ -155,8 +125,14 @@ function getPaginatedData(data: []): void {
   paginatedServices.value = data
 }
 
-function paginatedData(page: number): void {
-  console.log(page)
+function paginatedData(page: number, next: boolean): void {
+  let cursor: string
+  if (next) {
+    cursor = props.services[props.services.length - 1].id
+  } else {
+    cursor = props.services[0].id
+  }
+  emit('paginate', page, cursor, next)
 }
 function getTime(): void {
   paginatedServices.value.forEach(service => {
