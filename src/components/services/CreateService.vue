@@ -12,7 +12,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @keydown.enter="checkPhoneNoExists" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -215,6 +215,15 @@ function onClientSelected(element: AutoCompleteType): void {
 function createClient(client: ClientInterface): Promise<ClientInterface> {
   client.id = countryCode.value.dialCode.replace(/\D/g, "").concat(client.phone).concat('@c.us')
   return ClientRepository.create(client)
+}
+
+function checkPhoneNoExists() {
+    const phoneExists = clientsPhone.value.some(client => client.value === service.value.phone)
+    if (!phoneExists) {
+      service.value.name = i18n.global.t('common.models.users')
+      const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
+      input?.focus()
+    } 
 }
 
 function locSelected(element: AutoCompleteType): void {
