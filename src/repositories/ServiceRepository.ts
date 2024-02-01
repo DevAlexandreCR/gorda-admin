@@ -21,6 +21,7 @@ import {
 	getCountFromServer,
 	getDocs,
 	limit,
+	limitToLast,
 	orderBy,
 	query as queryFS,
 	Query,
@@ -29,6 +30,7 @@ import {
 	endBefore,
 	where
 } from 'firebase/firestore'
+import {ServiceCursor} from "@/types/ServiceCursor";
 
 class ServiceRepository {
 
@@ -87,7 +89,7 @@ async getPaginated(options: {
     driverId: string | null
     clientId: string | null
 		perPage: number
-    cursor: string
+    cursor: ServiceCursor
 		next: boolean
   }): Promise<QuerySnapshot<DocumentData>> {
     let query: Query | CollectionReference = this.betweenDate(
@@ -101,10 +103,10 @@ async getPaginated(options: {
 
     query = queryFS(
 			query,
-			orderBy('created_at'),
-			orderBy('id'),
-			options.next? startAfter(options.from, options.cursor) : endBefore(options.from, options.cursor),
-			limit(options.perPage)
+			orderBy('created_at', 'asc'),
+			orderBy('id', 'asc'),
+			options.next? startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
+			options.next? limit(options.perPage) : limitToLast(options.perPage)
 		)
 
 		return await getDocs(query)

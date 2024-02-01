@@ -152,6 +152,7 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {ServiceCursor} from "@/types/ServiceCursor";
 
 const { getHistoryServices } = useServicesStore()
 const { history, pagination } = storeToRefs(useServicesStore())
@@ -232,7 +233,7 @@ async function getServices(): Promise<void> {
   await getHistoryServices()
 }
 
-async function paginateData(page: number, cursor: string, next: boolean): Promise<void> {
+async function paginateData(page: number, cursor: ServiceCursor, next: boolean): Promise<void> {
   pagination.value.cursor = cursor
   pagination.value.currentPage = page
   await getHistoryServices(next)

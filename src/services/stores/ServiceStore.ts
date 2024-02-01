@@ -20,9 +20,12 @@ export const useServicesStore = defineStore('servicesStore', {
       history: Array<ServiceList>(),
       pagination: <Pagination>{
         currentPage: 1,
-        perPage: 2,
+        perPage: 5,
         totalCount: 0,
-        cursor: ''
+        cursor: {
+          id: '',
+          created: DateHelper.startOfDayUnix()
+        }
       },
       filter: <Filter>{
         from: DateHelper.stringNow(),
@@ -85,8 +88,6 @@ export const useServicesStore = defineStore('servicesStore', {
         next: next
       }
 
-      console.log(this.pagination)
-
       this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
       setLoading(false)
       ServiceRepository.getPaginated(options)
@@ -95,7 +96,6 @@ export const useServicesStore = defineStore('servicesStore', {
           snapshot.forEach((documentData) => {
             const service = this.setServiceFromFS(documentData);
             this.history.unshift(service);
-            console.log(this.history)
           });
         })
         .catch(async (e) => {

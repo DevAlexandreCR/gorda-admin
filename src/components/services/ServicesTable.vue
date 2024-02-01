@@ -78,6 +78,7 @@ import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import OptimePaginator from '@/components/OptimePaginator'
 import {Pagination} from '@/types/Pagination'
+import {ServiceCursor} from "@/types/ServiceCursor";
 
 
 interface Props {
@@ -126,11 +127,10 @@ function getPaginatedData(data: []): void {
 }
 
 function paginatedData(page: number, next: boolean): void {
-  let cursor: string
-  if (next) {
-    cursor = props.services[props.services.length - 1].id
-  } else {
-    cursor = props.services[0].id
+  const services = props.services;
+  const cursor: ServiceCursor = {
+    id: next ? services[services.length - 1].id : services[0].id,
+    created: next ? services[services.length - 1].created_at : services[0].created_at,
   }
   emit('paginate', page, cursor, next)
 }
