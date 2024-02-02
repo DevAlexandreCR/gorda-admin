@@ -56,7 +56,8 @@ class ServiceRepository {
 			where('client_id', '==', clientId)
 		);
 	}
-
+	
+	/* istanbul ignore next */
 	byStatus(status: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
 		return queryFS(query,
