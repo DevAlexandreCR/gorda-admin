@@ -143,7 +143,6 @@ import {storeToRefs} from 'pinia'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
-import Service from '@/models/Service'
 import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {StrHelper} from '@/helpers/StrHelper'
@@ -153,9 +152,10 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {ServiceCursor} from "@/types/ServiceCursor";
+import {CurrentPage} from "@/types/CurrentPage";
 
 const { getHistoryServices } = useServicesStore()
-const { history, pagination } = storeToRefs(useServicesStore())
+const { history, pagination, completed, canceled, currentPage } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const { clients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
@@ -169,16 +169,8 @@ const schema = object().shape({
   to: date().required()
 })
 
-const completed = computed(() =>
-  history.value.filter(s => s.status === Service.STATUS_TERMINATED).length
-)
-
 const completedPercent = computed(() =>
   isWhatPercent(completed.value)
-)
-
-const canceled = computed(() =>
-  history.value.filter(s => s.status === Service.STATUS_CANCELED).length
 )
 
 const canceledPercent = computed(() =>
@@ -200,7 +192,8 @@ watchEffect(async () => {
 })
 
 onBeforeMount(async () => {
-    await getHistoryServices()
+  pagination.value.cursor = currentPage.value.cursor
+  await getHistoryServices(true, true)
 })
 
 function onDriverSelected(element: AutoCompleteType): void {
@@ -226,7 +219,7 @@ async function clearFilters(): Promise<void> {
 }
 
 function isWhatPercent(x: number): number {
-  return Math.round((x / (history.value.length === 0 ? 1 : history.value.length)) * 100)
+  return Math.round((x / (pagination.value.totalCount === 0 ? 1 : pagination.value.totalCount)) * 100)
 }
 
 async function getServices(): Promise<void> {

@@ -17,7 +17,7 @@
         </thead>
         <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
-          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
+          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ service.id }}</td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
@@ -79,6 +79,7 @@ import {Tables} from '@/constants/Tables'
 import OptimePaginator from '@/components/OptimePaginator'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from "@/types/ServiceCursor";
+import {CurrentPage} from "@/types/CurrentPage";
 
 
 interface Props {

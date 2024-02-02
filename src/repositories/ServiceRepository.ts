@@ -17,7 +17,6 @@ import Service from '@/models/Service'
 import FSService from '@/services/FSService'
 import {
 	CollectionReference,
-	DocumentData,
 	getCountFromServer,
 	getDocs,
 	limit,
@@ -28,6 +27,7 @@ import {
 	QuerySnapshot,
 	startAfter,
 	endBefore,
+	startAt,
 	where
 } from 'firebase/firestore'
 import {ServiceCursor} from "@/types/ServiceCursor";
@@ -57,7 +57,15 @@ class ServiceRepository {
 		);
 	}
 
-	async getCount(from: number, to: number, clientId: string|null, driverId?: string|null): Promise<number> {
+	byStatus(status: string, query?: Query): Query {
+		if (query === undefined) query = FSService.servicesCollection()
+		return queryFS(query,
+			where('status', '==', status)
+		);
+	}
+
+	/* istanbul ignore next */
+	async getCount(from: number, to: number, clientId: string|null, driverId?: string|null, status: string|null = null): Promise<number> {
 		let query = this.betweenDate(
 			from,
 			to
@@ -66,6 +74,8 @@ class ServiceRepository {
 		if (clientId) query = this.byClientId(clientId, query)
 
 		if (driverId) query = this.byDriverId(driverId, query)
+
+		if (status) query = this.byStatus(status, query)
 
 		return getCountFromServer(query).then(snapshot => {
 			return Promise.resolve(snapshot.data().count)
@@ -91,11 +101,11 @@ async getPaginated(options: {
 		perPage: number
     cursor: ServiceCursor
 		next: boolean
-  }): Promise<QuerySnapshot<DocumentData>> {
+  }, contain: boolean): Promise<QuerySnapshot> {
     let query: Query | CollectionReference = this.betweenDate(
       options.from,
       options.to
-    );
+    )
 
     if (options.clientId) query = this.byClientId(options.clientId, query)
 
@@ -103,9 +113,9 @@ async getPaginated(options: {
 
     query = queryFS(
 			query,
-			orderBy('created_at', 'asc'),
-			orderBy('id', 'asc'),
-			options.next? startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
+			orderBy('created_at', 'desc'),
+			orderBy('id', 'desc'),
+			options.next? contain? startAt(options.cursor.created, options.cursor.id) : startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
 			options.next? limit(options.perPage) : limitToLast(options.perPage)
 		)
 

@@ -1,15 +1,18 @@
-import {defineStore} from 'pinia';
-import ServiceRepository from '@/repositories/ServiceRepository';
-import {DataSnapshot} from 'firebase/database';
-import {Filter} from '@/types/Filter';
-import DateHelper from '@/helpers/DateHelper';
-import {useLoadingState} from '@/services/stores/LoadingState';
-import {ServiceList} from '@/models/ServiceList';
-import {useDriversStore} from '@/services/stores/DriversStore';
-import {DocumentData} from 'firebase/firestore';
+import {defineStore} from 'pinia'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import {DataSnapshot} from 'firebase/database'
+import {Filter} from '@/types/Filter'
+import DateHelper from '@/helpers/DateHelper'
+import {useLoadingState} from '@/services/stores/LoadingState'
+import {ServiceList} from '@/models/ServiceList'
+import {useDriversStore} from '@/services/stores/DriversStore'
+import {DocumentData} from 'firebase/firestore'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import {Pagination} from '@/types/Pagination'
+import {CurrentPage} from '@/types/CurrentPage'
+import Service from "@/models/Service";
+import {ServiceCursor} from "@/types/ServiceCursor";
 
 
 export const useServicesStore = defineStore('servicesStore', {
@@ -18,15 +21,24 @@ export const useServicesStore = defineStore('servicesStore', {
       pendings: Array<ServiceList>(),
       inProgress: Array<ServiceList>(),
       history: Array<ServiceList>(),
+      currentPage: <CurrentPage>{
+        number: 1,
+        cursor: <ServiceCursor>{
+          id: '',
+          created: DateHelper.endOfDayUnix()
+        }
+      },
       pagination: <Pagination>{
         currentPage: 1,
-        perPage: 5,
+        perPage: 10,
         totalCount: 0,
         cursor: {
           id: '',
-          created: DateHelper.startOfDayUnix()
+          created: DateHelper.endOfDayUnix()
         }
       },
+      canceled: 0,
+      completed: 0,
       filter: <Filter>{
         from: DateHelper.stringNow(),
         to: DateHelper.stringNow(),
@@ -72,12 +84,17 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    async getHistoryServices(next = true): Promise<void> {
+    async getHistoryServices(next = true, contain = false): Promise<void> {
       const { setLoading } = useLoadingState();
       const from = DateHelper.getFromDate(this.filter.from)
       const to = DateHelper.getToDate(this.filter.to);
       setLoading(true);
-    
+
+      if (this.pagination.currentPage === 1 && contain) {
+        this.pagination.cursor.id = ''
+        this.pagination.cursor.created = DateHelper.endOfDayUnix()
+      }
+
       const options = {
         from: from,
         to: to,
@@ -89,17 +106,22 @@ export const useServicesStore = defineStore('servicesStore', {
       }
 
       this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
-      setLoading(false)
-      ServiceRepository.getPaginated(options)
+      this.completed = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_TERMINATED)
+      this.canceled = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_CANCELED)
+
+      await ServiceRepository.getPaginated(options, contain)
         .then((snapshot) => {
           this.history.splice(0)
           snapshot.forEach((documentData) => {
             const service = this.setServiceFromFS(documentData);
-            this.history.unshift(service);
+            this.history.push(service)
           });
+
+          this.currentPage.cursor.id = this.history[0]?.id
+          this.currentPage.cursor.created = this.history[0]?.created_at
+          this.currentPage.number = this.pagination.currentPage
         })
         .catch(async (e) => {
-          console.log(e.message)
           await ToastService.toast(
             ToastService.ERROR,
             i18n.global.t('common.messages.error'),
