@@ -17,7 +17,7 @@
         </thead>
         <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
-          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ service.id }}</td>
+          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index++ }}</td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
@@ -60,7 +60,7 @@
         </tbody>
       </table>
       <div v-if="props.table === Tables.history" class="container-fluid mt-2">
-        <OptimePaginator :pagination="props.pagination" @paginatedData="paginatedData"/>
+        <DBPaginator :pagination="props.pagination" @paginatedData="paginatedData"/>
       </div>
       <div v-else class="container-fluid mt-2">
         <Paginator :data="props.services" :perPage="pagination.perPage" @paginatedData="getPaginatedData"/>
@@ -76,10 +76,9 @@ import Service from '@/models/Service'
 import {defineEmits, defineProps, onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
-import OptimePaginator from '@/components/OptimePaginator'
+import DBPaginator from '@/components/DBPaginator.vue'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from "@/types/ServiceCursor";
-import {CurrentPage} from "@/types/CurrentPage";
 
 
 interface Props {

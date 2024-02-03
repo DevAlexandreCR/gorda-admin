@@ -1,12 +1,12 @@
 import { mount, VueWrapper } from '@vue/test-utils'
-import OptimePaginator from '@/components/OptimePaginator.vue'
+import DBPaginator from '@/components/DBPaginator.vue'
 import { Pagination } from '@/types/Pagination'
 
-describe('OptimePaginator.vue', () => {
+describe('DBPaginator.vue', () => {
   let wrapper: VueWrapper<any>
 
   const createWrapper = (pagination: Pagination) => {
-    wrapper = mount(OptimePaginator, {
+    wrapper = mount(DBPaginator, {
       props: {
         pagination,
       },

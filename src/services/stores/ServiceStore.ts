@@ -10,9 +10,8 @@ import {DocumentData} from 'firebase/firestore'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import {Pagination} from '@/types/Pagination'
-import {CurrentPage} from '@/types/CurrentPage'
-import Service from "@/models/Service";
-import {ServiceCursor} from "@/types/ServiceCursor";
+import Service from "@/models/Service"
+import {ServiceCursor} from "@/types/ServiceCursor"
 
 
 export const useServicesStore = defineStore('servicesStore', {
@@ -21,12 +20,9 @@ export const useServicesStore = defineStore('servicesStore', {
       pendings: Array<ServiceList>(),
       inProgress: Array<ServiceList>(),
       history: Array<ServiceList>(),
-      currentPage: <CurrentPage>{
-        number: 1,
-        cursor: <ServiceCursor>{
-          id: '',
-          created: DateHelper.endOfDayUnix()
-        }
+      currentCursor: <ServiceCursor>{
+        id: '',
+        created: DateHelper.endOfDayUnix()
       },
       pagination: <Pagination>{
         currentPage: 1,
@@ -117,9 +113,8 @@ export const useServicesStore = defineStore('servicesStore', {
             this.history.push(service)
           });
 
-          this.currentPage.cursor.id = this.history[0]?.id
-          this.currentPage.cursor.created = this.history[0]?.created_at
-          this.currentPage.number = this.pagination.currentPage
+          this.currentCursor.id = this.history[0]?.id
+          this.currentCursor.created = this.history[0]?.created_at
         })
         .catch(async (e) => {
           await ToastService.toast(

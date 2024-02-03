@@ -151,8 +151,7 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
-import {ServiceCursor} from "@/types/ServiceCursor";
-import {CurrentPage} from "@/types/CurrentPage";
+import {ServiceCursor} from "@/types/ServiceCursor"
 
 const { getHistoryServices } = useServicesStore()
 const { history, pagination, completed, canceled, currentPage } = storeToRefs(useServicesStore())
