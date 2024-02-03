@@ -143,7 +143,7 @@ import {storeToRefs} from 'pinia'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
-import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watch, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
@@ -153,7 +153,7 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {ServiceCursor} from "@/types/ServiceCursor"
 
-const { getHistoryServices } = useServicesStore()
+const { getHistoryServices, resetCursor } = useServicesStore()
 const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const { clients } = useClientsStore()
@@ -175,6 +175,12 @@ const completedPercent = computed(() =>
 const canceledPercent = computed(() =>
   isWhatPercent(canceled.value)
 )
+
+watch(() => pagination.value.perPage, async () => {
+  resetCursor()
+  pagination.value.currentPage = 1
+  await getHistoryServices()
+})
 
 watchEffect(async () => {
   drivers.forEach(driver => {

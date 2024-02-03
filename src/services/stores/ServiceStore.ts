@@ -86,8 +86,7 @@ export const useServicesStore = defineStore('servicesStore', {
       setLoading(true);
 
       if (this.pagination.currentPage === 1 && contain) {
-        this.pagination.cursor.id = ''
-        this.pagination.cursor.created = DateHelper.endOfDayUnix()
+        this.resetCursor()
       }
 
       const options = {
@@ -154,6 +153,15 @@ export const useServicesStore = defineStore('servicesStore', {
 			}
 			service.id = snapshot?.key as string
 			return  service
-		}
+		},
+
+    resetCursor(): void {
+      const defaultCursor = <ServiceCursor> {
+        id: '',
+        created: DateHelper.endOfDayUnix()
+      }
+      this.pagination.cursor = defaultCursor
+      this.currentCursor = defaultCursor
+    }
   }
 })

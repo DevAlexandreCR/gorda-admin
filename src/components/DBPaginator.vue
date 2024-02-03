@@ -1,5 +1,13 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid d-flex">
+    <div class="form-group d-inline-flex">
+      <label class="me-2">{{ $t('common.pages') }}</label>
+      <select class="form-select form-select-sm" v-model="storePagination.perPage">
+        <option :value="2">20</option>
+        <option :value="3">30</option>
+        <option :value="10">50</option>
+      </select>
+    </div>
     <nav aria-label="...">
       <ul class="pagination">
         <li class="page-item">
@@ -31,8 +39,10 @@
 
 
 <script setup lang="ts">
-import { ref, computed} from 'vue'
+import {ref, computed, watch, Ref} from 'vue'
 import {Pagination} from "@/types/Pagination";
+import {storeToRefs} from 'pinia'
+import {useServicesStore} from '@/services/stores/ServiceStore'
 
 interface Props {
   pagination: Pagination
@@ -42,7 +52,13 @@ const props = defineProps<Props>()
 const emit = defineEmits(['paginatedData'])
 
 const totalPages = computed(() => Math.ceil(props.pagination.totalCount / props.pagination.perPage))
-const currentPage = ref(props.pagination.currentPage)
+const currentPage: Ref<number> = ref(1)
+
+const {pagination: storePagination} = storeToRefs(useServicesStore())
+
+watch(() => props.pagination.currentPage, (page) => {
+  currentPage.value = page
+})
 
 function nextPage(): void {
   if (currentPage.value < totalPages.value) {
