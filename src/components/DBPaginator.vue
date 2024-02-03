@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid d-flex">
     <div class="form-group d-inline-flex">
-      <label class="me-2">{{ $t('common.pages') }}</label>
+      <label class="me-2">{{ $t('common.actions.items_pages') }}</label>
       <select class="form-select form-select-sm" v-model="storePagination.perPage">
-        <option :value="2">20</option>
-        <option :value="3">30</option>
-        <option :value="10">50</option>
+        <option :value="20">20</option>
+        <option :value="30">30</option>
+        <option :value="50">50</option>
       </select>
     </div>
     <nav aria-label="...">
