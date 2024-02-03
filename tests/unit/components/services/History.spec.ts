@@ -11,6 +11,7 @@ import {StrHelper} from '@/helpers/StrHelper'
 import ServicesTable from '@/components/services/ServicesTable.vue'
 import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick} from 'vue'
+import ServiceMock from '../../../mocks/entities/ServiceMock'
 
 describe('History.vue', () => {
   let wrapper: VueWrapper<any>
@@ -30,7 +31,8 @@ describe('History.vue', () => {
 
   beforeEach(async () => {
     jest.useFakeTimers()
-    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([DocumentDataMock])
+    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([ServiceMock])
+    ServiceRepository.getCount = jest.fn().mockResolvedValue([1])
 		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
     wrapper = mount(History, options)
@@ -66,7 +68,7 @@ describe('History.vue', () => {
 		await button.trigger('click')
 	
 		await nextTick()
-		expect(getAll).toBeCalledTimes(3)
+		expect(getAll).toBeCalledTimes(2)
 	})
 
   it('calculates the percentage correctly', () => {
