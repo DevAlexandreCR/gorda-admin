@@ -75,7 +75,7 @@ jest.mock('firebase/firestore', () => {
     limitToLast: jest.fn(),
     startAt: jest.fn(), 
     endBefore: jest.fn(), 
-    getCountFromServer: jest.fn(), 
+    getCountFromServer: jest.fn().mockResolvedValue(null),
     onSnapshot: jest.fn().mockReturnValue({
       forEach: (callback: any): void => { callback() }
     }),
