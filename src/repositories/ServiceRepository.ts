@@ -17,6 +17,7 @@ import Service from '@/models/Service'
 import FSService from '@/services/FSService'
 import {
 	CollectionReference,
+	endBefore,
 	getCountFromServer,
 	getDocs,
 	limit,
@@ -24,13 +25,11 @@ import {
 	orderBy,
 	query as queryFS,
 	Query,
-	QuerySnapshot,
 	startAfter,
-	endBefore,
 	startAt,
-	where
+	where,
 } from 'firebase/firestore'
-import {ServiceCursor} from "@/types/ServiceCursor";
+import {ServiceCursor} from '@/types/ServiceCursor'
 
 class ServiceRepository {
 
@@ -102,7 +101,7 @@ async getPaginated(options: {
 		perPage: number
     cursor: ServiceCursor
 		next: boolean
-  }, contain: boolean): Promise<QuerySnapshot> {
+  }, contain: boolean): Promise<Array<Service>> {
     let query: Query | CollectionReference = this.betweenDate(
       options.from,
       options.to
@@ -120,7 +119,16 @@ async getPaginated(options: {
 			options.next? limit(options.perPage) : limitToLast(options.perPage)
 		)
 
-		return await getDocs(query)
+		return await getDocs(query).then(docs => {
+			const services = Array<Service>()
+			docs.forEach(dataSnapshot => {
+				const service = new Service()
+				Object.assign(service, dataSnapshot.data())
+				services.push(service)
+			})
+
+			return Promise.resolve(services)
+		}).catch(e => Promise.reject(e))
   }
 
   /* istanbul ignore next */

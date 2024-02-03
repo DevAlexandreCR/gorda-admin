@@ -6,12 +6,11 @@ import DateHelper from '@/helpers/DateHelper'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import {ServiceList} from '@/models/ServiceList'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import {DocumentData} from 'firebase/firestore'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import {Pagination} from '@/types/Pagination'
-import Service from "@/models/Service"
-import {ServiceCursor} from "@/types/ServiceCursor"
+import Service from '@/models/Service'
+import {ServiceCursor} from '@/types/ServiceCursor'
 
 
 export const useServicesStore = defineStore('servicesStore', {
@@ -106,13 +105,12 @@ export const useServicesStore = defineStore('servicesStore', {
       this.canceled = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_CANCELED)
 
       await ServiceRepository.getPaginated(options, contain)
-        .then((snapshot) => {
+        .then((dbServices) => {
           this.history.splice(0)
-          snapshot.forEach((documentData) => {
-            const service = this.setServiceFromFS(documentData);
+          dbServices.forEach((dbService) => {
+            const service = this.setServiceFromFS(dbService);
             this.history.push(service)
-          });
-
+          })
           this.currentCursor.id = this.history[0]?.id
           this.currentCursor.created = this.history[0]?.created_at
         })
@@ -136,15 +134,13 @@ export const useServicesStore = defineStore('servicesStore', {
 			})
 		},
 	
-		setServiceFromFS(snapshot: DocumentData): ServiceList {
+		setServiceFromFS(dbService: Service): ServiceList {
 			const {findById} = useDriversStore()
-			const service = new ServiceList()
-			Object.assign(service, snapshot.data())
+      const service = Object.assign(new ServiceList(), dbService)
 			if (service.driver_id != null) {
 				const driver = findById(service.driver_id)
 				service.driver = driver?? null
 			}
-			service.id = snapshot?.id
 			return  service
 		},
 

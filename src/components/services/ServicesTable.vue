@@ -73,7 +73,7 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
-import {defineEmits, defineProps, onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
+import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
@@ -98,6 +98,7 @@ watch(props.services, (newServices) => {
 
 
 onMounted(() => {
+  paginatedServices.value = Array.from(props.services)
   if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
 })
 

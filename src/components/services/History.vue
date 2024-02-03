@@ -154,7 +154,7 @@ import {useClientsStore} from '@/services/stores/ClientsStore'
 import {ServiceCursor} from "@/types/ServiceCursor"
 
 const { getHistoryServices } = useServicesStore()
-const { history, pagination, completed, canceled, currentPage } = storeToRefs(useServicesStore())
+const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const { clients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
@@ -191,7 +191,7 @@ watchEffect(async () => {
 })
 
 onBeforeMount(async () => {
-  pagination.value.cursor = currentPage.value.cursor
+  pagination.value.cursor = currentCursor.value
   await getHistoryServices(true, true)
 })
 
