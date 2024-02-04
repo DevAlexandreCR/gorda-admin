@@ -12,6 +12,7 @@ import ServicesTable from '@/components/services/ServicesTable.vue'
 import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick} from 'vue'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
+import Service from '@/models/Service'
 
 describe('History.vue', () => {
   let wrapper: VueWrapper<any>
@@ -22,16 +23,14 @@ describe('History.vue', () => {
       plugins: [router, i18n],
       provide: {
         appName: 'test',
-      },
-      components: {
-        AutoComplete,
-      },
+      }
     },
   }
 
   beforeEach(async () => {
     jest.useFakeTimers()
-    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([ServiceMock])
+    const service = Object.assign(new Service(), new ServiceMock)
+    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([service, service])
     ServiceRepository.getCount = jest.fn().mockResolvedValue([1])
 		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
@@ -47,7 +46,8 @@ describe('History.vue', () => {
     expect(wrapper.findComponent(ServicesTable).exists()).toBeTruthy()
 	})
 
-  it('displays correct data in ServicesTable', () => {
+  it('displays correct data in ServicesTable', async () => {
+    await nextTick()
     const servicesTable = wrapper.findComponent(ServicesTable)
     const expectedData = DocumentDataMock.data()
     expect(servicesTable.html()).toContain(i18n.global.t('services.statuses.' + expectedData.status))

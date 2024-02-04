@@ -145,8 +145,7 @@ export const useServicesStore = defineStore('servicesStore', {
 
 		setServiceFromDB(snapshot?: DataSnapshot): ServiceList {
 			const {findById} = useDriversStore()
-			const service = new ServiceList()
-			Object.assign(service, snapshot?.val())
+			const service = Object.assign(new ServiceList(), snapshot?.val())
 			if (service.driver_id != null) {
 				const driver = findById(service.driver_id)
 				service.driver = driver?? null

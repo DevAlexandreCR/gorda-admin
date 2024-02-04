@@ -12,8 +12,8 @@ import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import {Pagination} from '@/types/Pagination'
-import SettingsRepository from "@/repositories/SettingsRepository";
-import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import SettingsRepository from '@/repositories/SettingsRepository'
+import {useWpClientsStore} from '@/services/stores/WpClientStore'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -87,7 +87,6 @@ describe('ServicesTable.vue', () => {
     wrapper = mount(ServicesTable, options)
     await nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
-    await nextTick()
   })
 
   it('show release and terminate buttons when service is in in_progress status', async () => {

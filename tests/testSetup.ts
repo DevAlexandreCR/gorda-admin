@@ -6,8 +6,7 @@ import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
-import {WpClient} from "@/types/WpClient";
-import DocumentDataMock from './mocks/firebase/DocumentDataMock'
+import {WpClient} from '@/types/WpClient'
 
 require('./mocks/maps/googleMaps')
 
@@ -77,6 +76,7 @@ jest.mock('firebase/firestore', () => {
     limit: jest.fn(),
     limitToLast: jest.fn(),
     startAt: jest.fn(),
+    startAfter: jest.fn(),
     endBefore: jest.fn(),
     getCountFromServer: jest.fn(),
     onSnapshot: jest.fn().mockReturnValue({
