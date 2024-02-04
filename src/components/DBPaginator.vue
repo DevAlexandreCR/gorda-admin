@@ -1,8 +1,8 @@
 <template>
-  <div class="container-fluid d-flex">
-    <div class="form-group d-inline-flex">
+  <div class="container-fluid d-flex align-items-center" style="gap: 20px; padding-left: 15px;">
+    <div class="form-group d-inline-flex align-items-center">
       <label class="me-2 text-nowrap">{{ $t('common.actions.items_pages') }}</label>
-      <select class="form-select form-select-sm text-nowrap" v-model="storePagination.perPage">
+      <select class="form-select form-select-sm text-nowrap" v-model="storePagination.perPage" style="padding-right: 30px; text-overflow: ellipsis;">
         <option :value="20" :selected="currentPage === 20">20</option>
         <option :value="30" :selected="currentPage === 30">30</option>
         <option :value="50" :selected="currentPage === 50">50</option>
@@ -36,7 +36,6 @@
     </nav>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import {ref, computed, watch, Ref} from 'vue'
