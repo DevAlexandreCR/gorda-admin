@@ -3,14 +3,25 @@
     <div class="row">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
         <div class="row">
-          <div class="col-12 col-md col-xl-1">
+          <div class="col-12 col-md col-xl-1 px-1">
+            <div class="form-group">
+              <Field name="wp_client_id" class="form-select pe-0" v-model="service.wp_client_id" as="select">
+                <option v-for="client in wpClients" :key="client.id" :value="client.id"
+                        :selected="client.id == defaultClient">{{ client.alias }}</option>
+              </Field>
+              <ErrorMessage name="wp_client_id" v-slot="{ message }">
+                <span class="is-invalid">{{ message }}</span>
+              </ErrorMessage>
+            </div>
+          </div>
+          <div class="col-12 col-md col-xl-1 px-1">
             <div class="form-group">
               <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
                 <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode">{{ cCode.dialCode + ' ' + cCode.code }}</option>
               </select>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
@@ -19,7 +30,7 @@
               </Field>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="service.name">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
@@ -31,13 +42,13 @@
               </ErrorMessage>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="form-group">
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
@@ -49,7 +60,7 @@
               </ErrorMessage>
             </div>
           </div>
-          <div class="col-12 col-md">
+          <div class="col-12 col-md px-1">
             <div class="row row-cols-2">
               <div class="col">
                 <div class="form-group">
@@ -58,7 +69,7 @@
                   </select>
                 </div>
               </div>
-              <div class="col">
+              <div class="col px-1">
                 <button class="btn btn-primary d-inline-flex" type="submit">{{ $t('common.actions.create') }}</button>
               </div>
             </div>
@@ -89,6 +100,7 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
@@ -100,6 +112,7 @@ const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 const count: Ref<number> = ref(1)
+const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -141,6 +154,7 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 }
 
 const schema = yup.object().shape({
+  wp_client_id: yup.string().required().min(10).max(10),
   name: yup.string().required().min(3),
   phone: yup.string().required().min(10).max(10),
   start_address: yup.string().required(),
@@ -187,16 +201,18 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
-  const service: Service = new Service()
-  service.comment = values.comment ?? null
-  service.client_id = values.client_id
-  service.name = values.name
-  service.phone = values.phone
-  service.start_loc = start_loc
-  ServiceRepository.create(service, count.value).then(() => {
+  const newService: Service = new Service()
+  newService.comment = values.comment ?? null
+  newService.client_id = values.client_id
+  newService.name = values.name
+  newService.phone = values.phone
+  newService.start_loc = start_loc
+  newService.wp_client_id = values.wp_client_id
+  ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
     count.value = 1
     countryCode.value = countryCodes.value[31]
+    service.value.wp_client_id = defaultClient.value as string
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)

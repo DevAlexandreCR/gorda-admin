@@ -4,7 +4,7 @@
       ".read": "auth.uid != null",
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
       "$uid": {
-        ".validate": "newData.hasChildren(['id', 'created_at', 'name', 'client_id', 'start_loc', 'status'])"
+        ".validate": "newData.hasChildren(['id', 'created_at', 'name', 'client_id', 'start_loc', 'status', 'wp_client_id']) && (!data.exists() || data.child('status').val() !== 'in_progress' || (newData.child('driver_id').val() === data.child('driver_id').val() || !newData.child('driver_id').exists()))"
       },
       ".indexOn": ["created_at", "status", "driver_id"]
     },
@@ -36,11 +36,29 @@
     },
     "settings": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true"
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true",
+      "wp_clients": {
+        "$client" : {
+          ".write": "newData.exists() && newData.child('id').exists() && newData.child('alias').exists()"
+        }
+      }
     },
     "tokens": {
       ".read": "auth.uid != null",
       ".write": true
+    },
+    "wp_notifications": {
+      ".read": "auth.uid != null",
+      ".write": "auth.uid != null",
+      "arrived": {
+        ".indexOn": ["wp_client_id"]
+      },
+      "new": {
+        ".indexOn": ["wp_client_id"]
+      },
+      "assigned": {
+        ".indexOn": ["wp_client_id"]
+      }
     }
   }
 }

@@ -36,7 +36,7 @@ class FirestoreService {
 
     /* istanbul ignore next */
   public settingsDocument(): DocumentReference<DocumentData> {
-    return doc(this.fs, 'settings', 'settings');
+    return doc(this.fs, 'clients', 'clients');
   }
 }
 

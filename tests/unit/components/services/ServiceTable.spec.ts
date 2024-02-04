@@ -12,40 +12,59 @@ import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import {Pagination} from '@/types/Pagination'
+import SettingsRepository from '@/repositories/SettingsRepository'
+import {useWpClientsStore} from '@/services/stores/WpClientStore'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
-	const service = new ServiceList()
-  Object.assign(service, ServiceMock)
+
+  const pagination: Pagination = {
+    currentPage: 1,
+    perPage: 2,
+    cursor: {
+      id: '',
+      created: DateHelper.endOfDayUnix()
+    },
+    totalCount: 10
+  }
+
   const options = {
     attachTo: '#root',
     props: {
-      services: [service, service],
+      services: Array<ServiceList>(),
       drivers: [DriverMock],
       table: Tables.pendings,
-      pagination: <Pagination> {
-        currentPage: 1,
-        perPage: 2,
-        cursor: {
-          id: '',
-          created: DateHelper.endOfDayUnix()
-        },
-        totalCount: 10
-      }
+      pagination: pagination
     },
     global: {
       plugins: [router, i18n],
       provide: {
         'appName': 'test'
       }
-    },
+    }
   }
+  let service: ServiceList
+
   beforeEach(async () => {
+    service = new ServiceList()
+    Object.assign(service, new ServiceMock)
+    options.props.services = [service, service]
+    const wpClient = useWpClientsStore()
+    wpClient.clients = {
+      3103794656: {
+        id: '3103794656',
+        alias: 'Principal',
+        wpNotifications: false,
+        chatBot: false
+      }
+    }
+
     jest.useFakeTimers()
     DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
+    SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
     const driverStore= useDriversStore()
     await driverStore.getDrivers()
-    wrapper = await mount(ServicesTable, options)
+    wrapper = mount(ServicesTable, options)
     await router.isReady()
   })
   it('an user can see all services passed by props', async () => {
@@ -62,49 +81,66 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.find('.fa-car-crash').exists()).toBeFalsy()
     expect(wrapper.find('.fa-check').exists()).toBeFalsy()
   })
-  
+
   it('an user can see date in history', async () => {
     options.props.table = Tables.history
-    wrapper = await mount(ServicesTable, options)
+    wrapper = mount(ServicesTable, options)
     await nextTick()
     expect(wrapper.html()).toContain(DateHelper.unixToDate(service.created_at, 'MM-DD HH:mm:ss'))
-    await nextTick()
   })
-  
+
   it('show release and terminate buttons when service is in in_progress status', async () => {
-    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
-  
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.inProgress,
+      pagination: pagination
+    }
+    wrapper = mount(ServicesTable, options)
+
+    await nextTick()
+
     expect(wrapper.find('.fa-car-crash').exists()).toBeTruthy()
     expect(wrapper.find('.fa-check').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
     expect(wrapper.find('.fa-car').exists()).toBeFalsy()
   })
-  
+
   it('emmit events cancel when make click in button cancel', async () => {
-    options.props.table = Tables.pendings
     service.status = Service.STATUS_PENDING
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
-    
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.pendings,
+      pagination: pagination
+    }
+    wrapper = mount(ServicesTable, options)
+
+    await nextTick()
+
     const buttonCancel = wrapper.find('.btn-danger')
     await buttonCancel.trigger('click')
-    
+
     expect(wrapper.emitted(Service.EVENT_CANCEL)).toBeTruthy()
   })
-  
+
   it('emmit events when make click in buttons release and terminate', async () => {
-    options.props.table = Tables.inProgress
     service.status = Service.STATUS_IN_PROGRESS
-    options.props.services = [service]
-    wrapper = await mount(ServicesTable, options)
-    
+    options.props = {
+      services: [service],
+      drivers: [DriverMock],
+      table: Tables.inProgress,
+      pagination: pagination
+    }
+    wrapper = mount(ServicesTable, options)
+
+    await nextTick()
+
     const buttons = wrapper.findAll('.btn-dark')
     await buttons.at(0)?.trigger('click')
     await buttons.at(1)?.trigger('click')
-    
+
     expect(wrapper.emitted(Service.EVENT_RELEASE)).toBeTruthy()
     expect(wrapper.emitted(Service.EVENT_TERMINATE)).toBeTruthy()
   })

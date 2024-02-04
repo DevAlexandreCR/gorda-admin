@@ -1,9 +1,17 @@
-import {Auth, getAuth, onAuthStateChanged, signInWithEmailAndPassword, User as UserFB, UserCredential, createUserWithEmailAndPassword, signOut} from 'firebase/auth'
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  User as UserFB,
+  UserCredential
+} from 'firebase/auth'
 import Firebase from '@/services/Firebase'
 import User from '@/models/User'
 import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
-import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {useLoadingState} from '@/services/stores/LoadingState'
 
 export default class AuthService {
@@ -46,9 +54,6 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static logOut(): Promise<void> {
-    return signOut(AuthService.auth).then(() => {
-      const wpClient = WhatsAppClient.getInstance()
-      wpClient.disconnectSocket()
-    })
+    return signOut(AuthService.auth)
   }
 }

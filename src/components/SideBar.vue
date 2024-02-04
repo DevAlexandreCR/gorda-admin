@@ -61,8 +61,8 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link :to="{ name: 'connection'}" tag="a"
-                       :class="$router.currentRoute.value.path.includes('/dashboard/connection/') ?
+          <router-link :to="{ name: 'wpClients'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/wp-clients/') ?
                        'nav-link active': 'nav-link'">
             <div
                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -118,6 +118,7 @@ import {onMounted, onUnmounted, ref, Ref} from 'vue'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 import {useStorage} from '@/services/stores/Storage'
 import {storeToRefs} from 'pinia'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 let user: Ref<User> = ref(new User())
 let isAdmin: Ref<boolean> = ref(false)
@@ -126,6 +127,7 @@ let socket: WhatsAppClient
 let observer: ClientObserver
 const storage = useStorage()
 const {logoUrl} = storeToRefs(storage)
+const {getDefault} = useWpClientsStore()
 
 function signOut(): void {
   AuthService.logOut()
@@ -138,13 +140,15 @@ const onUpdate = (socket: WhatsAppClient): void => {
 onMounted(async () => {
   user.value = AuthService.getCurrentUser()
   isAdmin.value = user.value.isAdmin()
-  socket = WhatsAppClient.getInstance()
-  observer = new ClientObserver(onUpdate)
-  socket.attach(observer)
+  if (getDefault()) {
+    socket = WhatsAppClient.getInstance(getDefault())
+    observer = new ClientObserver(onUpdate)
+    socket.attach(observer)
+  }
 })
 
 onUnmounted(() => {
-  socket.detach(observer)
+  if (socket) socket.detach(observer)
 })
 </script>
 

@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+# Release Notes for 1.3.x
 
+## [1.3.0(2024-02-03)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.0...1.2.10)
+
+### Added
+- Now admin can set 2 or more whatsapp clients. [#112](https://github.com/DevAlexandreCR/admin-driver/pull/112)
 - Pagination added with cursors of the consultation with firestore [#117](https://github.com/DevAlexandreCR/gorda-admin/pull/117)
 - added function to autocomplete if user does not exist [#118](https://github.com/DevAlexandreCR/gorda-admin/pull/118)
 

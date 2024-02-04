@@ -18,6 +18,7 @@ export default {
     edit: 'Editar',
     close: 'Cerrar',
     create: 'Crear',
+    delete: 'Eliminar',
     cancel: 'Cancelar',
     release: 'Liberar',
     assign: 'Asignar',

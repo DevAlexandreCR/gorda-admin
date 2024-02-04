@@ -6,7 +6,7 @@ import {Server} from 'socket.io'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
-import DocumentDataMock from './mocks/firebase/DocumentDataMock'
+import {WpClient} from '@/types/WpClient'
 
 require('./mocks/maps/googleMaps')
 
@@ -54,6 +54,7 @@ jest.mock('firebase/database', () => {
 		}),
 		off: jest.fn(),
 		set: jest.fn(),
+    remove: jest.fn(),
     child: jest.fn()
   }
 })
@@ -74,8 +75,9 @@ jest.mock('firebase/firestore', () => {
     orderBy: jest.fn(),
     limit: jest.fn(),
     limitToLast: jest.fn(),
-    startAt: jest.fn(), 
-    endBefore: jest.fn(), 
+    startAt: jest.fn(),
+    startAfter: jest.fn(),
+    endBefore: jest.fn(),
     getCountFromServer: jest.fn(),
     onSnapshot: jest.fn().mockReturnValue({
       forEach: (callback: any): void => { callback() }
@@ -112,12 +114,17 @@ let server: httpServer
 function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
-  server.listen(process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000,() => {
+  server.listen(3000,() => {
     socket.on('connection', () => {
       done()
     })
   })
-  WhatsAppClient.getInstance()
+  WhatsAppClient.getInstance({
+    id: '3103794656',
+    wpNotifications: false,
+    chatBot: false,
+    alias: 'Test'
+  } as WpClient)
 }
 
 export {

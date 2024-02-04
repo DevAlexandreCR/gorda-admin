@@ -6,11 +6,22 @@ import AuthService from '@/services/AuthService'
 import {openServer, socket} from '../../testSetup'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
 
   beforeEach(async () => {
+    const wpClient = useWpClientsStore()
+    wpClient.clients = {
+      3103794656: {
+        id: '3103794656',
+        alias: 'Principal',
+        wpNotifications: false,
+        chatBot: false
+      }
+    }
+    wpClient.defaultClient = '3103794656'
     wrapper = mount(SideBar,
       {
         attachTo: '#root',
