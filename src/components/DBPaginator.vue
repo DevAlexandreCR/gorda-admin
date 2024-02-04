@@ -1,14 +1,14 @@
 <template>
-  <div class="container-fluid d-flex align-items-center" style="gap: 20px; padding-left: 15px;">
-    <div class="form-group d-inline-flex align-items-center">
-      <label class="me-2 text-nowrap">{{ $t('common.actions.items_pages') }}</label>
-      <select class="form-select form-select-sm text-nowrap" v-model="storePagination.perPage" style="padding-right: 30px; text-overflow: ellipsis;">
+  <div class="container-fluid d-flex align-items-center row">
+    <div class="col-6 col-sm-4 col-md-6 col-lg-4 form-group d-inline-flex align-items-end">
+      <label class="me-2 text-nowrap d-md-block d-none">{{ $t('common.actions.items_pages') }}</label>
+      <select class="form-select form-select-sm" v-model="storePagination.perPage">
         <option :value="20" :selected="currentPage === 20">20</option>
         <option :value="30" :selected="currentPage === 30">30</option>
         <option :value="50" :selected="currentPage === 50">50</option>
       </select>
     </div>
-    <nav aria-label="...">
+    <nav aria-label="..." class="col-6 col-sm-8 col-md-6 col-lg-4">
       <ul class="pagination">
         <li class="page-item">
           <a class="page-link cursor-pointer" @click="backPage" tabindex="-1">
