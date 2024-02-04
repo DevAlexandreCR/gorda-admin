@@ -12,6 +12,10 @@ export default class DateHelper {
   static startOfDayUnix(): number {
     return dayjs().startOf('day').unix()
   }
+
+  static endOfDayUnix(): number {
+    return dayjs().endOf('day').unix()
+  }
   
   static aGo(unix: number): string {
     if (unix > 3600) {
