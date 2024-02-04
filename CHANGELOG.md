@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Pagination added with cursors of the consultation with firestore [#117](https://github.com/DevAlexandreCR/gorda-admin/pull/117)
+- added function to autocomplete if user does not exist [#118](https://github.com/DevAlexandreCR/gorda-admin/pull/118)
+
 # Release Notes for 1.2.x
 
 ## [1.2.10(2023-12-11)](https://github.com/DevAlexandreCR/admin-driver/compare/1.2.10...1.2.9)
