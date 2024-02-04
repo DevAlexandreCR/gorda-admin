@@ -12,7 +12,7 @@
           </div>
           <div class="col-12 col-md">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @keydown.enter="checkPhoneNoExists" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -89,6 +89,7 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
+
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
@@ -108,9 +109,9 @@ watch(places, (newPlaces) => {
   updateAutocompletePlaces(newPlaces)
 })
 
-watch(service, (newService) => {
-  service.value.name = StrHelper.toCamelCase(newService.name?? '')
-}, {deep: true})
+watch(() => service.value.name, (name) => {
+  service.value.name = StrHelper.toCamelCase(name?? '')
+})
 
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
@@ -217,13 +218,13 @@ function createClient(client: ClientInterface): Promise<ClientInterface> {
   return ClientRepository.create(client)
 }
 
-function checkPhoneNoExists() {
-    const phoneExists = clientsPhone.value.some(client => client.value === service.value.phone)
+function checkPhoneNoExists(phone: string) {
+  if (phone.length > 3) {
+    const phoneExists = clientsPhone.value.some(client => client.value.includes(phone))
     if (!phoneExists) {
       service.value.name = i18n.global.t('common.models.users')
-      const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
-      input?.focus()
-    } 
+    }
+  }
 }
 
 function locSelected(element: AutoCompleteType): void {
