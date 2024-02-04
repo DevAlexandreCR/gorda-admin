@@ -25,7 +25,8 @@ export default {
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
-    clear_filters: 'Clear Filters'
+    clear_filters: 'Clear Filters',
+    items_pages: 'Items per Pages'
   },
   messages: {
     updated: 'Resource updated successfully',

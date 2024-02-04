@@ -7,6 +7,7 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 import {WpClient} from "@/types/WpClient";
+import DocumentDataMock from './mocks/firebase/DocumentDataMock'
 
 require('./mocks/maps/googleMaps')
 
@@ -74,6 +75,10 @@ jest.mock('firebase/firestore', () => {
     where: jest.fn(),
     orderBy: jest.fn(),
     limit: jest.fn(),
+    limitToLast: jest.fn(),
+    startAt: jest.fn(),
+    endBefore: jest.fn(),
+    getCountFromServer: jest.fn(),
     onSnapshot: jest.fn().mockReturnValue({
       forEach: (callback: any): void => { callback() }
     }),
@@ -82,6 +87,7 @@ jest.mock('firebase/firestore', () => {
     deleteDoc: jest.fn(),
   };
 });
+
 jest.mock('firebase/storage')
 jest.mock('qrcode')
 

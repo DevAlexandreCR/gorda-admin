@@ -1,9 +1,9 @@
-import {ComponentMountingOptions, mount, VueWrapper} from '@vue/test-utils'
+import {mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import ServicesTable from "@/components/services/ServicesTable.vue"
-import Service from "@/models/Service";
-import ServiceMock from "../../../mocks/entities/ServiceMock"
+import ServicesTable from '@/components/services/ServicesTable.vue'
+import Service from '@/models/Service'
+import ServiceMock from '../../../mocks/entities/ServiceMock'
 import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick} from 'vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
@@ -11,6 +11,7 @@ import DriverRepository from '@/repositories/DriverRepository'
 import DateHelper from '@/helpers/DateHelper'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
+import {Pagination} from '@/types/Pagination'
 import SettingsRepository from "@/repositories/SettingsRepository";
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
@@ -22,7 +23,16 @@ describe('ServicesTable.vue', () => {
     props: {
       services: [],
       drivers: [DriverMock],
-      table: Tables.history
+      table: Tables.pendings,
+      pagination: <Pagination> {
+        currentPage: 1,
+        perPage: 2,
+        cursor: {
+          id: '',
+          created: DateHelper.endOfDayUnix()
+        },
+        totalCount: 10
+      }
     },
     global: {
       plugins: [router, i18n],
@@ -53,7 +63,7 @@ describe('ServicesTable.vue', () => {
     jest.useFakeTimers()
     DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
     SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
-    const driverStore = useDriversStore()
+    const driverStore= useDriversStore()
     await driverStore.getDrivers()
     wrapper = mount(ServicesTable, options)
     await router.isReady()

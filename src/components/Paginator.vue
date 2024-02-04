@@ -29,7 +29,7 @@
 import {computed, onMounted, ref, Ref, watch} from 'vue'
 
 interface Props {
-  data: []
+  data: Array<any>
   perPage?: number
 }
 const props = defineProps<Props>()

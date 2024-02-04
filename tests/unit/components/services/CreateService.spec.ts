@@ -71,6 +71,15 @@ describe('CreateService.vue', () => {
 		
 		expect(onSelected).toBeCalledTimes(1)
 	})
+
+	it('calls checkPhoneNoExists when phone number changes', async () => {
+		await nextTick()
+		const checkPhoneNoExists = jest.spyOn(wrapper.vm, 'checkPhoneNoExists')
+		const phoneInput = wrapper.find('input[name="phone"]')
+		await phoneInput.setValue('3101234567')
+		await phoneInput.trigger('input')
+		expect(checkPhoneNoExists).toBeCalledTimes(1)
+	})
 	
 	it('an user can create a new service', async () => {
 		ServiceRepository.create = jest.fn().mockResolvedValue('success')

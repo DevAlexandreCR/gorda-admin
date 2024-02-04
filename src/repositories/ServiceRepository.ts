@@ -15,7 +15,21 @@ import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
 import Service from '@/models/Service'
 import FSService from '@/services/FSService'
-import {getDocs, query as queryFS, Query, QuerySnapshot, where} from 'firebase/firestore'
+import {
+	CollectionReference,
+	endBefore,
+	getCountFromServer,
+	getDocs,
+	limit,
+	limitToLast,
+	orderBy,
+	query as queryFS,
+	Query,
+	startAfter,
+	startAt,
+	where,
+} from 'firebase/firestore'
+import {ServiceCursor} from '@/types/ServiceCursor'
 
 class ServiceRepository {
 
@@ -43,6 +57,34 @@ class ServiceRepository {
 	}
 	
 	/* istanbul ignore next */
+	byStatus(status: string, query?: Query): Query {
+		if (query === undefined) query = FSService.servicesCollection()
+		return queryFS(query,
+			where('status', '==', status)
+		);
+	}
+
+	/* istanbul ignore next */
+	async getCount(from: number, to: number, clientId: string|null, driverId?: string|null, status: string|null = null): Promise<number> {
+		let query = this.betweenDate(
+			from,
+			to
+		)
+
+		if (clientId) query = this.byClientId(clientId, query)
+
+		if (driverId) query = this.byDriverId(driverId, query)
+
+		if (status) query = this.byStatus(status, query)
+
+		return getCountFromServer(query).then(snapshot => {
+			return Promise.resolve(snapshot.data().count)
+		}).catch(e => {
+			return Promise.reject(e)
+		})
+	}
+
+	/* istanbul ignore next */
 	byDriverId(driverId: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
 		return queryFS(query,
@@ -50,12 +92,43 @@ class ServiceRepository {
 		);
 	}
 
-  /* istanbul ignore next */
-  async getAll(from: number, to: number, driverId: string|null = null, clientId: string|null = null): Promise<QuerySnapshot> {
-		let query = this.betweenDate(from, to)
-		if (clientId) query = this.byClientId(clientId, query)
-		if (driverId) query = this.byDriverId(driverId, query)
-		return await getDocs(query)
+/* istanbul ignore next */
+async getPaginated(options: {
+    from: number
+    to: number
+    driverId: string | null
+    clientId: string | null
+		perPage: number
+    cursor: ServiceCursor
+		next: boolean
+  }, contain: boolean): Promise<Array<Service>> {
+    let query: Query | CollectionReference = this.betweenDate(
+      options.from,
+      options.to
+    )
+
+    if (options.clientId) query = this.byClientId(options.clientId, query)
+
+    if (options.driverId) query = this.byDriverId(options.driverId, query)
+
+    query = queryFS(
+			query,
+			orderBy('created_at', 'desc'),
+			orderBy('id', 'desc'),
+			options.next? contain? startAt(options.cursor.created, options.cursor.id) : startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
+			options.next? limit(options.perPage) : limitToLast(options.perPage)
+		)
+
+		return await getDocs(query).then(docs => {
+			const services = Array<Service>()
+			docs.forEach(dataSnapshot => {
+				const service = new Service()
+				Object.assign(service, dataSnapshot.data())
+				services.push(service)
+			})
+
+			return Promise.resolve(services)
+		}).catch(e => Promise.reject(e))
   }
 
   /* istanbul ignore next */

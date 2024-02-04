@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists" :elements="clientsPhone"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -101,6 +101,7 @@ import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
@@ -121,9 +122,9 @@ watch(places, (newPlaces) => {
   updateAutocompletePlaces(newPlaces)
 })
 
-watch(service, (newService) => {
-  service.value.name = StrHelper.toCamelCase(newService.name?? '')
-}, {deep: true})
+watch(() => service.value.name, (name) => {
+  service.value.name = StrHelper.toCamelCase(name?? '')
+})
 
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
@@ -231,6 +232,15 @@ function onClientSelected(element: AutoCompleteType): void {
 function createClient(client: ClientInterface): Promise<ClientInterface> {
   client.id = countryCode.value.dialCode.replace(/\D/g, "").concat(client.phone).concat('@c.us')
   return ClientRepository.create(client)
+}
+
+function checkPhoneNoExists(phone: string) {
+  if (phone.length > 3) {
+    const phoneExists = clientsPhone.value.some(client => client.value.includes(phone))
+    if (!phoneExists) {
+      service.value.name = i18n.global.t('common.models.users')
+    }
+  }
 }
 
 function locSelected(element: AutoCompleteType): void {
