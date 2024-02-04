@@ -1,14 +1,17 @@
-import {defineStore} from 'pinia';
-import ServiceRepository from '@/repositories/ServiceRepository';
-import {DataSnapshot} from 'firebase/database';
-import {Filter} from '@/types/Filter';
-import DateHelper from '@/helpers/DateHelper';
-import {useLoadingState} from '@/services/stores/LoadingState';
-import {ServiceList} from '@/models/ServiceList';
-import {useDriversStore} from '@/services/stores/DriversStore';
-import {DocumentData} from 'firebase/firestore';
+import {defineStore} from 'pinia'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import {DataSnapshot} from 'firebase/database'
+import {Filter} from '@/types/Filter'
+import DateHelper from '@/helpers/DateHelper'
+import {useLoadingState} from '@/services/stores/LoadingState'
+import {ServiceList} from '@/models/ServiceList'
+import {useDriversStore} from '@/services/stores/DriversStore'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
+import {Pagination} from '@/types/Pagination'
+import Service from '@/models/Service'
+import {ServiceCursor} from '@/types/ServiceCursor'
+
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -16,6 +19,21 @@ export const useServicesStore = defineStore('servicesStore', {
       pendings: Array<ServiceList>(),
       inProgress: Array<ServiceList>(),
       history: Array<ServiceList>(),
+      currentCursor: <ServiceCursor>{
+        id: '',
+        created: DateHelper.endOfDayUnix()
+      },
+      pagination: <Pagination>{
+        currentPage: 1,
+        perPage: 20,
+        totalCount: 0,
+        cursor: {
+          id: '',
+          created: DateHelper.endOfDayUnix()
+        }
+      },
+      canceled: 0,
+      completed: 0,
       filter: <Filter>{
         from: DateHelper.stringNow(),
         to: DateHelper.stringNow(),
@@ -61,33 +79,50 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    async getHistoryServices(sync = false): Promise<void> {
-      const {setLoading} = useLoadingState()
-      const from = DateHelper.getFromDate(this.filter.from , sync? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
-      const to = DateHelper.getToDate(this.filter.to)
-      setLoading(true)
-      if (!sync) this.history.splice(0)
-       else {
-        const filtered = this.history.filter(filter => filter.created_at > from)
-        filtered.forEach(filter => {
-          const index = this.history.indexOf(filter)
-          if (index > -1) this.history.splice(index, 1)
-        })
-      }
-      ServiceRepository.getAll(from, to, this.filter.driverId, this.filter.clientId)
-				.then(snapshot => {
-					snapshot.forEach(documentData => {
-						const service  = this.setServiceFromFS(documentData)
-						this.history.unshift(service);
-					})
-				})
-				.catch(async (e) => {
-					await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
-				})
-				.finally(() => {
-					setLoading(false)
-				})
+    async getHistoryServices(next = true, contain = false): Promise<void> {
+      const { setLoading } = useLoadingState();
+      const from = DateHelper.getFromDate(this.filter.from)
+      const to = DateHelper.getToDate(this.filter.to);
+      setLoading(true);
 
+      if (this.pagination.currentPage === 1 && contain) {
+        this.resetCursor()
+      }
+
+      const options = {
+        from: from,
+        to: to,
+        driverId: this.filter.driverId,
+        clientId: this.filter.clientId,
+        perPage: this.pagination.perPage,
+        cursor: this.pagination.cursor,
+        next: next
+      }
+
+      this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
+      this.completed = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_TERMINATED)
+      this.canceled = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_CANCELED)
+
+      await ServiceRepository.getPaginated(options, contain)
+        .then((dbServices) => {
+          this.history.splice(0)
+          dbServices.forEach((dbService) => {
+            const service = this.setServiceFromFS(dbService);
+            this.history.push(service)
+          })
+          this.currentCursor.id = this.history[0]?.id
+          this.currentCursor.created = this.history[0]?.created_at
+        })
+        .catch(async (e) => {
+          await ToastService.toast(
+            ToastService.ERROR,
+            i18n.global.t('common.messages.error'),
+            e.message
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     },
 		
 		filterInProgressServices(search: string): Array<ServiceList> {
@@ -98,15 +133,13 @@ export const useServicesStore = defineStore('servicesStore', {
 			})
 		},
 	
-		setServiceFromFS(snapshot: DocumentData): ServiceList {
+		setServiceFromFS(dbService: Service): ServiceList {
 			const {findById} = useDriversStore()
-			const service = new ServiceList()
-			Object.assign(service, snapshot.data())
+      const service = Object.assign(new ServiceList(), dbService)
 			if (service.driver_id != null) {
 				const driver = findById(service.driver_id)
 				service.driver = driver?? null
 			}
-			service.id = snapshot?.key as string
 			return  service
 		},
 
@@ -120,6 +153,15 @@ export const useServicesStore = defineStore('servicesStore', {
 			}
 			service.id = snapshot?.key as string
 			return  service
-		}
+		},
+
+    resetCursor(): void {
+      const defaultCursor = <ServiceCursor> {
+        id: '',
+        created: DateHelper.endOfDayUnix()
+      }
+      this.pagination.cursor = defaultCursor
+      this.currentCursor = defaultCursor
+    }
   }
 })

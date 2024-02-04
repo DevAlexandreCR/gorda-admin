@@ -15,9 +15,9 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.pendings">{{ $t('services.fields.driver_name') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.history"></th>
         </thead>
-        <tbody class="text-sm text-opacity-25">
+        <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
-          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index+1 }}</td>
+          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index + 1 }}</td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
@@ -59,8 +59,11 @@
         </tr>
         </tbody>
       </table>
-      <div class="container-fluid mt-2">
-        <Paginator :data="props.services" :perPage="20" @paginatedData="getPaginatedData"/>
+      <div v-if="props.table === Tables.history" class="container-fluid mt-2">
+        <DBPaginator :pagination="props.pagination" @paginatedData="paginatedData"/>
+      </div>
+      <div v-else class="container-fluid mt-2">
+        <Paginator :data="props.services" :perPage="pagination.perPage" @paginatedData="getPaginatedData"/>
       </div>
     </div>
   </div>
@@ -73,23 +76,29 @@ import Service from '@/models/Service'
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
+import DBPaginator from '@/components/DBPaginator.vue'
+import {Pagination} from '@/types/Pagination'
+import {ServiceCursor} from '@/types/ServiceCursor'
+
 
 interface Props {
   services: Array<ServiceList>
   table: Tables
+  pagination: Pagination
 }
+
 const props = defineProps<Props>()
-const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE])
+const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE, 'paginate'])
 let interval: number
-const paginatedServices: Ref<Array<Service>> = ref([])
-const dataServices: Ref<Array<Service>> = ref([])
+const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
 
 watch(props.services, (newServices) => {
-  dataServices.value = Array.from(newServices)
+  paginatedServices.value = Array.from(newServices)
 })
 
+
 onMounted(() => {
-  // dataServices.value = Array.from(props.services)
+  paginatedServices.value = Array.from(props.services)
   if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
 })
 
@@ -118,9 +127,18 @@ function getPaginatedData(data: []): void {
   paginatedServices.value = data
 }
 
+function paginatedData(page: number, next: boolean): void {
+  const services = props.services;
+  const cursor: ServiceCursor = {
+    id: next ? services[services.length - 1].id : services[0].id,
+    created: next ? services[services.length - 1].created_at : services[0].created_at,
+  }
+  emit('paginate', page, cursor, next)
+}
 function getTime(): void {
   paginatedServices.value.forEach(service => {
     service.a_go  = DateHelper.unix() - service.created_at
   })
 }
 </script>
+

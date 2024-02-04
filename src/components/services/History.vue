@@ -72,8 +72,8 @@
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $t('services.total') }}</p>
                   <h5 class="font-weight-bolder mb-0">
-                    {{ history.length }}
-                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', history.length)
+                    {{ pagination.totalCount }}
+                    <span class="text-success text-sm font-weight-bolder">{{ $t('services.title', pagination.totalCount)
                     }}</span>
                   </h5>
                 </div>
@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <ServicesTable :table="Tables.history" :services="history"></ServicesTable>
+    <ServicesTable :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
   </div>
 </template>
 
@@ -143,8 +143,7 @@ import {storeToRefs} from 'pinia'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
-import Service from '@/models/Service'
-import {computed, onBeforeMount, ref, Ref, watchEffect} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watch, watchEffect} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
@@ -152,9 +151,10 @@ import AutoComplete from '@/components/AutoComplete.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
+import {ServiceCursor} from "@/types/ServiceCursor"
 
-const { getHistoryServices } = useServicesStore()
-const { history } = storeToRefs(useServicesStore())
+const { getHistoryServices, resetCursor } = useServicesStore()
+const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const { clients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
@@ -168,21 +168,19 @@ const schema = object().shape({
   to: date().required()
 })
 
-const completed = computed(() =>
-  history.value.filter(s => s.status === Service.STATUS_TERMINATED).length
-)
-
 const completedPercent = computed(() =>
   isWhatPercent(completed.value)
-)
-
-const canceled = computed(() =>
-  history.value.filter(s => s.status === Service.STATUS_CANCELED).length
 )
 
 const canceledPercent = computed(() =>
   isWhatPercent(canceled.value)
 )
+
+watch(() => pagination.value.perPage, async () => {
+  resetCursor()
+  pagination.value.currentPage = 1
+  await getHistoryServices()
+})
 
 watchEffect(async () => {
   drivers.forEach(driver => {
@@ -199,11 +197,8 @@ watchEffect(async () => {
 })
 
 onBeforeMount(async () => {
-  if (DateHelper.dateToUnix(filter.value.from) >= DateHelper.startOfDayUnix()) {
-    const lastService = history.value[0]
-    filter.value.from = DateHelper.unixToDate(lastService.created_at - 3600, 'YYYY-MM-DD HH:mm:ss')
-    await getHistoryServices(true)
-  }
+  pagination.value.cursor = currentCursor.value
+  await getHistoryServices(true, true)
 })
 
 function onDriverSelected(element: AutoCompleteType): void {
@@ -229,10 +224,16 @@ async function clearFilters(): Promise<void> {
 }
 
 function isWhatPercent(x: number): number {
-  return Math.round((x / (history.value.length === 0 ? 1 : history.value.length)) * 100)
+  return Math.round((x / (pagination.value.totalCount === 0 ? 1 : pagination.value.totalCount)) * 100)
 }
 
 async function getServices(): Promise<void> {
   await getHistoryServices()
+}
+
+async function paginateData(page: number, cursor: ServiceCursor, next: boolean): Promise<void> {
+  pagination.value.cursor = cursor
+  pagination.value.currentPage = page
+  await getHistoryServices(next)
 }
 </script>

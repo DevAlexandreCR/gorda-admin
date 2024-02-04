@@ -1,11 +1,8 @@
 import {flushPromises, mount, VueWrapper} from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import DriverRepository from '@/repositories/DriverRepository';
-import DriverMock from '../../../mocks/entities/DriverMock';
 import {nextTick} from 'vue'
 import Metrics from '@/views/metrics/Metrics.vue'
-import {useMetricsStore} from '@/services/stores/MetricsStore'
 import axios from 'axios'
 import {ServiceStatus} from '@/types/ServiceStatus'
 import waitForExpect from 'wait-for-expect'
@@ -32,7 +29,6 @@ axios.get = jest.fn().mockResolvedValue({
 describe('Metrics.vue', () => {
 	let wrapper: VueWrapper<any>
 	beforeEach(async () => {
-		const metricsStore = useMetricsStore()
 		wrapper = mount(Metrics,
 			{
 				global: {
