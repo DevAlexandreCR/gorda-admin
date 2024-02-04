@@ -1,12 +1,19 @@
 import { mount, VueWrapper } from '@vue/test-utils'
 import DBPaginator from '@/components/DBPaginator.vue'
 import { Pagination } from '@/types/Pagination'
+import i18n from '@/plugins/i18n'
 
 describe('DBPaginator.vue', () => {
   let wrapper: VueWrapper<any>
 
   const createWrapper = (pagination: Pagination) => {
     wrapper = mount(DBPaginator, {
+      global: {
+        plugins: [i18n],
+        provide: {
+          'appName': 'test',
+        },
+      },
       props: {
         pagination,
       },
