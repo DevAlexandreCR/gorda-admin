@@ -25,7 +25,7 @@ export const useServicesStore = defineStore('servicesStore', {
       },
       pagination: <Pagination>{
         currentPage: 1,
-        perPage: 10,
+        perPage: 20,
         totalCount: 0,
         cursor: {
           id: '',

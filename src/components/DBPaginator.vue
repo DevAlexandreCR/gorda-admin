@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid d-flex">
     <div class="form-group d-inline-flex">
-      <label class="me-2">{{ $t('common.actions.items_pages') }}</label>
-      <select class="form-select form-select-sm" v-model="storePagination.perPage">
-        <option :value="20">20</option>
-        <option :value="30">30</option>
-        <option :value="50">50</option>
+      <label class="me-2 text-nowrap">{{ $t('common.actions.items_pages') }}</label>
+      <select class="form-select form-select-sm text-nowrap" v-model="storePagination.perPage">
+        <option :value="20" :selected="currentPage === 20">20</option>
+        <option :value="30" :selected="currentPage === 30">30</option>
+        <option :value="50" :selected="currentPage === 50">50</option>
       </select>
     </div>
     <nav aria-label="...">
@@ -52,9 +52,8 @@ const props = defineProps<Props>()
 const emit = defineEmits(['paginatedData'])
 
 const totalPages = computed(() => Math.ceil(props.pagination.totalCount / props.pagination.perPage))
-const currentPage: Ref<number> = ref(1)
-
 const {pagination: storePagination} = storeToRefs(useServicesStore())
+const currentPage: Ref<number> = ref(storePagination.value.currentPage)
 
 watch(() => props.pagination.currentPage, (page) => {
   currentPage.value = page
