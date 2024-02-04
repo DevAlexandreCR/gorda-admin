@@ -25,5 +25,7 @@ npm run test:unit
 npm run lint
 ```
 
+[![codecov](https://codecov.io/gh/DevAlexandreCR/gorda-admin/graph/badge.svg?token=WJNHXTDZMF)](https://codecov.io/gh/DevAlexandreCR/gorda-admin)
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

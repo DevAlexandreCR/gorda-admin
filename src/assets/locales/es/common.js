@@ -18,13 +18,15 @@ export default {
     edit: 'Editar',
     close: 'Cerrar',
     create: 'Crear',
+    delete: 'Eliminar',
     cancel: 'Cancelar',
     release: 'Liberar',
     assign: 'Asignar',
     terminate: 'Terminar',
     filter: 'Filtrar',
     see: 'Ver',
-    clear_filters: 'Limpiar Filtros'
+    clear_filters: 'Limpiar Filtros',
+    items_pages: 'Elementos Por Pagina'
   },
   messages: {
     updated: 'Recurso actualizado correctamente',

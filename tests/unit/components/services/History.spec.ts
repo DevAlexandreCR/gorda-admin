@@ -11,6 +11,8 @@ import {StrHelper} from '@/helpers/StrHelper'
 import ServicesTable from '@/components/services/ServicesTable.vue'
 import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick} from 'vue'
+import ServiceMock from '../../../mocks/entities/ServiceMock'
+import Service from '@/models/Service'
 
 describe('History.vue', () => {
   let wrapper: VueWrapper<any>
@@ -21,16 +23,15 @@ describe('History.vue', () => {
       plugins: [router, i18n],
       provide: {
         appName: 'test',
-      },
-      components: {
-        AutoComplete,
-      },
+      }
     },
   }
 
   beforeEach(async () => {
     jest.useFakeTimers()
-    ServiceRepository.getAll = jest.fn().mockResolvedValue([DocumentDataMock])
+    const service = Object.assign(new Service(), new ServiceMock)
+    ServiceRepository.getPaginated = jest.fn().mockResolvedValue([service, service])
+    ServiceRepository.getCount = jest.fn().mockResolvedValue([1])
 		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
     wrapper = mount(History, options)
@@ -45,7 +46,8 @@ describe('History.vue', () => {
     expect(wrapper.findComponent(ServicesTable).exists()).toBeTruthy()
 	})
 
-  it('displays correct data in ServicesTable', () => {
+  it('displays correct data in ServicesTable', async () => {
+    await nextTick()
     const servicesTable = wrapper.findComponent(ServicesTable)
     const expectedData = DocumentDataMock.data()
     expect(servicesTable.html()).toContain(i18n.global.t('services.statuses.' + expectedData.status))
@@ -56,7 +58,7 @@ describe('History.vue', () => {
 	})
 
   it('it must be assert that services si called when clear filters', async () => {
-		const getAll = jest.spyOn(ServiceRepository, 'getAll')
+		const getAll = jest.spyOn(ServiceRepository, 'getPaginated')
     const input = wrapper.find('input[name="driver"]')
     await input.setValue('HEM390')
     await nextTick()
@@ -66,7 +68,7 @@ describe('History.vue', () => {
 		await button.trigger('click')
 	
 		await nextTick()
-		expect(getAll).toBeCalledTimes(3)
+		expect(getAll).toBeCalledTimes(2)
 	})
 
   it('calculates the percentage correctly', () => {

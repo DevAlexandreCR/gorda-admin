@@ -4,6 +4,7 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import {LocationType} from '@/types/LocationType'
 import {Applicant} from '@/types/Applicant'
 import { Metadata } from '@/types/Metadata'
+import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 export default class Service implements ServiceInterface {
   id: string
@@ -15,6 +16,7 @@ export default class Service implements ServiceInterface {
   amount: number | null = null
   applicants: Applicant | null = null
   metadata: Metadata | null = null
+  wp_client_id: string
   driver_id: string | null = null
   client_id: string | null = null
   created_at: number
@@ -30,10 +32,13 @@ export default class Service implements ServiceInterface {
   static readonly EVENT_ASSIGN = 'assign-service'
   static readonly EVENT_RELEASE = 'release-service'
 
+
   constructor() {
+    const {defaultClient} =  useWpClientsStore()
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
+    this.wp_client_id = defaultClient as string
   }
 
   isPending(): boolean {

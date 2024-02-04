@@ -3,22 +3,30 @@ import {WPSubject} from '@/services/gordaApi/interfaces/WPSubject'
 import {WPObserver} from '@/services/gordaApi/interfaces/WPObserver'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {LoadingType} from '@/types/LoadingType'
+import {WpClient} from "@/types/WpClient";
+import {WPClientDictionary} from "@/types/WPClientDiccionary";
 
 export default class WhatsAppClient implements WPSubject {
   
-  private static instance: WhatsAppClient
   private socket: Socket
+  private wpClient: WpClient
   public state = WhatsApp.STATUS_DISCONNECTED
   public qr: string|null = null
   private observers: WPObserver[] = []
 	public loading: LoadingType|null
+  private static instances: WPClientDictionary = {}
   
-  constructor() {
+  constructor(wpClient: WpClient) {
+    this.wpClient = wpClient
     const url = process.env.VUE_APP_WP_CLIENT_API_URL as string ?? 'http://localhost'
     const port = process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000
+
     this.socket = io( url + ':' + port, {
       reconnectionAttempts: 5,
-      reconnectionDelay: 5000
+      reconnectionDelay: 5000,
+      query: {
+        clientId: this.wpClient.id
+      }
     })
     this.onQRCode()
     this.getState()
@@ -27,18 +35,26 @@ export default class WhatsAppClient implements WPSubject {
     this.onDisconnected()
     this.onAuthenticationFailure()
 		this.onLoadingScreen()
+    this.setConnecting()
   }
   
-  public static getInstance(): WhatsAppClient {
-    if (!WhatsAppClient.instance) {
-      WhatsAppClient.instance = new WhatsAppClient()
+  public static getInstance(wpClient: WpClient): WhatsAppClient {
+    if (!WhatsAppClient.instances[wpClient.id]) {
+      WhatsAppClient.instances[wpClient.id] = new WhatsAppClient(wpClient)
     }
-    
-    return WhatsAppClient.instance
+
+    return WhatsAppClient.instances[wpClient.id]
   }
   
   auth(): void {
     this.socket.emit(WhatsApp.EVENT_AUTH)
+  }
+
+  clientDeleted(): void {
+    this.state = WhatsApp.STATUS_DISCONNECTED
+    this.qr = null
+    this.loading = null
+    this.notify()
   }
   
   getState(): void {
@@ -131,7 +147,17 @@ export default class WhatsAppClient implements WPSubject {
 	isConnecting(): boolean {
 		return this.state === WhatsApp.STATUS_OPENING
 	}
-  
+
+  setConnecting(): void {
+    this.socket.emit('starting')
+    this.socket.on('starting', (starting: boolean) => {
+      if (starting) {
+        this.state = WhatsApp.STATUS_OPENING
+        this.notify()
+      }
+    })
+  }
+
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)
     if (!isExist) this.observers.push(observer)

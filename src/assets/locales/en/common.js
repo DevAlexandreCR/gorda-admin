@@ -18,13 +18,15 @@ export default {
     edit: 'Edit',
     close: 'Close',
     create: 'Create',
+    delete: 'Delete',
     cancel: 'Cancel',
     release: 'Release',
     assign: 'Assign',
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
-    clear_filters: 'Clear Filters'
+    clear_filters: 'Clear Filters',
+    items_pages: 'Items per Pages'
   },
   messages: {
     updated: 'Resource updated successfully',
