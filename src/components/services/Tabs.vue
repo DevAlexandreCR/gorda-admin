@@ -114,12 +114,12 @@ const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')
 const searchService: Ref<string> = ref('')
 const filteredInProgress: Ref<Array<ServiceList>> = ref([])
-const paginationInProgress = reactive<Pagination>({
+const paginationInProgress = reactive<Partial<Pagination>>({
   totalCount: 0,
   currentPage: 1,
   perPage: 20
 })
-const paginationPendings = reactive<Pagination>({
+const paginationPendings = reactive<Partial<Pagination>>({
   totalCount: 0,
   currentPage: 1,
   perPage: 20
