@@ -2,7 +2,7 @@ import {ServiceInterface} from '@/types/ServiceInterface'
 import dayjs from 'dayjs'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {LocationType} from '@/types/LocationType'
-import {Applicant} from '@/types/Applicant'
+import {Applicants} from '@/types/Applicants'
 import { Metadata } from '@/types/Metadata'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
@@ -14,7 +14,7 @@ export default class Service implements ServiceInterface {
   phone: string
   name: string
   amount: number | null = null
-  applicants: Applicant | null = null
+  applicants: Applicants | null = null
   metadata: Metadata | null = null
   wp_client_id: string
   driver_id: string | null = null
