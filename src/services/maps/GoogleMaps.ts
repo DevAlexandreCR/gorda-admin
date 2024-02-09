@@ -1,5 +1,6 @@
 import {Loader} from '@googlemaps/js-api-loader'
 import {PlaceInterface} from '@/types/PlaceInterface'
+import GoogleLoader from '@/services/maps/GoogleLoader'
 
 export class GoogleMaps {
   
@@ -9,21 +10,18 @@ export class GoogleMaps {
   icon: string
   
   constructor(icon: string) {
-    this.loader = new Loader({
-      apiKey: process.env.VUE_APP_GOOGLE_API_KEY?? '',
-      version: "weekly"
-    })
+    this.loader = GoogleLoader.getInstance()
     this.icon = icon
   }
   
   /* istanbul ignore next */
   async initMap(id: string): Promise<google.maps.Map> {
-    await this.loader.load().then((google)=> {
+    await this.loader.importLibrary('maps').then((maps)=> {
       const options: google.maps.MapOptions = {
         center: { lat: 2.4448143, lng: -76.6147395 },
         zoom: 14
       }
-      this.map = new google.maps.Map(document.getElementById(id) as HTMLElement, options)
+      this.map = new maps.Map(document.getElementById(id) as HTMLElement, options)
     }).catch(error => console.error(error))
     
     return Promise.resolve(this.map)

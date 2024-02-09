@@ -44,7 +44,7 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
+              <PlaceAutocomplete :idField="service.id + 1" :fieldName="'start_address'" @selected="placeSelected"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
@@ -101,6 +101,7 @@ import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import PlaceAutocomplete from '@/components/maps/PlaceAutocomplete.vue'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
@@ -245,6 +246,12 @@ function checkPhoneNoExists(phone: string) {
 
 function locSelected(element: AutoCompleteType): void {
   let place = findByName(element.value)
+  start_loc = { name: place.name, lat: place.lat, lng: place.lng}
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
+}
+
+function placeSelected(place: PlaceInterface): void {
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
