@@ -39,6 +39,8 @@ const input = ref<HTMLInputElement | null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const emit = defineEmits(['on-change', 'selected', 'no-elements-found'])
+let wasSelected = false
+
 const callback = function (mutationsList: MutationRecord[]) {
   for (let mutation of mutationsList) {
     if (mutation.type === 'childList') {
@@ -55,11 +57,14 @@ watch(searchElement, (newValue) => {
 })
 
 watch(foundElements, (newValue) => {
-  if (newValue.length === 0 && searchElement.value.length > 3) emit('no-elements-found')
+  if (newValue.length === 0 && searchElement.value.length > 3) {
+    if (!wasSelected) emit('no-elements-found')
+    else wasSelected = false
+  }
 })
 
 onMounted(() => {
-  const targetNode = document.body
+  const targetNode = document.getRootNode()
   const config = {childList: true, subtree: true}
   const observer = new MutationObserver(callback)
   observer.observe(targetNode, config)
@@ -116,9 +121,8 @@ function addListener(): void {
         if (liSelected) {
           input.value?.blur()
           liSelected = ul.getElementsByClassName('selected')[0] as HTMLLIElement
-          liSelected.click()
-          liSelected.remove()
-          liSelected.remove()
+          liSelected?.click()
+          liSelected?.remove()
         }
         break
       default:
@@ -162,7 +166,7 @@ function searchElements(): void {
   let matches = 0
   if (searchElement.value.length > 2) {
     foundElements.value = props.elements.filter(element => {
-      if (element.value.toLowerCase().includes(searchElement.value.toLowerCase()) && matches < 5) {
+      if (element.value && element.value.toLowerCase().includes(searchElement.value.toLowerCase()) && matches < 5) {
         matches++
         return element
       }
@@ -173,6 +177,7 @@ function searchElements(): void {
 }
 
 function selectElement(element: AutoCompleteType): void {
+  wasSelected = true
   emit('selected', element, props.idField)
   searchElement.value = element.value
   foundElements.value = []
