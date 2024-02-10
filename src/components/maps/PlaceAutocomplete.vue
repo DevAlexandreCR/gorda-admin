@@ -2,7 +2,7 @@
   <div>
     <Field :name="props.fieldName ?? '12345'"  v-model="searchElement"
            v-slot="{ errorMessage, meta }">
-      <input :name="props.fieldName ?? '12345'" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
+      <input :name="props.fieldName ?? '12345'" ref="input" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
              :placeholder="props.placeholder" autocomplete="none" v-model="searchElement"/>
       <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
     </Field>
@@ -29,9 +29,10 @@ interface Props {
 const props = defineProps<Props>()
 const searchElement: Ref<string> = ref(props.search)
 const emit = defineEmits(['on-change', 'selected'])
-
+const input = ref<HTMLInputElement | null>(null)
 
 onMounted(async () => {
+  input.value?.focus()
   const autocomplete = new RemoteAutocomplete()
   await autocomplete.initPlaces(props.idField).catch(e => console.log(e))
   autocomplete.onPlaceChanged(function (place) {

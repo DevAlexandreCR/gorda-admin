@@ -45,9 +45,9 @@
           <div class="col-12 col-md px-1">
             <div class="form-group">
               <PlaceAutocomplete v-if="useRemoteAutoComplete" :idField="service.id + 1" :fieldName="'start_address'" @selected="placeSelected"
-                            :placeholder="$t('common.placeholders.address')" :search="start_loc.name?? ''"/>
+                            :placeholder="$t('common.placeholders.address')" :search="search"/>
               <AutoComplete v-else :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
-                            @no-elements-found="showRemoteAutoComplete" :placeholder="$t('common.placeholders.address')"/>
+                            @no-elements-found="showRemoteAutoComplete" @on-change="onSearchChanged" :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -104,6 +104,7 @@ import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import PlaceAutocomplete from '@/components/maps/PlaceAutocomplete.vue'
+import {string} from 'yup'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName, create} = usePlacesStore()
@@ -116,7 +117,8 @@ const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 const count: Ref<number> = ref(1)
 const useRemoteAutoComplete: Ref<boolean> = ref(false)
 const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
-let start_loc = reactive<LocationType>({name: '', lat: 0, lng: 0})
+const search: Ref<string> = ref('')
+let start_loc: LocationType = {name: '', lat: 0, lng: 0}
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -136,6 +138,10 @@ onMounted(async () => {
   updateAutocompletePlaces(places)
   updateAutocompleteClients(clients)
 })
+
+function onSearchChanged(searched: string): void {
+  search.value = searched
+}
 
 function showRemoteAutoComplete(show = true) {
   useRemoteAutoComplete.value = show
