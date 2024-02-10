@@ -23,10 +23,11 @@ interface Props {
   placeholder?: string
   idField: string
   normalizer?: (str: string) => string
+  search: string
 }
 
 const props = defineProps<Props>()
-const searchElement: Ref<string> = ref('')
+const searchElement: Ref<string> = ref(props.search)
 const emit = defineEmits(['on-change', 'selected'])
 
 

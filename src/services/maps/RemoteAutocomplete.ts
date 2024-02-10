@@ -18,7 +18,7 @@ export class RemoteAutocomplete {
     this.options = {
       bounds: defaultBounds,
       componentRestrictions: { country: "co" },
-      fields: ['geometry', 'address_component', 'name'],
+      fields: ['geometry', 'name'],
       strictBounds: true,
     }
   }
@@ -30,17 +30,15 @@ export class RemoteAutocomplete {
     })
   }
 
-  public onPlaceChanged(fn: (place: PlaceInterface) => void): void {
+  public onPlaceChanged(fn: (place: Partial<PlaceInterface>) => void): void {
     this.autocomplete.addListener('place_changed', () => {
       const gPlace = this.autocomplete.getPlace()
       if (gPlace.geometry != undefined) {
-        const place: PlaceInterface = {
-          key: null,
+        const place: Partial<PlaceInterface> = {
           name: gPlace.name?? '',
           lat: gPlace.geometry.location?.lat()?? 0,
           lng: gPlace.geometry.location?.lng()?? 0
         }
-        console.log(gPlace)
         fn(place)
       }
     })

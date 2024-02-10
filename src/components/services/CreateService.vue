@@ -44,8 +44,10 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <PlaceAutocomplete :idField="service.id + 1" :fieldName="'start_address'" @selected="placeSelected"
-                            :placeholder="$t('common.placeholders.address')"/>
+              <PlaceAutocomplete v-if="useRemoteAutoComplete" :idField="service.id + 1" :fieldName="'start_address'" @selected="placeSelected"
+                            :placeholder="$t('common.placeholders.address')" :search="start_loc.name?? ''"/>
+              <AutoComplete v-else :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
+                            @no-elements-found="showRemoteAutoComplete" :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -88,7 +90,7 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import {LocationType} from '@/types/LocationType'
 import {ServiceInterface} from '@/types/ServiceInterface'
-import {onMounted, ref, Ref, watch} from 'vue'
+import {onMounted, reactive, ref, Ref, watch} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
@@ -104,16 +106,17 @@ import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import PlaceAutocomplete from '@/components/maps/PlaceAutocomplete.vue'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
-const {places, findByName} = usePlacesStore()
+const {places, findByName, create} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 const count: Ref<number> = ref(1)
+const useRemoteAutoComplete: Ref<boolean> = ref(false)
 const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
+let start_loc = reactive<LocationType>({name: '', lat: 0, lng: 0})
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -133,6 +136,10 @@ onMounted(async () => {
   updateAutocompletePlaces(places)
   updateAutocompleteClients(clients)
 })
+
+function showRemoteAutoComplete(show = true) {
+  useRemoteAutoComplete.value = show
+}
 
 function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
   placesAutocomplete.value = []
@@ -207,7 +214,7 @@ function createService(values: ServiceInterface): void {
   newService.client_id = values.client_id
   newService.name = values.name
   newService.phone = values.phone
-  newService.start_loc = start_loc
+  newService.start_loc = start_loc.value
   newService.wp_client_id = values.wp_client_id
   ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
@@ -251,8 +258,10 @@ function locSelected(element: AutoCompleteType): void {
   input?.focus()
 }
 
-function placeSelected(place: PlaceInterface): void {
+async function placeSelected(place: PlaceInterface): void {
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
+  await create(place)
+  showRemoteAutoComplete(false)
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
 }

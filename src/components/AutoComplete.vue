@@ -38,7 +38,7 @@ const props = defineProps<Props>()
 const input = ref<HTMLInputElement | null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
-const emit = defineEmits(['on-change', 'selected'])
+const emit = defineEmits(['on-change', 'selected', 'no-elements-found'])
 const callback = function (mutationsList: MutationRecord[]) {
   for (let mutation of mutationsList) {
     if (mutation.type === 'childList') {
@@ -52,6 +52,10 @@ const callback = function (mutationsList: MutationRecord[]) {
 
 watch(searchElement, (newValue) => {
   if (props.normalizer) searchElement.value = props.normalizer(newValue)
+})
+
+watch(foundElements, (newValue) => {
+  if (newValue.length === 0 && searchElement.value.length > 3) emit('no-elements-found')
 })
 
 onMounted(() => {
