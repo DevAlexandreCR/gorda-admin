@@ -156,7 +156,7 @@ function onSearchChanged(searched: string): void {
 
 function showRemoteAutoComplete(show = true) {
   useRemoteAutoComplete.value = show
-  if (show) setTimeout(() => {
+  if (start_loc.name != '') setTimeout(() => {
     const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
     input?.focus()
   }, 500)

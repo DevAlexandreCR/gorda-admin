@@ -28,7 +28,7 @@ export const usePlacesStore = defineStore('placesStore', {
     async create(place: PlaceInterface): Promise<PlaceInterface> {
       const { setLoading } = useLoadingState()
       setLoading(true)
-      place.key  = await PlaceRepository.create(place).finally(() => setLoading(false))
+      place.key = await PlaceRepository.create(place).finally(() => setLoading(false))
       return Promise.resolve(place)
     }
   }
