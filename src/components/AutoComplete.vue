@@ -83,19 +83,19 @@ function addListener(): void {
         index++
         if (liSelected) {
           removeClass(liSelected, 'selected')
-          let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
+          let next = ul.getElementsByTagName('li')[index]
           if (next && index <= len) {
 
             liSelected = next
           } else {
             index = 0
-            liSelected = ul.getElementsByTagName('li')[0] as HTMLLIElement
+            liSelected = ul.getElementsByTagName('li')[0]
           }
           addClass(liSelected, ul, 'selected')
         } else {
           index = 0
 
-          liSelected = ul.getElementsByTagName('li')[index] as HTMLLIElement
+          liSelected = ul.getElementsByTagName('li')[index]
           if (liSelected) addClass(liSelected, ul, 'selected')
         }
         break
@@ -103,17 +103,17 @@ function addListener(): void {
         if (liSelected) {
           removeClass(liSelected, 'selected')
           index--
-          let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
+          let next = ul.getElementsByTagName('li')[index]
           if (next && index >= 0) {
             liSelected = next
           } else {
             index = len
-            liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
+            liSelected = ul.getElementsByTagName('li')[len]
           }
           addClass(liSelected, ul, 'selected')
         } else {
           index = 0
-          liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
+          liSelected = ul.getElementsByTagName('li')[len]
           if (liSelected) addClass(liSelected, ul, 'selected')
         }
         break
