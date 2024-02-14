@@ -17,8 +17,10 @@ export class GoogleMaps {
   /* istanbul ignore next */
   async initMap(id: string): Promise<google.maps.Map> {
     await this.loader.importLibrary('maps').then((maps)=> {
+      const lat = parseFloat(process.env.VUE_APP_MAP_CENTER_LAT ?? '0')
+      const lng = parseFloat(process.env.VUE_APP_MAP_CENTER_LNG ?? '0')
       const options: google.maps.MapOptions = {
-        center: { lat: 2.4448143, lng: -76.6147395 },
+        center: { lat: lat, lng: lng },
         zoom: 14
       }
       this.map = new maps.Map(document.getElementById(id) as HTMLElement, options)

@@ -8,12 +8,16 @@ export class RemoteAutocomplete {
   private loader: Loader
   constructor() {
     this.loader = GoogleLoader.getInstance()
-    const center = { lat: 2.4448143, lng: -76.6147395 }
+    const lat = parseFloat(process.env.VUE_APP_MAP_CENTER_LAT ?? '0')
+    const lng = parseFloat(process.env.VUE_APP_MAP_CENTER_LNG ?? '0')
+    const distanceVert = parseFloat(process.env.VUE_APP_MAP_DISTANCE_VERT ?? '0')
+    const distanceHor = parseFloat(process.env.VUE_APP_MAP_DISTANCE_HOR ?? '0')
+    const center = { lat: lat, lng: lng }
     const defaultBounds = {
-      north: center.lat + 0.1,
-      south: center.lat - 0.1,
-      east: center.lng + 0.1,
-      west: center.lng - 0.1,
+      north: center.lat + distanceVert,
+      south: center.lat - distanceVert,
+      east: center.lng + distanceHor,
+      west: center.lng - distanceHor,
     }
     this.options = {
       bounds: defaultBounds,
