@@ -54,7 +54,7 @@
         ".indexOn": ["wp_client_id"]
       },
       "new": {
-        ".indexOn": ["wp_client_id"]
+        ".indexOn": ["wp_client_id", "client_id"]
       },
       "assigned": {
         ".indexOn": ["wp_client_id"]
