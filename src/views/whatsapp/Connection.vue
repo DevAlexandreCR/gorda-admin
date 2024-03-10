@@ -38,13 +38,25 @@
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.wpNotifications" :disabled="!connected"
-                   @change="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
+                   @click.prevent="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
             <label class="form-check-label">{{
                 $t('common.settings.wpNotifications')
               }}</label>
           </div>
           <div v-if="connected && !props.client.wpNotifications" class="alert alert-warning" role="alert">
             {{ $t('common.settings.alert_notifications') }}
+          </div>
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected"
+                   @click.prevent="enableChatBot(props.client, !props.client.chatBot)"/>
+            <label class="form-check-label">{{
+                $t('common.settings.chatBot')
+              }}</label>
+          </div>
+          <div v-if="connected && !props.client.chatBot" class="alert alert-warning" role="alert">
+            {{ $t('common.settings.alert_chatBot') }}
           </div>
         </div>
         <div class="row mx-1 mt-3">
@@ -102,7 +114,7 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot} = useWpClientsStore()
 const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient

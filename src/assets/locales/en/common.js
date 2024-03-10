@@ -89,7 +89,9 @@ export default {
   },
   settings: {
     wpNotifications: 'WhatsApp Confirmations',
+    chatBot: 'WhatsApp ChatBot',
     alert_notifications: 'Until confirmations are enabled won\'t send messages',
+    alert_chatBot: 'Until chatBot are enabled won\'t create services automatically',
     Ride_Fees: 'Ride Fees',
     price_kilometer: 'price for kilometer',
     price_minute: 'price for minute',

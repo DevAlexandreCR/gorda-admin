@@ -39,7 +39,8 @@
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true",
       "wp_clients": {
         "$client" : {
-          ".write": "newData.exists() && newData.child('id').exists() && newData.child('alias').exists()"
+          ".write": "newData.exists() && newData.child('id').exists() && newData.child('alias').exists()",
+          ".validate": "(newData.child('chatBot').val() === false && newData.child('wpNotifications').val() === false) || newData.child('chatBot').val() !== newData.child('wpNotifications').val()"
         }
       }
     },

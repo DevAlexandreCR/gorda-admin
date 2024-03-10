@@ -22,7 +22,25 @@ export const useWpClientsStore = defineStore('settingsStore', {
 			setLoading(true)
 			SettingsRepository.enableWpNotifications(client.id, enabled).then(() => {
 				this.clients[client.id].wpNotifications = enabled
-			}).finally(() => setLoading(false))
+			})
+      .catch(async (e) => {
+        setLoading(false)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .then(() => setLoading(false))
+    },
+
+    enableChatBot(client: WpClient, enabled: boolean): void {
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      SettingsRepository.enableChatBot(client.id, enabled).then(() => {
+        this.clients[client.id].chatBot = enabled
+      })
+      .catch(async (e) => {
+        setLoading(false)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .then(() => setLoading(false))
     },
 		
     async getWpClients(): Promise<void> {
