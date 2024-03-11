@@ -3,7 +3,27 @@
     <ul class="nav nav-tabs" id="myTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="ride-fees-tab" data-bs-toggle="tab" data-bs-target="#ride-fees" type="button"
-          role="tab" aria-controls="ride-fees" aria-selected="true">{{ $t('common.settings.Ride_Fees') }}</button>
+          role="tab" aria-controls="ride-fees" aria-selected="true" @click="currentTab = 'rideFees'">
+          <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              :class="{ 'shadow': currentTab === 'rideFees' }">
+              <em class="fas fa-dollar-sign"></em>
+            </div>
+            <span>{{ $t('common.settings.Ride_Fees') }}</span>
+          </div>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button"
+          role="tab" aria-controls="messages" aria-selected="false" @click="currentTab = 'messages'">
+          <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              :class="{ 'shadow': currentTab === 'messages' }">
+              <em class="fas fa-envelope"></em>
+            </div>
+            <span>{{ $t('common.settings.Messages') }}</span>
+          </div>
+        </button>
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
@@ -130,6 +150,11 @@
           </div>
         </div>
       </div>
+    <div class="tab-content">
+      <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+        <SettingsMsg v-if="currentTab === 'messages'" />
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -139,6 +164,7 @@ import { onMounted, ref, Ref } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
 import { useLoadingState } from '@/services/stores/LoadingState'
+import SettingsMsg from '@/views/settings/SettingsMsg.vue'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import { Form } from 'vee-validate'
@@ -150,6 +176,7 @@ const rideFees: Ref<RideFeeInterface> = ref({})
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
+const currentTab: Ref<string> = ref('rideFees')
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName

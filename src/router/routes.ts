@@ -15,6 +15,8 @@ import adminGuard from "@/router/guards/AdminGuard";
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import Metrics from '@/views/metrics/Metrics.vue'
 import Settings from '@/views/settings/SettingsApp.vue'
+import SettingsMsg from '@/views/settings/SettingsMsg.vue'
+
 
 
 const routes: Array<any> = [
@@ -129,6 +131,11 @@ const routes: Array<any> = [
             path: '/dashboard/settings/index/',
             name: 'settings.index',
             component: Settings
+          },
+          {
+            path: '/dashboard/settings/mensajes',
+            name: 'settings.mensjes',
+            component: SettingsMsg
           },
         ]
       }

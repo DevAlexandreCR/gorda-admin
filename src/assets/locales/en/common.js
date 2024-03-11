@@ -91,6 +91,7 @@ export default {
     wpNotifications: 'WhatsApp Confirmations',
     alert_notifications: 'Until confirmations are enabled won\'t send messages',
     Ride_Fees: 'Ride Fees',
+    Messages: 'Messages',
     price_kilometer: 'price for kilometer',
     price_minute: 'price for minute',
     fees_base: 'base fee',

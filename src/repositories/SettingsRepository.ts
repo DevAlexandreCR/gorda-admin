@@ -3,6 +3,9 @@ import {DataSnapshot, get, off, onValue, query, ref, remove, set} from 'firebase
 import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
 import {ClientDictionary} from "@/types/ClientDiccionary";
+import { SettingsMessageInterface } from '@/types/SettingsMessages';
+import { DocumentData, QuerySnapshot, getDocs } from 'firebase/firestore';
+import FSService from '@/services/FSService';
 
 class WpClientRepository {
 
@@ -14,6 +17,16 @@ class WpClientRepository {
 			if (data.key) clients[data.key] = <WpClient>data.val()
 		})
 		return clients
+	}
+
+	/* istanbul ignore next */
+	async getMessages(): Promise<Array<SettingsMessageInterface>> {
+		const snapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.mensajesCollection())
+		const messages: Array<SettingsMessageInterface> = []
+		snapshot.forEach((doc) => {
+		messages.push(doc.data().messages as SettingsMessageInterface)
+		})
+		return messages
 	}
 
 	/* istanbul ignore next */
