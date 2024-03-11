@@ -63,8 +63,14 @@ const newClient = reactive<WpClient>({
   chatBot: false
 })
 const schema = yup.object().shape({
-  id: yup.string().required().min(10),
-  alias: yup.string().required().min(3)
+  id: yup.string()
+    .required('El campo es requerido')
+    .matches(/^\d+$/, 'El Campo Solo puede contener Numeros')
+    .matches(/^\S*$/, 'El campo no puede contener espacios')
+    .length(10, 'El campo debe tener exactamente 10 caracteres.'),
+  alias: yup.string()
+    .required('El Campo es requerido')
+    .min(3, 'El campo debe tener al menos 3 caracteres')
 })
 
 watch(newClient, (clientNew) => {
