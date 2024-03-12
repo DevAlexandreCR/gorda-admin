@@ -53,9 +53,12 @@ import {ErrorMessage, Field, Form, FormActions} from "vee-validate";
 import * as yup from "yup";
 import {StrHelper} from "@/helpers/StrHelper";
 import {hide} from "@/helpers/ModalHelper";
+import { useI18n } from "vue-i18n";
 
 const {clients} = storeToRefs(useWpClientsStore())
 const {createClient} = useWpClientsStore()
+const {t} = useI18n()
+
 const newClient = reactive<WpClient>({
   id: '',
   alias: '',
@@ -64,14 +67,14 @@ const newClient = reactive<WpClient>({
 })
 const schema = yup.object().shape({
   id: yup.string()
-    .required('El campo es requerido')
-    .matches(/^\d+$/, 'El Campo Solo puede contener Numeros')
-    .matches(/^\S*$/, 'El campo no puede contener espacios')
-    .length(10, 'El campo debe tener exactamente 10 caracteres.'),
+    .required(`${t('validations.required')}`)
+    .matches(/^\d+$/, `${t('validations.requiredNumbers')}`)
+    .matches(/^\S*$/, `${t('validations.NotSpaces')}`)
+    .length(10, `${t('validations.requiredMaxTen')}`),
   alias: yup.string()
-    .required('El Campo es requerido')
-    .min(3, 'El campo debe tener al menos 3 caracteres')
-})
+    .required(`${t('validations.required')}`)
+    .min(3, `${t('validations.requiredMinTree')}`)
+});
 
 watch(newClient, (clientNew) => {
   newClient.alias = StrHelper.toCamelCase(clientNew.alias?? '')
