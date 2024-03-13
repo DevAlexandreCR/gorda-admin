@@ -53,9 +53,12 @@ import {ErrorMessage, Field, Form, FormActions} from "vee-validate";
 import * as yup from "yup";
 import {StrHelper} from "@/helpers/StrHelper";
 import {hide} from "@/helpers/ModalHelper";
+import { useI18n } from "vue-i18n";
 
 const {clients} = storeToRefs(useWpClientsStore())
 const {createClient} = useWpClientsStore()
+const {t} = useI18n()
+
 const newClient = reactive<WpClient>({
   id: '',
   alias: '',
@@ -63,9 +66,15 @@ const newClient = reactive<WpClient>({
   chatBot: false
 })
 const schema = yup.object().shape({
-  id: yup.string().required().min(10),
-  alias: yup.string().required().min(3)
-})
+  id: yup.string()
+    .required(`${t('validations.required')}`)
+    .matches(/^\d+$/, `${t('validations.requiredNumbers')}`)
+    .matches(/^\S*$/, `${t('validations.NotSpaces')}`)
+    .length(10, `${t('validations.requiredMaxTen')}`),
+  alias: yup.string()
+    .required(`${t('validations.required')}`)
+    .min(3, `${t('validations.requiredMinTree')}`)
+});
 
 watch(newClient, (clientNew) => {
   newClient.alias = StrHelper.toCamelCase(clientNew.alias?? '')

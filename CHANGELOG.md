@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Now admin can enable and disable chatBot. [#114](https://github.com/DevAlexandreCR/admin-driver/pull/114)
 
+### Fixed
+- Fix when create a WpClient with the phone number with spaces [#122](https://github.com/DevAlexandreCR/gorda-admin/pull/122)
+
 # Release Notes for 1.3.x
 
 ## [1.3.0(2024-02-03)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.0...1.2.10)
