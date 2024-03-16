@@ -42,7 +42,8 @@ describe('CreateService.vue', () => {
 				id: '3103794656',
 				alias: 'Principal',
 				wpNotifications: false,
-				chatBot: false
+				chatBot: false,
+				assistant: false,
 			}
 		}
 	})

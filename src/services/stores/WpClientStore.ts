@@ -42,6 +42,19 @@ export const useWpClientsStore = defineStore('settingsStore', {
       })
       .then(() => setLoading(false))
     },
+
+    enableAssistant(client: WpClient, enabled: boolean): void {
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      SettingsRepository.enableAssistant(client.id, enabled).then(() => {
+        this.clients[client.id].assistant = enabled
+      })
+      .catch(async (e) => {
+        setLoading(false)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .then(() => setLoading(false))
+    },
 		
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
@@ -82,7 +95,8 @@ export const useWpClientsStore = defineStore('settingsStore', {
           id: client.id,
           alias: client.alias,
           wpNotifications: false,
-          chatBot: false
+          chatBot: false,
+          assistant: false
         }
       })
       .catch(async (e) => {

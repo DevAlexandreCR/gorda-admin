@@ -63,7 +63,8 @@ const newClient = reactive<WpClient>({
   id: '',
   alias: '',
   wpNotifications: false,
-  chatBot: false
+  chatBot: false,
+  assistant: false
 })
 const schema = yup.object().shape({
   id: yup.string()
