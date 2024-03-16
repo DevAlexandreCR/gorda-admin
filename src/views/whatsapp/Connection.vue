@@ -49,6 +49,18 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.assistant" :disabled="!connected"
+                   @click.prevent="enableAssistant(props.client, !props.client.assistant)"/>
+            <label class="form-check-label">{{
+                $t('common.settings.assistant')
+              }}</label>
+          </div>
+          <div v-if="connected && !props.client.assistant" class="alert alert-success" role="alert">
+            {{ $t('common.settings.alert_assistant') }}
+          </div>
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected"
                    @click.prevent="enableChatBot(props.client, !props.client.chatBot)"/>
             <label class="form-check-label">{{
@@ -114,7 +126,7 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant} = useWpClientsStore()
 const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient

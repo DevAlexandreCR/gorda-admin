@@ -34,7 +34,9 @@ export default {
     deleted: 'Resource deleted successfully',
     error: 'Something went wrong!',
     waiting: 'Please wait ...',
-    forbidden: 'Permission denied'
+    forbidden: 'Permission denied',
+    error_chatBot: 'ChatBot and WhatsApp notification can\'t be enabled at time!',
+    error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',
   },
   placeholders: {
     name: 'Enter name',
@@ -90,8 +92,10 @@ export default {
   settings: {
     wpNotifications: 'WhatsApp Confirmations',
     chatBot: 'WhatsApp ChatBot',
+    assistant: 'Assistant Bot',
     alert_notifications: 'Until confirmations are enabled won\'t send messages',
     alert_chatBot: 'Until chatBot are enabled won\'t create services automatically',
+    alert_assistant: 'Enable the assistant bot to create services when client send a location',
     Ride_Fees: 'Ride Fees',
     price_kilometer: 'price for kilometer',
     price_minute: 'price for minute',

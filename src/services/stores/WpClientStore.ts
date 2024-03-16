@@ -18,6 +18,15 @@ export const useWpClientsStore = defineStore('settingsStore', {
   },
   actions: {
     enableWpNotifications(client: WpClient, enabled: boolean): void {
+      if (enabled && client.chatBot) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
 			const {setLoading} = useLoadingState()
 			setLoading(true)
 			SettingsRepository.enableWpNotifications(client.id, enabled).then(() => {
@@ -25,25 +34,50 @@ export const useWpClientsStore = defineStore('settingsStore', {
 			})
       .catch(async (e) => {
         setLoading(false)
-        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error_chatBot'), e.message)
       })
       .then(() => setLoading(false))
     },
 
     enableChatBot(client: WpClient, enabled: boolean): void {
+      if (enabled && (client.assistant || client.wpNotifications)) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
       const {setLoading} = useLoadingState()
       setLoading(true)
-      SettingsRepository.enableChatBot(client.id, enabled).then(() => {
+      SettingsRepository.enableChatBot(client.id, enabled).then(async () => {
         this.clients[client.id].chatBot = enabled
+        if (enabled) {
+          await SettingsRepository.enableAssistant(client.id, false)
+        }
       })
-      .catch(async (e) => {
+      .catch(async () => {
         setLoading(false)
-        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+        await ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
       })
       .then(() => setLoading(false))
     },
 
     enableAssistant(client: WpClient, enabled: boolean): void {
+      if (enabled && client.chatBot) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
       const {setLoading} = useLoadingState()
       setLoading(true)
       SettingsRepository.enableAssistant(client.id, enabled).then(() => {
