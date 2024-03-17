@@ -1,5 +1,5 @@
 import {LocationType} from '@/types/LocationType'
-import {Applicant} from '@/types/Applicant'
+import {Applicants} from '@/types/Applicants'
 import { Metadata } from './Metadata'
 
 export interface ServiceInterface {
@@ -7,7 +7,7 @@ export interface ServiceInterface {
   status: string
   start_loc: LocationType
   end_loc: LocationType | null
-  applicants: Applicant | null
+  applicants: Applicants | null
   phone: string
   name: string
   comment: string | null

@@ -24,6 +24,7 @@ describe('CreateService.vue', () => {
 		const placesStore = usePlacesStore()
 		const clientsStore = useClientsStore()
 		const wpClient = useWpClientsStore()
+		placesStore.places = getPlaces()
 		wrapper = mount(CreateService,
 			{
 				attachTo: document.body,
@@ -36,7 +37,6 @@ describe('CreateService.vue', () => {
 			})
 		await router.isReady()
 		clientsStore.clients = [ClientMock]
-		placesStore.places = getPlaces()
 		wpClient.clients = {
 			3103794656: {
 				id: '3103794656',
@@ -57,19 +57,17 @@ describe('CreateService.vue', () => {
 		expect(input.length).toBe(4)
 		expect(autoComplete.length).toBe(2)
 	})
-	
+
 	it('an user can select location from neighborhoods', async () => {
-		const onSelected = jest.spyOn(wrapper.vm, 'locSelected')
 		await nextTick()
 		const input = wrapper.find('input[name="start_address"]')
 		await input.setValue('mar')
 		await input.trigger('keyup', {
-			keyCode: 72,
+			keyCode: 73,
 		})
 		const li = wrapper.findAll('li').at(0)
 		await li?.trigger('click')
-		
-		expect(onSelected).toBeCalledTimes(1)
+		expect(wrapper.vm.start_loc.name).toMatch('Maria Oriente')
 	})
 
 	it('calls checkPhoneNoExists when phone number changes', async () => {

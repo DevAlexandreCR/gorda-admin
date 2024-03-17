@@ -44,8 +44,9 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
-                            :placeholder="$t('common.placeholders.address')"/>
+              <component :is="autocompleteComponent" :idField="service.id + 1" :fieldName="'start_address'" @selected="onAutocompleteSelected"
+                @on-change="onSearchChanged" :elements="placesAutocomplete" @no-elements-found="showRemoteAutoComplete"
+                :placeholder="$t('common.placeholders.address')" :search="search"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -88,7 +89,7 @@ import {AutoCompleteType} from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
 import {LocationType} from '@/types/LocationType'
 import {ServiceInterface} from '@/types/ServiceInterface'
-import {onMounted, ref, Ref, watch} from 'vue'
+import {computed, onMounted, reactive, ref, Ref, watch} from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
@@ -101,18 +102,30 @@ import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import PlaceAutocomplete from '@/components/maps/PlaceAutocomplete.vue'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
-const {places, findByName} = usePlacesStore()
+const {places, findByName, create} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
 const count: Ref<number> = ref(1)
+const useRemoteAutoComplete: Ref<boolean> = ref(false)
 const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
+const search: Ref<string> = ref('')
+const start_loc = reactive<LocationType>({name: '', lat: 0, lng: 0})
+const autocompleteComponent = computed(() => useRemoteAutoComplete.value ? PlaceAutocomplete : AutoComplete)
+
+const onAutocompleteSelected = (selectedItem: any) => {
+  if (useRemoteAutoComplete.value) {
+    placeSelected(selectedItem);
+  } else {
+    locSelected(selectedItem);
+  }
+}
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -126,12 +139,28 @@ watch(() => service.value.name, (name) => {
   service.value.name = StrHelper.toCamelCase(name?? '')
 })
 
+watch(() => search.value, (newSearch) => {
+  if (newSearch.length === 0) showRemoteAutoComplete(false)
+})
+
 onMounted(async () => {
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
   updateAutocompletePlaces(places)
   updateAutocompleteClients(clients)
 })
+
+function onSearchChanged(searched: string): void {
+  search.value = searched
+}
+
+function showRemoteAutoComplete(show = true) {
+  useRemoteAutoComplete.value = show
+  if (start_loc.name != '') setTimeout(() => {
+    const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
+    input?.focus()
+  }, 500)
+}
 
 function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
   placesAutocomplete.value = []
@@ -167,7 +196,7 @@ function submitFromEnter(event: Event) {
 }
 
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
-  if (!start_loc) {
+  if (start_loc.name === '' && start_loc.lat === 0) {
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
     return
   }
@@ -209,14 +238,15 @@ function createService(values: ServiceInterface): void {
   newService.start_loc = start_loc
   newService.wp_client_id = values.wp_client_id
   ServiceRepository.create(newService, count.value).then(() => {
-    setLoading(false)
+    showRemoteAutoComplete(false)
     count.value = 1
     countryCode.value = countryCodes.value[31]
     service.value.wp_client_id = defaultClient.value as string
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
-    setLoading(false)
     ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+  }).finally(() => {
+    setLoading(false)
   })
 }
 
@@ -245,7 +275,18 @@ function checkPhoneNoExists(phone: string) {
 
 function locSelected(element: AutoCompleteType): void {
   let place = findByName(element.value)
-  start_loc = { name: place.name, lat: place.lat, lng: place.lng}
+  start_loc.name = place.name
+  start_loc.lat = place.lat
+  start_loc.lng = place.lng
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
+}
+
+async function placeSelected(place: PlaceInterface): void {
+  start_loc.name = place.name
+  start_loc.lat = place.lat
+  start_loc.lng = place.lng
+  await create(place)
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
 }
