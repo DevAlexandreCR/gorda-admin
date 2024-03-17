@@ -94,7 +94,7 @@ export default {
     chatBot: 'WhatsApp ChatBot',
     assistant: 'Assistant Bot',
     alert_notifications: 'Until confirmations are enabled won\'t send messages',
-    alert_chatBot: 'Until chatBot are enabled won\'t create services automatically',
+    alert_chatBot: 'Enable chatBot to completely manage WhatsApp messages',
     alert_assistant: 'Enable the assistant bot to create services when client send a location',
     Ride_Fees: 'Ride Fees',
     price_kilometer: 'price for kilometer',

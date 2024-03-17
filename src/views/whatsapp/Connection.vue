@@ -39,36 +39,29 @@
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.wpNotifications" :disabled="!connected"
                    @click.prevent="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
-            <label class="form-check-label">{{
-                $t('common.settings.wpNotifications')
-              }}</label>
-          </div>
-          <div v-if="connected && !props.client.wpNotifications" class="alert alert-warning" role="alert">
-            {{ $t('common.settings.alert_notifications') }}
+            <div class="d-flex flex-column justify-content-center">
+              <h6 class="mb-0">{{$t('common.settings.wpNotifications')}}</h6>
+              <p v-if="connected && !props.client.wpNotifications"
+                  class="alert p-1 ps-2 text-white text-sm alert-danger">
+                {{ $t('common.settings.alert_notifications') }}
+              </p>
+            </div>
           </div>
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.assistant" :disabled="!connected"
                    @click.prevent="enableAssistant(props.client, !props.client.assistant)"/>
-            <label class="form-check-label">{{
-                $t('common.settings.assistant')
-              }}</label>
-          </div>
-          <div v-if="connected && !props.client.assistant" class="alert alert-success" role="alert">
-            {{ $t('common.settings.alert_assistant') }}
+            <h6 class="mb-0">{{$t('common.settings.assistant')}}</h6>
+            <p class="text-sm text-secondary my-0" v-if="connected && !props.client.assistant">{{ $t('common.settings.alert_assistant') }}</p>
           </div>
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected"
                    @click.prevent="enableChatBot(props.client, !props.client.chatBot)"/>
-            <label class="form-check-label">{{
-                $t('common.settings.chatBot')
-              }}</label>
-          </div>
-          <div v-if="connected && !props.client.chatBot" class="alert alert-warning" role="alert">
-            {{ $t('common.settings.alert_chatBot') }}
+            <h6 class="mb-0">{{$t('common.settings.chatBot')}}</h6>
+            <p class="text-sm" v-if="connected && !props.client.chatBot">{{ $t('common.settings.alert_chatBot') }}</p>
           </div>
         </div>
         <div class="row mx-1 mt-3">
