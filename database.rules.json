@@ -59,6 +59,12 @@
       },
       "assigned": {
         ".indexOn": ["wp_client_id"]
+      },
+      "canceled": {
+        ".indexOn": ["wp_client_id"]
+      },
+      "terminated": {
+        ".indexOn": ["wp_client_id"]
       }
     }
   }
