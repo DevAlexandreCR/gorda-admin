@@ -41,7 +41,7 @@
                    @click.prevent="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
             <div class="d-flex flex-column justify-content-center">
               <h6 class="mb-0">{{$t('common.settings.wpNotifications')}}</h6>
-              <p v-if="connected && !props.client.wpNotifications"
+              <p v-if="connected && !props.client.wpNotifications && !props.client.chatBot"
                   class="alert p-1 ps-2 text-white text-sm alert-danger">
                 {{ $t('common.settings.alert_notifications') }}
               </p>
