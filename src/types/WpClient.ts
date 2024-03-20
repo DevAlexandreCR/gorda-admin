@@ -3,4 +3,5 @@ export type WpClient = {
   alias: string
   wpNotifications: boolean
   chatBot: boolean
+  assistant: boolean
 }

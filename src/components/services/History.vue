@@ -220,6 +220,7 @@ async function clearFilters(): Promise<void> {
   filter.value.driverId = null
   clientPhone.value++
   plate.value++
+  resetCursor()
   await getHistoryServices()
 }
 
@@ -228,6 +229,7 @@ function isWhatPercent(x: number): number {
 }
 
 async function getServices(): Promise<void> {
+  resetCursor()
   await getHistoryServices()
 }
 

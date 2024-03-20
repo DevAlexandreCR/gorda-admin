@@ -34,7 +34,9 @@ export default {
     deleted: 'Recurso eliminado correctamente',
     error: 'Algo salió mal!',
     waiting: 'Por favor espere...',
-    forbidden: 'Permiso denegado!'
+    forbidden: 'Permiso denegado!',
+    error_chatBot: 'El chatBot y las notificaciones de WhatsApp no pueden estar habilitadas al mismo tiempo!',
+    error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
   },
   placeholders: {
     name: 'Ingrese el nombre',
@@ -90,6 +92,10 @@ export default {
   settings: {
     wpNotifications: 'Confirmaciones de WhatsApp',
     alert_notifications: 'No se enviarán mensajes hasta que las confirmaciones estén habilitadas',
+    chatBot: 'WhatsApp ChatBot',
+    assistant: 'Asistente Bot',
+    alert_chatBot: 'Habilita el chatBot para que gestione completamente los servicios',
+    alert_assistant: 'Habilita el asistente para crear servicios cuando el cliente envía la ubicación',
     Ride_Fees: 'Tarifas',
     price_kilometer: 'Precio por kilómetro',
     price_minute: 'Precio por Minuto',

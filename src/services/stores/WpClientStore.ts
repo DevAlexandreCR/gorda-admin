@@ -18,11 +18,76 @@ export const useWpClientsStore = defineStore('settingsStore', {
   },
   actions: {
     enableWpNotifications(client: WpClient, enabled: boolean): void {
+      if (enabled && client.chatBot) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
 			const {setLoading} = useLoadingState()
 			setLoading(true)
 			SettingsRepository.enableWpNotifications(client.id, enabled).then(() => {
 				this.clients[client.id].wpNotifications = enabled
-			}).finally(() => setLoading(false))
+			})
+      .catch(async (e) => {
+        setLoading(false)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error_chatBot'), e.message)
+      })
+      .then(() => setLoading(false))
+    },
+
+    enableChatBot(client: WpClient, enabled: boolean): void {
+      if (enabled && (client.assistant || client.wpNotifications)) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      SettingsRepository.enableChatBot(client.id, enabled).then(async () => {
+        this.clients[client.id].chatBot = enabled
+        if (enabled) {
+          await SettingsRepository.enableAssistant(client.id, false)
+        }
+      })
+      .catch(async () => {
+        setLoading(false)
+        await ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+      })
+      .then(() => setLoading(false))
+    },
+
+    enableAssistant(client: WpClient, enabled: boolean): void {
+      if (enabled && client.chatBot) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('common.messages.error_chatBot')
+        )
+
+        return
+      }
+      const {setLoading} = useLoadingState()
+      setLoading(true)
+      SettingsRepository.enableAssistant(client.id, enabled).then(() => {
+        this.clients[client.id].assistant = enabled
+      })
+      .catch(async (e) => {
+        setLoading(false)
+        await ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      })
+      .then(() => setLoading(false))
     },
 		
     async getWpClients(): Promise<void> {
@@ -64,7 +129,8 @@ export const useWpClientsStore = defineStore('settingsStore', {
           id: client.id,
           alias: client.alias,
           wpNotifications: false,
-          chatBot: false
+          chatBot: false,
+          assistant: false
         }
       })
       .catch(async (e) => {
