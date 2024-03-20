@@ -33,6 +33,16 @@ class WpClientRepository {
 	}
 
 	/* istanbul ignore next */
+	enableChatBot(clientId: string, enable: boolean): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${clientId}/chatBot/`), enable);
+	}
+
+	/* istanbul ignore next */
+	enableAssistant(clientId: string, enable: boolean): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${clientId}/assistant/`), enable);
+	}
+
+	/* istanbul ignore next */
 	onWpNotifications(client: WpClient, listener: (enable: DataSnapshot) => void): void {
 		onValue(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), listener)
 	}

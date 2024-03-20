@@ -38,13 +38,30 @@
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.wpNotifications" :disabled="!connected"
-                   @change="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
-            <label class="form-check-label">{{
-                $t('common.settings.wpNotifications')
-              }}</label>
+                   @click.prevent="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
+            <div class="d-flex flex-column justify-content-center">
+              <h6 class="mb-0">{{$t('common.settings.wpNotifications')}}</h6>
+              <p v-if="connected && !props.client.wpNotifications && !props.client.chatBot"
+                  class="alert p-1 ps-2 text-white text-sm alert-danger">
+                {{ $t('common.settings.alert_notifications') }}
+              </p>
+            </div>
           </div>
-          <div v-if="connected && !props.client.wpNotifications" class="alert alert-warning" role="alert">
-            {{ $t('common.settings.alert_notifications') }}
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.assistant" :disabled="!connected"
+                   @click.prevent="enableAssistant(props.client, !props.client.assistant)"/>
+            <h6 class="mb-0">{{$t('common.settings.assistant')}}</h6>
+            <p class="text-sm text-secondary my-0" v-if="connected && !props.client.assistant">{{ $t('common.settings.alert_assistant') }}</p>
+          </div>
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected"
+                   @click.prevent="enableChatBot(props.client, !props.client.chatBot)"/>
+            <h6 class="mb-0">{{$t('common.settings.chatBot')}}</h6>
+            <p class="text-sm" v-if="connected && !props.client.chatBot">{{ $t('common.settings.alert_chatBot') }}</p>
           </div>
         </div>
         <div class="row mx-1 mt-3">
@@ -102,7 +119,7 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant} = useWpClientsStore()
 const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient
