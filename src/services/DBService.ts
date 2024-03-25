@@ -20,6 +20,11 @@ class DBService {
   }
 
   /* istanbul ignore next */
+  public dbDriversAssigned(): DatabaseReference {
+    return ref(this.db, 'drivers-assigned/')
+  }
+
+  /* istanbul ignore next */
   public dbOnlineDrivers(): DatabaseReference {
     return ref(this.db, 'online_drivers/')
   }

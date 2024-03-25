@@ -59,6 +59,11 @@ class DriverRepository {
   }
 
   /* istanbul ignore next */
+  async removeIndex(driverId: string): Promise<void> {
+    return await remove(ref(DBService.db, 'drivers-assigned/' + driverId))
+  }
+
+  /* istanbul ignore next */
   updateEmail(driverId: string, email: string): Promise<void> {
     return new Promise((resolve, reject) => {
       UserRepository.emailAuth(driverId, email).then(() => {
