@@ -162,7 +162,6 @@ function cancel(serviceId: string): void {
 }
 
 function release(service: Service): void {
-  console.log(service.driver_id)
   if (!service.driver_id) return
   ServiceRepository.release(service.id, service.driver_id).then(async () => {
     await ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
