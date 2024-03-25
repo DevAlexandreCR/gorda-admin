@@ -10,6 +10,7 @@ import {
 	query,
 	ref,
 	set,
+	update as updateDB,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import {ServiceInterface} from '@/types/ServiceInterface'
@@ -30,6 +31,7 @@ import {
 	where,
 } from 'firebase/firestore'
 import {ServiceCursor} from '@/types/ServiceCursor'
+import DriverRepository from '@/repositories/DriverRepository'
 
 class ServiceRepository {
 
@@ -136,6 +138,17 @@ async getPaginated(options: {
     if (!service.id) return Promise.reject(new Error('Id is necessary'))
     return set(ref(DBService.db, 'services/'.concat(service.id)), service)
   }
+
+	/* istanbul ignore next */
+	async release(serviceId: string, driverId: string): Promise<void> {
+		await DriverRepository.removeIndex(driverId).catch(e => Promise.reject(e))
+		return updateDB(child(DBService.dbServices(), serviceId), {
+			driver_id: null,
+			status: Service.STATUS_PENDING,
+			applicants: null,
+			metadata: null
+		})
+	}
 
   /* istanbul ignore next */
   updateStatus(serviceId: string, status: string): Promise<void> {

@@ -21,7 +21,7 @@ class DBService {
 
   /* istanbul ignore next */
   public dbDriversAssigned(): DatabaseReference {
-    return ref(this.db, 'drivers-assigned/')
+    return ref(this.db, 'drivers_assigned/')
   }
 
   /* istanbul ignore next */

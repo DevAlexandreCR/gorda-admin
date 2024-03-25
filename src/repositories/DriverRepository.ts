@@ -60,7 +60,7 @@ class DriverRepository {
 
   /* istanbul ignore next */
   async removeIndex(driverId: string): Promise<void> {
-    return await remove(ref(DBService.db, 'drivers-assigned/' + driverId))
+    return await remove(child(DBService.dbDriversAssigned(), driverId))
   }
 
   /* istanbul ignore next */
