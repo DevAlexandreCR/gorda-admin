@@ -41,7 +41,7 @@ class FirestoreService {
 
   /* istanbul ignore next */
   public mensajesCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'mensajes');
+    return collection(this.fs, 'messages');
   }
 }
 

@@ -1,7 +1,6 @@
 export interface SettingsMessageInterface {
-  messages: {
+    id?: string | undefined
     name: string
     description: string
     message: string
-  }
 }

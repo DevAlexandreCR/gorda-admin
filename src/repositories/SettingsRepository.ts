@@ -4,7 +4,7 @@ import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
 import {ClientDictionary} from "@/types/ClientDiccionary";
 import { SettingsMessageInterface } from '@/types/SettingsMessages';
-import { DocumentData, QuerySnapshot, getDocs } from 'firebase/firestore';
+import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
 import FSService from '@/services/FSService';
 
 class WpClientRepository {
@@ -28,6 +28,18 @@ class WpClientRepository {
 		})
 		return messages
 	}
+
+	/* istanbul ignore next */
+	async updateMessage(message: SettingsMessageInterface): Promise<void> {
+		const messageRef: DocumentReference = doc(FSService.mensajesCollection(), message.id)
+		const dataToUpdate = {
+			name: message.name,
+			description: message.description,
+			message: message.message
+		}
+		await updateDoc(messageRef, dataToUpdate)
+	}
+	
 
 	/* istanbul ignore next */
 	async updateRideFee(rideFee: RideFeeInterface): Promise<void> {
