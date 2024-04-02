@@ -163,7 +163,13 @@ const insertEmoji = (emoji: string | undefined) => {
 function saveChanges(): void {
   if (selectedMessage.value) {
     setLoading(true)
-    SettingsRepository.updateMessage(selectedMessage.value).then(async () => {
+    const updatedMessage = {
+      id: selectedMessage.value.id,
+      name: selectedMessage.value.name,
+      description: selectedMessage.value.description,
+      message: preview.value
+    };
+    SettingsRepository.updateMessage(updatedMessage).then(async () => {
       setLoading(false)
       hide('exampleModal')
       await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
@@ -173,6 +179,7 @@ function saveChanges(): void {
     })
   }
 }
+
 
 const updatePreview = () => {
   const editor = document.getElementById('editorTexto')

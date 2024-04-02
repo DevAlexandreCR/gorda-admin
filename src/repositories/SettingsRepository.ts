@@ -24,7 +24,15 @@ class WpClientRepository {
 		const snapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.mensajesCollection())
 		const messages: Array<SettingsMessageInterface> = []
 		snapshot.forEach((doc) => {
-		messages.push(doc.data().messages as SettingsMessageInterface)
+		const messageData = doc.data()
+		const messageId = doc.id
+		const message = {
+			id: messageId,
+			name: messageData.name,
+			description: messageData.description,
+			message: messageData.message
+		}
+		messages.push(message)
 		})
 		return messages
 	}
