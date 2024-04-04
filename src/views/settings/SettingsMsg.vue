@@ -32,62 +32,76 @@
       </div>
     </div>
   </div>
-
   <!-- Modal -->
   <div id="exampleModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content" v-if="selectedMessage">
         <div class="modal-header">
           <h5 class="modal-title">Editor</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <Form @submit="saveChanges">
-          <div class="modal-body">
-            <div class="row mb-0">
-              <div class="col">
-                <button class="btn btn-sm btn-info btn-squared px-4 py-2 active" :class="{ 'btn-dark': isBoldActive }"
-                  @click="toggleBold">
-                  <b>B</b>
-                </button>
+        <div class="modal-body row">
+          <div class="col-md-6">
+            <div class="modal-body">
+              <div class="row mb-0">
+                <div class="col">
+                  <button class="btn btn-sm btn-info btn-squared px-4 py-2 active" :class="{ 'btn-dark': isBoldActive }"
+                    @click="letterBold">
+                    <b>B</b>
+                  </button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-sm btn-info btn-squared px-4 py-2 active" :class="{ 'btn-dark': isItalicActive }"
+                    @click="letterItalic">
+                    <i>C</i>
+                  </button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-sm btn-info btn-squared px-4 py-2"
+                    @click="showingEmojiPanel = !showingEmojiPanel">😊</button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-sm btn-info btn-squared px-4 py-2" @click="clearFormatting">
+                    Limpiar Filtros
+                  </button>
+                </div>
               </div>
-              <div class="col">
-                <button class="btn btn-sm btn-info btn-squared px-4 py-2 active" :class="{ 'btn-dark': isItalicActive }"
-                  @click="toggleItalic">
-                  <i>C</i>
-                </button>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">Mensaje:</label>
+                <div id="editorTexto" class="form-control editor-text" contenteditable="true" @input="updatePreview"
+                  v-html="selectedMessage.message"></div>
+                <div class="modal-body preview-container overflow-auto max-w-100" v-html="preview" />
+                <div v-if="showingEmojiPanel" class="emoji-panel">
+                  <button v-for="emoji in emojis" :key="emoji" @click="insertEmoji(emoji)">{{ emoji }}</button>
+                  <button class="btn btn-outline-danger mt-3" @click="showingEmojiPanel = false">
+                    <i class="fas fa-times" style="font-size: 15px;"></i>
+                  </button>
+                </div>
               </div>
-              <div class="col">
-                <button class="btn btn-sm btn-info btn-squared px-4 py-2"
-                  @click="showingEmojiPanel = !showingEmojiPanel">😊</button>
-              </div>
-              <div class="col">
-                <button class="btn btn-sm btn-info btn-squared px-4 py-2" @click="clearFormatting">
-                  Limpiar Filtros
-                </button>
+              <div class="mb-3">
+                <label for="description-text" class="col-form-label">Descripción:</label>
+                <input class="form-control" id="description-text" aria-label="Description"
+                  aria-describedby="description-addon" v-model="selectedMessage.description" />
               </div>
             </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">Mensaje:</label>
-              <div id="editorTexto" class="form-control editor-text" contenteditable="true" @input="updatePreview"
-                v-html="selectedMessage.message"></div>
-              <div class="modal-body preview-container" v-html="preview" />
-            </div>
-            <div class="mb-3">
-              <label for="description-text" class="col-form-label">Descripción:</label>
-              <input class="form-control" id="description-text" aria-label="Description"
-                aria-describedby="description-addon" v-model="selectedMessage.description" />
-            </div>
-            <div v-if="showingEmojiPanel" class="emoji-panel">
-              <button v-for="emoji in emojis" :key="emoji" @click="insertEmoji(emoji)">{{ emoji }}</button>
+            <div class="modal-footer">
+              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+                {{ $t('common.actions.close') }}
+              </button>
+              <button type="submit" class="btn bg-gradient-primary" @click="saveChanges">{{ $t('common.actions.submit') }}</button>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-              {{ $t('common.actions.close') }}
-            </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          <div class="col-md-6">
+            <div class="row align-items-center">
+              <div class="col-md-12" v-for="(placeholder, index) in placeholders" :key="index">
+                <label class="text-muted">Placeholder de {{ placeholder.name }}</label>
+                <button class="btn btn-link btn-block btn-xs" @click="insertPlaceholder(placeholder.value)">
+                  {{ placeholder.label }}
+                </button>
+              </div>
+            </div>
           </div>
-        </Form>
+        </div>
       </div>
     </div>
   </div>
@@ -95,7 +109,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, Ref } from 'vue'
-import { Field, Form } from 'vee-validate'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import { SettingsMessageInterface } from '@/types/SettingsMessages';
 import { useLoadingState } from '@/services/stores/LoadingState'
@@ -107,10 +120,16 @@ const messages: Ref<SettingsMessageInterface[]> = ref([])
 const selectedMessage: Ref<SettingsMessageInterface | null> = ref(null)
 const showingEmojiPanel = ref(false)
 const { setLoading } = useLoadingState()
-
 const preview = ref('')
 const isBoldActive = ref(false)
 const isItalicActive = ref(false)
+const placeholders = [
+  { name: 'placa', label: 'plate', value: '${plate}' },
+  { name: 'color del vehículo', label: 'Vehicle.color', value: '${Vehicle.color.name}' },
+  { name: 'nombre de usuario', label: 'name', value: '${name}' },
+  { name: 'número de compañía', label: 'PQR_NUMBER', value: '${PQR_NUMBER}' },
+  { name: 'bienvenida', label: 'WELCOME', value: '${WELCOME}' }
+]
 const emojis = [
   '😀', '😊', '👍', '❤️', '🌟', '🚀', '🙌', '💯', '🌞', '🌙', '🚗', '🚕', '🚓'
 ]
@@ -123,13 +142,13 @@ const editMessage = (message: SettingsMessageInterface): void => {
   selectedMessage.value = message
 }
 
-const toggleBold = () => {
+const letterBold = () => {
   isBoldActive.value = !isBoldActive.value
   editorFocus()
   document.execCommand('bold', false)
 }
 
-const toggleItalic = () => {
+const letterItalic = () => {
   isItalicActive.value = !isItalicActive.value
   editorFocus()
   document.execCommand('italic', false)
@@ -160,6 +179,17 @@ const insertEmoji = (emoji: string | undefined) => {
   }
 }
 
+const insertPlaceholder = (placeholder: string) => {
+  editorFocus()
+  const editor = document.getElementById('editorTexto')
+  if (editor) {
+    editor.focus()
+    document.execCommand('insertText', false, placeholder)
+    showingEmojiPanel.value = false;
+    updatePreview()
+  }
+}
+
 function saveChanges(): void {
   if (selectedMessage.value) {
     setLoading(true)
@@ -167,9 +197,11 @@ function saveChanges(): void {
       id: selectedMessage.value.id,
       name: selectedMessage.value.name,
       description: selectedMessage.value.description,
-      message: preview.value
-    };
+      message: preview.value.trim()
+    }
     SettingsRepository.updateMessage(updatedMessage).then(async () => {
+      messages.value = await SettingsRepository.getMessages()
+      preview.value = ''
       setLoading(false)
       hide('exampleModal')
       await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
@@ -179,7 +211,6 @@ function saveChanges(): void {
     })
   }
 }
-
 
 const updatePreview = () => {
   const editor = document.getElementById('editorTexto')
@@ -191,20 +222,4 @@ const updatePreview = () => {
     preview.value = content
   }
 }
-
 </script>
-
-<style>
-.emoji-panel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.emoji-panel button {
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 20px;
-}
-</style>
