@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.14.3",
+    "@imndx/v-emoji-picker-vue3": "^3.0.2",
     "@sentry/tracing": "^7.37.2",
     "@sentry/vue": "^7.37.2",
     "axios": "^0.27.2",
@@ -32,7 +33,7 @@
     "socket.io-client": "^4.4.1",
     "sweetalert2": "^11.3.6",
     "vee-validate": "~4.6.0",
-    "vue": "^3.0.0",
+    "vue": "^3.4.22",
     "vue-chartjs": "^5.2.0",
     "vue-class-component": "^8.0.0-0",
     "vue-i18n": "^9.1.0",
