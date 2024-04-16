@@ -10,17 +10,18 @@
           <thead>
             <tr>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.name') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-25">{{ $t('services.fields.comment') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-25">{{ $t('services.fields.WpMessages') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.comment') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.WpMessages') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.status') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.WpActions') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(message, index) in messages" :key="index">
+              <EditModal  :selectedMessage="message" @updateMessages="updateMessages" />
               <td class="align-middle">{{ message.name }}</td>
               <td class="align-middle text-truncate">{{ message.description }}</td>
-              <td class="align-middle text-truncate">{{ message.message }}</td>
+              <td class="align-middle text-truncate text-nowrap" style="max-width: 10rem;">{{ message.message }}</td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
                 <div class="form-check form-switch col-2">
@@ -34,7 +35,7 @@
               </td>
               <td class="align-middle">
                 <button class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0" data-bs-toggle="modal"
-                  data-bs-target="#editMessagesWp" @click="() => editMessage(message)">
+                  data-bs-target="#editMessagesWp">
                   <em class="fas fa-pencil"></em>
                 </button>
               </td>
@@ -44,30 +45,23 @@
       </div>
     </div>
   </div>
-  <EditModal  :selectedMessage="selectedMessage" :messages="messages" @updateMessages="updateMessages" />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
-import { SettingsMessageInterface } from '@/types/SettingsMessages'
-import { useLoadingState } from '@/services/stores/LoadingState'
+import {SettingsMessageInterface} from '@/types/SettingsMessages'
+import {useLoadingState} from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import EditModal from '@/views/settings/messages/Edit.vue'
 
 const messages = ref<SettingsMessageInterface[]>([])
-const selectedMessage = ref<SettingsMessageInterface | null>(null)
 const { setLoading } = useLoadingState()
 
 onMounted(async () => {
-  const loadedMessages = await SettingsRepository.getMessages()
-  messages.value = loadedMessages
+  messages.value = await SettingsRepository.getMessages()
 })
-
-const editMessage = (message: SettingsMessageInterface): void => {
-  selectedMessage.value = message
-}
 
 const updateMessages = async () => {
   messages.value = await SettingsRepository.getMessages()
