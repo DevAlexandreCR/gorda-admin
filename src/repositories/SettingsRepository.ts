@@ -30,7 +30,8 @@ class WpClientRepository {
 			id: messageId,
 			name: messageData.name,
 			description: messageData.description,
-			message: messageData.message
+			message: messageData.message,
+			enabled: messageData.enabled
 		}
 		messages.push(message)
 		})

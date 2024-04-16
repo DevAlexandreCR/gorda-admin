@@ -16,7 +16,9 @@ export default {
     driver_name: 'Driver name',
     lat: 'Latitude',
     lng: 'Longitude',
-    comment: 'Comment'
+    comment: 'Comment',
+    WpMessages: 'Messages',
+    WpActions: 'Actions'
   },
   history: 'History',
   total: 'Total',

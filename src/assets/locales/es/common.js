@@ -6,7 +6,10 @@ export default {
     disabled: 'Inhabilitado',
     name: 'Nombre',
     email: 'Correo electrónico',
-    phone: 'Teléfono'
+    phone: 'Teléfono',
+    labelMenssage: 'Mensajes: ',
+    labelDescription: 'Descripcion: ',
+    labelPreview: 'Vista Previa: '
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -49,7 +52,21 @@ export default {
     map: 'Mapa',
     all: 'Todos',
     device: 'No tiene dispositivo registrado',
-    cancel_percent: 'Índice de cancelación'
+    cancel_percent: 'Índice de cancelación',
+    description: {
+      plate: 'Placa del veviculo',
+      vehicleColor: 'Color de vehiculo',
+      username: 'Nombre',
+      compayNumber: 'Numero de Empresa',
+      placeName: 'Lugar'
+    },
+    label: {
+      plate: 'Placa',
+      color: 'Color',
+      name: 'Nombre',
+      numberPQR: 'PQR',
+      placeName: 'Lugar'
+    }
   },
   forms: {
     select_img: 'Choose image from files'
@@ -100,5 +117,9 @@ export default {
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
     fees_night_DxF: 'Domingos y Festivos Nocturnos'
+  },
+  titles: {
+    titleModal: 'Editar Mensajes de WhatsApp',
+    titleCard: 'Tabla de Mensajes WhatsApp'
   }
 }

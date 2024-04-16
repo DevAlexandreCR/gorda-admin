@@ -3,4 +3,5 @@ export interface SettingsMessageInterface {
     name: string
     description: string
     message: string
+    enabled: boolean
 }

@@ -6,7 +6,10 @@ export default {
     disabled: 'Disabled',
     name: 'Name',
     email: 'Email Address',
-    phone: 'Phone'
+    phone: 'Phone',
+    labelMessage: 'Messages: ',
+    labelDescription: 'Description: ',
+    labelPreview: 'Preview'
   },
   models: {
     users: 'User | Users',
@@ -49,7 +52,21 @@ export default {
     map: 'Map',
     all: 'All',
     device: 'Driver has not device registered',
-    cancel_percent: 'Canceled index'
+    cancel_percent: 'Canceled index',
+    description: {
+      plate: 'Vehicle plate',
+      vehicleColor: 'Vehicle Color',
+      username: 'Name',
+      compayNumber: 'Company Number',
+      placeName: 'Place'
+    },
+    label: {
+      plate: 'Plate',
+      color: 'Color',
+      name: 'Name',
+      numberPQR: 'PQR',
+      placeName: 'Place'
+    }
   },
   filters: {
     title: 'Filters',
@@ -100,5 +117,9 @@ export default {
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',
     fees_night_DxF: 'Sundays and night holidays'
+  },
+  titles: { 
+    titleModal: 'Edit WhatsApp Messages', 
+    titleCard: 'WhatsApp Message Table' 
   }
 }
