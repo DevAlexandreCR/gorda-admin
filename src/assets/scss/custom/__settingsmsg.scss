@@ -1,12 +1,13 @@
-.emoji-panel {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  
-  .emoji-panel button {
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-size: 20px;
+.text-area-Message {
+  height: auto;
+  overflow-y: hidden;
+}
+
+.text-area-Description {
+  height: auto;
+  overflow-y: hidden;
+}
+
+.text-MaxErm {
+  max-width: 10rem;
 }

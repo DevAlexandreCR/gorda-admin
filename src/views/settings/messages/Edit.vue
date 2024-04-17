@@ -10,7 +10,7 @@
          <div class="modal-body row">
            <div class="col-md-6">
              <label for="message-text" class="col-form-label">{{ $t('common.fields.labelMenssage') }}</label>
-             <textarea ref="textArea" id="editorText" class="form-control " contenteditable="true" @input="updatePreview"
+             <textarea rows="5" ref="textArea" id="editorText" class="form-control text-area-Message" contenteditable="true"  @input="updateTextareaMessage"
               v-model="newMessage"/>
              <div class="d-flex mt-1">
                <button class="bold-button btn btn-sm btn-info btn-squared px-4 py-2 active"
@@ -19,7 +19,7 @@
                </button>
                <button class="italic-button btn btn-sm btn-info btn-squared px-4 py-2 active ms-1"
                        @click="letterItalic">
-                 <i>I</i>
+                       <span class="fs-6">I</span><i></i>
                </button>
                <button class="emoji-button btn btn-sm btn-info btn-squared px-4 py-2 ms-1" @click="toggleEmojiPicker">
                 😀
@@ -41,8 +41,8 @@
              <div  class="preview-container form-control" v-html="formattedMessage" disabled></div>
              <div class="mb-3" v-if="$props.selectedMessage">
                <label for="description-text" class="col-form-label">{{ $t('common.fields.labelDescription') }}</label>
-               <textarea  class="form-control" id="description-text" aria-label="Description"
-                         aria-describedby="description-addon" v-model="$props.selectedMessage.description" />
+               <textarea  class="form-control text-area-Description" id="description-text" aria-label="Description"
+                         aria-describedby="description-addon" v-model="$props.selectedMessage.description" rows="5" @input="updateTextareaMessage" />
              </div>
            </div>
          </div>
@@ -58,7 +58,7 @@
  </template>
 
 <script setup lang="ts">
-import {ref, computed, defineProps, defineEmits, Ref, onMounted} from 'vue'
+import {ref, computed, defineProps, defineEmits, Ref, onMounted,watch, nextTick} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import ToastService from '@/services/ToastService'
 import { useLoadingState } from '@/services/stores/LoadingState'
@@ -83,7 +83,7 @@ const placeholders = [
 
 ]
 
-onMounted(() => {
+onMounted(async() => {
   newMessage.value = props.selectedMessage.message?? ''
 })
 
@@ -93,6 +93,14 @@ const updatePreview = (): void => {
   content = content.replace(/<b>(.*?)<\/b>/g, '*$1*')
   content = content.replace(/<i>(.*?)<\/i>/g, '_$1_')
   newMessage.value = content
+}
+
+function updateTextareaMessage() {
+  const textarea = textArea.value
+  if (textarea) {
+    textarea.style.height = 'auto'
+    textarea.style.height = `${textarea.scrollHeight}px`
+  }
 }
 
 function insertPlaceholder(placeholder: string): void {
@@ -110,17 +118,18 @@ function insertPlaceholder(placeholder: string): void {
 }
 
 function applyStyleToSelection(style: string, text?: string): void {
-  if (!textArea.value) return
-  const startPos = textArea.value.selectionStart ?? 0
-  const endPos = textArea.value.selectionEnd ?? 0
-  const selectedText = text || (textArea.value.value.substring(startPos, endPos))
-  const styledText = style === 'b' ? `*${selectedText}*` : `_${selectedText}_`
-  const value = textArea.value.value
-  textArea.value.value = value.substring(0, startPos) + styledText + value.substring(endPos, value.length)
-  textArea.value.focus()
-  const newEndPos = startPos + styledText.length - (style === 'b' ? 1 : 2)
-  textArea.value.setSelectionRange(newEndPos, newEndPos)
+  if (!textArea.value) return;
+  const startPos = textArea.value.selectionStart ?? 0;
+  const endPos = textArea.value.selectionEnd ?? 0;
+  const selectedText = text || (textArea.value.value.substring(startPos, endPos));
+  const styledText = style === 'b' ? `*${selectedText}*` : `_${selectedText}_`;
+  const value = textArea.value.value;
+  textArea.value.value = value.substring(0, startPos) + styledText + value.substring(endPos, value.length);
+  textArea.value.focus();
+  const newEndPos = startPos + styledText.length - 1;
+  textArea.value.setSelectionRange(newEndPos, newEndPos);
 }
+
 
 
 function applyStyle(style: string): void {

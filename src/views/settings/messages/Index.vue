@@ -20,8 +20,8 @@
             <tr v-for="(message, index) in messages" :key="index">
               <EditModal  :selectedMessage="message" @updateMessages="updateMessages" />
               <td class="align-middle">{{ message.name }}</td>
-              <td class="align-middle text-truncate">{{ message.description }}</td>
-              <td class="align-middle text-truncate text-nowrap" style="max-width: 10rem;">{{ message.message }}</td>
+              <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.description }}</td>
+              <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.message }}</td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
                 <div class="form-check form-switch col-2">
