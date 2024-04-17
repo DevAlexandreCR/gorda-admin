@@ -58,7 +58,7 @@
  </template>
 
 <script setup lang="ts">
-import {ref, computed, defineProps, defineEmits, Ref, onMounted,watch, nextTick} from 'vue'
+import {ref, computed, defineProps, defineEmits, Ref, onMounted} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import ToastService from '@/services/ToastService'
 import { useLoadingState } from '@/services/stores/LoadingState'
