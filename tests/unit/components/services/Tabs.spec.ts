@@ -57,7 +57,6 @@ describe('Tabs.vue', () => {
         }
       })
     await wrapper.vm.$nextTick()
-    await flushPromises()
     const tables = wrapper.findAllComponents(ServicesTable)
     tables.at(1)?.vm.$emit(Service.EVENT_CANCEL)
     await wrapper.vm.$nextTick()
@@ -65,6 +64,7 @@ describe('Tabs.vue', () => {
     await wrapper.vm.$nextTick()
     tables.at(1)?.vm.$emit(Service.EVENT_TERMINATE)
     await wrapper.vm.$nextTick()
+    await flushPromises()
     expect(swat).toBeCalledTimes(3)
     wrapper.unmount()
     jest.clearAllMocks()

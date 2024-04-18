@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.3.x
 
+## [1.3.2(2024-03-25)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.2...1.3.1)
+
+### Added
+- Remove driver index when released. [#125](https://github.com/DevAlexandreCR/admin-driver/pull/125)
+
+## [1.3.1(2024-03-19)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.1...1.3.0)
+
+### Added
+- Now admin can enable and disable chatBot. [#114](https://github.com/DevAlexandreCR/admin-driver/pull/114)
+
+### Fixed
+- Fix when create a WpClient with the phone number with spaces [#122](https://github.com/DevAlexandreCR/gorda-admin/pull/122)
+- Fix Filtered drivers and clients in the history [#120](https://github.com/DevAlexandreCR/gorda-admin/pull/120)
+
 ## [1.3.0(2024-02-03)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.0...1.2.10)
 
 ### Added
