@@ -1,7 +1,7 @@
 <template>
 <div class="card">
   <div class="card-body">
-  <div id="map" class="container-fluid w-100 h-100" ></div>
+  <div id="map" class="container-fluid w-100 h-100"></div>
   </div>
 </div>
 </template>

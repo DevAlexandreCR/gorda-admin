@@ -51,7 +51,9 @@ export default {
     map: 'Map',
     all: 'All',
     device: 'Driver has not device registered',
-    cancel_percent: 'Canceled index'
+    cancel_percent: 'Canceled index',
+    service_info: 'Service information',
+    route_info: 'Route and driver information',
   },
   filters: {
     title: 'Filters',

@@ -42,7 +42,7 @@
           <td class="py-1" v-else>
               <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td class="py-1 col-1" v-show="props.table !== Tables.history">
+          <td class="py-1 col-1">
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
@@ -55,6 +55,9 @@
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)"
+                    :title="$t('common.actions.see')">
+              <em class="fas fa-eye"></em></button>
           </td>
         </tr>
         </tbody>
@@ -88,7 +91,13 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE, 'paginate'])
+const emit = defineEmits([
+  Service.EVENT_CANCEL,
+  Service.EVENT_RELEASE,
+  Service.EVENT_TERMINATE,
+  'paginate',
+  Service.EVENT_SHOW
+])
 let interval: number
 const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
 
@@ -121,6 +130,10 @@ function release(service: ServiceList): void {
 
 function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
+}
+
+function show(service: Service): void {
+  emit(Service.EVENT_SHOW, service)
 }
 
 function getPaginatedData(data: []): void {

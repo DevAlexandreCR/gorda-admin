@@ -51,7 +51,9 @@ export default {
     map: 'Mapa',
     all: 'Todos',
     device: 'No tiene dispositivo registrado',
-    cancel_percent: 'Índice de cancelación'
+    cancel_percent: 'Índice de cancelación',
+    service_info: 'Información del servicio',
+    route_info: 'Información de la ruta y conductor',
   },
   forms: {
     select_img: 'Choose image from files'

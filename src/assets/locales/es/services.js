@@ -16,7 +16,10 @@ export default {
     driver_name: 'Nombre Conductor',
     lat: 'Latitud',
     lng: 'Longitud',
-    comment: 'Comentario'
+    comment: 'Comentario',
+    time: 'Tiempo',
+    fee: 'Valor',
+    fee_multiplier: 'Multiplicador de tarifa',
   },
   history: 'Historial',
   total: 'Total',

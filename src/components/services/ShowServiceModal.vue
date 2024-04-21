@@ -1,0 +1,85 @@
+<template>
+  <div class="modal fade" tabindex="-1" id="showServiceModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ service.start_loc.name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" style="height: 500px">
+            <Map :places="location"></Map>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">{{ $t('common.placeholders.service_info') }}</h6>
+                <span class="mb-2 text-sm">{{$t('services.fields.start_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.start_loc.name}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{date}}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${service.status}`) }}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{service.name}}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.phone}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.comment}}</span></span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex flex-column" v-if="service.driver">
+                <h6 class="mb-3 text-sm">{{ $t('common.placeholders.route_info') }}</h6>
+                <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.driver.name}}</span></span>
+                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.driver.vehicle.plate}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{time}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{fee}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{multiplier}}</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{$t('common.actions.close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script setup lang="ts">
+import {PlaceInterface} from '@/types/PlaceInterface'
+import {computed, onMounted, reactive} from 'vue'
+import Map from '@/components/maps/Map.vue'
+import {ServiceList} from '@/models/ServiceList'
+import DateHelper from '@/helpers/DateHelper'
+
+interface Props {
+  service: ServiceList
+}
+
+const props = defineProps<Props>()
+const location = reactive<Array<PlaceInterface>>([])
+
+onMounted(() => {
+  location.push({
+    key: props.service.id,
+    name: props.service.start_loc.name,
+    lat: props.service.start_loc.lat,
+    lng: props.service.start_loc.lng
+  })
+})
+
+const time = computed(() => {
+  if (props.service.metadata?.start_trip_at === undefined || props.service.metadata?.end_trip_at === undefined) return '0s'
+  return DateHelper.getTime(props.service.metadata?.start_trip_at, props.service.metadata?.end_trip_at)
+})
+
+const fee = computed(() => {
+  if (props.service.metadata?.trip_fee === undefined) return '0COP'
+  return props.service.metadata?.trip_fee + 'COP'
+})
+
+const multiplier = computed(() => {
+  if (props.service.metadata?.trip_multiplier === undefined) return '1.0'
+  return props.service.metadata?.trip_multiplier.toString()
+})
+
+const date = computed(() => {
+  return DateHelper.unixToDate(props.service.created_at, 'MM-DD HH:mm:ss')
+})
+</script>
