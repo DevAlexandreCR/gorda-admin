@@ -29,7 +29,7 @@
             <div class="d-flex px-2 py-0">
               <div>
                 <img :src="service.driver.photoUrl" class="avatar avatar-sm my-0 me-3"
-                     alt="Profile image">
+                     alt="Profile">
               </div>
               <div class="d-flex flex-column justify-content-center">
                 <h6 class="my-0 text-sm">{{ service.driver.vehicle.plate }}</h6>
@@ -37,13 +37,14 @@
               </div>
             </div>
           </td>
+          <td v-else></td>
           <td class="py-1 text-truncate" v-if="service.driver" style="max-width: 100px" data-bs-target="tooltip"
               :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
           <td class="py-1" v-else>
-              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
+              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="service.isPending()"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td class="py-1 col-1" v-show="props.table !== Tables.history">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
+          <td class="py-1 col-1">
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="table != Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
@@ -55,6 +56,9 @@
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="table === Tables.history"
+                    :title="$t('common.actions.see')">
+              <em class="fas fa-eye"></em></button>
           </td>
         </tr>
         </tbody>
@@ -88,7 +92,13 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits([Service.EVENT_CANCEL, Service.EVENT_RELEASE, Service.EVENT_TERMINATE, 'paginate'])
+const emit = defineEmits([
+  Service.EVENT_CANCEL,
+  Service.EVENT_RELEASE,
+  Service.EVENT_TERMINATE,
+  'paginate',
+  Service.EVENT_SHOW
+])
 let interval: number
 const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
 
@@ -121,6 +131,10 @@ function release(service: ServiceList): void {
 
 function end(service: Service): void {
   emit(Service.EVENT_TERMINATE, service.id)
+}
+
+function show(service: Service): void {
+  emit(Service.EVENT_SHOW, service)
 }
 
 function getPaginatedData(data: []): void {
