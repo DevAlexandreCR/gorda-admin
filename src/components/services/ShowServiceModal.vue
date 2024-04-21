@@ -7,10 +7,10 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="container" style="height: 500px">
-            <Map :places="location"></Map>
+          <div style="height: 500px">
+            <Map :route="service.metadata?.route" :places="location"></Map>
           </div>
-          <div class="row">
+          <div class="row mt-4">
             <div class="col-6">
               <div class="d-flex flex-column">
                 <h6 class="mb-3 text-sm">{{ $t('common.placeholders.service_info') }}</h6>
@@ -66,7 +66,7 @@ onMounted(() => {
 
 const time = computed(() => {
   if (props.service.metadata?.start_trip_at === undefined || props.service.metadata?.end_trip_at === undefined) return '0s'
-  return DateHelper.getTime(props.service.metadata?.start_trip_at, props.service.metadata?.end_trip_at)
+  return DateHelper.getTime(props.service.metadata?.start_trip_at, props.service.metadata?.end_trip_at) + 'min'
 })
 
 const fee = computed(() => {

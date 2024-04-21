@@ -1,9 +1,5 @@
 <template>
-<div class="card">
-  <div class="card-body">
-  <div id="map" class="container-fluid w-100 h-100"></div>
-  </div>
-</div>
+  <div id="map"></div>
 </template>
 
 <script setup lang="ts">
@@ -19,6 +15,7 @@ interface Props {
   places: Array<PlaceInterface>,
   icon?: string
   addListener?: boolean
+  route?: string
 }
 
 const props = defineProps<Props>()
@@ -34,6 +31,10 @@ onMounted(async () => {
       googleMap.addMarker(place)
     })
     if (props.addListener) googleMap.addListener(onMapClick)
+    if (props.route) googleMap.printRoute(props.route)
+    if (props.places.length === 1) {
+      googleMap.moveCamera(props.places[0])
+    }
   })
 })
 

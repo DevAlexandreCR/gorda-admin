@@ -133,7 +133,7 @@
       </div>
     </div>
     <ServicesTable @showService="show"  :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
-    <ShowServiceModal v-if="selectedService" :service="selectedService"></ShowServiceModal>
+    <ShowServiceModal :key="selectedService.id" v-if="selectedService" :service="selectedService"></ShowServiceModal>
   </div>
 </template>
 

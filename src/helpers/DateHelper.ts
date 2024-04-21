@@ -72,7 +72,7 @@ export default class DateHelper {
 		return dayjs().subtract(11, 'month').startOf('month').format('YYYY-MM-DD').toString()
 	}
 
-  public static getTime(start: number, end: number): string {
-    return dayjs.unix(end).diff(dayjs.unix(start), 'second').toString()
+  public static getTime(start: number, end: number, metric: dayjs.UnitType = 'minutes'): string {
+    return dayjs.unix(end).diff(dayjs.unix(start), metric).toString()
   }
 }
