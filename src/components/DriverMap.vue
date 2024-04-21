@@ -9,7 +9,7 @@
       </Field>
     </div>
   </div>
-  <div class="row min-vh-75">
+  <div class="row card-body min-vh-75">
     <Map :places="filteredDrivers" :icon="icon"/>
   </div>
 </template>

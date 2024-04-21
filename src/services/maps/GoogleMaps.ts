@@ -99,6 +99,25 @@ export class GoogleMaps {
       }
     })
   }
+
+  /* istanbul ignore next */
+  printRoute(routeString: string): void {
+    const route = JSON.parse(routeString)
+    const routeCoordinates = Object.keys(route).map((key: string) => {
+      const point = route[key];
+      return new google.maps.LatLng(point.lat, point.lng);
+    });
+
+    const routePath = new google.maps.Polyline({
+      path: routeCoordinates,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 4
+    })
+
+    routePath.setMap(this.map)
+  }
   
   /* istanbul ignore next */
   clearMap(): void {

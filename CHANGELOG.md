@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.3.x
 
+## [1.3.3(2024-04-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.3...1.3.2)
+
+### Added
+- Add route map and service detail. [#130](https://github.com/DevAlexandreCR/admin-driver/pull/130)
+
 ## [1.3.2(2024-03-25)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.2...1.3.1)
 
 ### Added

@@ -16,7 +16,10 @@ export default {
     driver_name: 'Driver name',
     lat: 'Latitude',
     lng: 'Longitude',
-    comment: 'Comment'
+    comment: 'Comment',
+    time: 'Time',
+    fee: 'Fee',
+    fee_multiplier: 'Fee Multiplier',
   },
   history: 'History',
   total: 'Total',

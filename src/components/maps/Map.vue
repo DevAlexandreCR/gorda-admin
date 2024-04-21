@@ -1,9 +1,5 @@
 <template>
-<div class="card">
-  <div class="card-body">
-  <div id="map" class="container-fluid w-100 h-100" ></div>
-  </div>
-</div>
+  <div id="map"></div>
 </template>
 
 <script setup lang="ts">
@@ -19,6 +15,7 @@ interface Props {
   places: Array<PlaceInterface>,
   icon?: string
   addListener?: boolean
+  route?: string
 }
 
 const props = defineProps<Props>()
@@ -34,19 +31,22 @@ onMounted(async () => {
       googleMap.addMarker(place)
     })
     if (props.addListener) googleMap.addListener(onMapClick)
+    if (props.route) googleMap.printRoute(props.route)
+    if (props.places.length === 1) {
+      googleMap.moveCamera(props.places[0])
+    }
   })
 })
 
 watch(() => [...props.places], (newPlaces, oldPlaces) => {
-  //TODO: refactor to events
   if (oldPlaces.length <= newPlaces.length) {
     const intersections = newPlaces.filter(place => oldPlaces.indexOf(place) === -1)
     intersections.forEach(place => {
       const currents = oldPlaces.filter(pla => pla.key === place.key)
-      if (currents.length === 1) {
-        if (mapReady) googleMap.updateMarker(currents[0])
-      } else {
-        if (mapReady) googleMap.addMarker(place)
+      if (currents.length === 1 && mapReady) {
+        googleMap.updateMarker(currents[0])
+      } else if (mapReady) {
+        googleMap.addMarker(place)
       }
     })
   } else {

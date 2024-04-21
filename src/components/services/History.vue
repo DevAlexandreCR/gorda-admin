@@ -132,7 +132,8 @@
         </div>
       </div>
     </div>
-    <ServicesTable :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
+    <ServicesTable @showService="show"  :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
+    <ShowServiceModal :key="selectedService.id" v-if="selectedService" :service="selectedService"></ShowServiceModal>
   </div>
 </template>
 
@@ -143,7 +144,7 @@ import {storeToRefs} from 'pinia'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Field, Form} from 'vee-validate'
 import {date, object} from 'yup'
-import {computed, onBeforeMount, ref, Ref, watch, watchEffect} from 'vue'
+import {computed, onBeforeMount, ref, Ref, watch, watchEffect, nextTick} from 'vue'
 import DateHelper from '@/helpers/DateHelper'
 import {StrHelper} from '@/helpers/StrHelper'
 import {Tables} from '@/constants/Tables'
@@ -152,6 +153,10 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {ServiceCursor} from "@/types/ServiceCursor"
+import Service from '@/models/Service'
+import ShowServiceModal from '@/components/services/ShowServiceModal.vue'
+import {Modal} from 'bootstrap'
+import {ServiceList} from '@/models/ServiceList'
 
 const { getHistoryServices, resetCursor } = useServicesStore()
 const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
@@ -162,6 +167,7 @@ const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 const plate: Ref<number> = ref(0)
 const clientPhone: Ref<number> = ref(0)
+let selectedService = ref<ServiceList|null>(null)
 
 const schema = object().shape({
   from: date().required(),
@@ -231,6 +237,14 @@ function isWhatPercent(x: number): number {
 async function getServices(): Promise<void> {
   resetCursor()
   await getHistoryServices()
+}
+
+async function show(service: Service): Promise<void> {
+  selectedService.value = service
+  await nextTick()
+  const modalShow = document.getElementById('showServiceModal')
+  const modal = new Modal(modalShow?? 'showServiceModal')
+  modal.show()
 }
 
 async function paginateData(page: number, cursor: ServiceCursor, next: boolean): Promise<void> {
