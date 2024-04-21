@@ -37,13 +37,14 @@
               </div>
             </div>
           </td>
+          <td v-else></td>
           <td class="py-1 text-truncate" v-if="service.driver" style="max-width: 100px" data-bs-target="tooltip"
               :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
           <td class="py-1" v-else>
-              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="props.table !== Tables.history"
+              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="service.isPending()"
                 data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
           <td class="py-1 col-1">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)"
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="table != Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
@@ -55,7 +56,7 @@
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="table === Tables.history"
                     :title="$t('common.actions.see')">
               <em class="fas fa-eye"></em></button>
           </td>
