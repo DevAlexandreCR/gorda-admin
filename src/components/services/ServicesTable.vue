@@ -29,7 +29,7 @@
             <div class="d-flex px-2 py-0">
               <div>
                 <img :src="service.driver.photoUrl" class="avatar avatar-sm my-0 me-3"
-                     alt="Profile image">
+                     alt="Profile">
               </div>
               <div class="d-flex flex-column justify-content-center">
                 <h6 class="my-0 text-sm">{{ service.driver.vehicle.plate }}</h6>

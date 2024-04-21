@@ -39,15 +39,14 @@ onMounted(async () => {
 })
 
 watch(() => [...props.places], (newPlaces, oldPlaces) => {
-  //TODO: refactor to events
   if (oldPlaces.length <= newPlaces.length) {
     const intersections = newPlaces.filter(place => oldPlaces.indexOf(place) === -1)
     intersections.forEach(place => {
       const currents = oldPlaces.filter(pla => pla.key === place.key)
-      if (currents.length === 1) {
-        if (mapReady) googleMap.updateMarker(currents[0])
-      } else {
-        if (mapReady) googleMap.addMarker(place)
+      if (currents.length === 1 && mapReady) {
+        googleMap.updateMarker(currents[0])
+      } else if (mapReady) {
+        googleMap.addMarker(place)
       }
     })
   } else {
