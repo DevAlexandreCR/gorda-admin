@@ -29,6 +29,7 @@ export default class Service implements ServiceInterface {
   static readonly STATUS_CANCELED = 'canceled'
   static readonly EVENT_CANCEL = 'cancel-service'
   static readonly EVENT_TERMINATE = 'end-service'
+  static readonly EVENT_SHOW = 'show-service'
   static readonly EVENT_ASSIGN = 'assign-service'
   static readonly EVENT_RELEASE = 'release-service'
 

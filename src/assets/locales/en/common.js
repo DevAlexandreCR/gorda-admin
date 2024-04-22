@@ -55,6 +55,8 @@ export default {
     all: 'All',
     device: 'Driver has not device registered',
     cancel_percent: 'Canceled index',
+    service_info: 'Service information',
+    route_info: 'Route and driver information',
     description: {
       plate: 'Vehicle plate',
       vehicleColor: 'Vehicle Color',
@@ -124,8 +126,8 @@ export default {
     fees_DxF: 'Sundays and holidays',
     fees_night_DxF: 'Sundays and night holidays'
   },
-  titles: { 
-    titleModal: 'Edit WhatsApp Messages', 
-    titleCard: 'WhatsApp Message Table' 
+  titles: {
+    titleModal: 'Edit WhatsApp Messages',
+    titleCard: 'WhatsApp Message Table'
   }
 }

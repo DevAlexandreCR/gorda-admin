@@ -55,6 +55,8 @@ export default {
     all: 'Todos',
     device: 'No tiene dispositivo registrado',
     cancel_percent: 'Índice de cancelación',
+    service_info: 'Información del servicio',
+    route_info: 'Información de la ruta y conductor',
     description: {
       plate: 'Placa del veviculo',
       vehicleColor: 'Color de vehiculo',

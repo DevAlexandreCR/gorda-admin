@@ -17,6 +17,9 @@ export default {
     lat: 'Latitud',
     lng: 'Longitud',
     comment: 'Comentario',
+    time: 'Tiempo',
+    fee: 'Valor',
+    fee_multiplier: 'Multiplicador de tarifa',
     WpMessages: 'Mensajes',
     WpActions: 'Acciones'
   },
