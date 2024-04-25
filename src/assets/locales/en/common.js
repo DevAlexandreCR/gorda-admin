@@ -7,9 +7,9 @@ export default {
     name: 'Name',
     email: 'Email Address',
     phone: 'Phone',
-    labelMessage: 'Messages: ',
-    labelDescription: 'Description: ',
-    labelPreview: 'Preview'
+    label_message: 'Messages: ',
+    label_description: 'Description: ',
+    label_preview: 'Preview'
   },
   models: {
     users: 'User | Users',
@@ -127,7 +127,7 @@ export default {
     fees_night_DxF: 'Sundays and night holidays'
   },
   titles: {
-    titleModal: 'Edit WhatsApp Messages',
-    titleCard: 'WhatsApp Message Table'
+    title_modal: 'Edit WhatsApp Messages',
+    title_card: 'WhatsApp Message Table'
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="card px-2 py-1">
     <div class="card-header pb-0">
-      <h6>{{ $t('common.titles.titleCard') }}</h6>
+      <h6>{{ $t('common.titles.title_card') }}</h6>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">

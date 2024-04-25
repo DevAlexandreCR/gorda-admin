@@ -7,9 +7,9 @@ export default {
     name: 'Nombre',
     email: 'Correo electrónico',
     phone: 'Teléfono',
-    labelMenssage: 'Mensajes: ',
-    labelDescription: 'Descripcion: ',
-    labelPreview: 'Vista Previa: '
+    label_message: 'Mensajes: ',
+    label_description: 'Descripcion: ',
+    label_preview: 'Vista Previa: '
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -61,7 +61,7 @@ export default {
       plate: 'Placa del veviculo',
       vehicleColor: 'Color de vehiculo',
       username: 'Nombre',
-      compayNumber: 'Numero de Empresa',
+      companyNumber: 'Numero de Empresa',
       placeName: 'Lugar'
     },
     label: {
@@ -127,7 +127,7 @@ export default {
     fees_night_DxF: 'Domingos y Festivos Nocturnos'
   },
   titles: {
-    titleModal: 'Editar Mensajes de WhatsApp',
-    titleCard: 'Tabla de Mensajes WhatsApp'
+    title_modal: 'Editar Mensajes de WhatsApp',
+    title_card: 'Tabla de Mensajes WhatsApp'
   }
 }

@@ -1,5 +1,5 @@
 export interface SettingsMessageInterface {
-    id?: string 
+    id: string 
     name: string
     description: string
     message: string

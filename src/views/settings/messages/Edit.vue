@@ -4,12 +4,12 @@
      <div class="modal-dialog modal-lg">
        <div class="modal-content">
          <div class="modal-header">
-           <h5 class="modal-title">{{ $t('common.titles.titleModal') }}</h5>
+           <h5 class="modal-title">{{ $t('common.titles.title_modal') }}</h5>
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body row">
            <div class="col-md-6">
-             <label for="message-text" class="col-form-label">{{ $t('common.fields.labelMenssage') }}</label>
+             <label for="message-text" class="col-form-label">{{ $t('common.fields.label_message') }}</label>
              <textarea rows="5" ref="textArea" id="editorText" class="form-control text-area-Message" contenteditable="true"  @input="updateTextareaMessage"
               v-model="newMessage"/>
              <div class="d-flex mt-1">
@@ -37,10 +37,10 @@
              </div>
            </div>
            <div class="col-md-6">
-             <label for="message-text" class="col-form-label">{{ $t('common.fields.labelPreview') }}</label>
+             <label for="message-text" class="col-form-label">{{ $t('common.fields.label_preview') }}</label>
              <div  class="preview-container form-control" v-html="formattedMessage" disabled></div>
              <div class="mb-3" v-if="$props.selectedMessage">
-               <label for="description-text" class="col-form-label">{{ $t('common.fields.labelDescription') }}</label>
+               <label for="description-text" class="col-form-label">{{ $t('common.fields.label_description') }}</label>
                <textarea  class="form-control text-area-Description" id="description-text" aria-label="Description"
                          aria-describedby="description-addon" v-model="$props.selectedMessage.description" rows="5" @input="updateTextareaMessage" />
              </div>
@@ -78,7 +78,7 @@ const placeholders = [
   { description: 'common.placeholders.description.plate', label: 'common.placeholders.label.plate', value: '[[PLATE]]' },
   { description: 'common.placeholders.description.vehicleColor', label: 'common.placeholders.label.color', value: '[[COLOR]]' },
   { description: 'common.placeholders.description.username', label: 'common.placeholders.label.name', value: '[[USERNAME]]' },
-  { description: 'common.placeholders.description.compayNumber', label: 'common.placeholders.label.numberPQR', value: '[[PQR-NUMBER]]' },
+  { description: 'common.placeholders.description.companyNumber', label: 'common.placeholders.label.numberPQR', value: '[[PQR-NUMBER]]' },
   { description: 'common.placeholders.description.placeName', label: 'common.placeholders.label.placeName', value: '[[PLACE]]' },
 
 ]
