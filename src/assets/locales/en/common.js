@@ -59,17 +59,17 @@ export default {
     route_info: 'Route and driver information',
     description: {
       plate: 'Vehicle plate',
-      vehicleColor: 'Vehicle Color',
+      vehicle_color: 'Vehicle Color',
       username: 'Name',
-      compayNumber: 'Company Number',
-      placeName: 'Place'
+      company_number: 'Company Number',
+      place_name: 'Place'
     },
     label: {
       plate: 'Plate',
       color: 'Color',
       name: 'Name',
-      numberPQR: 'PQR',
-      placeName: 'Place'
+      number_pqr: 'PQR',
+      place_name: 'Place'
     }
   },
   filters: {

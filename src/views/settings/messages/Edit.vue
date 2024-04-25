@@ -76,10 +76,10 @@ const newMessage: Ref<string> = ref('')
 
 const placeholders = [
   { description: 'common.placeholders.description.plate', label: 'common.placeholders.label.plate', value: '[[PLATE]]' },
-  { description: 'common.placeholders.description.vehicleColor', label: 'common.placeholders.label.color', value: '[[COLOR]]' },
+  { description: 'common.placeholders.description.vehicle_color', label: 'common.placeholders.label.color', value: '[[COLOR]]' },
   { description: 'common.placeholders.description.username', label: 'common.placeholders.label.name', value: '[[USERNAME]]' },
-  { description: 'common.placeholders.description.companyNumber', label: 'common.placeholders.label.numberPQR', value: '[[PQR-NUMBER]]' },
-  { description: 'common.placeholders.description.placeName', label: 'common.placeholders.label.placeName', value: '[[PLACE]]' },
+  { description: 'common.placeholders.description.company_number', label: 'common.placeholders.label.number_pqr', value: '[[PQR-NUMBER]]' },
+  { description: 'common.placeholders.description.place_name', label: 'common.placeholders.label.place_name', value: '[[PLACE]]' },
 
 ]
 
