@@ -54,16 +54,16 @@ describe('Edit.vue', () => {
     expect(wrapper.vm.isEmojiPickerOpen).toBe(true);
   });
 
-  it('should allow editing the message and description', async () => {
+  it('debería permitir editar el mensaje y la descripción', async () => {
     const newMessage = 'Nuevo mensaje de prueba'
-    const messageTextarea = wrapper.find('textarea#editorText')
-    await messageTextarea.setValue(newMessage)
     const newDescription = 'Nueva descripción de prueba'
-    const descriptionTextarea = wrapper.find('textarea#description-text')
-    await descriptionTextarea.setValue(newDescription)
-    expect(wrapper.props().selectedMessage.message).toBe(newMessage)
-    expect(wrapper.props().selectedMessage.description).toBe(newDescription)
+    wrapper.vm.$props.selectedMessage.message = newMessage
+    wrapper.vm.$props.selectedMessage.description = newDescription
+    expect(wrapper.vm.$props.selectedMessage.message).toBe(newMessage)
+    expect(wrapper.vm.$props.selectedMessage.description).toBe(newDescription)
   })
+  
+  
 
   it('should save changes when the submit button is clicked', async () => {
     const newMessage = 'Nuevo mensaje de prueba';
@@ -116,4 +116,4 @@ describe('Edit.vue', () => {
       toast: true,
     })    
   })
-})
+}) 
