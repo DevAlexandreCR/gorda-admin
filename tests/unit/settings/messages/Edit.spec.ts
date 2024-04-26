@@ -7,9 +7,9 @@ import SettingsRepository from '@/repositories/SettingsRepository'
 import Swal from 'sweetalert2'
 
 describe('Edit.vue', () => {
-  let wrapper: VueWrapper<any>;
-  SettingsRepository.updateMessage = jest.fn().mockResolvedValue('updateMessages')
-  beforeEach(async () => {
+  let wrapper: VueWrapper<any>
+  beforeEach(() => {
+    SettingsRepository.updateMessage = jest.fn().mockResolvedValue('updateMessages')
     wrapper = mount(Edit, {
       attachTo: '#root',
       global: {
@@ -25,7 +25,6 @@ describe('Edit.vue', () => {
         }
       }
     })
-    await nextTick()
   })
 
   afterEach(() => {
@@ -44,48 +43,47 @@ describe('Edit.vue', () => {
   })
 
   it('should render correctly with null selectedMessage', async () => {
-    wrapper.setProps({ selectedMessage: null });
-    await nextTick();
+    wrapper.setProps({ selectedMessage: null })
+    await nextTick()
+    expect(wrapper.find('.modal-title').exists()).toBe(true)
+    expect(wrapper.find('.modal-body').exists()).toBe(true)
   });
 
   it('should open and close emoji picker when emoji button is clicked', async () => {
-    const emojiButton = wrapper.find('.emoji-button');
-    await emojiButton.trigger('click');
-    expect(wrapper.vm.isEmojiPickerOpen).toBe(true);
+    const emojiButton = wrapper.find('.emoji-button')
+    await emojiButton.trigger('click')
+    expect(wrapper.vm.isEmojiPickerOpen).toBe(true)
+    await emojiButton.trigger('click')
+    expect(wrapper.vm.isEmojiPickerOpen).toBe(false)
   });
 
-  it('debería permitir editar el mensaje y la descripción', async () => {
-    const newMessage = 'Nuevo mensaje de prueba'
+  it('should allow you to edit the message and description', async () => {
+    const newMessage = 'Test Message Content'
     const newDescription = 'Nueva descripción de prueba'
-    wrapper.vm.$props.selectedMessage.message = newMessage
-    wrapper.vm.$props.selectedMessage.description = newDescription
+    const messageTextarea = wrapper.find('textarea#editorText')
+    await messageTextarea.setValue(newMessage)
+    const descriptionTextarea = wrapper.find('textarea#description-text')
+    await descriptionTextarea.setValue(newDescription)
+    await nextTick()
     expect(wrapper.vm.$props.selectedMessage.message).toBe(newMessage)
     expect(wrapper.vm.$props.selectedMessage.description).toBe(newDescription)
   })
-  
-  
 
-  it('should save changes when the submit button is clicked', async () => {
-    const newMessage = 'Nuevo mensaje de prueba';
-    const newDescription = 'Nueva descripción de prueba';
-    const messageTextarea = wrapper.find('textarea#editorText');
-    const descriptionTextarea = wrapper.find('textarea#description-text');
-    await messageTextarea.setValue(newMessage);
-    await descriptionTextarea.setValue(newDescription);
-
-    const submitButton = wrapper.find('button[type="submit"]');
-    await submitButton.trigger('click');
-    await nextTick();
-    expect(SettingsRepository.updateMessage).toHaveBeenCalled();
-  });
-  
-  it('should display success message after successfully saving changes', async () => {
-    const swal = jest.spyOn(Swal, 'fire')
-
+  it('should update message when the submit button is clicked', async () => {
+    const newMessage = 'Nuevo mensaje de prueba'
+    const messageTextarea = wrapper.find('textarea#editorText')
+    await messageTextarea.setValue(newMessage)
     const submitButton = wrapper.find('button[type="submit"]')
     await submitButton.trigger('click')
     await nextTick()
+    expect(SettingsRepository.updateMessage).toHaveBeenCalled()
+  })
 
+  it('should display success message after successfully saving changes', async () => {
+    const swal = jest.spyOn(Swal, 'fire')
+    const submitButton = wrapper.find('button[type="submit"]')
+    await submitButton.trigger('click')
+    await nextTick()
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()
     expect(swal).toHaveBeenCalledWith({
       icon: 'success',
@@ -100,11 +98,9 @@ describe('Edit.vue', () => {
   it('should display error message when saving changes fails', async () => {
     SettingsRepository.updateMessage = jest.fn().mockRejectedValue(new Error('Failed to save changes'))
     const swal = jest.spyOn(Swal, 'fire')
-
     const submitButton = wrapper.find('button[type="submit"]')
     await submitButton.trigger('click')
     await nextTick()
-
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()
     expect(swal).toHaveBeenCalledWith({
       icon: 'error',
@@ -114,6 +110,49 @@ describe('Edit.vue', () => {
       showConfirmButton: false,
       timer: 3000,
       toast: true,
-    })    
+    })
   })
-}) 
+
+  it('should apply bold style to selected text when bold button is clicked', async () => {
+    const boldButton = wrapper.find('.bold-button')
+    const messageTextarea = wrapper.find('textarea#editorText')
+    await messageTextarea.setValue('This is a test message.')
+    await nextTick()
+    const textarea = messageTextarea.element as HTMLTextAreaElement
+    const startPos = 5
+    const endPos = 7
+    textarea.setSelectionRange(startPos, endPos)
+    await boldButton.trigger('click')
+    await nextTick()
+    expect(textarea.value).toBe('This *is* a test message.')
+  })
+
+  it('should apply italic style to selected text when italic button is clicked', async () => {
+    const italicButton = wrapper.find('.italic-button')
+    const messageTextarea = wrapper.find('textarea#editorText')
+    await messageTextarea.setValue('This is a test message.')
+    await nextTick()
+    const textarea = messageTextarea.element as HTMLTextAreaElement
+    const startPos = 5
+    const endPos = 7
+    textarea.setSelectionRange(startPos, endPos)
+    await italicButton.trigger('click')
+    await nextTick()
+    expect(textarea.value).toBe('This _is_ a test message.')
+  })
+
+  it('should insert placeholder text at cursor position when a placeholder is clicked', async () => {
+    const placeholderButton = wrapper.find('.tooltip-element')
+    const messageTextarea = wrapper.find('textarea#editorText')
+    await messageTextarea.setValue('This is a test message.')
+    await nextTick()
+    const textarea = messageTextarea.element as HTMLTextAreaElement
+    const startPos = 5
+    const endPos = 5
+    textarea.setSelectionRange(startPos, endPos)
+    await placeholderButton.trigger('click')
+    await nextTick()
+    expect(textarea.value).toBe('This [[PLATE]]is a test message.')
+  })
+
+})

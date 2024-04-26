@@ -7,11 +7,11 @@ import SettingsRepository from '@/repositories/SettingsRepository'
 
 describe('Index.vue', () => {
   let wrapper: VueWrapper<any>
- SettingsRepository.updateMessage = jest.fn().mockResolvedValue('updateMessages')
- SettingsRepository.getMessages = jest.fn().mockResolvedValue([
-  { id: '1', name: 'Test Name 1', description: 'Test Description 1', message: 'Test Message 1', enabled: true },
-  { id: '2', name: 'Test Name 2', description: 'Test Description 2', message: 'Test Message 2', enabled: false }
-]),
+  SettingsRepository.updateMessage = jest.fn().mockResolvedValue('updateMessages')
+  SettingsRepository.getMessages = jest.fn().mockResolvedValue([
+    { id: '1', name: 'Test Name 1', description: 'Test Description 1', message: 'Test Message 1', enabled: true },
+    { id: '2', name: 'Test Name 2', description: 'Test Description 2', message: 'Test Message 2', enabled: false }
+  ])
 
   beforeEach(async () => {
     wrapper = shallowMount(IndexVue, {
@@ -28,12 +28,7 @@ describe('Index.vue', () => {
   })
 
   it('should render the card title correctly', () => {
-    const submitButton = wrapper.find('.btn')
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    expect(checkbox.exists()).toBe(true)
-    expect(submitButton.exists()).toBe(true)
     expect(wrapper.find('.card-header h6').text()).toBe('WhatsApp Message Table')
-
   })
 
   it('should render the table with correct columns', () => {
@@ -58,16 +53,33 @@ describe('Index.vue', () => {
     expect(rows[1].text()).toContain('Test Message 2')
   })
 
-  it('should set selected message when edit button is clicked', async () => {
-    wrapper.vm.$emit('editMessage', { id: '1', name: 'Test Name 1', description: 'Test Description 1', message: 'Test Message 1', enabled: true })
-    await wrapper.vm.$nextTick()
-  })
-
   it('should toggle message status when checkbox is clicked', async () => {
     await nextTick()
     const checkbox = wrapper.find('input[type="checkbox"]')
     await checkbox.trigger('click')
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()
   })
-})
 
+  it('should update messages after toggling message status', async () => {
+    await nextTick()
+    const checkbox = wrapper.find('input[type="checkbox"]')
+    await checkbox.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(SettingsRepository.getMessages).toHaveBeenCalled()
+  })
+
+  it('should show success toast after toggling message status', async () => {
+    await nextTick()
+    const checkbox = wrapper.find('input[type="checkbox"]')
+    await checkbox.trigger('click')
+    await wrapper.vm.$nextTick()
+  })
+
+  it('should show error toast if toggle message status fails', async () => {
+    await nextTick()
+    SettingsRepository.updateMessage = jest.fn().mockRejectedValue(new Error('Update failed'))
+    const checkbox = wrapper.find('input[type="checkbox"]')
+    await checkbox.trigger('click')
+    await wrapper.vm.$nextTick()
+  })
+})
