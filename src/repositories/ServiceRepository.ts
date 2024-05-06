@@ -141,7 +141,6 @@ async getPaginated(options: {
 
 	/* istanbul ignore next */
 	async release(serviceId: string, driverId: string): Promise<void> {
-		await DriverRepository.removeIndex(driverId).catch(e => Promise.reject(e))
 		return updateDB(child(DBService.dbServices(), serviceId), {
 			driver_id: null,
 			status: Service.STATUS_PENDING,
