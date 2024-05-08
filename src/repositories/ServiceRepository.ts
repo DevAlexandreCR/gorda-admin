@@ -31,7 +31,6 @@ import {
 	where,
 } from 'firebase/firestore'
 import {ServiceCursor} from '@/types/ServiceCursor'
-import DriverRepository from '@/repositories/DriverRepository'
 
 class ServiceRepository {
 
@@ -140,8 +139,7 @@ async getPaginated(options: {
   }
 
 	/* istanbul ignore next */
-	async release(serviceId: string, driverId: string): Promise<void> {
-		await DriverRepository.removeIndex(driverId).catch(e => Promise.reject(e))
+	async release(serviceId: string): Promise<void> {
 		return updateDB(child(DBService.dbServices(), serviceId), {
 			driver_id: null,
 			status: Service.STATUS_PENDING,
