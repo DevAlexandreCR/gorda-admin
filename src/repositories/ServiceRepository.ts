@@ -31,7 +31,6 @@ import {
 	where,
 } from 'firebase/firestore'
 import {ServiceCursor} from '@/types/ServiceCursor'
-import DriverRepository from '@/repositories/DriverRepository'
 
 class ServiceRepository {
 
