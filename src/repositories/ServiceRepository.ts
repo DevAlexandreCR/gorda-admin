@@ -140,7 +140,7 @@ async getPaginated(options: {
   }
 
 	/* istanbul ignore next */
-	async release(serviceId: string, driverId: string): Promise<void> {
+	async release(serviceId: string): Promise<void> {
 		return updateDB(child(DBService.dbServices(), serviceId), {
 			driver_id: null,
 			status: Service.STATUS_PENDING,
