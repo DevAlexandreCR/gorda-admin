@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.3.x
 
+## [1.3.4(2024-05-07)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.4...1.3.3)
+
+### Changed
+- Remove index release. [#132](https://github.com/DevAlexandreCR/admin-driver/pull/132)
+
 ## [1.3.3(2024-04-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.3...1.3.2)
 
 ### Added
