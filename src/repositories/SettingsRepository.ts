@@ -6,6 +6,7 @@ import {ClientDictionary} from "@/types/ClientDiccionary";
 import { SettingsMessageInterface } from '@/types/SettingsMessages';
 import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
 import FSService from '@/services/FSService';
+import {MessagesEnum} from '@/constants/MessagesEnum'
 
 class WpClientRepository {
 
@@ -25,7 +26,7 @@ class WpClientRepository {
 		const messages: Array<SettingsMessageInterface> = []
 		snapshot.forEach((doc) => {
 		const messageData = doc.data()
-		const messageId = doc.id
+		const messageId = doc.id as MessagesEnum
 		const message = {
 			id: messageId,
 			name: messageData.name,

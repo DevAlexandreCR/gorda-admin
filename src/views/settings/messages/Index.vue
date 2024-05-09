@@ -17,7 +17,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(message, index) in messages" :key="index">
+          <tr><h6>{{ $t('wp.titles.confirmations_messages') }}</h6></tr>
+            <tr v-for="(message, index) in confirmationMessages" :key="index">
               <EditModal :selectedMessage="message" @updateMessages="updateMessages" />
               <td class="align-middle">{{ message.name }}</td>
               <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.description }}</td>
@@ -40,6 +41,31 @@
                 </button>
               </td>
             </tr>
+
+            <tr><h6>{{ $t('wp.titles.chatbot_messages') }}</h6></tr>
+            <tr v-for="(message, index) in chatBotMessages" :key="index">
+              <EditModal :selectedMessage="message" @updateMessages="updateMessages" />
+              <td class="align-middle">{{ message.name }}</td>
+              <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.description }}</td>
+              <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.message }}</td>
+              <td class="align-middle p-0">
+                <div class="row row-cols-2 mx-2">
+                  <div class="form-check form-switch col-2">
+                    <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" @change="toggleMessage(message)">
+                    <span class="badge badge-sm"
+                          :class="message.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                    >{{ $t(message.enabled ?
+                        'common.fields.enabled' : 'common.fields.disabled') }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="align-middle">
+                <button class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0" data-bs-toggle="modal"
+                        :data-bs-target="'#' + message.id">
+                  <em class="fas fa-pencil"></em>
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -48,13 +74,14 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import {SettingsMessageInterface} from '@/types/SettingsMessages'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import EditModal from '@/views/settings/messages/Edit.vue'
+import {Constants} from '@/constants/Constants'
 
 const messages = ref<SettingsMessageInterface[]>([])
 const { setLoading } = useLoadingState()
@@ -67,6 +94,18 @@ const updateMessages = async () => {
   setLoading(true)
   messages.value = await SettingsRepository.getMessages().finally(() => setLoading(false))
 }
+
+const confirmationMessages = computed(() => {
+  return messages.value.filter((message) => {
+    return Constants.CONFIRMATIONS.includes(message.id)
+  })
+})
+
+const chatBotMessages = computed(() => {
+  return messages.value.filter((message) => {
+    return !Constants.CONFIRMATIONS.includes(message.id)
+  })
+})
 
 const toggleMessage = async (message: SettingsMessageInterface): Promise<void> => {
   setLoading(true);
