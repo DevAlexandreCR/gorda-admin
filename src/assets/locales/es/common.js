@@ -7,7 +7,7 @@ export default {
     name: 'Nombre',
     email: 'Correo electrónico',
     phone: 'Teléfono',
-    label_message: 'Mensajes: ',
+    label_message: 'Mensaje: ',
     label_description: 'Descripcion: ',
     label_preview: 'Vista Previa: '
   },
@@ -62,14 +62,16 @@ export default {
       vehicle_color: 'Color de vehiculo',
       username: 'Nombre',
       company_number: 'Numero de Empresa',
-      place_name: 'Lugar'
+      place_name: 'Lugar',
+      company_name: 'Nombre de la empresa',
     },
     label: {
       plate: 'Placa',
       color: 'Color',
       name: 'Nombre',
       number_pqr: 'PQR',
-      place_name: 'Lugar'
+      place_name: 'Lugar',
+      company_name: 'Empresa',
     }
   },
   forms: {

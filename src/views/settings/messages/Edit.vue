@@ -1,6 +1,6 @@
 <template>
   <!-- Modal -->
-  <div id="editMessagesWp" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div :id="selectedMessage.id" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-lg">
        <div class="modal-content">
          <div class="modal-header">
@@ -9,6 +9,9 @@
          </div>
          <div class="modal-body row">
            <div class="col-md-6">
+             <label for="message-name" class="col-form-label">{{ $t('common.fields.name') }}</label>
+             <input ref="textArea" name="message-name" class="form-control"
+                    v-model="$props.selectedMessage.name"/>
              <label for="message-text" class="col-form-label">{{ $t('common.fields.label_message') }}</label>
              <textarea rows="5" ref="textArea" id="editorText" class="form-control text-area-Message" contenteditable="true"  @input="updateTextareaMessage"
               v-model="newMessage"/>
@@ -80,7 +83,7 @@ const placeholders = [
   { description: 'common.placeholders.description.username', label: 'common.placeholders.label.name', value: '[[USERNAME]]' },
   { description: 'common.placeholders.description.company_number', label: 'common.placeholders.label.number_pqr', value: '[[PQR-NUMBER]]' },
   { description: 'common.placeholders.description.place_name', label: 'common.placeholders.label.place_name', value: '[[PLACE]]' },
-
+  { description: 'common.placeholders.description.company_name', label: 'common.placeholders.label.company_name', value: '[[COMPANY]]' },
 ]
 
 onMounted(async() => {
@@ -177,7 +180,7 @@ function saveChanges(): void {
     SettingsRepository.updateMessage(updatedMessage).then(async () => {
       emit('updateMessages')
       setLoading(false)
-      hide('editMessagesWp')
+      hide(updatedMessage.id)
       await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
     }).catch(async e => {
       setLoading(false)

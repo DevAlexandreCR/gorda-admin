@@ -44,11 +44,11 @@ class WpClientRepository {
 		const dataToUpdate = {
 			name: message.name,
 			description: message.description,
-			message: message.message
+			message: message.message,
+			enabled: message.enabled
 		}
 		await updateDoc(messageRef, dataToUpdate)
 	}
-	
 
 	/* istanbul ignore next */
 	async updateRideFee(rideFee: RideFeeInterface): Promise<void> {

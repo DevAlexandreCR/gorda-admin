@@ -18,7 +18,7 @@
           </thead>
           <tbody>
             <tr v-for="(message, index) in messages" :key="index">
-              <EditModal  :selectedMessage="message" @updateMessages="updateMessages" />
+              <EditModal :selectedMessage="message" @updateMessages="updateMessages" />
               <td class="align-middle">{{ message.name }}</td>
               <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.description }}</td>
               <td class="align-middle text-truncate text-nowrap text-MaxErm">{{ message.message }}</td>
@@ -35,7 +35,7 @@
               </td>
               <td class="align-middle">
                 <button class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0" data-bs-toggle="modal"
-                  data-bs-target="#editMessagesWp">
+                  :data-bs-target="'#' + message.id">
                   <em class="fas fa-pencil"></em>
                 </button>
               </td>
@@ -60,24 +60,23 @@ const messages = ref<SettingsMessageInterface[]>([])
 const { setLoading } = useLoadingState()
 
 onMounted(async () => {
-  messages.value = await SettingsRepository.getMessages()
+  await updateMessages()
 })
 
 const updateMessages = async () => {
-  messages.value = await SettingsRepository.getMessages()
+  setLoading(true)
+  messages.value = await SettingsRepository.getMessages().finally(() => setLoading(false))
 }
 
 const toggleMessage = async (message: SettingsMessageInterface): Promise<void> => {
   setLoading(true);
-  const updatedMessage = { ...message }
-  updatedMessage.enabled = !updatedMessage.enabled
-  SettingsRepository.updateMessage(updatedMessage)
+  message.enabled = !message.enabled
+  SettingsRepository.updateMessage(message)
     .then(async () => {
-      message.enabled = updatedMessage.enabled
       setLoading(false)
-      const statusMessage = updatedMessage.enabled
-        ? i18n.global.t('common.messages.enabled')
-        : i18n.global.t('common.messages.disabled')
+      const statusMessage = message.enabled
+        ? i18n.global.t('common.fields.enabled')
+        : i18n.global.t('common.fields.disabled')
       await ToastService.toast(ToastService.SUCCESS, statusMessage)
     })
     .catch(async (error) => {

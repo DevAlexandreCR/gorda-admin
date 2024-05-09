@@ -7,7 +7,7 @@ export default {
     name: 'Name',
     email: 'Email Address',
     phone: 'Phone',
-    label_message: 'Messages: ',
+    label_message: 'Message: ',
     label_description: 'Description: ',
     label_preview: 'Preview'
   },
@@ -62,14 +62,16 @@ export default {
       vehicle_color: 'Vehicle Color',
       username: 'Name',
       company_number: 'Company Number',
-      place_name: 'Place'
+      place_name: 'Place',
+      company_name: 'Company Name',
     },
     label: {
       plate: 'Plate',
       color: 'Color',
       name: 'Name',
       number_pqr: 'PQR',
-      place_name: 'Place'
+      place_name: 'Place',
+      company_name: 'Company',
     }
   },
   filters: {
