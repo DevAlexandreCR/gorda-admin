@@ -35,6 +35,7 @@ export class Constants {
     MessagesEnum.SERVICE_ASSIGNED,
     MessagesEnum.DRIVER_ARRIVED,
     MessagesEnum.CANCELED,
-    MessagesEnum.SERVICE_COMPLETED
+    MessagesEnum.SERVICE_COMPLETED,
+    MessagesEnum.ASK_FOR_CANCEL,
   ]
 }
