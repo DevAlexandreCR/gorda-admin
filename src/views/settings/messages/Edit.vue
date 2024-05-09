@@ -41,7 +41,7 @@
            </div>
            <div class="col-md-6">
              <label for="message-text" class="col-form-label">{{ $t('common.fields.label_preview') }}</label>
-             <div  class="preview-container form-control" v-html="formattedMessage" disabled></div>
+             <div class="preview-container form-control" v-html="formattedMessage" disabled></div>
              <div class="mb-3" v-if="$props.selectedMessage">
                <label for="description-text" class="col-form-label">{{ $t('common.fields.label_description') }}</label>
                <textarea  class="form-control text-area-Description" id="description-text" aria-label="Description"
@@ -90,14 +90,6 @@ onMounted(async() => {
   newMessage.value = props.selectedMessage.message?? ''
 })
 
-const updatePreview = (): void => {
-  let content = newMessage.value
-  content = content.replace(/<u>(.*?)<\/u>/g, '_$1_')
-  content = content.replace(/<b>(.*?)<\/b>/g, '*$1*')
-  content = content.replace(/<i>(.*?)<\/i>/g, '_$1_')
-  newMessage.value = content
-}
-
 function updateTextareaMessage() {
   const textarea = textArea.value
   if (textarea) {
@@ -116,24 +108,21 @@ function insertPlaceholder(placeholder: string): void {
     textArea.value.focus()
     textArea.value.setSelectionRange(startPos + placeholder.length, startPos + placeholder.length)
     textArea.value.scrollTop = scrollTop
-    updatePreview()
   }
 }
 
 function applyStyleToSelection(style: string, text?: string): void {
-  if (!textArea.value) return;
-  const startPos = textArea.value.selectionStart ?? 0;
-  const endPos = textArea.value.selectionEnd ?? 0;
-  const selectedText = text || (textArea.value.value.substring(startPos, endPos));
-  const styledText = style === 'b' ? `*${selectedText}*` : `_${selectedText}_`;
-  const value = textArea.value.value;
-  textArea.value.value = value.substring(0, startPos) + styledText + value.substring(endPos, value.length);
-  textArea.value.focus();
-  const newEndPos = startPos + styledText.length - 1;
-  textArea.value.setSelectionRange(newEndPos, newEndPos);
+  if (!textArea.value) return
+  const startPos = textArea.value.selectionStart ?? 0
+  const endPos = textArea.value.selectionEnd ?? 0
+  const selectedText = text || (textArea.value.value.substring(startPos, endPos))
+  const styledText = style === 'b' ? `*${selectedText}*` : `_${selectedText}_`
+  const value = textArea.value.value
+  textArea.value.value = value.substring(0, startPos) + styledText + value.substring(endPos, value.length)
+  textArea.value.focus()
+  const newEndPos = startPos + styledText.length - 1
+  textArea.value.setSelectionRange(newEndPos, newEndPos)
 }
-
-
 
 function applyStyle(style: string): void {
   if (style === 'b' || style === 'i') {
@@ -191,8 +180,21 @@ function saveChanges(): void {
 
 const formattedMessage = computed(() => {
   let content = newMessage.value
-  content = content.replace(/\*([^*]+)\*/g, '<b>$1</b>')
-  content = content.replace(/_([^_]+)_/g, '<i>$1</i>')
-  return content
+  const tabs = content.match(/\t/g) || []
+  const newLines = content.match(/\n/g) || []
+
+  content = content
+  .replace(/\*([^*]+)\*/g, '<b>$1</b>')
+  .replace(/_([^_]+)_/g, '<i>$1</i>')
+
+  for (let i = 0; i < tabs.length; i++) {
+    content = content.replace(/\t/, '&#9;')
+  }
+
+  for (let i = 0; i < newLines.length; i++) {
+    content = content.replace(/\n/, '<br>')
+  }
+
+  return content;
 })
 </script>
