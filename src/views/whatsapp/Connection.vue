@@ -8,7 +8,7 @@
             {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
           </h6>
         </div>
-        <button class="btn btn-danger btn-rounded" data-bs-target="#delete-client" data-bs-toggle="modal"><em class="fa fa-trash"></em></button>
+        <button class="btn btn-danger btn-rounded" :data-bs-target="'#delete-client' + client.id" data-bs-toggle="modal"><em class="fa fa-trash"></em></button>
       </div>
       <div class="card-body p-0 mx-3 mt-3 position-relative z-index-1">
         <div class="container text-center">
@@ -76,11 +76,11 @@
       </div>
     </div>
     <!--Modal-->
-    <div class="modal fade" id="delete-client" tabindex="-1" aria-labelledby="delete-client" aria-hidden="true">
+    <div class="modal fade" :id="'delete-client' + client.id" tabindex="-1" :aria-labelledby="'delete-client' + client.id" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content px-2">
           <div class="modal-header">
-            <h5 class="modal-title" id="deleteModalLabel">{{ $t('common.actions.delete') }}</h5>
+            <h5 class="modal-title">{{ $t('common.actions.delete') }}</h5>
             <button type="button" id="closeModalButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -140,7 +140,7 @@ const onUpdate = (socket: WhatsAppClient): void => {
 }
 
 async function deleteWpClient(): Promise<void> {
-  hide('delete-client')
+  hide('delete-client' + props.client.id)
   wpClient.destroy()
   await deleteClient(props.client)
 }
