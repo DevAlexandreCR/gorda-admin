@@ -39,7 +39,7 @@ describe('Edit.vue', () => {
     expect(wrapper.find('textarea#editorText').exists()).toBe(true)
     expect(wrapper.find('textarea#description-text').exists()).toBe(true)
     expect(submitButton.exists()).toBe(true)
-    expect(labels.length).toBe(3)
+    expect(labels.length).toBe(4)
   })
 
   it('should open and close emoji picker when emoji button is clicked', async () => {

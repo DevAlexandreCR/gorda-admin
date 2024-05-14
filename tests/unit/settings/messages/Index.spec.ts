@@ -46,7 +46,7 @@ describe('Index.vue', () => {
     const rows = wrapper.findAll('tbody tr')
     expect(rows.length).toBe(4)
     expect(rows[0].text()).toContain('Confirmations Messages')
-    expect(rows[1].text()).toContain('ChatBot Messages')
+    expect(rows[1].text()).toContain('Chatbot Messages')
     expect(rows[2].text()).toContain('Test Name 1')
     expect(rows[2].text()).toContain('Test Description 1')
     expect(rows[2].text()).toContain('Test Message 1')
