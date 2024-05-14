@@ -13,6 +13,6 @@ module.exports = {
     '!src/main.ts'
   ],
   testEnvironment: 'jsdom',
-  setupFiles: ['core-js'],
+  setupFiles: ['./jest.setup.js', 'core-js'],
   setupFilesAfterEnv: ['<rootDir>/tests/testSetup.ts']
 }

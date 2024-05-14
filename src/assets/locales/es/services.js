@@ -20,6 +20,8 @@ export default {
     time: 'Tiempo',
     fee: 'Valor',
     fee_multiplier: 'Multiplicador de tarifa',
+    WpMessages: 'Mensajes',
+    WpActions: 'Acciones'
   },
   history: 'Historial',
   total: 'Total',

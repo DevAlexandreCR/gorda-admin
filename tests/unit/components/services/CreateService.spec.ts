@@ -14,12 +14,12 @@ import {getPlaces} from '../../../mocks/entities/PlaceMock'
 import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {StrHelper} from '@/helpers/StrHelper'
-import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import {useWpClientsStore} from '@/services/stores/WpClientStore'
 
 describe('CreateService.vue', () => {
 	let wrapper: VueWrapper<any>
 	StrHelper.formatNumber = jest.fn((str: string) => str)
-	
+
 	beforeEach(async () => {
 		const placesStore = usePlacesStore()
 		const clientsStore = useClientsStore()

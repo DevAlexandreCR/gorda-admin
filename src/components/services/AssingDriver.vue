@@ -77,7 +77,7 @@ const assignDriver = (): void => {
   service.driver_id = driverId
   service.status = Service.STATUS_IN_PROGRESS
   setLoading(true)
-  service.update(service).then(() => {
+  service.assign(driverId).then(() => {
     setLoading(false)
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     driverModal?.hide()

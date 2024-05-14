@@ -1,3 +1,5 @@
+import {MessagesEnum} from '@/constants/MessagesEnum'
+
 export class Constants {
   static readonly DOC_TYPE_CC = 'CC'
   static readonly DOC_TYPE_CE = 'CE'
@@ -26,5 +28,14 @@ export class Constants {
     {name: 'maroon', hex: '#800000'},
     {name: 'beige', hex: '#F5F5DC'},
     {name: 'silver', hex: '#C0C0C0'},
+  ]
+
+  static readonly CONFIRMATIONS = [
+    MessagesEnum.SERVICE_CREATED,
+    MessagesEnum.SERVICE_ASSIGNED,
+    MessagesEnum.DRIVER_ARRIVED,
+    MessagesEnum.CANCELED,
+    MessagesEnum.SERVICE_COMPLETED,
+    MessagesEnum.ASK_FOR_CANCEL,
   ]
 }

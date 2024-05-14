@@ -96,7 +96,7 @@ describe('AssignDriver.vue', () => {
   
   it('should show error toast when something was wrong while try to update', async () => {
     const swal = jest.spyOn(Swal,'fire')
-    ServiceRepository.update = jest.fn().mockRejectedValue(new Error('something was wrong'))
+    ServiceRepository.assign = jest.fn().mockRejectedValue(new Error('something was wrong'))
     
     await nextTick()
     await button.click()
