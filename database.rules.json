@@ -4,7 +4,7 @@
       ".read": "auth.uid != null",
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
       "$uid": {
-        ".validate": "newData.hasChildren(['id', 'created_at', 'name', 'client_id', 'start_loc', 'status', 'wp_client_id']) && (!data.exists() || data.child('status').val() !== 'in_progress' || (newData.child('driver_id').val() === data.child('driver_id').val() || !newData.child('driver_id').exists()))"
+        ".validate": "newData.hasChildren(['id', 'created_at', 'name', 'client_id', 'start_loc', 'status', 'wp_client_id']) && (!data.exists() || (data.child('status').val() !== 'terminated' && data.child('status').val() !== 'canceled'))"
       },
       ".indexOn": ["created_at", "status", "driver_id"]
     },
