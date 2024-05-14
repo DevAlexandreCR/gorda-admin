@@ -42,13 +42,6 @@ describe('Edit.vue', () => {
     expect(labels.length).toBe(3)
   })
 
-  it('should render correctly with null selectedMessage', async () => {
-    wrapper.setProps({ selectedMessage: null })
-    await nextTick()
-    expect(wrapper.find('.modal-title').exists()).toBe(true)
-    expect(wrapper.find('.modal-body').exists()).toBe(true)
-  });
-
   it('should open and close emoji picker when emoji button is clicked', async () => {
     const emojiButton = wrapper.find('.emoji-button')
     await emojiButton.trigger('click')

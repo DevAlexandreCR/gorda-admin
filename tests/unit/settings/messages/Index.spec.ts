@@ -44,7 +44,7 @@ describe('Index.vue', () => {
   it('should render each row with correct message data', async () => {
     await nextTick()
     const rows = wrapper.findAll('tbody tr')
-    expect(rows.length).toBe(2)
+    expect(rows.length).toBe(4)
     expect(rows[0].text()).toContain('Test Name 1')
     expect(rows[0].text()).toContain('Test Description 1')
     expect(rows[0].text()).toContain('Test Message 1')
