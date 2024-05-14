@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.3.x
 
+
+## [1.3.5(2024-05-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.5...1.3.4)
+
+### Added
+- Edit WP messages module. [#129](https://github.com/DevAlexandreCR/admin-driver/pull/129)
+
 ## [1.3.4(2024-05-07)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.4...1.3.3)
 
 ### Changed

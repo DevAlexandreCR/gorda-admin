@@ -38,6 +38,11 @@ class FirestoreService {
   public settingsDocument(): DocumentReference<DocumentData> {
     return doc(this.fs, 'clients', 'clients');
   }
+
+  /* istanbul ignore next */
+  public mensajesCollection(): CollectionReference<DocumentData> {
+    return collection(this.fs, 'messages');
+  }
 }
 
 export default new FirestoreService();

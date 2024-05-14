@@ -6,7 +6,10 @@ export default {
     disabled: 'Inhabilitado',
     name: 'Nombre',
     email: 'Correo electrónico',
-    phone: 'Teléfono'
+    phone: 'Teléfono',
+    label_message: 'Mensaje: ',
+    label_description: 'Descripcion: ',
+    label_preview: 'Vista Previa: '
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -54,6 +57,22 @@ export default {
     cancel_percent: 'Índice de cancelación',
     service_info: 'Información del servicio',
     route_info: 'Información de la ruta y conductor',
+    description: {
+      plate: 'Placa del veviculo',
+      vehicle_color: 'Color de vehiculo',
+      username: 'Nombre',
+      company_number: 'Numero de Empresa',
+      place_name: 'Lugar',
+      company_name: 'Nombre de la empresa',
+    },
+    label: {
+      plate: 'Placa',
+      color: 'Color',
+      name: 'Nombre',
+      number_pqr: 'PQR',
+      place_name: 'Lugar',
+      company_name: 'Empresa',
+    }
   },
   forms: {
     select_img: 'Choose image from files'
@@ -99,6 +118,7 @@ export default {
     alert_chatBot: 'Habilita el chatBot para que gestione completamente los servicios',
     alert_assistant: 'Habilita el asistente para crear servicios cuando el cliente envía la ubicación',
     Ride_Fees: 'Tarifas',
+    Messages: 'Mensajes',
     price_kilometer: 'Precio por kilómetro',
     price_minute: 'Precio por Minuto',
     fees_base: 'Tarifa Base',
@@ -107,5 +127,9 @@ export default {
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
     fees_night_DxF: 'Domingos y Festivos Nocturnos'
+  },
+  titles: {
+    title_modal: 'Editar Mensajes de WhatsApp',
+    title_card: 'Tabla de Mensajes WhatsApp'
   }
 }

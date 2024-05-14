@@ -6,7 +6,10 @@ export default {
     disabled: 'Disabled',
     name: 'Name',
     email: 'Email Address',
-    phone: 'Phone'
+    phone: 'Phone',
+    label_message: 'Message: ',
+    label_description: 'Description: ',
+    label_preview: 'Preview'
   },
   models: {
     users: 'User | Users',
@@ -54,6 +57,22 @@ export default {
     cancel_percent: 'Canceled index',
     service_info: 'Service information',
     route_info: 'Route and driver information',
+    description: {
+      plate: 'Vehicle plate',
+      vehicle_color: 'Vehicle Color',
+      username: 'Name',
+      company_number: 'Company Number',
+      place_name: 'Place',
+      company_name: 'Company Name',
+    },
+    label: {
+      plate: 'Plate',
+      color: 'Color',
+      name: 'Name',
+      number_pqr: 'PQR',
+      place_name: 'Place',
+      company_name: 'Company',
+    }
   },
   filters: {
     title: 'Filters',
@@ -99,6 +118,7 @@ export default {
     alert_chatBot: 'Enable chatBot to completely manage WhatsApp messages',
     alert_assistant: 'Enable the assistant bot to create services when client send a location',
     Ride_Fees: 'Ride Fees',
+    Messages: 'Messages',
     price_kilometer: 'price for kilometer',
     price_minute: 'price for minute',
     fees_base: 'base fee',
@@ -107,5 +127,9 @@ export default {
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',
     fees_night_DxF: 'Sundays and night holidays'
+  },
+  titles: {
+    title_modal: 'Edit WhatsApp Messages',
+    title_card: 'WhatsApp Message Table'
   }
 }
