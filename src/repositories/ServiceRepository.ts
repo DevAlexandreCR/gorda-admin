@@ -139,6 +139,16 @@ async getPaginated(options: {
   }
 
 	/* istanbul ignore next */
+	async assign(serviceId: string, driverId: string): Promise<void> {
+		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
+			driver_id: driverId,
+			status: Service.STATUS_IN_PROGRESS,
+		}).then(async () => {
+			await set(ref(DBService.db, 'drivers_assigned/'.concat(driverId)), serviceId)
+		})
+	}
+
+	/* istanbul ignore next */
 	async release(serviceId: string): Promise<void> {
 		return updateDB(child(DBService.dbServices(), serviceId), {
 			driver_id: null,

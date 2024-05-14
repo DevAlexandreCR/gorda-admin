@@ -58,4 +58,8 @@ export default class Service implements ServiceInterface {
     await ServiceRepository.update(data)
     return this
   }
+
+  async assign(driverId: string): Promise<void> {
+    await ServiceRepository.assign(this.id, driverId)
+  }
 }
