@@ -3,7 +3,7 @@ import {DataSnapshot, get, off, onValue, query, ref, remove, set} from 'firebase
 import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
 import {ClientDictionary} from "@/types/ClientDiccionary";
-import { SettingsMessageInterface } from '@/types/SettingsMessages';
+import { SettingsMessageInterface } from '@/types/SettingsMessagesInterface';
 import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'

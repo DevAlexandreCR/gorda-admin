@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import {computed, onMounted, ref} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
-import {SettingsMessageInterface} from '@/types/SettingsMessages'
+import {SettingsMessageInterface} from '@/types/SettingsMessagesInterface'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
