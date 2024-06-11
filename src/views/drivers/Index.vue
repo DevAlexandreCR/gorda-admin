@@ -2,10 +2,10 @@
   <div class="mx-3">
       <div class="card mb-4">
       <div class="row m-3">
-        <div class="col-4">
+        <div class="col-4" v-if="currentUser && currentUser.isAdmin()">
           <h6 class="ms-2">{{ $t('common.models.drivers', filteredDrivers.length) + ' ' + filteredDrivers.length }}</h6>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 d-flex justify-content-end" :class="{ 'col-8': !(currentUser && currentUser.isAdmin()) }">
           <div class="form-group d-inline-flex">
             <label class="me-2">{{ $t('common.actions.see') }}</label>
             <select class="form-select form-select-sm" v-model="enabled">
@@ -15,7 +15,7 @@
             </select>
           </div>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 d-flex justify-content-end" :class="{ 'col-3': !(currentUser && currentUser.isAdmin()) }">
             <div class="form-group me-2 w-100 col">
               <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
                 <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
@@ -121,6 +121,8 @@ import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import AuthService from '@/services/AuthService'
+import { useI18n } from 'vue-i18n'
 
 const {drivers, filter, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
@@ -128,6 +130,8 @@ const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
 const enabled: Ref<number> = ref(-1)
+const currentUser = AuthService.getCurrentUser();
+const {t} = useI18n()
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
@@ -158,6 +162,11 @@ onMounted(() => {
 })
 
 function onEnable(event: Event): void {
+  const currentUser = AuthService.getCurrentUser()
+  if (!currentUser || !currentUser.isAdmin()) {
+    ToastService.toast(ToastService.ERROR, `${t('users.messages.permissions')}`)
+    return
+  }
   setLoading(true)
   const target = event.target as HTMLInputElement
   const driver = findById(target.id) ?? new Driver()
