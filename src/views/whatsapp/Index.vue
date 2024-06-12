@@ -71,7 +71,7 @@ const schema = yup.object().shape({
     .required(`${t('validations.required')}`)
     .matches(/^\d+$/, `${t('validations.requiredNumbers')}`)
     .matches(/^\S*$/, `${t('validations.NotSpaces')}`)
-    .length(10, `${t('validations.requiredMaxTen')}`),
+    .min(10),
   alias: yup.string()
     .required(`${t('validations.required')}`)
     .min(3, `${t('validations.requiredMinTree')}`)
