@@ -75,31 +75,26 @@
               </td>
               <td class="align-middle text-center text-sm">
                 <span class="badge badge-sm"
-                      :class="driver.enabled_at? 'bg-gradient-success' : 'bg-gradient-danger'"
-                >{{ $t(driver.enabled_at ?
-                    'common.fields.enabled' : 'common.fields.disabled') }}</span>
+                      :class="driver.enabled_at ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                >{{ $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(driver.created_at) }}</span>
               </td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
-                  <div class="form-check form-switch col-2">
+                  <div class="form-check form-switch col-2" v-if="currentUser && currentUser.isAdmin()">
                     <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
                            :id="driver.id" @change="onEnable"/>
                   </div>
                   <div class="col-4">
-                    <router-link v-if="currentUser && currentUser.isAdmin()"
-                                :to="{ name: 'drivers.edit', params: { id: driver.id } }"
-                                tag="a"
-                                class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
-                                data-original-title="Edit Driver">
+                    <router-link
+                      :to="{ name: 'drivers.edit', params: { id: driver.id } }"
+                      tag="a"
+                      class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                      data-original-title="Edit Driver">
                       <em class="fas fa-pencil"></em>
                     </router-link>
-                    <button v-else disabled class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
-                            data-original-title="Edit Driver">
-                      <em class="fas fa-pencil"></em>
-                    </button>
                   </div>
                 </div>
               </td>
@@ -168,10 +163,6 @@ onMounted(() => {
 })
 
 function onEnable(event: Event): void {
-  if (!currentUser || !currentUser.isAdmin()) {
-    ToastService.toast(ToastService.ERROR, `${t('users.messages.permissions')}`)
-    return
-  }
   setLoading(true)
   const target = event.target as HTMLInputElement
   const driver = findById(target.id) ?? new Driver()
