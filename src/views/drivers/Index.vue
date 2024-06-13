@@ -89,11 +89,17 @@
                            :id="driver.id" @change="onEnable"/>
                   </div>
                   <div class="col-4">
-                    <router-link :to="{ name: 'drivers.edit', params: {id: driver.id}}" tag="a"
-                                 class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
-                                 data-original-title="Edit Driver">
+                    <router-link v-if="currentUser && currentUser.isAdmin()"
+                                :to="{ name: 'drivers.edit', params: { id: driver.id } }"
+                                tag="a"
+                                class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                                data-original-title="Edit Driver">
                       <em class="fas fa-pencil"></em>
                     </router-link>
+                    <button v-else disabled class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                            data-original-title="Edit Driver">
+                      <em class="fas fa-pencil"></em>
+                    </button>
                   </div>
                 </div>
               </td>
