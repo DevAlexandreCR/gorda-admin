@@ -130,7 +130,7 @@ const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
 const enabled: Ref<number> = ref(-1)
-const currentUser = AuthService.getCurrentUser();
+const currentUser = AuthService.getCurrentUser()
 const {t} = useI18n()
 
 function format(unix: number): string {
@@ -162,7 +162,6 @@ onMounted(() => {
 })
 
 function onEnable(event: Event): void {
-  const currentUser = AuthService.getCurrentUser()
   if (!currentUser || !currentUser.isAdmin()) {
     ToastService.toast(ToastService.ERROR, `${t('users.messages.permissions')}`)
     return
