@@ -38,6 +38,7 @@ export default {
   },
   messages: {
     enabled: 'El usuario ha sido habilitado!',
-    disabled: 'El usuario ha sido inhabilitado!'
+    disabled: 'El usuario ha sido inhabilitado!',
+    permissions: 'No tienes permisos para realizar esta acción!'
   }
 }

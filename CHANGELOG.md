@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- An Admin can Enable-Disable Drivers. [#135](https://github.com/DevAlexandreCR/gorda-admin/pull/135)
+
 # Release Notes for 1.3.x
 
 

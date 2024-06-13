@@ -2,10 +2,10 @@
   <div class="mx-3">
       <div class="card mb-4">
       <div class="row m-3">
-        <div class="col-4">
+        <div class="col-4" v-if="currentUser && currentUser.isAdmin()">
           <h6 class="ms-2">{{ $t('common.models.drivers', filteredDrivers.length) + ' ' + filteredDrivers.length }}</h6>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 d-flex justify-content-end" :class="{ 'col-8': !(currentUser && currentUser.isAdmin()) }">
           <div class="form-group d-inline-flex">
             <label class="me-2">{{ $t('common.actions.see') }}</label>
             <select class="form-select form-select-sm" v-model="enabled">
@@ -15,7 +15,7 @@
             </select>
           </div>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 d-flex justify-content-end" :class="{ 'col-3': !(currentUser && currentUser.isAdmin()) }">
             <div class="form-group me-2 w-100 col">
               <Field name="driver" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchDriver">
                 <input class="form-control form-control-sm me-2" type="search" v-model="field.value"
@@ -75,23 +75,24 @@
               </td>
               <td class="align-middle text-center text-sm">
                 <span class="badge badge-sm"
-                      :class="driver.enabled_at? 'bg-gradient-success' : 'bg-gradient-danger'"
-                >{{ $t(driver.enabled_at ?
-                    'common.fields.enabled' : 'common.fields.disabled') }}</span>
+                      :class="driver.enabled_at ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                >{{ $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(driver.created_at) }}</span>
               </td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
-                  <div class="form-check form-switch col-2">
+                  <div class="form-check form-switch col-2" v-if="currentUser && currentUser.isAdmin()">
                     <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
                            :id="driver.id" @change="onEnable"/>
                   </div>
                   <div class="col-4">
-                    <router-link :to="{ name: 'drivers.edit', params: {id: driver.id}}" tag="a"
-                                 class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
-                                 data-original-title="Edit Driver">
+                    <router-link
+                      :to="{ name: 'drivers.edit', params: { id: driver.id } }"
+                      tag="a"
+                      class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                      data-original-title="Edit Driver">
                       <em class="fas fa-pencil"></em>
                     </router-link>
                   </div>
@@ -121,6 +122,8 @@ import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import AuthService from '@/services/AuthService'
+import { useI18n } from 'vue-i18n'
 
 const {drivers, filter, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
@@ -128,6 +131,8 @@ const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
 const enabled: Ref<number> = ref(-1)
+const currentUser = AuthService.getCurrentUser()
+const {t} = useI18n()
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')

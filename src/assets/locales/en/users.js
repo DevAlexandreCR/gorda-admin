@@ -38,6 +38,7 @@ export default {
   },
   messages: {
     enabled: 'User has been enabled!',
-    disabled: 'User has been disabled!'
+    disabled: 'User has been disabled!',
+    permissions: 'You do not have permissions to perform this action!'
   }
 }
