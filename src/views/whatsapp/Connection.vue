@@ -7,6 +7,11 @@
           <h6>
             {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
           </h6>
+          <router-link :to="{ name: 'whatsapp.chat', params: {id: client.id}}" tag="a"
+                       class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
+                       data-original-title="Chat">
+            <em class="fas fa-pencil"></em>
+          </router-link>
         </div>
         <button class="btn btn-danger btn-rounded" :data-bs-target="'#delete-client' + client.id" data-bs-toggle="modal"><em class="fa fa-trash"></em></button>
       </div>

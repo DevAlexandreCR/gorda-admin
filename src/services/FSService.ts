@@ -4,43 +4,23 @@ import Firebase from '@/services/Firebase';
 class FirestoreService {
   public fs: Firestore = getFirestore(Firebase.getInstance());
 
-    /* istanbul ignore next */
-  public usersCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'users');
-  }
-
-    /* istanbul ignore next */
+  /* istanbul ignore next */
   public servicesCollection(): CollectionReference<DocumentData> {
     return collection(this.fs, 'services');
   }
 
-    /* istanbul ignore next */
-  public driversCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'drivers');
-  }
-
-    /* istanbul ignore next */
-  public onlineDriversCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'online_drivers');
-  }
-
-    /* istanbul ignore next */
-  public clientsCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'clients');
-  }
-
-    /* istanbul ignore next */
-  public placesCollection(): CollectionReference<DocumentData> {
-    return collection(this.fs, 'places');
-  }
-
-    /* istanbul ignore next */
-  public settingsDocument(): DocumentReference<DocumentData> {
-    return doc(this.fs, 'clients', 'clients');
+  /* istanbul ignore next */
+  public chatsCollection(wpClientId: string): CollectionReference<DocumentData> {
+    return collection(this.fs, `wpClients/${wpClientId}/chats`)
   }
 
   /* istanbul ignore next */
-  public mensajesCollection(): CollectionReference<DocumentData> {
+  public wpMessagesCollection(wpClientId: string, chatId: string): CollectionReference<DocumentData> {
+    return collection(this.fs, `wpClients/${wpClientId}/chats/${chatId}/messages`)
+  }
+
+  /* istanbul ignore next */
+  public messagesCollection(): CollectionReference<DocumentData> {
     return collection(this.fs, 'messages');
   }
 }

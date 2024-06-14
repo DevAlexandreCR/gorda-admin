@@ -33,6 +33,7 @@
     "sweetalert2": "^11.3.6",
     "vee-validate": "~4.6.0",
     "vue": "^3.4.22",
+    "vue-advanced-chat": "^2.1.0",
     "vue-chartjs": "^5.2.0",
     "vue-class-component": "^8.0.0-0",
     "vue-i18n": "^9.1.0",
