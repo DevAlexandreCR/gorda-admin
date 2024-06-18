@@ -7,5 +7,6 @@ export type Message = {
   type: MessageTypes
   body: string
   fromMe: boolean
+  from: string
   location?: LocationType
 }

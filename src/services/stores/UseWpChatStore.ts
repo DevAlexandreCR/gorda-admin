@@ -13,11 +13,21 @@ export const useWpChatStore = defineStore('wpChatStore', {
   actions: {
     getChats(wpClientId: string): void {
       ChatRepository.getChats(wpClientId, (chats) => {
-        this.chats = chats
+        Array.from(chats.values()).forEach((chat) => {
+          this.chats.set(chat.id, chat)
+          // const exists = Array.from(this.messages.values()).find((message) => message.from === chat.id)
+          // if (exists) {
+          //   this.getMessages(wpClientId, chat.id)
+          // }
+        })
       })
     },
-    getMessages(message: Message): void {
-      this.messages.set(message.id, message)
+    getMessages(wpClientId: string, chatId: string): void {
+      ChatRepository.getMessages(wpClientId, chatId, (messages) => {
+        Array.from(messages.values()).forEach((message) => {
+          this.messages.set(message.id, message)
+        })
+      })
     }
   }
 })
