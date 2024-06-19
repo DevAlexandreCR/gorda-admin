@@ -1,6 +1,6 @@
 import {Chat} from '@/types/Chat'
 import FSService from '@/services/FSService'
-import {limitToLast, orderBy, query, onSnapshot} from 'firebase/firestore'
+import {limitToLast, orderBy, query, onSnapshot, collection, getDocs, doc, updateDoc} from 'firebase/firestore'
 import {Message} from '@/types/Message'
 
 class ChatRepository {
@@ -22,21 +22,24 @@ class ChatRepository {
     })
   }
 
-  getMessages(wpClientId: string, chatId: string, listener: (messages: Map<string, Message>) => void): void {
+  async updateChat(wpClientId: string, chatId: string, data: Partial<Chat>): Promise<void> {
+    const chatCollection = FSService.chatsCollection(wpClientId)
+    await updateDoc(doc(chatCollection, chatId), data)
+  }
+
+  async getMessages(wpClientId: string, chatId: string, listener: (messages: Map<string, Message>) => void): Promise<void> {
     const messageCollection = FSService.wpMessagesCollection(wpClientId, chatId)
     const messages = new Map<string, Message>()
     const queryMessages = query(messageCollection, orderBy('created_at'), limitToLast(10))
 
-    onSnapshot(queryMessages, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added' || change.type === 'modified') {
-          const message = change.doc.data() as Message
-          message.from = message.fromMe ? wpClientId : chatId
-          messages.set(message.id, message)
-        }
+    await getDocs(queryMessages).then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const message = doc.data() as Message
+        message.from = message.fromMe ? wpClientId : chatId
+        messages.set(message.id, message)
       })
       listener(messages)
-    }, (error) => {
+    }).catch(error => {
       console.log(error.message)
     })
   }

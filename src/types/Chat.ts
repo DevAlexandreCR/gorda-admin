@@ -5,4 +5,5 @@ export type Chat = {
   archived: boolean
   clientName: string
   lastMessage: Message
+  updated_at: number
 }
