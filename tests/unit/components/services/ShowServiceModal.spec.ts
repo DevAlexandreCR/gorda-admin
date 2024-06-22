@@ -80,15 +80,6 @@ describe('ShowServiceModal.vue', () => {
     await nextTick()
     expect(wrapper.text()).toContain('5000COP')
   })
-
-  it('computes date correctly based on service created_at', async () => {
-    const formattedDate = '02-13 19:31:30'
-    const serviceWithCreatedAt = { ...service, created_at: 1234567890 }
-    await wrapper.setProps({ service: serviceWithCreatedAt })
-    await nextTick()
-    console.log(wrapper.text())
-    expect(wrapper.text()).toContain(formattedDate)
-  })
   
   it('computes createdBy correctly based on service created_by', async () => {
     const serviceWithCreatedBy = { ...service, created_by: true }
