@@ -9,7 +9,11 @@ export default {
     phone: 'Teléfono',
     label_message: 'Mensaje: ',
     label_description: 'Descripcion: ',
-    label_preview: 'Vista Previa: '
+    label_preview: 'Vista Previa: ',
+    created_by: 'created by:',
+    canceled_by: 'canceled by:',
+    terminated_by: 'terminated by:',
+    assigned_by: 'assigned by:'
   },
   models: {
     users: 'Usuario | Usuarios',

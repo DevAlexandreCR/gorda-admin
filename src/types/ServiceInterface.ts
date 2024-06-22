@@ -17,4 +17,8 @@ export interface ServiceInterface {
   driver_id: string | null
   client_id: string | null
   created_at: number
+  created_by: string | null 
+  assigned_by: string | null 
+  canceled_by: string | null
+  terminated_by: string | null 
 }

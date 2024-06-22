@@ -83,6 +83,9 @@ import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from '@/types/ServiceCursor'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
+import { useI18n } from 'vue-i18n'
 
 
 interface Props {
@@ -92,6 +95,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const {t} = useI18n()
 const emit = defineEmits([
   Service.EVENT_CANCEL,
   Service.EVENT_RELEASE,
@@ -120,8 +124,12 @@ function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'MM-DD HH:mm:ss')
 }
 
-function cancel(service: Service): void {
-  emit(Service.EVENT_CANCEL, service.id)
+async function cancel(service: Service): Promise<void> {
+  await ServiceRepository.cancel(service.id)
+    .then(() => emit(Service.EVENT_CANCEL, service.id))
+    .catch((error) => {
+      ToastService.toast(ToastService.ERROR, t('common.messages.error'), error.message)
+    })
 }
 
 function release(service: ServiceList): void {
@@ -129,8 +137,12 @@ function release(service: ServiceList): void {
   emit(Service.EVENT_RELEASE, service)
 }
 
-function end(service: Service): void {
-  emit(Service.EVENT_TERMINATE, service.id)
+async function end(service: Service): Promise<void> {
+  await ServiceRepository.terminated(service.id)
+    .then(() => emit(Service.EVENT_TERMINATE, service.id))
+    .catch((error) => {
+      ToastService.toast(ToastService.ERROR, t('common.messages.error'), error.message)
+    })
 }
 
 function show(service: Service): void {

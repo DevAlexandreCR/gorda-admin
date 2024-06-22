@@ -14,22 +14,26 @@
             <div class="col-6">
               <div class="d-flex flex-column">
                 <h6 class="mb-3 text-sm">{{ $t('common.placeholders.service_info') }}</h6>
-                <span class="mb-2 text-sm">{{$t('services.fields.start_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.start_loc.name}}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{date}}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${service.status}`) }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{service.name}}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.phone}}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.comment}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.start_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.start_loc.name }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ date }}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${ service.status }`) }}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.phone }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.created_by !== null">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.canceled_by !== null">{{$t('common.fields.canceled_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ canceledBy }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.terminated_by !== null">{{$t('common.fields.terminated_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ terminatedBy }}</span></span>
               </div>
             </div>
             <div class="col-6">
               <div class="d-flex flex-column" v-if="service.driver">
                 <h6 class="mb-3 text-sm">{{ $t('common.placeholders.route_info') }}</h6>
-                <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.driver.name}}</span></span>
-                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{service.driver.vehicle.plate}}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{time}}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{fee}}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{multiplier}}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.name }}</span></span>
+                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.vehicle.plate }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ time }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{ fee }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ multiplier }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.assigned_by !== null">{{$t('common.fields.assigned_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ assignedBy }}</span></span>
               </div>
             </div>
           </div>
@@ -41,12 +45,14 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import {PlaceInterface} from '@/types/PlaceInterface'
-import {computed, onMounted, reactive} from 'vue'
+import { PlaceInterface } from '@/types/PlaceInterface'
+import { computed, onMounted, reactive } from 'vue'
 import Map from '@/components/maps/Map.vue'
-import {ServiceList} from '@/models/ServiceList'
+import { ServiceList } from '@/models/ServiceList'
 import DateHelper from '@/helpers/DateHelper'
+import AuthService from '@/services/AuthService'
 
 interface Props {
   service: ServiceList
@@ -81,5 +87,21 @@ const multiplier = computed(() => {
 
 const date = computed(() => {
   return DateHelper.unixToDate(props.service.created_at, 'MM-DD HH:mm:ss')
+})
+
+const createdBy = computed(() => {
+  return props.service.created_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
+})
+
+const canceledBy = computed(() => {
+  return props.service.canceled_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
+})
+
+const terminatedBy = computed(() => {
+  return props.service.terminated_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
+})
+
+const assignedBy = computed(() => {
+  return props.service.assigned_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
 })
 </script>
