@@ -30,7 +30,7 @@ class ChatRepository {
   async getMessages(wpClientId: string, chatId: string, listener: (messages: Map<string, Message>) => void): Promise<void> {
     const messageCollection = FSService.wpMessagesCollection(wpClientId, chatId)
     const messages = new Map<string, Message>()
-    const queryMessages = query(messageCollection, orderBy('created_at'), limitToLast(10))
+    const queryMessages = query(messageCollection, orderBy('created_at'), limitToLast(50))
 
     await getDocs(queryMessages).then((snapshot) => {
       snapshot.forEach((doc) => {
