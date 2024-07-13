@@ -134,7 +134,8 @@ export const useWpClientsStore = defineStore('settingsStore', {
           alias: client.alias,
           wpNotifications: false,
           chatBot: false,
-          assistant: false
+          assistant: false,
+          service: client.service
         }
       })
       .catch(async (e) => {

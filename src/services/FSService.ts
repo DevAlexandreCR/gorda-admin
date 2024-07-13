@@ -1,4 +1,4 @@
-import { getFirestore, Firestore, collection, doc, CollectionReference, DocumentReference, DocumentData } from 'firebase/firestore';
+import { getFirestore, Firestore, collection, CollectionReference, DocumentData } from 'firebase/firestore';
 import Firebase from '@/services/Firebase';
 
 class FirestoreService {

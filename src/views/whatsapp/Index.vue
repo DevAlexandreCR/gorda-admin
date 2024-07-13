@@ -33,6 +33,10 @@
                      v-model="newClient.id" aria-label="Phone" aria-describedby="phone-addon" />
               <ErrorMessage name="id"/>
             </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" name="wpApi" type="checkbox" v-model="useApi"/>
+              <label class="form-check-label">{{ $t('wp.placeholders.select_wp_api') }}</label>
+            </div>
             <div class="card-footer text-end">
               <button class="btn btn-info" type="submit">{{ $t('common.actions.submit') }}</button>
             </div>
@@ -47,17 +51,19 @@
 import {useWpClientsStore} from "@/services/stores/WpClientStore"
 import Connection from "@/views/whatsapp/Connection.vue"
 import {storeToRefs} from "pinia"
-import {reactive, watch} from "vue";
+import {reactive, ref, watch} from "vue";
 import {WpClient} from "@/types/WpClient";
 import {ErrorMessage, Field, Form, FormActions} from "vee-validate";
 import * as yup from "yup";
 import {StrHelper} from "@/helpers/StrHelper";
 import {hide} from "@/helpers/ModalHelper";
 import { useI18n } from "vue-i18n";
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 const {clients} = storeToRefs(useWpClientsStore())
 const {createClient} = useWpClientsStore()
 const {t} = useI18n()
+const useApi = ref<boolean>(false)
 
 const newClient = reactive<WpClient>({
   id: '',
@@ -82,6 +88,11 @@ watch(newClient, (clientNew) => {
 }, {deep: true})
 
 function create(_values: WpClient, event: FormActions<any>): void {
+  if (useApi.value) {
+    newClient.service = WhatsappServices.OFFICIAL
+  } else {
+    newClient.service = WhatsappServices.WHATSAPP_WEB_JS
+  }
   createClient(newClient).finally(() => {
     hide('create-client')
     event.resetForm()

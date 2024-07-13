@@ -15,6 +15,7 @@ import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {useClientsStore} from '@/services/stores/ClientsStore'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from '@/services/stores/WpClientStore'
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 describe('CreateService.vue', () => {
 	let wrapper: VueWrapper<any>
@@ -44,6 +45,7 @@ describe('CreateService.vue', () => {
 				wpNotifications: false,
 				chatBot: false,
 				assistant: false,
+				service: WhatsappServices.WHATSAPP_WEB_JS
 			}
 		}
 	})
