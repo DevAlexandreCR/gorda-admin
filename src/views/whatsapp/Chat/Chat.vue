@@ -3,7 +3,7 @@
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
       :messages = "JSON.stringify(chatMessages)"
-      :height="'90vh'"
+      :height="'100vh'"
       :theme="'dark'"
       :show-audio="false"
       :rooms-loaded="true"
@@ -40,7 +40,7 @@ let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
 
 watch(chats, (newChats) => {
-  rooms.value =  Array.from(newChats.values()).map((chat: Chat) => {
+  const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
     return {
       roomId: chat.id,
       roomName: chat.clientName,
@@ -54,7 +54,7 @@ watch(chats, (newChats) => {
         index: chat.updated_at,
         saved: true,
         distributed: true,
-        seen: chat.lastMessage.fromMe ? false : !chat.archived,
+        seen: chat.lastMessage.fromMe ? true : !chat.archived,
         new: chat.lastMessage.fromMe ? false : !chat.archived
       },
       users: [
@@ -72,6 +72,10 @@ watch(chats, (newChats) => {
         }
       ]
     }
+  })
+
+  rooms.value = chatsSorted.sort((a, b) => {
+    return b.lastMessage.index - a.lastMessage.index
   })
 }, {deep: true})
 
