@@ -7,11 +7,6 @@
           <h6>
             {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
           </h6>
-          <router-link :to="{ name: 'whatsapp.chat', params: {id: client.id}}" tag="a"
-                       class="btn btn-sm btn-info btn-rounded rounded-pill py-1 m-0"
-                       data-original-title="Chat">
-            <em class="fas fa-pencil"></em>
-          </router-link>
         </div>
         <button class="btn btn-danger btn-rounded" :data-bs-target="'#delete-client' + client.id" data-bs-toggle="modal"><em class="fa fa-trash"></em></button>
       </div>
@@ -38,6 +33,13 @@
             <button class="btn btn-primary" @click="auth()" :disabled="connecting || loading || qr">{{ $t('common.chatBot.connect') }}</button>
           </div>
           <div class="col" v-else>
+          </div>
+          <div class="col d-flex justify-content-end mt-0 mb-3">
+            <router-link :to="{ name: 'whatsapp.chat', params: {id: client.id}}" tag="a"
+                         class="btn btn-slack"
+                         data-original-title="Chat">
+              <em class="fas fa-message"></em>
+            </router-link>
           </div>
         </div>
         <div class="row mx-1 mt-3">
