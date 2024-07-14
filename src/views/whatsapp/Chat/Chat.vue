@@ -30,7 +30,7 @@ import DateHelper from '@/helpers/DateHelper'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
-const { getChats, getMessages } = useWpChatStore()
+const { getChats, getMessages, checkPermission } = useWpChatStore()
 const {activeChat, chats, messages } = storeToRefs(useWpChatStore())
 let {setActiveChat} = useWpChatStore()
 const rooms = ref([])
@@ -131,6 +131,7 @@ function onUpdate(socket: WhatsAppClient): void {
 }
 
 onBeforeMount(async () => {
+  checkPermission()
   await getWpClients()
   clientId.value = route.params.id as string
   register()

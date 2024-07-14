@@ -10,6 +10,7 @@ class ChatRepository {
     const queryChats = query(chatCollection, orderBy('updated_at', 'desc'), limitToLast(100))
 
     onSnapshot(queryChats, (snapshot) => {
+      console.log(Array.from(snapshot.docChanges().values()))
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added' || change.type === 'modified') {
           const chat = change.doc.data() as Chat
