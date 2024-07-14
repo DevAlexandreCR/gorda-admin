@@ -107,6 +107,22 @@ function fetchMessages(data: CustomEvent): void {
 
 function sendMessage(data: CustomEvent): void {
   const {content, roomId} = data.detail[0]
+  const id = DateHelper.unix()
+  const newMessage = {
+    _id: id,
+    content: content,
+    senderId: clientId,
+    username: 'message.senderName',
+    date: DateHelper.formatTimestamp(id).date,
+    timestamp: DateHelper.formatTimestamp(id).timestamp,
+    disableActions: true,
+    disableReactions: true,
+    saved: true,
+    distributed: false,
+    seen: false,
+    new: true
+  }
+  chatMessages.value = [...chatMessages.value, newMessage]
   wpClient.sendMessage(clientId.value, roomId, content)
 }
 
