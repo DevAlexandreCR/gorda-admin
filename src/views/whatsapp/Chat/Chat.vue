@@ -2,6 +2,7 @@
   <vue-advanced-chat
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
+      :room-id="activeChat"
       :messages = "JSON.stringify(chatMessages)"
       :height="'100vh'"
       :theme="'dark'"
