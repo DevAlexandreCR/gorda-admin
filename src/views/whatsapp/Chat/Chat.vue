@@ -6,6 +6,7 @@
       :height="'100vh'"
       :theme="'dark'"
       :show-audio="false"
+      :textarea-action-enabled="true"
       :rooms-loaded="true"
       :messages-loaded="true"
       :show-add-room="false"
@@ -13,7 +14,15 @@
       :show-reaction-emojis="false"
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
-  />
+  >
+    <div slot="room-header">
+      <div class="ms-2 text-bold clickable" @click="copyText">
+        <span class="me-2">{{ activeChat }}</span>
+        <i class="fas fa-copy"></i>
+      </div>
+      <div v-if="showTooltip" class="rounded bg-secondary position-absolute ms-2 mt-2 px-3 py-2">{{ $t('common.messages.copied') }}</div>
+    </div>
+  </vue-advanced-chat>
 </template>
 <script setup lang="ts">
 import {register} from 'vue-advanced-chat'
@@ -38,6 +47,7 @@ const chatMessages = ref([])
 let wpClient: WhatsAppClient
 let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
+const showTooltip = ref(false)
 
 watch(chats, (newChats) => {
   const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
@@ -128,6 +138,17 @@ function sendMessage(data: CustomEvent): void {
 
 function onUpdate(socket: WhatsAppClient): void {
   console.log(socket.isConnected())
+}
+
+function copyText() {
+  navigator.clipboard.writeText(activeChat.value)
+    .then(() => {
+      showTooltip.value = true
+      setTimeout(() => { showTooltip.value = false }, 2000)
+    })
+    .catch(err => {
+      console.error('Failed to copy: ', err);
+    });
 }
 
 onBeforeMount(async () => {

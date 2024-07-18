@@ -40,6 +40,7 @@ export default {
     forbidden: 'Permiso denegado!',
     error_chatBot: 'El chatBot y las notificaciones de WhatsApp no pueden estar habilitadas al mismo tiempo!',
     error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
+    copied: 'Copiado al portapapeles!',
   },
   placeholders: {
     name: 'Ingrese el nombre',
