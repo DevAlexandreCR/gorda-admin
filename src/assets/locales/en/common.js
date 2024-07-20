@@ -28,6 +28,7 @@ export default {
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
+    copy_phone: 'Copy phone',
     clear_filters: 'Clear Filters',
     items_pages: 'Items per Pages'
   },
@@ -52,6 +53,8 @@ export default {
     address: 'Enter Address',
     comment: 'Enter comment',
     search: 'Search',
+    dark: 'Dark',
+    light: 'Light',
     map: 'Map',
     all: 'All',
     device: 'Driver has not device registered',

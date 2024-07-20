@@ -4,6 +4,7 @@ import {Message} from '@/types/Message'
 import ChatRepository from '@/repositories/ChatRepository'
 import pingSound from '@/assets/sounds/ping.mp3'
 import DateHelper from "@/helpers/DateHelper";
+import {ChatThemes} from "@/services/gordaApi/constants/ChatThemes";
 
 export const useWpChatStore = defineStore('wpChatStore', {
   state: () => {
@@ -13,22 +14,30 @@ export const useWpChatStore = defineStore('wpChatStore', {
       activeChat: null as string|null,
       hasPermission: false,
       lastNotify: 0,
-      firstStart: true
+      firstStart: true,
+      theme: ChatThemes.DARK as ChatThemes
     }
   },
   actions: {
+    getConfig(): void {
+      this.activeChat = sessionStorage.getItem('activeChat') || null
+      this.theme = sessionStorage.getItem('theme') as ChatThemes || ChatThemes.DARK
+    },
     setActiveChat(chatId: string): void {
       this.activeChat = chatId
+      sessionStorage.setItem('activeChat', chatId)
     },
 
     getChats(wpClientId: string): void {
       ChatRepository.getChats(wpClientId, async (chats) => {
         for (const chat of Array.from(chats.values())) {
-          this.chats.set(chat.id, chat)
-          await this.getMessages(wpClientId, chat.id)
-          if (!this.firstStart && !chat.lastMessage.fromMe) {
-            this.notify()
+          const lastMessage = this.chats.get(chat.id)?.lastMessage
+          if (lastMessage && chat.lastMessage.id !== lastMessage.id) {
+            if (!this.firstStart && !chat.lastMessage.fromMe) {
+              this.notify()
+            }
           }
+          this.chats.set(chat.id, chat)
         }
         this.firstStart = false
       })
@@ -47,6 +56,10 @@ export const useWpChatStore = defineStore('wpChatStore', {
         const notificationSound = new Audio(pingSound)
         notificationSound.play().catch(error => console.log('Error playing the notification sound:', error))
       }
+    },
+    setTheme(theme: ChatThemes): void {
+      sessionStorage.setItem('theme', theme)
+      this.theme = theme
     },
     checkPermission() {
       if (!('Notification' in window)) {

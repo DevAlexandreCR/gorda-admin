@@ -28,6 +28,7 @@ export default {
     terminate: 'Terminar',
     filter: 'Filtrar',
     see: 'Ver',
+    copy_phone: 'Copiar teléfono',
     clear_filters: 'Limpiar Filtros',
     items_pages: 'Elementos Por Pagina'
   },
@@ -54,6 +55,8 @@ export default {
     search: 'Buscar',
     map: 'Mapa',
     all: 'Todos',
+    dark: 'Tema Oscuro',
+    light: 'Tema Claro',
     device: 'No tiene dispositivo registrado',
     cancel_percent: 'Índice de cancelación',
     service_info: 'Información del servicio',

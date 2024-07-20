@@ -10,14 +10,3 @@
  left: 92%;
  
 }
-
-.clickable {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.clickable:hover {
-  color: $success;
-}

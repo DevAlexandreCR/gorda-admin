@@ -1,29 +1,27 @@
 <template>
+  <div v-if="showTooltip" class="alert alert-success centered-tooltip position-absolute ms-2 mt-2 z-index-sticky" role="alert">
+    <strong>{{ activeChat }}</strong>  {{ $t('common.messages.copied') }}
+  </div>
   <vue-advanced-chat
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
       :room-id="activeChat"
       :messages = "JSON.stringify(chatMessages)"
       :height="'100vh'"
-      :theme="'dark'"
+      :theme="theme"
+      :menu-actions="JSON.stringify(menuActions)"
       :show-audio="false"
-      :textarea-action-enabled="true"
       :rooms-loaded="true"
       :messages-loaded="true"
       :show-add-room="false"
       :show-files="false"
       :show-reaction-emojis="false"
+      :room-info-enabled="true"
+      @menu-action-handler="menuActionHandler"
+      @room-info="copyText"
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
-  >
-    <div slot="room-header">
-      <div class="ms-2 text-bold clickable" @click="copyText">
-        <span class="me-2">{{ activeChat }}</span>
-        <i class="fas fa-copy"></i>
-      </div>
-      <div v-if="showTooltip" class="rounded bg-secondary position-absolute ms-2 mt-2 px-3 py-2">{{ $t('common.messages.copied') }}</div>
-    </div>
-  </vue-advanced-chat>
+  />
 </template>
 <script setup lang="ts">
 import {register} from 'vue-advanced-chat'
@@ -37,18 +35,24 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 import {useWpClientsStore} from '@/services/stores/WpClientStore'
 import DateHelper from '@/helpers/DateHelper'
+import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
+import i18n from "@/plugins/i18n";
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
-const { getChats, getMessages, checkPermission } = useWpChatStore()
-const {activeChat, chats, messages } = storeToRefs(useWpChatStore())
-let {setActiveChat} = useWpChatStore()
+const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat } = useWpChatStore()
+const {activeChat, chats, messages, theme } = storeToRefs(useWpChatStore())
 const rooms = ref([])
 const chatMessages = ref([])
 let wpClient: WhatsAppClient
 let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
 const showTooltip = ref(false)
+const menuActions = [
+  { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
+  { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
+  { name: 'light', title: i18n.global.t('common.placeholders.' + ChatThemes.LIGHT) }
+]
 
 watch(chats, (newChats) => {
   const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
@@ -141,7 +145,7 @@ function onUpdate(socket: WhatsAppClient): void {
   console.log(socket.isConnected())
 }
 
-function copyText() {
+function copyText(): void {
   navigator.clipboard.writeText(activeChat.value)
     .then(() => {
       showTooltip.value = true
@@ -152,12 +156,28 @@ function copyText() {
     });
 }
 
+function menuActionHandler(data: CustomEvent): void {
+  const {action, roomId} = data.detail[0]
+  switch (action.name) {
+    case 'copy':
+      copyText()
+      break
+    case ChatThemes.DARK:
+      setTheme(ChatThemes.DARK)
+      break
+    case ChatThemes.LIGHT:
+      setTheme(ChatThemes.LIGHT)
+      break
+  }
+}
+
 onBeforeMount(async () => {
   checkPermission()
   await getWpClients()
   clientId.value = route.params.id as string
   register()
   getChats(clientId.value)
+  getConfig()
   wpClient = WhatsAppClient.getInstance(getWpClient(clientId.value))
   observer = new ClientObserver(onUpdate)
   wpClient.attach(observer)
