@@ -24,7 +24,9 @@ class ChatRepository {
 
   async updateChat(wpClientId: string, chatId: string, data: Partial<Chat>): Promise<void> {
     const chatCollection = FSService.chatsCollection(wpClientId)
-    await updateDoc(doc(chatCollection, chatId), data)
+    await updateDoc(doc(chatCollection, chatId), data).catch(error => {
+        console.log(error.message)
+    })
   }
 
   async getMessages(wpClientId: string, chatId: string, listener: (messages: Map<string, Message>) => void): Promise<void> {

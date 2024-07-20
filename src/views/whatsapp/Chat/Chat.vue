@@ -17,6 +17,9 @@
       :show-files="false"
       :show-reaction-emojis="false"
       :room-info-enabled="true"
+      :custom-search-room-enabled="true"
+      :textarea-auto-focus="false"
+      @search-room="filter"
       @menu-action-handler="menuActionHandler"
       @room-info="copyText"
       @fetch-messages="fetchMessages"
@@ -40,7 +43,7 @@ import i18n from "@/plugins/i18n";
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
-const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat } = useWpChatStore()
+const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat, filterChat } = useWpChatStore()
 const {activeChat, chats, messages, theme } = storeToRefs(useWpChatStore())
 const rooms = ref([])
 const chatMessages = ref([])
@@ -59,6 +62,7 @@ watch(chats, (newChats) => {
     return {
       roomId: chat.id,
       roomName: chat.clientName,
+      unreadCount: chat.archived? 0 : 1,
       lastMessage: {
         _id: chat.lastMessage.id,
         content: chat.lastMessage.body,
@@ -156,8 +160,13 @@ function copyText(): void {
     });
 }
 
+function filter(data: CustomEvent) {
+  const {value} = data.detail[0]
+  filterChat(value)
+}
+
 function menuActionHandler(data: CustomEvent): void {
-  const {action, roomId} = data.detail[0]
+  const {action} = data.detail[0]
   switch (action.name) {
     case 'copy':
       copyText()
