@@ -6,6 +6,7 @@ import pingSound from '@/assets/sounds/ping.mp3'
 import DateHelper from "@/helpers/DateHelper";
 import {ChatThemes} from "@/services/gordaApi/constants/ChatThemes";
 import {MessageTypes} from "@/types/MessageTypes";
+import i18n from "@/plugins/i18n";
 
 export const useWpChatStore = defineStore('wpChatStore', {
   state: () => {
@@ -35,6 +36,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
         for (const chat of Array.from(chats.values())) {
           const lastMessage = this.chats.get(chat.id)?.lastMessage
           if (lastMessage && chat.lastMessage.id !== lastMessage.id) {
+            this.getMessages(wpClientId, chat.id)
             if (!this.firstStart && !chat.lastMessage.fromMe) {
               this.notify()
             }
@@ -85,6 +87,12 @@ export const useWpChatStore = defineStore('wpChatStore', {
         this.lastNotify = DateHelper.unix()
         const notificationSound = new Audio(pingSound)
         notificationSound.play().catch(error => console.log('Error playing the notification sound:', error))
+        if (!document.hasFocus()) {
+          new Notification(i18n.global.t('common.messages.new_message'), {
+            body: this.chats.get(this.activeChat || '')?.lastMessage.body || '',
+            icon: '/favicon.ico'
+          })
+        }
       }
     },
     setTheme(theme: ChatThemes): void {

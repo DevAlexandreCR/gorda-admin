@@ -42,6 +42,7 @@ export default {
     error_chatBot: 'El chatBot y las notificaciones de WhatsApp no pueden estar habilitadas al mismo tiempo!',
     error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
     copied: 'Copiado al portapapeles!',
+    new_message: 'Nuevo mensaje',
   },
   placeholders: {
     name: 'Ingrese el nombre',

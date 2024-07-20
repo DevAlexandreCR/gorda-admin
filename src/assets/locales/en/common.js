@@ -42,6 +42,7 @@ export default {
     error_chatBot: 'ChatBot and WhatsApp notification can\'t be enabled at time!',
     error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',
     copied: 'Copied to clipboard',
+    new_message: 'New message',
   },
   placeholders: {
     name: 'Enter name',
