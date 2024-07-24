@@ -1,13 +1,13 @@
 import {Chat} from '@/types/Chat'
 import FSService from '@/services/FSService'
-import {limitToLast, orderBy, query, onSnapshot, getDocs, doc, updateDoc} from 'firebase/firestore'
+import {limitToLast, orderBy, query, onSnapshot, getDocs, doc, updateDoc, limit} from 'firebase/firestore'
 import {Message} from '@/types/Message'
 
 class ChatRepository {
   getChats(wpClientId: string, listener: (chats: Map<string, Chat>) => void): void {
     const chatCollection = FSService.chatsCollection(wpClientId)
     const chats = new Map<string, Chat>()
-    const queryChats = query(chatCollection, orderBy('updated_at', 'desc'), limitToLast(100))
+    const queryChats = query(chatCollection, orderBy('updated_at', 'desc'), limit(100))
 
     onSnapshot(queryChats, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
