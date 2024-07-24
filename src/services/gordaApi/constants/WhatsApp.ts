@@ -10,6 +10,7 @@ export class WhatsApp {
   public static readonly EVENT_DESTROY = 'destroy'
   public static readonly EVENT_DISCONNECTED = 'disconnected'
   public static readonly EVENT_CLIENT = 'client'
+  public static readonly EVENT_SEND_MESSAGE = 'send-message'
   public static EVENT_AUTH_FAILURE = 'auth_failure'
 	public static LOADING_SCREEN = 'loading_screen'
 	public static STATUS_OPENING = 'OPENING'
