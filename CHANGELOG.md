@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-# Release Notes for 1.3.x
+# Release Notes for 1.4.x
 
+## [1.4.0(2024-07-23)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.0...1.3.5)
+
+### Added
+
+- New module to chat and integrate Whatsapp Api. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/137)
+
+# Release Notes for 1.3.x
 
 ## [1.3.5(2024-05-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.5...1.3.4)
 
