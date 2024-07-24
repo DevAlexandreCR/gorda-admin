@@ -34,6 +34,13 @@
           </div>
           <div class="col" v-else>
           </div>
+          <div class="col d-flex justify-content-end mt-0 mb-3" v-if="props.client.service === WhatsappServices.OFFICIAL">
+            <router-link :to="{ name: 'whatsapp.chat', params: {id: client.id}}" tag="a"
+                         class="btn btn-slack"
+                         data-original-title="Chat">
+              <em class="fas fa-message"></em>
+            </router-link>
+          </div>
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
@@ -108,6 +115,7 @@ import {LoadingType} from '@/types/LoadingType'
 import {WpClient} from "@/types/WpClient";
 import {hide} from "@/helpers/ModalHelper";
 import {storeToRefs} from "pinia";
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 
 interface Props {

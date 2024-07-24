@@ -14,6 +14,7 @@ import {Tables} from '@/constants/Tables'
 import {Pagination} from '@/types/Pagination'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import {useWpClientsStore} from '@/services/stores/WpClientStore'
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -56,7 +57,8 @@ describe('ServicesTable.vue', () => {
         alias: 'Principal',
         wpNotifications: false,
         chatBot: false,
-        assistant: false
+        assistant: false,
+        service: WhatsappServices.WHATSAPP_WEB_JS
       }
     }
 

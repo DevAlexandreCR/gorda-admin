@@ -9,7 +9,8 @@ export default {
     placeholders: {
         delete: 'El cliente se eliminará, ¿desea continuar?',
         default: 'Cliente por defecto para las confirmaciones',
-        select_default: 'Selecccionar como cliente por defecto'
+        select_default: 'Selecccionar como cliente por defecto',
+        select_wp_api: 'Conectar a Whatsapp API',
     },
     titles: {
         confirmations_messages: 'Mensajes de Confirmación',

@@ -4,4 +4,5 @@ export type WpClient = {
   wpNotifications: boolean
   chatBot: boolean
   assistant: boolean
+  service: string
 }
