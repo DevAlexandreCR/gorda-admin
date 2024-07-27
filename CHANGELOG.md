@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- FIx query to load chats. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/137)
+- FIx query to load chats. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/141)
 
 ## [1.4.0(2024-07-23)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.0...1.3.5)
 
