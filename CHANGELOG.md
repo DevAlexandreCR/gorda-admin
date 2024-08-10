@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 1.4.x
+
+## [1.4.2(2024-08-10)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.2...1.4.1)
+
 ### Added
 - Add new implementation and view for see who created such services. [#136](https://github.com/DevAlexandreCR/gorda-admin/pull/136)
 - An Admin can Enable-Disable Drivers. [#135](https://github.com/DevAlexandreCR/gorda-admin/pull/135)
 
 ### Fixed
 - Error when editing a user. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/137)
-
-# Release Notes for 1.4.x
 
 ## [1.4.1(2024-07-24)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.1...1.4.0)
 
