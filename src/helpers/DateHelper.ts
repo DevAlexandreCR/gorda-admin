@@ -75,4 +75,15 @@ export default class DateHelper {
   public static getTime(start: number, end: number, metric: dayjs.UnitType = 'minutes'): string {
     return dayjs.unix(end).diff(dayjs.unix(start), metric).toString()
   }
+
+  public static formatTimestamp(timestamp: number): { date: string, timestamp: string } {
+    const date = dayjs.unix(timestamp)
+
+    const formattedDate = date.format('D MMMM')
+    const formattedTime = date.format('HH:mm')
+    return {
+      date: formattedDate,
+      timestamp: formattedTime
+    }
+  }
 }

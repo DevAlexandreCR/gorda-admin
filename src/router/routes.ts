@@ -17,6 +17,7 @@ import Metrics from '@/views/metrics/Metrics.vue'
 import Settings from '@/views/settings/SettingsApp.vue'
 import MessagesIndex from '@/views/settings/messages/Index.vue'
 import MessagesEdit from '@/views/settings/messages/Edit.vue'
+import Chat from '@/views/whatsapp/Chat/Chat.vue'
 
 
 
@@ -147,6 +148,14 @@ const routes: Array<any> = [
         ]
       }
     ]
+  },
+  {
+    path: '/whatsapp/chat/:id/',
+    name: 'whatsapp.chat',
+    component: Chat,
+    meta: {
+      requireRole: true
+    }
   },
   {
     path: '/403',

@@ -32,6 +32,7 @@ export default {
     terminate: 'Terminar',
     filter: 'Filtrar',
     see: 'Ver',
+    copy_phone: 'Copiar teléfono',
     clear_filters: 'Limpiar Filtros',
     items_pages: 'Elementos Por Pagina'
   },
@@ -44,6 +45,8 @@ export default {
     forbidden: 'Permiso denegado!',
     error_chatBot: 'El chatBot y las notificaciones de WhatsApp no pueden estar habilitadas al mismo tiempo!',
     error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
+    copied: 'Copiado al portapapeles!',
+    new_message: 'Nuevo mensaje',
   },
   placeholders: {
     name: 'Ingrese el nombre',
@@ -57,6 +60,8 @@ export default {
     search: 'Buscar',
     map: 'Mapa',
     all: 'Todos',
+    dark: 'Tema Oscuro',
+    light: 'Tema Claro',
     device: 'No tiene dispositivo registrado',
     cancel_percent: 'Índice de cancelación',
     service_info: 'Información del servicio',

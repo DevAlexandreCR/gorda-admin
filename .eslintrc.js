@@ -20,7 +20,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/no-deprecated-router-link-tag-prop': 'off',
     'vue/multi-word-component-names': 'off',
-    'vue/html-indent': 'off'
+    'vue/html-indent': 'off',
+    'vue/no-deprecated-slot-attribute': 'off',
   },
   overrides: [{
     files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'], env: {

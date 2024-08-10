@@ -10,6 +10,7 @@ import {nextTick} from "vue";
 import {WpClient} from "@/types/WpClient";
 import SettingsRepository from "@/repositories/SettingsRepository";
 import Swal from "sweetalert2";
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -18,7 +19,8 @@ describe('Connection.vue', () => {
     alias: 'Principal',
     wpNotifications: false,
     chatBot: false,
-    assistant: false
+    assistant: false,
+    service: WhatsappServices.WHATSAPP_WEB_JS
   }
 
   beforeEach(async () => {
