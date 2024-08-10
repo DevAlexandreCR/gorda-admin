@@ -6,7 +6,7 @@ export default class User implements UserInterface {
   id?: string
   name: string
   email: string
-  password: string
+  password: string|null = null
   phone: string
   photoUrl?: string
   enabled_at = 0

@@ -290,7 +290,6 @@ import { useLoadingState } from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
 
-
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
