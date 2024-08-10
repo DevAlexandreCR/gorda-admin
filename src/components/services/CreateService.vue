@@ -101,6 +101,7 @@ import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import AuthService from '@/services/AuthService'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
@@ -201,6 +202,9 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
+  if (values.created_by === undefined) {
+    values.created_by = AuthService.getCurrentUser()?.id ?? null;
+  }
   const newService: Service = new Service()
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
@@ -208,6 +212,7 @@ function createService(values: ServiceInterface): void {
   newService.phone = values.phone
   newService.start_loc = start_loc
   newService.wp_client_id = values.wp_client_id
+  newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
     count.value = 1
