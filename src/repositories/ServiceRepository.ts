@@ -13,9 +13,10 @@ import {
 	update as updateDB,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
-import {ServiceInterface} from '@/types/ServiceInterface'
+import { ServiceInterface } from '@/types/ServiceInterface'
 import Service from '@/models/Service'
 import FSService from '@/services/FSService'
+import AuthService from '@/services/AuthService'
 import {
 	CollectionReference,
 	endBefore,
@@ -30,16 +31,16 @@ import {
 	startAt,
 	where,
 } from 'firebase/firestore'
-import {ServiceCursor} from '@/types/ServiceCursor'
+import { ServiceCursor } from '@/types/ServiceCursor'
 
 class ServiceRepository {
 
-  /* istanbul ignore next */
-  async getService(id: string): Promise<ServiceInterface> {
-    const snapshot: DataSnapshot = await get(child(DBService.dbServices(), id))
-    return <ServiceInterface>snapshot.val()
-  }
-	
+	/* istanbul ignore next */
+	async getService(id: string): Promise<ServiceInterface> {
+		const snapshot: DataSnapshot = await get(child(DBService.dbServices(), id))
+		return <ServiceInterface>snapshot.val()
+	}
+
 	/* istanbul ignore next */
 	betweenDate(from: number, to: number, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
@@ -48,7 +49,7 @@ class ServiceRepository {
 			where('created_at', '<=', to)
 		);
 	}
-	
+
 	/* istanbul ignore next */
 	byClientId(clientId: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
@@ -56,7 +57,7 @@ class ServiceRepository {
 			where('client_id', '==', clientId)
 		);
 	}
-	
+
 	/* istanbul ignore next */
 	byStatus(status: string, query?: Query): Query {
 		if (query === undefined) query = FSService.servicesCollection()
@@ -66,7 +67,7 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
-	async getCount(from: number, to: number, clientId: string|null, driverId?: string|null, status: string|null = null): Promise<number> {
+	async getCount(from: number, to: number, clientId: string | null, driverId?: string | null, status: string | null = null): Promise<number> {
 		let query = this.betweenDate(
 			from,
 			to
@@ -93,31 +94,31 @@ class ServiceRepository {
 		);
 	}
 
-/* istanbul ignore next */
-async getPaginated(options: {
-    from: number
-    to: number
-    driverId: string | null
-    clientId: string | null
+	/* istanbul ignore next */
+	async getPaginated(options: {
+		from: number
+		to: number
+		driverId: string | null
+		clientId: string | null
 		perPage: number
-    cursor: ServiceCursor
+		cursor: ServiceCursor
 		next: boolean
-  }, contain: boolean): Promise<Array<Service>> {
-    let query: Query | CollectionReference = this.betweenDate(
-      options.from,
-      options.to
-    )
+	}, contain: boolean): Promise<Array<Service>> {
+		let query: Query | CollectionReference = this.betweenDate(
+			options.from,
+			options.to
+		)
 
-    if (options.clientId) query = this.byClientId(options.clientId, query)
+		if (options.clientId) query = this.byClientId(options.clientId, query)
 
-    if (options.driverId) query = this.byDriverId(options.driverId, query)
+		if (options.driverId) query = this.byDriverId(options.driverId, query)
 
-    query = queryFS(
+		query = queryFS(
 			query,
 			orderBy('created_at', 'desc'),
 			orderBy('id', 'desc'),
-			options.next? contain? startAt(options.cursor.created, options.cursor.id) : startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
-			options.next? limit(options.perPage) : limitToLast(options.perPage)
+			options.next ? contain ? startAt(options.cursor.created, options.cursor.id) : startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
+			options.next ? limit(options.perPage) : limitToLast(options.perPage)
 		)
 
 		return await getDocs(query).then(docs => {
@@ -130,19 +131,20 @@ async getPaginated(options: {
 
 			return Promise.resolve(services)
 		}).catch(e => Promise.reject(e))
-  }
+	}
 
-  /* istanbul ignore next */
-  update(service: ServiceInterface): Promise<void> {
-    if (!service.id) return Promise.reject(new Error('Id is necessary'))
-    return set(ref(DBService.db, 'services/'.concat(service.id)), service)
-  }
+	/* istanbul ignore next */
+	update(service: ServiceInterface): Promise<void> {
+		if (!service.id) return Promise.reject(new Error('Id is necessary'))
+		return set(ref(DBService.db, 'services/'.concat(service.id)), service)
+	}
 
 	/* istanbul ignore next */
 	async assign(serviceId: string, driverId: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
 			driver_id: driverId,
 			status: Service.STATUS_IN_PROGRESS,
+			assigned_by: AuthService.getCurrentUser()?.id ?? null
 		}).then(async () => {
 			await set(ref(DBService.db, 'drivers_assigned/'.concat(driverId)), serviceId)
 		})
@@ -158,32 +160,49 @@ async getPaginated(options: {
 		})
 	}
 
-  /* istanbul ignore next */
-  updateStatus(serviceId: string, status: string): Promise<void> {
-    return set(ref(DBService.db, 'services/' + serviceId + '/status'), status)
-  }
+	/* istanbul ignore next */
+	async terminated(serviceId: string): Promise<void> {
+		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
+			status: Service.STATUS_TERMINATED,
+			terminated_by: AuthService.getCurrentUser()?.id ?? null
+		})
+	}
 
-  /* istanbul ignore next */
-  pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
-    onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), added)
-    onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), removed)
-  }
+	/* istanbul ignore next */
+	async cancel(serviceId: string): Promise<void> {
+		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
+			status: Service.STATUS_CANCELED,
+			canceled_by: AuthService.getCurrentUser()?.id ?? null
+		})
+	}
 
-  /* istanbul ignore next */
-  inProgressListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
-    onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), added)
-    onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), removed)
-  }
+	/* istanbul ignore next */
+	updateStatus(serviceId: string, status: string): Promise<void> {
+		return set(ref(DBService.db, 'services/' + serviceId + '/status'), status)
+	}
 
-  /* istanbul ignore next */
-  async create(service: ServiceInterface, count = 1): Promise<void> {
-		for (let time = 1; time <= count; time ++ ) {
+	/* istanbul ignore next */
+	pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
+		onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), added)
+		onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), removed)
+	}
+
+	/* istanbul ignore next */
+	inProgressListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
+		onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), added)
+		onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), removed)
+	}
+
+	/* istanbul ignore next */
+	async create(service: ServiceInterface, count = 1): Promise<void> {
+		for (let time = 1; time <= count; time++) {
 			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))
 			service.id = res.key
-			await this.update(service).catch(e => Promise.reject(e));
+			service.created_by = AuthService.getCurrentUser()?.id ?? null
+			await this.update(service).catch(e => Promise.reject(e))
 		}
 		await Promise.resolve()
-  }
+	}
 }
 
 export default new ServiceRepository()

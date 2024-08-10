@@ -39,6 +39,10 @@ export const useWpClientsStore = defineStore('settingsStore', {
       .then(() => setLoading(false))
     },
 
+    getWpClient(clientId: string): WpClient|null {
+      return this.clients[clientId] ?? null
+    },
+
     enableChatBot(client: WpClient, enabled: boolean): void {
       if (enabled && (client.assistant || client.wpNotifications)) {
         ToastService.toast(
@@ -130,7 +134,8 @@ export const useWpClientsStore = defineStore('settingsStore', {
           alias: client.alias,
           wpNotifications: false,
           chatBot: false,
-          assistant: false
+          assistant: false,
+          service: client.service
         }
       })
       .catch(async (e) => {

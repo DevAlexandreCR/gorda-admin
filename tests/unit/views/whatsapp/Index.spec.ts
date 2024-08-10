@@ -8,6 +8,7 @@ import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import {WpClient} from "@/types/WpClient";
 import waitForExpect from "wait-for-expect";
 import Swal from "sweetalert2";
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 describe('Index.vue', () => {
   let wrapper: VueWrapper<any>
@@ -16,7 +17,8 @@ describe('Index.vue', () => {
     alias: 'Principal',
     wpNotifications: false,
     chatBot: false,
-    assistant: false
+    assistant: false,
+    service: WhatsappServices.WHATSAPP_WEB_JS
   }
 
   beforeEach(async () => {

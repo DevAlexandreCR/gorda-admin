@@ -22,6 +22,10 @@ export default class Service implements ServiceInterface {
   created_at: number
   comment: string | null = null
   a_go = 0
+  created_by: string | null = null
+  assigned_by: string | null = null
+  canceled_by: string | null = null
+  terminated_by: string | null = null
 
   static readonly STATUS_PENDING = 'pending'
   static readonly STATUS_IN_PROGRESS = 'in_progress'

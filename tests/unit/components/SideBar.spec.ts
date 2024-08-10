@@ -7,6 +7,7 @@ import {openServer, socket} from '../../testSetup'
 import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import {WhatsappServices} from "@/constants/WhatsappServices";
 
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
@@ -19,7 +20,8 @@ describe('SideBar.vue', () => {
         alias: 'Principal',
         wpNotifications: false,
         chatBot: false,
-        assistant: false
+        assistant: false,
+        service: WhatsappServices.WHATSAPP_WEB_JS
       }
     }
     wpClient.defaultClient = '3103794656'

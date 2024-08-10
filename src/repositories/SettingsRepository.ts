@@ -22,7 +22,7 @@ class WpClientRepository {
 
 	/* istanbul ignore next */
 	async getMessages(): Promise<Array<SettingsMessageInterface>> {
-		const snapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.mensajesCollection())
+		const snapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.messagesCollection())
 		const messages: Array<SettingsMessageInterface> = []
 		snapshot.forEach((doc) => {
 		const messageData = doc.data()
@@ -41,7 +41,7 @@ class WpClientRepository {
 
 	/* istanbul ignore next */
 	async updateMessage(message: SettingsMessageInterface): Promise<void> {
-		const messageRef: DocumentReference = doc(FSService.mensajesCollection(), message.id)
+		const messageRef: DocumentReference = doc(FSService.messagesCollection(), message.id)
 		const dataToUpdate = {
 			name: message.name,
 			description: message.description,

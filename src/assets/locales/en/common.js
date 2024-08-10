@@ -9,7 +9,11 @@ export default {
     phone: 'Phone',
     label_message: 'Message: ',
     label_description: 'Description: ',
-    label_preview: 'Preview'
+    label_preview: 'Preview',
+    created_by: 'Creado Por:',
+    canceled_by: 'Cancelado Por:',
+    terminated_by: 'Terminado Por:',
+    assigned_by: 'Asignado Por:',
   },
   models: {
     users: 'User | Users',
@@ -28,6 +32,7 @@ export default {
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
+    copy_phone: 'Copy phone',
     clear_filters: 'Clear Filters',
     items_pages: 'Items per Pages'
   },
@@ -40,6 +45,8 @@ export default {
     forbidden: 'Permission denied',
     error_chatBot: 'ChatBot and WhatsApp notification can\'t be enabled at time!',
     error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',
+    copied: 'Copied to clipboard',
+    new_message: 'New message',
   },
   placeholders: {
     name: 'Enter name',
@@ -51,6 +58,8 @@ export default {
     address: 'Enter Address',
     comment: 'Enter comment',
     search: 'Search',
+    dark: 'Dark',
+    light: 'Light',
     map: 'Map',
     all: 'All',
     device: 'Driver has not device registered',
