@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.4.x
 
+## [1.4.1(2024-07-24)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.1...1.4.0)
+
+### Fixed
+- FIx query to load chats. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/141)
+
 ## [1.4.0(2024-07-23)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.0...1.3.5)
 
 ### Added
@@ -23,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New module to chat and integrate Whatsapp Api. [#137](https://github.com/DevAlexandreCR/gorda-admin/pull/137)
 
 # Release Notes for 1.3.x
-
 
 ## [1.3.5(2024-05-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.3.5...1.3.4)
 
