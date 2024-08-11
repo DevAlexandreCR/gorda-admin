@@ -123,7 +123,6 @@ import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import AuthService from '@/services/AuthService'
-import { useI18n } from 'vue-i18n'
 
 const {drivers, filter, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
@@ -132,7 +131,6 @@ const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
 const enabled: Ref<number> = ref(-1)
 const currentUser = AuthService.getCurrentUser()
-const {t} = useI18n()
 
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
@@ -158,8 +156,7 @@ watchEffect(() => {
 })
 
 onMounted(() => {
-  const allDrivers = drivers;
-  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...allDrivers)
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...(drivers))
 })
 
 function onEnable(event: Event): void {

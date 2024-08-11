@@ -165,6 +165,7 @@ import router from '@/router'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {StrHelper} from '@/helpers/StrHelper'
 import DateHelper from '@/helpers/DateHelper'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -174,6 +175,7 @@ const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const types: Array<any> = Constants.DOC_TYPES
 const {setLoading} = useLoadingState()
 const {addDriver} = useDriversStore()
+const {branchSelected} = useSettingsStore()
 const schema: ObjectSchema<any> = object().shape({
   name: string().required().min(3),
   email: string().required().email(),
@@ -217,6 +219,7 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
   setLoading(true)
   driver.value.vehicle.soat_exp = dayjs(driver.value.vehicle.soat_exp).unix()
   driver.value.vehicle.tec_exp = dayjs(driver.value.vehicle.tec_exp).unix()
+  driver.value.phone = branchSelected?.calling_code + driver.value.phone
   DriverRepository.create(driver.value, password.value).then((id) => {
     driver.value.id = id
     uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {

@@ -292,7 +292,6 @@ import { StrHelper } from '@/helpers/StrHelper'
 import { useI18n } from 'vue-i18n'
 import AuthService from '@/services/AuthService'
 
-
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);

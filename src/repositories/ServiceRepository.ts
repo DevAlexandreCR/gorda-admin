@@ -161,24 +161,11 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
-	async terminated(serviceId: string): Promise<void> {
+	updateStatus(serviceId: string, status: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
-			status: Service.STATUS_TERMINATED,
-			terminated_by: AuthService.getCurrentUser()?.id ?? null
-		})
-	}
-
-	/* istanbul ignore next */
-	async cancel(serviceId: string): Promise<void> {
-		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
-			status: Service.STATUS_CANCELED,
+			status: status,
 			canceled_by: AuthService.getCurrentUser()?.id ?? null
 		})
-	}
-
-	/* istanbul ignore next */
-	updateStatus(serviceId: string, status: string): Promise<void> {
-		return set(ref(DBService.db, 'services/' + serviceId + '/status'), status)
 	}
 
 	/* istanbul ignore next */

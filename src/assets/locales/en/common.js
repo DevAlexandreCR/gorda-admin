@@ -135,7 +135,12 @@ export default {
     fees_minimum: 'fee for minimum',
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',
-    fees_night_DxF: 'Sundays and night holidays'
+    fees_night_DxF: 'Sundays and night holidays',
+    general_settings: 'General Settings',
+    cities: 'Cities',
+    currency_code: 'Currency code',
+    calling_code: 'Calling code',
+    branches: 'Branches',
   },
   titles: {
     title_modal: 'Edit WhatsApp Messages',
