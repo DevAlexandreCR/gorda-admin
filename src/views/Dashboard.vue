@@ -25,6 +25,7 @@ import { useClientsStore } from '@/services/stores/ClientsStore'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import { useServicesStore } from '@/services/stores/ServiceStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesLoaded = ref(false)
 const clientsLoaded = ref(false)
@@ -37,6 +38,7 @@ const { getClients } = useClientsStore()
 const { getDrivers } = useDriversStore()
 const { getHistoryServices, getPendingServices, getInProgressServices } = useServicesStore()
 const { getWpClients } = useWpClientsStore()
+const { getBranches } = useSettingsStore()
 
 const loadAllData = async () => {
   await Promise.all([
@@ -46,7 +48,8 @@ const loadAllData = async () => {
     getHistoryServices(),
     getPendingServices(),
     getInProgressServices(),
-    getWpClients()
+    getWpClients(),
+    getBranches()
   ])
 
   placesLoaded.value = true

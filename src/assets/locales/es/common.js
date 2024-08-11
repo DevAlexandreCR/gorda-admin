@@ -135,7 +135,12 @@ export default {
     fees_minimum: 'Tarifa Mínima',
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
-    fees_night_DxF: 'Domingos y Festivos Nocturnos'
+    fees_night_DxF: 'Domingos y Festivos Nocturnos',
+    general_settings: 'Ajustes Generales',
+    cities: 'Ciudades',
+    currency_code: 'Código de Moneda',
+    calling_code: 'Código de Llamada',
+    branches: 'Sucursales'
   },
   titles: {
     title_modal: 'Editar Mensajes de WhatsApp',
