@@ -2,7 +2,7 @@
   <div>
     <Suspense>
       <template #default>
-        <div v-if="placesLoaded && clientsLoaded && driversLoaded && servicesLoaded && wpClientsLoaded">
+        <div v-if="placesLoaded && clientsLoaded && driversLoaded && servicesLoaded && wpClientsLoaded && settingsLoaded">
           <SideBar></SideBar>
           <main class="main-content mt-1 border-radius-lg " id="main">
             <NavBar/>
@@ -32,6 +32,7 @@ const clientsLoaded = ref(false)
 const driversLoaded = ref(false)
 const servicesLoaded = ref(false)
 const wpClientsLoaded = ref(false)
+const settingsLoaded = ref(false)
 
 const { getPlaces } = usePlacesStore()
 const { getClients } = useClientsStore()
@@ -57,6 +58,7 @@ const loadAllData = async () => {
   driversLoaded.value = true
   servicesLoaded.value = true
   wpClientsLoaded.value = true
+  settingsLoaded.value = true
 }
 
 onMounted(async () => {

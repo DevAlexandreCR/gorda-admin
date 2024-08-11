@@ -66,7 +66,6 @@ class WpClientRepository {
 	/* istanbul ignore next */
 	async getBranches(): Promise<Branch[]> {
 		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/branches'))
-		console.log(JSON.stringify(snapshot.val()))
 		return <Branch[]>snapshot.val()
 	}
 

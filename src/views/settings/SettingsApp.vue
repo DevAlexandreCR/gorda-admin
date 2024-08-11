@@ -56,7 +56,8 @@
                     <li v-for="city in branch.cities" :key="city.city" class="list-group-item d-flex">
                       <div class="form-check">
                         <label class="custom-control-label ms-2 text-sm" :for="city.city">{{city.city}}</label>
-                        <input type="checkbox" class="form-check-input" :id="city.city">
+                        <input type="checkbox" class="form-check-input" @click="setBranchSelected(city)"
+                           :checked="branchSelected?.city === city.city" :id="city.city">
                       </div>
                     </li>
                   </ul>
@@ -214,7 +215,8 @@ import {useSettingsStore} from "@/services/stores/SettingsStore";
 const { setLoading } = useLoadingState()
 
 const rideFees: Ref<RideFeeInterface> = ref({})
-const { branches } = storeToRefs(useSettingsStore())
+const { branches, branchSelected } = storeToRefs(useSettingsStore())
+const { setBranchSelected } = useSettingsStore()
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
