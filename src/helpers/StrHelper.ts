@@ -8,11 +8,12 @@ export class StrHelper {
 		}
 		return arr.join(' ')
 	}
-	static formatNumber(search: string): string {
+	static formatNumber(search = ''): string {
+		const num = search.includes('+56')? -9 : -10
 		return search
 			.replace(' ', '')
 			.replace(/[^\d]/g, "")
-			.slice(-10)
+			.slice(num)
 	}
 	
 	static formatPlate(plate: string): string {

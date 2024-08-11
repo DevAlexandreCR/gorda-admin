@@ -53,6 +53,7 @@ import Map from '@/components/maps/Map.vue'
 import { ServiceList } from '@/models/ServiceList'
 import DateHelper from '@/helpers/DateHelper'
 import AuthService from '@/services/AuthService'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 interface Props {
   service: ServiceList
@@ -60,6 +61,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const location = reactive<Array<PlaceInterface>>([])
+const { branchSelected } = useSettingsStore()
 
 onMounted(() => {
   location.push({
@@ -76,8 +78,8 @@ const time = computed(() => {
 })
 
 const fee = computed(() => {
-  if (props.service.metadata?.trip_fee === undefined) return '0COP'
-  return props.service.metadata?.trip_fee + 'COP'
+  if (props.service.metadata?.trip_fee === undefined) return '0' + branchSelected?.currency_code
+  return props.service.metadata?.trip_fee + branchSelected?.currency_code
 })
 
 const multiplier = computed(() => {

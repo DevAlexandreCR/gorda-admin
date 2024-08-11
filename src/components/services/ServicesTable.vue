@@ -95,7 +95,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const {t} = useI18n()
 const emit = defineEmits([
   Service.EVENT_CANCEL,
   Service.EVENT_RELEASE,
@@ -124,12 +123,8 @@ function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'MM-DD HH:mm:ss')
 }
 
-async function cancel(service: Service): Promise<void> {
-  await ServiceRepository.cancel(service.id)
-    .then(() => emit(Service.EVENT_CANCEL, service.id))
-    .catch((error) => {
-      ToastService.toast(ToastService.ERROR, t('common.messages.error'), error.message)
-    })
+function cancel(service: Service): void {
+  emit(Service.EVENT_CANCEL, service.id)
 }
 
 function release(service: ServiceList): void {
@@ -137,12 +132,8 @@ function release(service: ServiceList): void {
   emit(Service.EVENT_RELEASE, service)
 }
 
-async function end(service: Service): Promise<void> {
-  await ServiceRepository.terminated(service.id)
-    .then(() => emit(Service.EVENT_TERMINATE, service.id))
-    .catch((error) => {
-      ToastService.toast(ToastService.ERROR, t('common.messages.error'), error.message)
-    })
+function end(service: Service): void {
+  emit(Service.EVENT_TERMINATE, service.id)
 }
 
 function show(service: Service): void {

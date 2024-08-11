@@ -158,9 +158,9 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 }
 
 const schema = yup.object().shape({
-  wp_client_id: yup.string().required().min(10),
+  wp_client_id: yup.string().required().min(9),
   name: yup.string().required().min(3),
-  phone: yup.string().required().min(10).max(10),
+  phone: yup.string().required().min(9).max(10),
   start_address: yup.string().required(),
   comment: yup.string().nullable()
 })
