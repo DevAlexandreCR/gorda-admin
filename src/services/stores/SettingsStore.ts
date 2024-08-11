@@ -13,7 +13,12 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
     },
     actions: {
         async getBranches(): Promise<void> {
-            this.branchSelected = JSON.parse(sessionStorage.getItem('branchSelected')) as City | null
+            const storedBranch = sessionStorage.getItem('branchSelected')
+            if (storedBranch !== null) {
+                this.branchSelected = JSON.parse(storedBranch) as BranchSelected
+            } else {
+                this.branchSelected = null
+            }
             this.branches = await SettingsRepository.getBranches().catch(() => [])
             if (this.branches.length === 1 && this.branchSelected === null) {
                 this.setBranchSelected(this.branches[0], this.branches[0].cities[0])

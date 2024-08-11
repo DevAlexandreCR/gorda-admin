@@ -7,9 +7,11 @@ import {onMounted, watch} from 'vue'
 import { PlaceInterface } from '@/types/PlaceInterface';
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
 import {google} from 'google-maps'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 let googleMap: GoogleMaps
 let mapReady = false
+const { branchSelected } = useSettingsStore()
 
 interface Props {
   places: Array<PlaceInterface>,
@@ -24,7 +26,7 @@ let icon: string
 
 onMounted(async () => {
   icon = props.icon?? process.env.VUE_APP_LOCATION_IMAGE_URL as string
-  googleMap = new GoogleMaps(icon)
+  googleMap = new GoogleMaps(icon, branchSelected?.city.location.lat, branchSelected?.city.location.lng)
   await googleMap.initMap('map').then(() => {
     mapReady = true
     props.places.forEach(place => {
