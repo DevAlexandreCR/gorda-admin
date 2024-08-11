@@ -100,6 +100,7 @@ import {useStorage} from '@/services/stores/Storage'
 import {storeToRefs} from 'pinia'
 import router from '@/router'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const storage = useStorage()
 const {photoUrl} = storeToRefs(storage)
@@ -109,6 +110,7 @@ const user: Ref<User> = ref(new User)
 const image: Ref<File[]> = ref([])
 const password: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
+const { branchSelected } = useSettingsStore()
 
 const schema = yup.object().shape({
   photoUrl: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required(),
@@ -120,6 +122,7 @@ const schema = yup.object().shape({
 
 function createUser(_values: UserInterface, event: FormActions<any>): void {
   setLoading(true)
+  user.value.phone = branchSelected.calling_code + user.value.phone
   UserRepository.create(user.value, password.value).then((id) => {
     user.value.id = id
     const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)

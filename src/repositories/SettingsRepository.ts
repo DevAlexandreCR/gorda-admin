@@ -7,6 +7,7 @@ import { SettingsMessageInterface } from '@/types/SettingsMessagesInterface';
 import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'
+import {Branch} from "@/types/Branch";
 
 class WpClientRepository {
 
@@ -60,6 +61,12 @@ class WpClientRepository {
 	async getRideFees(): Promise<RideFeeInterface> {
 		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/ride_fees'))
 		return <RideFeeInterface>snapshot.val()
+	}
+
+	/* istanbul ignore next */
+	async getBranches(): Promise<Branch[]> {
+		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/branches'))
+		return <Branch[]>snapshot.val()
 	}
 
 	/* istanbul ignore next */

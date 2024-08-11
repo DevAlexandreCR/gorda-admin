@@ -83,6 +83,9 @@ import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from '@/types/ServiceCursor'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
+import { useI18n } from 'vue-i18n'
 
 
 interface Props {

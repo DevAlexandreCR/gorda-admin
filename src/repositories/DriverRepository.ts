@@ -119,7 +119,7 @@ class DriverRepository {
       email: driver.email,
       emailVerified: true,
       displayName: driver.name,
-      phoneNumber: '+57' + driver.phone,
+      phoneNumber: driver.phone,
       password: password,
       disabled: driver.enabled_at == 0,
     }

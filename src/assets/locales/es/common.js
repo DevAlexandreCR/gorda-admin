@@ -9,7 +9,11 @@ export default {
     phone: 'Teléfono',
     label_message: 'Mensaje: ',
     label_description: 'Descripcion: ',
-    label_preview: 'Vista Previa: '
+    label_preview: 'Vista Previa: ',
+    created_by: 'created by:',
+    canceled_by: 'canceled by:',
+    terminated_by: 'terminated by:',
+    assigned_by: 'assigned by:'
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -131,7 +135,12 @@ export default {
     fees_minimum: 'Tarifa Mínima',
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
-    fees_night_DxF: 'Domingos y Festivos Nocturnos'
+    fees_night_DxF: 'Domingos y Festivos Nocturnos',
+    general_settings: 'Ajustes Generales',
+    cities: 'Ciudades',
+    currency_code: 'Código de Moneda',
+    calling_code: 'Código de Llamada',
+    branches: 'Sucursales'
   },
   titles: {
     title_modal: 'Editar Mensajes de WhatsApp',

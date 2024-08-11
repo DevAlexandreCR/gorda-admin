@@ -137,12 +137,12 @@ const routes: Array<any> = [
           },
           {
             path: '/dashboard/settings/messages/index/',
-            name: 'settings.mensjes',
+            name: 'settings.messages',
             component: MessagesIndex
           },
           {
             path: '/dashboard/settings/messages/edit',
-            name: 'settings.mensjes',
+            name: 'settings.messages',
             component: MessagesEdit
           },
         ]

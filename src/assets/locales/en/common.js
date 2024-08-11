@@ -9,7 +9,11 @@ export default {
     phone: 'Phone',
     label_message: 'Message: ',
     label_description: 'Description: ',
-    label_preview: 'Preview'
+    label_preview: 'Preview',
+    created_by: 'Creado Por:',
+    canceled_by: 'Cancelado Por:',
+    terminated_by: 'Terminado Por:',
+    assigned_by: 'Asignado Por:',
   },
   models: {
     users: 'User | Users',
@@ -131,7 +135,12 @@ export default {
     fees_minimum: 'fee for minimum',
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',
-    fees_night_DxF: 'Sundays and night holidays'
+    fees_night_DxF: 'Sundays and night holidays',
+    general_settings: 'General Settings',
+    cities: 'Cities',
+    currency_code: 'Currency code',
+    calling_code: 'Calling code',
+    branches: 'Branches',
   },
   titles: {
     title_modal: 'Edit WhatsApp Messages',

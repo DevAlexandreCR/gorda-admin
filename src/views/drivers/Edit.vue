@@ -289,7 +289,8 @@ import { mixed, object, date, string } from 'yup'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
-
+import { useI18n } from 'vue-i18n'
+import AuthService from '@/services/AuthService'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -299,10 +300,12 @@ const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
+const { t } = useI18n()
 const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
+const currentUser = AuthService.getCurrentUser()
 const { setLoading } = useLoadingState()
 const schema = object().shape({
   name: string().required().min(3),
@@ -407,6 +410,10 @@ function updatePassword(): void {
 }
 
 function onEnable(event: Event): void {
+  if (!currentUser || !currentUser.isAdmin()) {
+    ToastService.toast(ToastService.ERROR, `${t('users.messages.permissions')}`)
+    return
+  }
   setLoading(true)
   const target = event.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0

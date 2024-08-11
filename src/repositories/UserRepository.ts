@@ -32,11 +32,12 @@ class UserRepository {
       email: user.email,
       emailVerified: true,
       displayName: user.name,
-      phoneNumber: '+57' + user.phone,
+      phoneNumber: user.phone,
       password: password,
       disabled: user.enabled_at == 0,
     }
-    return new Promise((resolve, reject) => {
+    user.password = password
+    return new Promise((resolve, reject) => {      
       this.createAuth(userData).then(async (res) => {
         const id = res.data.data.uid
         user.id = id

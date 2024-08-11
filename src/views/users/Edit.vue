@@ -11,7 +11,7 @@
               <div class="card-header p-0 mx-3 mt-3 z-index-1">
                 <img :src="user.photoUrl" class="img-fluid border-radius-lg" alt="profile_photo">
                 <button class="btn btn-sm btn-icon btn-2 btn-primary btn-edit-img" type="button" data-bs-toggle="modal"
-                        data-bs-target="#imgModal">
+                        data-bs-target="#image-user">
                   <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
                 </button>
               </div>
@@ -78,34 +78,8 @@
       </div>
     </Form>
     <!-- Modal -->
-    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.upload') }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <Form @submit="uploadImg" :validation-schema="schemaImg">
-            <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label">{{ $t('users.forms.select_img') }}</label>
-                <Field name="photo" class="form-control" type="file" accept="image/*" v-model="image" id="formFile" multiple/>
-                <ErrorMessage name="photo"/>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-                {{ $t('common.actions.close') }}
-              </button>
-              <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
-            </div>
-          </Form>
-        </div>
-      </div>
-    </div>
+    <ImageLoader :id="'image-user'" :resourceId="user.id" :path="StorageService.profilePath" :event="userEvent"
+       @imageUserLoaded="uploadImg"></ImageLoader>
     <!-- Modal -->
   <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -151,8 +125,6 @@ import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
-import {ObjectSchema, object, string} from 'yup'
-import CustomValidator from '@/assets/validatiions/validators'
 import * as bootstrap from 'bootstrap'
 import StorageService from '@/services/StorageService'
 import dayjs from 'dayjs'
@@ -162,13 +134,11 @@ import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
+import ImageLoader from "@/components/ImageLoader.vue";
 
 const user: Ref<User> = ref(new User)
 const route = useRoute()
-const schemaImg: ObjectSchema<any> = yup.object().shape({
-  photo: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
-})
-const image: Ref<File[]> = ref([])
+const userEvent = 'image-user-loaded'
 const showPassword = ref(false);
 const {setLoading} = useLoadingState()
 const schema = yup.object().shape({
@@ -178,17 +148,13 @@ const schema = yup.object().shape({
   role: yup.array()
 })
 
-const schemaPassword = object().shape({
-  password: string().required()
+const schemaPassword = yup.object().shape({
+  password: yup.string().required()
 })
 
-function uploadImg(): void {
-  const reference = StorageService.getStorageReference(StorageService.profilePath, user.value.id ?? '', image.value[0]?.name)
-  setLoading(true)
-  StorageService.uploadFile(reference, image.value[0]).then(url => {
-    user.value.photoUrl = url
-    updateUser()
-  }).catch(() => setLoading(false))
+function uploadImg(url: string): void {
+  user.value.photoUrl = url
+  updateUser()
 }
 
 function updateUser(): void {
@@ -201,7 +167,7 @@ function updateUser(): void {
       showConfirmButton: false,
       timer: 1500
     })
-    const modal = document.getElementById('imgModal')
+    const modal = document.getElementById('image-user')
     const modalImg = bootstrap.Modal.getOrCreateInstance(modal ?? '')
     modalImg.hide()
   }).catch(e => {

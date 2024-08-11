@@ -2,7 +2,7 @@
   <div>
     <Suspense>
       <template #default>
-        <div v-if="placesLoaded && clientsLoaded && driversLoaded && servicesLoaded && wpClientsLoaded">
+        <div v-if="placesLoaded && clientsLoaded && driversLoaded && servicesLoaded && wpClientsLoaded && settingsLoaded">
           <SideBar></SideBar>
           <main class="main-content mt-1 border-radius-lg " id="main">
             <NavBar/>
@@ -25,18 +25,21 @@ import { useClientsStore } from '@/services/stores/ClientsStore'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import { useServicesStore } from '@/services/stores/ServiceStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesLoaded = ref(false)
 const clientsLoaded = ref(false)
 const driversLoaded = ref(false)
 const servicesLoaded = ref(false)
 const wpClientsLoaded = ref(false)
+const settingsLoaded = ref(false)
 
 const { getPlaces } = usePlacesStore()
 const { getClients } = useClientsStore()
 const { getDrivers } = useDriversStore()
 const { getHistoryServices, getPendingServices, getInProgressServices } = useServicesStore()
 const { getWpClients } = useWpClientsStore()
+const { getBranches } = useSettingsStore()
 
 const loadAllData = async () => {
   await Promise.all([
@@ -46,7 +49,8 @@ const loadAllData = async () => {
     getHistoryServices(),
     getPendingServices(),
     getInProgressServices(),
-    getWpClients()
+    getWpClients(),
+    getBranches()
   ])
 
   placesLoaded.value = true
@@ -54,6 +58,7 @@ const loadAllData = async () => {
   driversLoaded.value = true
   servicesLoaded.value = true
   wpClientsLoaded.value = true
+  settingsLoaded.value = true
 }
 
 onMounted(async () => {

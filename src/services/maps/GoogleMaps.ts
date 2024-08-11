@@ -7,8 +7,10 @@ export class GoogleMaps {
   map: google.maps.Map
   markers: Array<google.maps.Marker> = []
   icon: string
+  center: google.maps.LatLngLiteral
   
-  constructor(icon: string) {
+  constructor(icon: string, lat: number, lng: number) {
+    this.center = { lat: lat, lng: lng }
     this.loader = new Loader({
       apiKey: process.env.VUE_APP_GOOGLE_API_KEY?? '',
       version: "weekly"
@@ -20,7 +22,7 @@ export class GoogleMaps {
   async initMap(id: string): Promise<google.maps.Map> {
     await this.loader.load().then((google)=> {
       const options: google.maps.MapOptions = {
-        center: { lat: 2.4448143, lng: -76.6147395 },
+        center: this.center,
         zoom: 14
       }
       this.map = new google.maps.Map(document.getElementById(id) as HTMLElement, options)

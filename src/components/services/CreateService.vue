@@ -101,6 +101,8 @@ import {storeToRefs} from 'pinia'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import AuthService from '@/services/AuthService'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
@@ -110,9 +112,10 @@ let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
-const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
+const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[0])
 const count: Ref<number> = ref(1)
 const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
+const {branchSelected} = useSettingsStore()
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -127,6 +130,7 @@ watch(() => service.value.name, (name) => {
 })
 
 onMounted(async () => {
+  countryCode.value = countryCodes.value.filter(code => code.dialCode === branchSelected?.calling_code)[0]
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
   updateAutocompletePlaces(places)
@@ -154,9 +158,9 @@ function updateAutocompleteClients(from: Array<ClientInterface>): void {
 }
 
 const schema = yup.object().shape({
-  wp_client_id: yup.string().required().min(10),
+  wp_client_id: yup.string().required().min(9),
   name: yup.string().required().min(3),
-  phone: yup.string().required().min(10).max(10),
+  phone: yup.string().required().min(9).max(10),
   start_address: yup.string().required(),
   comment: yup.string().nullable()
 })
@@ -201,6 +205,9 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
+  if (values.created_by === undefined) {
+    values.created_by = AuthService.getCurrentUser()?.id ?? null;
+  }
   const newService: Service = new Service()
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
@@ -208,6 +215,7 @@ function createService(values: ServiceInterface): void {
   newService.phone = values.phone
   newService.start_loc = start_loc
   newService.wp_client_id = values.wp_client_id
+  newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
     count.value = 1
