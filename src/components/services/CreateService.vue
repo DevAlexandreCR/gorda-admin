@@ -102,6 +102,7 @@ import {CountryCodeType} from '@/types/CountryCodeType'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import AuthService from '@/services/AuthService'
+import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
@@ -111,9 +112,10 @@ let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
-const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[31])
+const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[0])
 const count: Ref<number> = ref(1)
 const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
+const {branchSelected} = useSettingsStore()
 
 watch(clients, (newClients) => {
   updateAutocompleteClients(newClients)
@@ -128,6 +130,7 @@ watch(() => service.value.name, (name) => {
 })
 
 onMounted(async () => {
+  countryCode.value = countryCodes.value.filter(code => code.dialCode === branchSelected?.calling_code)[0]
   const input = document.querySelector('input[name="phone"]') as HTMLInputElement
   input?.focus()
   updateAutocompletePlaces(places)
