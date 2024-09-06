@@ -40,6 +40,7 @@ import {useWpClientsStore} from '@/services/stores/WpClientStore'
 import DateHelper from '@/helpers/DateHelper'
 import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
 import i18n from "@/plugins/i18n";
+import {useClientsStore} from "@/services/stores/ClientsStore";
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -50,6 +51,7 @@ const chatMessages = ref([])
 let wpClient: WhatsAppClient
 let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
+const  { findById, getClients } = useClientsStore()
 const showTooltip = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
@@ -59,9 +61,10 @@ const menuActions = [
 
 watch(chats, (newChats) => {
   const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
+    const client = findById(chat.id)
     return {
       roomId: chat.id,
-      roomName: chat.clientName,
+      roomName: client.name ?? chat.clientName,
       unreadCount: chat.archived? 0 : 1,
       lastMessage: {
         _id: chat.lastMessage.id,
@@ -182,6 +185,7 @@ function menuActionHandler(data: CustomEvent): void {
 
 onBeforeMount(async () => {
   checkPermission()
+  await getClients()
   await getWpClients()
   clientId.value = route.params.id as string
   register()
