@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.4.x
 
+## [1.4.3(2024-09-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.3...1.4.2)
+
+### Fixed
+- Client name update. [#144](https://github.com/DevAlexandreCR/gorda-admin/pull/144)
+
 ## [1.4.2(2024-08-10)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.2...1.4.1)
 
 ### Added

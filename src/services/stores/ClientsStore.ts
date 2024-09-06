@@ -13,7 +13,7 @@ export const useClientsStore = defineStore('clientsStore', {
   state: (): ClientsState => {
     return {
       clients: Array<Client>(),
-			countryCodes: countryCodes
+        countryCodes: countryCodes
     }
   },
   actions: {
@@ -23,15 +23,18 @@ export const useClientsStore = defineStore('clientsStore', {
       })
     },
     findById(id: string): Client {
+        if (!id.includes('@c.us')) {
+            id += '@c.us'
+        }
       const client = this.clients.find(el => el.id == id)
       return client ?? new Client()
     },
 		
-		updateClient(client: ClientInterface): void {
-			const index = this.clients.findIndex(cl => client.id === cl.id)
-			if (index >= 0) {
-				this.clients[index] = client
-			}
-		}
+    updateClient(client: ClientInterface): void {
+        const index = this.clients.findIndex(cl => client.id === cl.id)
+        if (index >= 0) {
+            this.clients[index] = client
+        }
+    }
   }
 })
