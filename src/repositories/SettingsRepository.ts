@@ -8,8 +8,9 @@ import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'
 import {Branch} from "@/types/Branch";
+import { City } from '@/types/City';
 
-class WpClientRepository {
+class SettingsRepository {
 
 	/* istanbul ignore next */
 	async getWpClients(): Promise<ClientDictionary> {
@@ -94,12 +95,20 @@ class WpClientRepository {
 		off(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), 'value')
 	}
 
+	/* istanbul ignore next */
 	createClient(client: WpClient): Promise<void> {
 		return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), client)
 	}
 
+	/* istanbul ignore next */
 	deleteClient(client: WpClient): Promise<void> {
 		return remove(ref(DBService.db, `settings/wp_clients/${client.id}/`))
 	}
+
+	/* istanbul ignore next */
+	async enableRateManagement(branchId: number, cityId: number, enable: boolean): Promise<void> {
+		await set(ref(DBService.db, `settings/branches/${branchId}/cities/${cityId}/rate_management`), enable)
+	}
+
 }
-export default new WpClientRepository()
+export default new SettingsRepository()

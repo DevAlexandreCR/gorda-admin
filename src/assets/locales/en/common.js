@@ -14,6 +14,7 @@ export default {
     canceled_by: 'Cancelado Por:',
     terminated_by: 'Terminado Por:',
     assigned_by: 'Asignado Por:',
+    rate_management: 'Rate Management',
   },
   models: {
     users: 'User | Users',

@@ -32,6 +32,10 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
                 city: city
             }
             sessionStorage.setItem('branchSelected', JSON.stringify(this.branchSelected))
+        },
+        async enableRateManagement(branchId: number, cityId: number, enable: boolean): Promise<void> {
+            await SettingsRepository.enableRateManagement(branchId, cityId, enable)
+            await this.getBranches()
         }
     }
 })

@@ -179,11 +179,18 @@
                   <p><strong class="me-2">{{ $t('common.settings.currency_code') }}:</strong> {{ branch.currency_code }}</p>
                   <h5 class="mt-3">{{ $t('common.settings.cities') }}</h5>
                   <ul class="list-group">
-                    <li v-for="city in branch.cities" :key="city.city" class="list-group-item d-flex">
-                      <div class="form-check">
+                    <li v-for="(city, cityIndex) in branch.cities" :key="city.city" class="list-group-item d-flex">
+                      <div class="col form-check">
                         <label class="custom-control-label ms-2 text-sm" :for="city.city">{{city.city}}</label>
                         <input type="checkbox" class="form-check-input" @click="setBranchSelected(branch, city)"
                                :checked="branchSelected?.city.city === city.city" :id="city.city">
+                      </div>
+                      <div class="col form-check form-switch">
+                        <input class="form-check-input" name="rate_management" type="checkbox" :checked="city.rate_management"
+                          id="flexSwitchCheckDefault" @change="rateManagement(index, cityIndex, !city.rate_management)" />
+                        <label class="form-check-label">{{
+                          $t(city.rate_management ? 'common.fields.rate_management' : 'common.fields.rate_management')
+                        }}</label>
                       </div>
                     </li>
                   </ul>
@@ -208,13 +215,13 @@ import i18n from '@/plugins/i18n'
 import { Form } from 'vee-validate'
 import {storeToRefs} from "pinia";
 import {useSettingsStore} from "@/services/stores/SettingsStore";
-
+import { set } from 'firebase/database'
 
 const { setLoading } = useLoadingState()
 
 const rideFees: Ref<RideFeeInterface> = ref({})
 const { branches, branchSelected } = storeToRefs(useSettingsStore())
-const { setBranchSelected } = useSettingsStore()
+const { setBranchSelected, enableRateManagement } = useSettingsStore()
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
@@ -224,6 +231,17 @@ const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
   submitButtonEnabled.value = true
   allFieldsDisabled.value = false
+}
+
+function rateManagement(branchId: number, cityId: number, enable: boolean): void {
+  setLoading(true)
+  enableRateManagement(branchId, cityId, enable).catch(async e => {
+    setLoading(false)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  }).then(async () => {
+    setLoading(false)
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  })
 }
 
 function updateAllFields(): void {

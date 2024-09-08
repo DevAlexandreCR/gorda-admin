@@ -13,7 +13,8 @@ export default {
     created_by: 'created by:',
     canceled_by: 'canceled by:',
     terminated_by: 'terminated by:',
-    assigned_by: 'assigned by:'
+    assigned_by: 'assigned by:',
+    rate_management: 'Gestión de Tarifas',
   },
   models: {
     users: 'Usuario | Usuarios',
