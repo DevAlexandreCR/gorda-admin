@@ -11,7 +11,8 @@ export interface DriverInterface {
   document: string
   photoUrl: string|null
   vehicle: VehicleInterface
-	device: DeviceType|null
+  device: DeviceType | null
+  balance: number
   enabled_at: number
   created_at: number
 }

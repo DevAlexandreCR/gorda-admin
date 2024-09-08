@@ -108,6 +108,15 @@
                 }}</label>
                 <ErrorMessage name="enable" />
               </div>
+              <div class="row">
+                <div class="form-group col">
+                  <label>{{ $t('drivers.forms.current_balance') }}</label>
+                  <span class="form-control-plaintext">{{ driver.balance + branchSelected?.currency_code }}</span>
+                </div>
+                <button v-if="AuthService.isAdmin()"  type="button" class="col btn btn-sm btn-light" data-bs-target="#balance-modal" data-bs-toggle="modal">
+                  {{ $t('drivers.forms.manage_balance') }}
+                </button>
+              </div>
             </div>
             <div class="col-md-6">
               <div class="card-header text-center text-capitalize">
@@ -202,37 +211,36 @@
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
       @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
-  <!-- Modal -->
-  <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal Balance-->
+  <div class="modal fade" id="balance-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('common.actions.balance') }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <Form @submit="updateEmail" :validation-schema="schemaEmail">
-          <div class="modal-body">
-            <div class="mb-3">
-              <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
-                <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                  v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field" />
-              </Field>
-              <ErrorMessage name="email" />
-            </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{ $t('drivers.forms.current_balance') }}</label>
+            <span class="form-control-plaintext">{{ driver.balance }}</span>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-              {{ $t('common.actions.close') }}
-            </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          <div class="form-group">
+            <label>{{ $t('drivers.forms.add_balance') }}</label>
+            <input type="number" class="form-control" v-model="newBalance" />
           </div>
-        </Form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+        </div>
       </div>
     </div>
   </div>
-  <!-- Modal -->
+  <!-- Modal Balance-->
   <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -291,6 +299,8 @@ import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
 import { useI18n } from 'vue-i18n'
 import AuthService from '@/services/AuthService'
+import { useSettingsStore } from '@/services/stores/SettingsStore'
+import { storeToRefs } from 'pinia'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -307,6 +317,8 @@ const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const currentUser = AuthService.getCurrentUser()
 const { setLoading } = useLoadingState()
+const newBalance = ref(0)
+const { branchSelected } = storeToRefs(useSettingsStore())
 const schema = object().shape({
   name: string().required().min(3),
   phone: string().required().min(8),
@@ -403,6 +415,18 @@ function updatePassword(): void {
     setLoading(false)
     hide('editPassword')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
+    setLoading(false)
+   await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function addBalance(): void {
+  setLoading(true)
+  DriverRepository.addBalance(driver.value, newBalance.value).then(async () => {
+    setLoading(false)
+    hide('balance-modal')
+   await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
     setLoading(false)
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

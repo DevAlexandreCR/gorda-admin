@@ -17,7 +17,8 @@ export default class Driver implements DriverInterface {
   phone: string
   photoUrl: string | null
   vehicle: VehicleInterface
-	device: DeviceType|null = null
+  device: DeviceType | null = null
+  balance = 0
 
   constructor() {
     this.id = ''

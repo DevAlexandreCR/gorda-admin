@@ -12,7 +12,8 @@ export default {
     plate: 'Licence number',
     color: 'Color',
     soat_exp: 'Soat',
-    tec_exp: 'Techno'
+    tec_exp: 'Techno',
+    balance: 'Balance',
   },
   forms: {
     edit: 'Edit driver information',
@@ -20,7 +21,10 @@ export default {
     create_vehicle: 'Vehicle information',
     create_driver: 'Driver information',
     upload: 'Upload photo profile',
-    upload_vehicle: 'Upload photo vehicle'
+    upload_vehicle: 'Upload photo vehicle',
+    current_balance: 'Current balance',
+    add_balance: 'Add balance',
+    manage_balance: 'Manage'
   },
   vehicle: {
     brand: 'Brand',

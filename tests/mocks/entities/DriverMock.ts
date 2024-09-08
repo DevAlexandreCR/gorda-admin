@@ -23,6 +23,8 @@ class DriverMock implements DriverInterface{
     tec_exp: 0,
     photoUrl: 'https://fakeUrl.com'
   }
+
+  balance = 0
 	
 	device: DeviceType = {
 		id: '1234567890',

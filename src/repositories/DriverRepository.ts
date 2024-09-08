@@ -42,6 +42,12 @@ class DriverRepository {
   }
 
   /* istanbul ignore next */
+  async addBalance(driver: Driver, amount: number): Promise<void> { 
+    driver.balance += amount
+    return set(ref(DBService.db, 'drivers/' + driver.id + '/balance'), driver.balance)
+  }
+
+  /* istanbul ignore next */
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
       UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
