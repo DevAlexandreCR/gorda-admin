@@ -22,6 +22,7 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/html-indent': 'off',
     'vue/no-deprecated-slot-attribute': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
   },
   overrides: [{
     files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'], env: {
