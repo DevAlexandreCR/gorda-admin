@@ -189,7 +189,7 @@
                         <input class="form-check-input" name="rate_management" type="checkbox" :checked="city.rate_management"
                           id="flexSwitchCheckDefault" @change="rateManagement(index, cityIndex, !city.rate_management)" />
                         <label class="form-check-label">{{
-                          $t(city.rate_management ? 'common.fields.rate_management' : 'common.fields.rate_management')
+                          $t('common.fields.rate_management')
                         }}</label>
                       </div>
                     </li>
@@ -215,7 +215,6 @@ import i18n from '@/plugins/i18n'
 import { Form } from 'vee-validate'
 import {storeToRefs} from "pinia";
 import {useSettingsStore} from "@/services/stores/SettingsStore";
-import { set } from 'firebase/database'
 
 const { setLoading } = useLoadingState()
 

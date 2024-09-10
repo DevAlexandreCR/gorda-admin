@@ -216,7 +216,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ $t('common.actions.balance') }}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('drivers.forms.add_balance') }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -224,7 +224,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label>{{ $t('drivers.forms.current_balance') }}</label>
-            <span class="form-control-plaintext">{{ driver.balance }}</span>
+            <span class="form-control-plaintext">{{ driver.balance + branchSelected?.currency_code }}</span>
           </div>
           <div class="form-group">
             <label>{{ $t('drivers.forms.add_balance') }}</label>
