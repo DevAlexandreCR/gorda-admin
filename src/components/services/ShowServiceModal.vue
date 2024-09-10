@@ -31,6 +31,7 @@
                 <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.name }}</span></span>
                 <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.vehicle.plate }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ time }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.distance')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ distance }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{ fee }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ multiplier }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.assigned_by !== null">{{$t('common.fields.assigned_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ assignedBy }}</span></span>
@@ -85,6 +86,11 @@ const fee = computed(() => {
 const multiplier = computed(() => {
   if (props.service.metadata?.trip_multiplier === undefined) return '1.0'
   return props.service.metadata?.trip_multiplier.toString()
+})
+
+const distance = computed(() => {
+  if (props.service.metadata?.trip_distance === undefined) return '0.0'
+  return (props.service.metadata?.trip_distance / 1000) + 'km'
 })
 
 const date = computed(() => {
