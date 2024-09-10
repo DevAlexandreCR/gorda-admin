@@ -22,6 +22,7 @@ export default {
     time: 'Time',
     fee: 'Fee',
     fee_multiplier: 'Fee Multiplier',
+    distance: 'Distance',
   },
   history: 'History',
   total: 'Total',
