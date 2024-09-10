@@ -38,7 +38,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
           if (lastMessage && chat.lastMessage.id !== lastMessage.id) {
             this.getMessages(wpClientId, chat.id)
             if (!this.firstStart && !chat.lastMessage.fromMe) {
-              this.notify()
+              this.notify(chat)
             }
           }
           this.chats.set(chat.id, chat)
@@ -82,14 +82,14 @@ export const useWpChatStore = defineStore('wpChatStore', {
         await ChatRepository.updateChat(wpClientId, this.activeChat, {archived: true})
       }
     },
-    notify(): void {
+    notify(chat: Chat): void {
       if (this.hasPermission && DateHelper.unix() - this.lastNotify > 5) {
         this.lastNotify = DateHelper.unix()
         const notificationSound = new Audio(pingSound)
         notificationSound.play().catch(error => console.log('Error playing the notification sound:', error))
         if (!document.hasFocus()) {
           new Notification(i18n.global.t('common.messages.new_message'), {
-            body: this.chats.get(this.activeChat || '')?.lastMessage.body || '',
+            body: chat.lastMessage.body,
             icon: '/favicon.ico'
           })
         }

@@ -34,6 +34,7 @@ import * as yup from 'yup'
 import StorageService from "@/services/StorageService";
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import { hide } from '@/helpers/ModalHelper';
+import i18n from "@/plugins/i18n";
 
 
 class Props {
@@ -56,7 +57,7 @@ export default class ImageLoader extends Vue.with(Props) {
 
   mounted(): void {
     this.schemaImg = yup.object().shape({
-      image: CustomValidator.isImage(this.$t('validations.image'), this.$t('validations.size')).required()
+      image: CustomValidator.isImage(i18n.global.t('validations.image'), i18n.global.t('validations.size')).required()
     })
   }
 

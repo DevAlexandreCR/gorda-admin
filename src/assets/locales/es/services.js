@@ -20,6 +20,7 @@ export default {
     time: 'Tiempo',
     fee: 'Valor',
     fee_multiplier: 'Multiplicador de tarifa',
+    distance: 'Distancia',
     WpMessages: 'Mensajes',
     WpActions: 'Acciones'
   },

@@ -87,6 +87,7 @@ import User from '@/models/User'
 import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as yup from 'yup'
 import ToastService from "@/services/ToastService";
+import i18n from "@/plugins/i18n";
 
 @Options({
   inject: ['appName'],
@@ -109,16 +110,16 @@ export default class SignUp extends Vue {
       email: yup.string().required().email(),
       phone: yup.string().required().min(8),
       role: yup.array(),
-      pass: yup.string().required().min(6).matches(/^[a-z0-9_-]{6,18}$/, this.$t('validations.password')),
-      confirm: yup.string().required().oneOf([yup.ref('pass'), null], this.$t('validations.confirm'))
+      pass: yup.string().required().min(6).matches(/^[a-z0-9_-]{6,18}$/, i18n.global.t('validations.password')),
+      confirm: yup.string().required().oneOf([yup.ref('pass'), null], i18n.global.t('validations.confirm'))
     })
   }
 
   createUser(): void {
     UserRepository.create(this.user, this.pass).then(() => {
-      ToastService.toast('success', this.$t('common.messages.created'))
+      ToastService.toast('success', i18n.global.t('common.messages.created'))
     }).catch(e => {
-      ToastService.toast('error', this.$t('common.messages.error'), e.message)
+      ToastService.toast('error', i18n.global.t('common.messages.error'), e.message)
       this.error = true
     })
   }

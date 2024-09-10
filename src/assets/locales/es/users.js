@@ -5,7 +5,7 @@ export default {
   required: 'email es un campo obligatorio',
   pass: 'Contraseña debe tener al menos 8 caracteres',
   remindme: 'Recuérdame',
-  login: 'Iniciar Seccion',
+  login: 'Iniciar Sesión',
   logOut: 'Cerrar Sesión',
   signUp: 'Regístrate',
   alert: 'Usuario o contraseña incorrectos!',
