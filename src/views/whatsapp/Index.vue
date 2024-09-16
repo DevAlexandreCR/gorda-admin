@@ -70,7 +70,8 @@ const newClient = reactive<WpClient>({
   alias: '',
   wpNotifications: false,
   chatBot: false,
-  assistant: false
+  assistant: false,
+  service: WhatsappServices.BAILEYS
 })
 const schema = yup.object().shape({
   id: yup.string()
@@ -91,7 +92,7 @@ function create(_values: WpClient, event: FormActions<any>): void {
   if (useApi.value) {
     newClient.service = WhatsappServices.OFFICIAL
   } else {
-    newClient.service = WhatsappServices.WHATSAPP_WEB_JS
+    newClient.service = WhatsappServices.BAILEYS
   }
   createClient(newClient).finally(() => {
     hide('create-client')
