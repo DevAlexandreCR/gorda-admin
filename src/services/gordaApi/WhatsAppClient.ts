@@ -59,7 +59,7 @@ export default class WhatsAppClient implements WPSubject {
   
   getState(): void {
     this.socket.on(WhatsApp.EVENT_CLIENT, (info) => {
-      if(info) this.socket.emit(WhatsApp.EVENT_GET_STATE)
+      this.socket.emit(WhatsApp.EVENT_GET_STATE)
     })
     this.socket.on(WhatsApp.EVENT_GET_STATE, (state: string) => {
       this.state = state
