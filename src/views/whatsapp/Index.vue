@@ -97,8 +97,7 @@ function create(_values: WpClient, event: FormActions<any>): void {
   createClient(newClient).finally(() => {
     hide('create-client')
     event.resetForm()
-    // Reload the component instead of the entire page
-    clients.value = [...clients.value]
+    location.reload()
   })
 }
 </script>
