@@ -65,9 +65,9 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	async getBranches(): Promise<Branch[]> {
+	async getBranches(): Promise<Map<string, Branch>> {
 		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/branches'))
-		return <Branch[]>snapshot.val()
+		return <Map<string, Branch>>snapshot.val()
 	}
 
 	/* istanbul ignore next */

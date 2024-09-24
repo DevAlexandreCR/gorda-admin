@@ -209,6 +209,8 @@ function createService(values: ServiceInterface): void {
     values.created_by = AuthService.getCurrentUser()?.id ?? null;
   }
   const newService: Service = new Service()
+  start_loc.country = branchSelected!.id
+  start_loc.city = branchSelected!.city.id
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
   newService.name = values.name

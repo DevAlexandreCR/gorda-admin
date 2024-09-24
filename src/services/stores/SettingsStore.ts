@@ -7,7 +7,7 @@ import {BranchSelected} from "@/types/BranchSelected";
 export const useSettingsStore = defineStore('generalSettingsStore', {
     state: () => {
         return {
-            branches: [] as Branch[],
+            branches: new Map<string, Branch>() as Map<string, Branch>,
             branchSelected: null as BranchSelected | null
         }
     },
@@ -19,13 +19,19 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
             } else {
                 this.branchSelected = null
             }
-            this.branches = await SettingsRepository.getBranches().catch(() => [])
-            if (this.branches.length === 1 && this.branchSelected === null) {
-                this.setBranchSelected(this.branches[0], this.branches[0].cities[0])
+            this.branches = await SettingsRepository.getBranches().catch(() => new Map<string, Branch>())
+            if (this.branches.size === 1 && this.branchSelected === null) {
+                this.branches.forEach((branch: Branch) => {
+                    branch.cities.forEach((city: City) => {
+                        this.setBranchSelected(branch, city)
+                        return
+                    })
+                 })
             }
         },
         setBranchSelected(branch: Branch, city: City): void {
             this.branchSelected = {
+                id: branch.id,
                 calling_code: branch.calling_code,
                 country: branch.country,
                 currency_code: branch.currency_code,

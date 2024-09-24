@@ -5,6 +5,7 @@ import {LocationType} from '@/types/LocationType'
 import {Applicant} from '@/types/Applicant'
 import { Metadata } from '@/types/Metadata'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 export default class Service implements ServiceInterface {
   id: string
@@ -16,6 +17,7 @@ export default class Service implements ServiceInterface {
   amount: number | null = null
   applicants: Applicant | null = null
   metadata: Metadata | null = null
+  perform_balance: boolean
   wp_client_id: string
   driver_id: string | null = null
   client_id: string | null = null
@@ -39,11 +41,13 @@ export default class Service implements ServiceInterface {
 
 
   constructor() {
-    const {defaultClient} =  useWpClientsStore()
+    const { defaultClient } = useWpClientsStore()
+    const { branchSelected } = useSettingsStore()
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
     this.wp_client_id = defaultClient as string
+    this.perform_balance = branchSelected?.city.rate_management ?? false
   }
 
   isPending(): boolean {
