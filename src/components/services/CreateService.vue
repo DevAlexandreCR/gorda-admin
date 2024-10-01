@@ -50,6 +50,12 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <AutoComplete :idField="service.id + 1" :fieldName="'end_address'" @selected="endLocSelected" :elements="placesAutocomplete"
+                            :placeholder="$t('common.placeholders.end_address')"/>
+            </div>
+          </div>
+          <div class="col-12 col-md px-1">
+            <div class="form-group">
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
                 <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
                        v-bind="field" autocomplete="none"/>
@@ -109,6 +115,7 @@ const {places, findByName} = usePlacesStore()
 const {clients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
+let end_loc: LocationType|null
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
@@ -214,6 +221,7 @@ function createService(values: ServiceInterface): void {
   newService.name = values.name
   newService.phone = values.phone
   newService.start_loc = start_loc
+  newService.end_loc = end_loc
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
@@ -251,10 +259,17 @@ function checkPhoneNoExists(phone: string) {
   }
 }
 
-function locSelected(element: AutoCompleteType): void {
+function endLocSelected(element: AutoCompleteType): void {
+  let place = findByName(element.value)
+  end_loc = { name: place.name, lat: place.lat, lng: place.lng}
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
+}
+
+function locSelected(element: AutoCompleteType, destination = false): void {
   let place = findByName(element.value)
   start_loc = { name: place.name, lat: place.lat, lng: place.lng}
-  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  const input = document.querySelector('input[name="end_address"]') as HTMLInputElement
   input?.focus()
 }
 </script>
