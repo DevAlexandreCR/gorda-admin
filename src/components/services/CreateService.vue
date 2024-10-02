@@ -226,6 +226,7 @@ function createService(values: ServiceInterface): void {
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
+    end_loc = null
     count.value = 1
     countryCode.value = countryCodes.value[31]
     service.value.wp_client_id = defaultClient.value as string
