@@ -221,7 +221,9 @@ function createService(values: ServiceInterface): void {
   newService.name = values.name
   newService.phone = values.phone
   newService.start_loc = start_loc
-  newService.end_loc = end_loc
+  if (end_loc) {
+    newService.end_loc = end_loc
+  }
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
