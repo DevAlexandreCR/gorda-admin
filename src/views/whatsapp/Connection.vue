@@ -137,7 +137,6 @@ import {hide} from "@/helpers/ModalHelper";
 import {storeToRefs} from "pinia";
 import {WhatsappServices} from "@/constants/WhatsappServices";
 
-
 interface Props {
   client: WpClient
 }
@@ -176,6 +175,7 @@ async function deleteWpClient(): Promise<void> {
 async function restartWpClient(): Promise<void> {
   hide('restart-client' + props.client.id)
   wpClient.reset()
+  connecting.value = true
 }
 
 onBeforeUnmount(() => {
