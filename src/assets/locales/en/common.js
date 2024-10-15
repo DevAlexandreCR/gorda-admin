@@ -57,6 +57,7 @@ export default {
     confirm_password: 'Confirm password',
     restore_password: 'Reset Password?',
     address: 'Enter Address',
+    end_address: 'Enter destination address',
     comment: 'Enter comment',
     search: 'Search',
     dark: 'Dark',

@@ -57,6 +57,7 @@ export default {
     confirm_password: 'Confirmar contraseña',
     restore_password: '¿Restablecer Contraseña?',
     address: 'Ingrese la dirección',
+    end_address: 'Ingrese la dirección de destino',	
     comment: 'Ingrese un comentario (opcional)',
     search: 'Buscar',
     map: 'Mapa',
