@@ -26,6 +26,7 @@ export default {
     close: 'Cerrar',
     create: 'Crear',
     delete: 'Eliminar',
+    restart: 'Reiniciar',
     cancel: 'Cancelar',
     release: 'Liberar',
     assign: 'Asignar',

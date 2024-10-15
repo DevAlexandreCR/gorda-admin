@@ -8,6 +8,7 @@
             {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
           </h6>
         </div>
+        <button class="btn btn-primary btn-rounded me-2" :data-bs-target="'#restart-client' + client.id" data-bs-toggle="modal"><em class="fa fa-rotate"></em></button>
         <button class="btn btn-danger btn-rounded" :data-bs-target="'#delete-client' + client.id" data-bs-toggle="modal"><em class="fa fa-trash"></em></button>
       </div>
       <div class="card-body p-0 mx-3 mt-3 position-relative z-index-1">
@@ -96,8 +97,27 @@
             {{$t('wp.placeholders.delete')}}
           </div>
           <div class="card-footer text-end">
-            <button class="btn btn-secondary me-2" type="button" @click="hide('delete-client')">{{ $t('common.actions.cancel') }}</button>
+            <button class="btn btn-secondary me-2" type="button" @click="hide('delete-client' + client.id)">{{ $t('common.actions.cancel') }}</button>
             <button class="btn btn-info" type="button" @click="deleteWpClient">{{ $t('common.actions.delete') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" :id="'restart-client' + client.id" tabindex="-1" :aria-labelledby="'restart-client' + client.id" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content px-2">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ $t('common.actions.restart') }}</h5>
+            <button type="button" id="closeModalButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{$t('wp.placeholders.restart')}}
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-secondary me-2" type="button" @click="hide('restart-client' + client.id)">{{ $t('common.actions.cancel') }}</button>
+            <button class="btn btn-info" type="button" @click="restartWpClient">{{ $t('common.actions.restart') }}</button>
           </div>
         </div>
       </div>
@@ -151,6 +171,11 @@ async function deleteWpClient(): Promise<void> {
   hide('delete-client' + props.client.id)
   wpClient.destroy()
   await deleteClient(props.client)
+}
+
+async function restartWpClient(): Promise<void> {
+  hide('restart-client' + props.client.id)
+  wpClient.reset()
 }
 
 onBeforeUnmount(() => {
