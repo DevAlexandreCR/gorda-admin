@@ -11,6 +11,7 @@ export default {
         default: 'Default client to confirmations',
         select_default: 'Select default',
         select_wp_api: 'Connect to Whatsapp API',
+        restart: 'The client will be restarted, do you want to continue?',
     },
     titles: {
         confirmations_messages: 'Confirmations Messages',
