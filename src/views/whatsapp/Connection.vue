@@ -116,8 +116,8 @@
             {{$t('wp.placeholders.restart')}}
           </div>
           <div class="card-footer text-end">
-            <button class="btn btn-secondary me-2" type="button" @click="hide('delete-client')">{{ $t('common.actions.cancel') }}</button>
-            <button class="btn btn-info" type="button" @click="restartWpClient">{{ $t('common.actions.delete') }}</button>
+            <button class="btn btn-secondary me-2" type="button" @click="hide('restart-client')">{{ $t('common.actions.cancel') }}</button>
+            <button class="btn btn-info" type="button" @click="restartWpClient">{{ $t('common.actions.restart') }}</button>
           </div>
         </div>
       </div>
