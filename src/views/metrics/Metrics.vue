@@ -5,7 +5,8 @@
         <div class="card-header">
           <h4>{{ t('common.placeholders.year_service_progress') }}</h4>
         </div>
-        <div class="card-body justify-content-center align-items-center">
+
+        <div class="card-body">
           <div class="chart">
             <Line
                 v-if="isLoaded"
@@ -13,7 +14,9 @@
                 :options="chartOptions"
                 :data="globalChartData"
             />
-            <em v-else class="fa-solid fa-spinner fa-10x circle m-auto"></em>
+          </div>
+          <div class="d-flex justify-content-center">
+            <em v-if="!isLoaded" class="fa-solid fa-spinner fa-10x circle"></em>
           </div>
         </div>
       </div>
@@ -23,7 +26,7 @@
         <div class="card-header">
           <h4>{{ t('common.placeholders.cancel_percent') }}</h4>
         </div>
-        <div class="card-body justify-content-center align-items-center">
+        <div class="card-body">
           <div class="chart">
             <Bar
                 v-if="isLoaded"
@@ -31,7 +34,9 @@
                 :options="percentChartOptions"
                 :data="percentChartData"
             />
-            <em v-else class="fa-solid fa-spinner fa-10x circle m-auto"></em>
+          </div>
+          <div class="d-flex justify-content-center">
+            <em v-if="!isLoaded" class="fa-solid fa-spinner fa-10x circle"></em>
           </div>
         </div>
       </div>
@@ -40,21 +45,23 @@
       <div class="chart">
         <div class="card">
           <div class="card-header d-flex">
-            <h4>{{ frequency == 'daily' ? t('common.placeholders.daily_top_5') : t('common.placeholders.weekly_top_5') }}</h4>
+            <h4>{{ frequency == TopFrequency.Daily ? t('common.placeholders.daily_top_5') : t('common.placeholders.weekly_top_5') }}</h4>
             <select v-model="frequency" class="form-control form-control-sm ms-auto w-25">
-              <option value="daily">{{ t('common.placeholders.daily') }}</option>
-              <option value="weekly">{{ t('common.placeholders.weekly') }}</option>
+              <option :value="TopFrequency.Daily">{{ t('common.placeholders.daily') }}</option>
+              <option :value="TopFrequency.Weekly">{{ t('common.placeholders.weekly') }}</option>
             </select>
           </div>
-            <div class="card-body justify-content-center align-items-center">
+            <div class="card-body">
               <div class="chart">
                 <Bar
-                  v-if="isLoaded"
+                  v-if="isTopLoaded"
                   id="daily-top-5-chart"
                   :options="dailyTop5chartOptions"
                   :data="dailyTop5ChartData"
                 />
-                <em v-else class="fa-solid fa-spinner fa-10x circle"></em>
+              </div>
+              <div class="d-flex justify-content-center">
+                <em v-if="!isTopLoaded" class="fa-solid fa-spinner fa-10x circle"></em>
               </div>
             </div>
         </div>
@@ -65,7 +72,7 @@
 
 <script lang="ts" setup>
 import {Bar, Line} from 'vue-chartjs'
-import {onBeforeMount, ref, Ref} from 'vue'
+import {onBeforeMount, ref, Ref, watch} from 'vue'
 import {useMetricsStore} from '@/services/stores/MetricsStore'
 import {
   Chart,
@@ -79,9 +86,10 @@ import {
   BarElement, ChartOptions, ChartData,
 } from 'chart.js'
 import {useI18n} from 'vue-i18n'
+import { TopFrequency } from '@/constants/TopFrequency'
 
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
-const {globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric, top5DailyMetric, getTop5DailyMetric} = useMetricsStore()
+const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric, top5DailyMetric, getTop5Metric, loaded, loading} = useMetricsStore()
 const {t} = useI18n()
 const percentChartOptions: ChartOptions = {
   responsive: true,
@@ -107,15 +115,25 @@ const dailyTop5chartOptions: ChartOptions = {
   indexAxis: 'y'
 }
 const isLoaded: Ref<boolean> = ref(false)
-const frequency = ref('daily')
+const isTopLoaded: Ref<boolean> = ref(false)
+const frequency = ref<TopFrequency>(TopFrequency.Daily)
 
 let globalChartData: ChartData
 let percentChartData: ChartData
 let dailyTop5ChartData: ChartData
 
+watch(frequency, async (newFrequency) => {
+  isTopLoaded.value = false
+  await getTop5Metric(frequency.value)
+  setTop5Metric()
+  isTopLoaded.value = true
+})
+
 onBeforeMount(async () => {
-  await getTop5DailyMetric()
+  await getTop5Metric(frequency.value)
+  if (!loaded && !loading) await getCurrentYearMetric()
   isLoaded.value = true
+  isTopLoaded.value = true
   globalChartData = {
     labels: Array.from(globalYearMetric.keys()),
     datasets: [
@@ -147,6 +165,10 @@ onBeforeMount(async () => {
     ]
   }
 
+  setTop5Metric()
+})
+
+function setTop5Metric(): void {
   dailyTop5ChartData = {
     labels: Array.from(top5DailyMetric.keys()),
     datasets: [{
@@ -162,6 +184,6 @@ onBeforeMount(async () => {
         '#ffd500'
       ]
     }]
-  } 
-})
+  }
+}
 </script>

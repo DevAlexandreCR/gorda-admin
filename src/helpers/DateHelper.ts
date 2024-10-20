@@ -13,6 +13,10 @@ export default class DateHelper {
     return dayjs().startOf('day').unix()
   }
 
+  static startOfWeekUnix(): number {
+    return dayjs().startOf('week').subtract(1, 'week').add(1, 'day').unix()
+  }
+
   static endOfDayUnix(): number {
     return dayjs().endOf('day').unix()
   }

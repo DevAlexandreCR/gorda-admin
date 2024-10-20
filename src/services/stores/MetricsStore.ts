@@ -8,6 +8,7 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import { get } from 'firebase/database'
 import MetricRepository from '@/repositories/MetricRepository'
 import { useDriversStore } from './DriversStore'
+import { TopFrequency } from '@/constants/TopFrequency'
 
 const GLOBAL_METRIC_PATH = '/metrics/global'
 
@@ -22,11 +23,13 @@ export const useMetricsStore = defineStore('metricsStore', {
 			top5DailyMetric: new Map<string, number>(),
 			top5WeeklyMetric: new Map<string, number>(),
 			loaded: false,
+			loading: false
 		}
 	},
 	actions: {
 		getGlobalMetric(startDate: string, endDate: string): Promise<void> {
-			const {setLoading} = useLoadingState()
+			const { setLoading } = useLoadingState()
+			this.loading = true
 			return new Promise((resolve, reject) => {
 				setLoading(true)
 				axios.get(process.env.VUE_APP_GORDA_API_URL + GLOBAL_METRIC_PATH, {
@@ -36,12 +39,14 @@ export const useMetricsStore = defineStore('metricsStore', {
 					},
 				}).then((res) => {
 					setLoading(false)
+					this.loading = false
 					this.loaded = true
 					res.data.data.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
 					resolve()
 				}).catch(e => {
+					this.loading = false
 					setLoading(false)
 					console.log(e.message)
 					reject(e)
@@ -51,7 +56,9 @@ export const useMetricsStore = defineStore('metricsStore', {
 		async getCurrentYearMetric(): Promise<void> {
 			const monthLastYear = DateHelper.lastYear()
 			const currentMonth = DateHelper.stringNow()
+			this.loading = true
 			await this.getGlobalMetric(monthLastYear, currentMonth)
+			this.loading = false
 			this.groupAndSumByMonth()
 		},
 		groupAndSumByMonth(): void {
@@ -90,12 +97,17 @@ export const useMetricsStore = defineStore('metricsStore', {
 			})
 		},
 
-		async getTop5DailyMetric(): Promise<void> {
+		async getTop5Metric(frequency: TopFrequency): Promise<void> {
+			this.loading = true
+			this.top5DailyMetric.clear()
 			const { findById } = useDriversStore()
-			
-			const startOfDay = DateHelper.startOfDayUnix()
+			let from = DateHelper.startOfDayUnix()
+			if (frequency === TopFrequency.Weekly) {
+				from = DateHelper.startOfWeekUnix()
+			}
 			const endOfDay = DateHelper.endOfDayUnix()
-			const metrics = await MetricRepository.getDailyTopFive(startOfDay, endOfDay)
+			const metrics = await MetricRepository.getDailyTopFive(from, endOfDay)
+			this.loading = false
 				
 			Array.from(metrics.entries()).forEach(([driverId, metric]) => {
 				const driver = findById(driverId)
