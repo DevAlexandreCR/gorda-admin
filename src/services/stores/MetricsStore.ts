@@ -5,6 +5,9 @@ import DateHelper from '@/helpers/DateHelper'
 import {MetricItem} from '@/types/MetricItem'
 import {ServiceStatus} from '@/types/ServiceStatus'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import { get } from 'firebase/database'
+import MetricRepository from '@/repositories/MetricRepository'
+import { useDriversStore } from './DriversStore'
 
 const GLOBAL_METRIC_PATH = '/metrics/global'
 
@@ -16,6 +19,8 @@ export const useMetricsStore = defineStore('metricsStore', {
 			completedYearMetric: new Map<string, number>(),
 			canceledYearMetric: new Map<string, number>(),
 			percentYearMetric: new Map<string, number>(),
+			top5DailyMetric: new Map<string, number>(),
+			top5WeeklyMetric: new Map<string, number>(),
 			loaded: false,
 		}
 	},
@@ -82,6 +87,19 @@ export const useMetricsStore = defineStore('metricsStore', {
 				} else {
 					metric.set(key, item.amount);
 				}
+			})
+		},
+
+		async getTop5DailyMetric(): Promise<void> {
+			const { findById } = useDriversStore()
+			
+			const startOfDay = DateHelper.startOfDayUnix()
+			const endOfDay = DateHelper.endOfDayUnix()
+			const metrics = await MetricRepository.getDailyTopFive(startOfDay, endOfDay)
+				
+			Array.from(metrics.entries()).forEach(([driverId, metric]) => {
+				const driver = findById(driverId)
+				if (driver) this.top5DailyMetric.set(driver.vehicle.plate, metric.count)
 			})
 		}
 	},
