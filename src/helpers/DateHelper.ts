@@ -13,6 +13,17 @@ export default class DateHelper {
     return dayjs().startOf('day').unix()
   }
 
+  static startOfWeekUnix(): number {
+    const today = dayjs();
+    if (today.day() === 1) { // Check if today is Monday
+      return today.startOf('day').unix();
+    } else if (today.day() === 0) { // Check if today is Sunday
+      return today.startOf('week').subtract(1, 'day').unix(); // Start of week - 1 day to get last Monday
+    } else {
+      return today.startOf('week').add(1, 'days').unix();
+    }
+  }
+
   static endOfDayUnix(): number {
     return dayjs().endOf('day').unix()
   }

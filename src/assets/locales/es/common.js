@@ -65,6 +65,12 @@ export default {
     light: 'Tema Claro',
     device: 'No tiene dispositivo registrado',
     cancel_percent: 'Índice de cancelación',
+    weekly: 'Semanal',
+    daily: 'Diario',
+    daily_top_5: 'Top 5 diario',
+    weekly_top_5: 'Top 5 semanal',
+    year_service_progress: 'Progreso de servicios anual',
+    first_place: 'Primer lugar',
     service_info: 'Información del servicio',
     route_info: 'Información de la ruta y conductor',
     description: {
