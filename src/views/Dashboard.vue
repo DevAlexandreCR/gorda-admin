@@ -25,7 +25,8 @@ import { useClientsStore } from '@/services/stores/ClientsStore'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import { useServicesStore } from '@/services/stores/ServiceStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
-import {useSettingsStore} from "@/services/stores/SettingsStore";
+import { useSettingsStore } from "@/services/stores/SettingsStore";
+import { useMetricsStore } from "@/services/stores/MetricsStore";
 
 const placesLoaded = ref(false)
 const clientsLoaded = ref(false)
@@ -40,8 +41,10 @@ const { getDrivers } = useDriversStore()
 const { getHistoryServices, getPendingServices, getInProgressServices } = useServicesStore()
 const { getWpClients } = useWpClientsStore()
 const { getBranches } = useSettingsStore()
+const { getCurrentYearMetric } = useMetricsStore()
 
 const loadAllData = async () => {
+  getCurrentYearMetric()
   await Promise.all([
     getPlaces(),
     getClients(),

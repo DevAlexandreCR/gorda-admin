@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.4.x
 
+## [1.4.7(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
+
+### Added
+- Add top 5 metric. [#152](https://github.com/DevAlexandreCR/gorda-admin/pull/152)
+
 ## [1.4.6(2024-10-14)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.6...1.4.5)
 
 ### Added

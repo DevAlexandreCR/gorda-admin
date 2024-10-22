@@ -1,4 +1,4 @@
 export enum MetricType {
-	Global
-
+	Global,
+	Top_Five_Daily
 }
