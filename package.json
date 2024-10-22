@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode development --port 5000",
@@ -22,7 +22,7 @@
     "@sentry/vue": "^7.37.2",
     "axios": "^0.27.2",
     "bootstrap": "^5.3.1",
-    "chart.js": "^4.3.0",
+    "chart.js": "^4.4.5",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "firebase": "^9.5.0",
@@ -34,7 +34,7 @@
     "vee-validate": "~4.6.0",
     "vue": "^3.4.22",
     "vue-advanced-chat": "^2.1.0",
-    "vue-chartjs": "^5.2.0",
+    "vue-chartjs": "^5.3.1",
     "vue-class-component": "^8.0.0-0",
     "vue-i18n": "^9.1.0",
     "vue-router": "^4.0.0-0",

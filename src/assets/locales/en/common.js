@@ -66,6 +66,12 @@ export default {
     all: 'All',
     device: 'Driver has not device registered',
     cancel_percent: 'Canceled index',
+    weekly: 'Weekly',
+    daily: 'Daily',
+    daily_top_5: 'Top 5 daily',
+    weekly_top_5: 'Top 5 weekly',
+    year_service_progress: 'Year service progress',
+    first_place: 'First place',
     service_info: 'Service information',
     route_info: 'Route and driver information',
     description: {
