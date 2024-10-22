@@ -5,7 +5,6 @@ import DateHelper from '@/helpers/DateHelper'
 import {MetricItem} from '@/types/MetricItem'
 import {ServiceStatus} from '@/types/ServiceStatus'
 import {useLoadingState} from '@/services/stores/LoadingState'
-import { get } from 'firebase/database'
 import MetricRepository from '@/repositories/MetricRepository'
 import { useDriversStore } from './DriversStore'
 import { TopFrequency } from '@/constants/TopFrequency'
@@ -21,7 +20,6 @@ export const useMetricsStore = defineStore('metricsStore', {
 			canceledYearMetric: new Map<string, number>(),
 			percentYearMetric: new Map<string, number>(),
 			top5DailyMetric: new Map<string, number>(),
-			top5WeeklyMetric: new Map<string, number>(),
 			loaded: false,
 			loading: false
 		}
@@ -30,6 +28,24 @@ export const useMetricsStore = defineStore('metricsStore', {
 		getGlobalMetric(startDate: string, endDate: string): Promise<void> {
 			const { setLoading } = useLoadingState()
 			this.loading = true
+			const lastMetricQuery = sessionStorage.getItem('lastMetricQuery')
+			this.globalMetric.splice(0, this.globalMetric.length)
+
+			if (this.metricWasQueryedToday(lastMetricQuery as string)) {
+				const storedMetrics = sessionStorage.getItem('globalMetric')
+				if (storedMetrics) {
+					const parsedMetrics = JSON.parse(storedMetrics) as Metric[]
+					parsedMetrics.forEach((metric) => {
+						this.globalMetric.push(metric)
+					})
+					this.loaded = true
+					return Promise.resolve()
+				} else {
+					this.loaded = false
+					this.loading = true
+				}
+			}
+
 			return new Promise((resolve, reject) => {
 				setLoading(true)
 				axios.get(process.env.VUE_APP_GORDA_API_URL + GLOBAL_METRIC_PATH, {
@@ -38,12 +54,14 @@ export const useMetricsStore = defineStore('metricsStore', {
 						endDate: endDate,
 					},
 				}).then((res) => {
+					this.setMetricQueryToday('lastMetricQuery')
 					setLoading(false)
 					this.loading = false
 					this.loaded = true
 					res.data.data.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
+					sessionStorage.setItem('globalMetric', JSON.stringify(this.globalMetric))
 					resolve()
 				}).catch(e => {
 					this.loading = false
@@ -100,6 +118,22 @@ export const useMetricsStore = defineStore('metricsStore', {
 		async getTop5Metric(frequency: TopFrequency): Promise<void> {
 			this.loading = true
 			this.top5DailyMetric.clear()
+			const lastWeeklyMetricQuery = sessionStorage.getItem('lastWeeklyMetricQuery')
+
+			if (frequency === TopFrequency.Weekly && this.metricWasQueryedToday(lastWeeklyMetricQuery as string)) {
+				const storedMetrics = sessionStorage.getItem('top5WeeklyMetric')
+				if (storedMetrics) {
+					const parsedMetrics = JSON.parse(storedMetrics) as [string, number][]
+					parsedMetrics.forEach(([key, value]) => {
+						this.top5DailyMetric.set(key, value)
+					})
+					this.loading = false
+					return Promise.resolve()
+				} else {
+					this.loading = true
+				}
+			}
+
 			const { findById } = useDriversStore()
 			let from = DateHelper.startOfDayUnix()
 			if (frequency === TopFrequency.Weekly) {
@@ -113,6 +147,20 @@ export const useMetricsStore = defineStore('metricsStore', {
 				const driver = findById(driverId)
 				if (driver) this.top5DailyMetric.set(driver.vehicle.plate, metric.count)
 			})
+			
+			if (frequency === TopFrequency.Weekly) {
+				this.setMetricQueryToday('lastWeeklyMetricQuery')
+				sessionStorage.setItem('top5WeeklyMetric', JSON.stringify(Array.from(this.top5DailyMetric.entries())))
+			}
+		},
+
+		setMetricQueryToday(query: string): void {
+			sessionStorage.setItem(query, DateHelper.stringNow())
+		},
+
+		metricWasQueryedToday(query: string): boolean {
+			const today = DateHelper.stringNow()
+			return query === today
 		}
 	},
 })
