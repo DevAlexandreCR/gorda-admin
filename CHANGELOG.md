@@ -14,11 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add top 5 metric. [#154](https://github.com/DevAlexandreCR/gorda-admin/pull/154)
 
-## [1.4.8(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
-
-### Added
-- Add top 5 metric. [#152](https://github.com/DevAlexandreCR/gorda-admin/pull/152)
-
 ## [1.4.7(2024-10-14)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
 
 ### Added
