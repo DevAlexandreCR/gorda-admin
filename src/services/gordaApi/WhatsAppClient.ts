@@ -22,7 +22,6 @@ export default class WhatsAppClient implements WPSubject {
     const port = process.env.VUE_APP_WP_CLIENT_API_PORT ?? 3000
 
     this.socket = io( url + ':' + port, {
-      reconnectionAttempts: 5,
       reconnectionDelay: 5000,
       query: {
         clientId: this.wpClient.id

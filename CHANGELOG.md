@@ -9,15 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.4.x
 
-## [1.4.7(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
+## [1.4.8(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.8...1.4.7)
+
+### Added
+- Add top 5 metric. [#154](https://github.com/DevAlexandreCR/gorda-admin/pull/154)
+
+## [1.4.8(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
 
 ### Added
 - Add top 5 metric. [#152](https://github.com/DevAlexandreCR/gorda-admin/pull/152)
 
-## [1.4.6(2024-10-14)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.6...1.4.5)
+## [1.4.7(2024-10-14)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
 
 ### Added
-- Restart button from Connection. [#148](https://github.com/DevAlexandreCR/gorda-admin/pull/148)
+- Restart button from Connection. [#150](https://github.com/DevAlexandreCR/gorda-admin/pull/150)
+
+## [1.4.6(2024-10-01)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.6...1.4.5)
+
+### Added
+- Add destination address. [#147](https://github.com/DevAlexandreCR/gorda-admin/pull/147)
 
 ## [1.4.5(2024-09-15)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.5...1.4.4)
 
