@@ -50,9 +50,11 @@ export default {
     new_message: 'Nuevo mensaje',
   },
   placeholders: {
+    optional: 'Opcional',
     name: 'Ingrese el nombre',
     email: 'Ingrese el email',
     phone: 'Ingrese el teléfono',
+    phone2: 'Ingrese el teléfono 2 (Opcional)',
     password: 'Contraseña',
     confirm_password: 'Confirmar contraseña',
     restore_password: '¿Restablecer Contraseña?',
