@@ -255,7 +255,9 @@ function checkPhoneNoExists(phone: string) {
 
 function locSelected(element: AutoCompleteType): void {
   let place = findByName(element.value)
-  start_loc = { name: place.name, lat: place.lat, lng: place.lng, }//add from branch selected
+  start_loc = {
+    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+  }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
 }
