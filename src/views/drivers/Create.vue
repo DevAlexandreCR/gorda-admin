@@ -74,12 +74,26 @@
                   </div>
                 </div>
               </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" name="enabled_at" type="checkbox" id="enableDriver" @change="onEnable"/>
-                <label class="form-check-label">{{
-                    $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
-                  }}</label>
-                <ErrorMessage name="enabled_at"/>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.fields.status') }}</label>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" name="enabled_at" type="checkbox" id="enableDriver" @change="onEnable"/>
+                      <label class="form-check-label">{{
+                          $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
+                        }}</label>
+                      <ErrorMessage name="enabled_at"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.fields.payment_mode') }}</label>
+                    <Field name="paymentMode" class="form-select form-select-sm" id="paymentMode" as="select" v-model="driver.paymentMode">
+                      <option selected :value="DriverPaymentMode.MONTHLY">{{ $t('common.placeholders.' + DriverPaymentMode.MONTHLY) }}</option>
+                      <option :value="DriverPaymentMode.PERCENTAGE">{{ $t('common.placeholders.' + DriverPaymentMode.PERCENTAGE) }}</option>
+                    </Field>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -177,6 +191,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import {StrHelper} from '@/helpers/StrHelper'
 import DateHelper from '@/helpers/DateHelper'
 import {useSettingsStore} from "@/services/stores/SettingsStore";
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')
@@ -195,6 +210,7 @@ const schema: ObjectSchema<any> = object().shape({
   phone2: string().min(8),
   docType: mixed().oneOf(Constants.DOC_TYPES).required(),
   document: string().required().min(6).max(10),
+  paymentMode: mixed().oneOf([DriverPaymentMode.MONTHLY, DriverPaymentMode.PERCENTAGE]).required(),
   brand: string().required().min(3),
   plate: string().required().min(3),
   model: string().required().min(3),

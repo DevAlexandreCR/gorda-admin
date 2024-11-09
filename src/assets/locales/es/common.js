@@ -69,6 +69,8 @@ export default {
     cancel_percent: 'Índice de cancelación',
     service_info: 'Información del servicio',
     route_info: 'Información de la ruta y conductor',
+    monthly: 'Mensualidad',
+    percentage: 'Porcentaje',
     description: {
       plate: 'Placa del veviculo',
       vehicle_color: 'Color de vehiculo',

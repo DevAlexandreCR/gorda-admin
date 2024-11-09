@@ -14,6 +14,7 @@ export default {
     soat_exp: 'Soat',
     tec_exp: 'Techno',
     balance: 'Balance',
+    payment_mode: 'Payment mode'
   },
   forms: {
     edit: 'Edit driver information',

@@ -14,6 +14,7 @@ export default {
     soat_exp: 'Soat',
     tec_exp: 'Tecno-mecánica',
     balance: 'Saldo',
+    payment_mode: 'Modo de pago'
   },
   forms: {
     edit: 'Editar información del conductor',

@@ -69,6 +69,8 @@ export default {
     cancel_percent: 'Canceled index',
     service_info: 'Service information',
     route_info: 'Route and driver information',
+    monthly: 'Monthly',
+    percentage: 'Percentage',
     description: {
       plate: 'Vehicle plate',
       vehicle_color: 'Vehicle Color',
