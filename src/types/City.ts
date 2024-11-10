@@ -1,7 +1,7 @@
 export type City = {
     id: string
     name: string
-    rate_management: boolean
+    percentage: number
     location: {
         lat: number
         lng: number

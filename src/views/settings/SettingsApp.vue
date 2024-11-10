@@ -168,7 +168,7 @@
       <div class="tap-pane fade show active" role="tabpanel" id="general_settings" aria-labelledby="settings-tab">
         <h3 class="ms-4">{{ $t('common.settings.branches') }}:</h3>
         <div class="row">
-          <div class="col-6" v-for="(branch, index) in branches" :key="index">
+          <div class="col-6" v-for="(branch , index) in branches" :key="index">
             <div class="container mt-4">
               <div class="card">
                 <div class="card-header">
@@ -179,23 +179,54 @@
                   <p><strong class="me-2">{{ $t('common.settings.currency_code') }}:</strong> {{ branch.currency_code }}</p>
                   <h5 class="mt-3">{{ $t('common.settings.cities') }}</h5>
                   <ul class="list-group">
-                    <li v-for="(city, cityIndex) in branch.cities" :key="city.city" class="list-group-item d-flex">
+                    <li v-for="(city) in branch.cities" :key="city.id" class="list-group-item d-flex">
                       <div class="col form-check">
-                        <label class="custom-control-label ms-2 text-sm" :for="city.city">{{city.city}}</label>
+                        <label class="custom-control-label ms-2 text-sm" :for="city.id">{{city.name}}</label>
                         <input type="checkbox" class="form-check-input" @click="setBranchSelected(branch, city)"
-                               :checked="branchSelected?.city.city === city.city" :id="city.city">
+                               :checked="branchSelected?.city.id === city.id" :id="city.id">
                       </div>
-                      <div class="col form-check form-switch">
-                        <input class="form-check-input" name="rate_management" type="checkbox" :checked="city.rate_management"
-                          id="flexSwitchCheckDefault" @change="rateManagement(index, cityIndex, !city.rate_management)" />
-                        <label class="form-check-label">{{
-                          $t('common.fields.rate_management')
-                        }}</label>
+                      <div class="row">
+                        <div class="form-group col-8">
+                          <label>{{ $t('common.placeholders.current_percentage') + ' ' + city.percentage + '%' }}</label>
+                        </div>
+                        <button v-if="AuthService.isAdmin()"  type="button" class="col-4 btn btn-sm btn-light" data-bs-target="#percentage-modal" data-bs-toggle="modal"
+                        @click="selectBranch(branch, city)">
+                          <em class="fas fa-pencil"></em>
+                        </button>
                       </div>
                     </li>
                   </ul>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Percentage -->
+      <div class="modal fade" id="percentage-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{{ $t('common.actions.set_percentage') }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label>{{ $t('common.placeholders.current_percentage') }}</label>
+                <span class="form-control-plaintext">{{ citySelected.percentage + '%' }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ $t('common.actions.set_percentage') }}</label>
+                <input type="number" class="form-control" v-model="citySelected.percentage" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+                {{ $t('common.actions.close') }}
+              </button>
+              <button @click="setPercentageModal(citySelected, branch.id)" type="button" data-bs-dismiss="modal" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
             </div>
           </div>
         </div>
@@ -215,16 +246,21 @@ import i18n from '@/plugins/i18n'
 import { Form } from 'vee-validate'
 import {storeToRefs} from "pinia";
 import {useSettingsStore} from "@/services/stores/SettingsStore";
+import AuthService from '@/services/AuthService'
+import { City } from '@/types/City'
+import { Branch } from '@/types/Branch'
 
 const { setLoading } = useLoadingState()
 
 const rideFees: Ref<RideFeeInterface> = ref({})
 const { branches, branchSelected } = storeToRefs(useSettingsStore())
-const { setBranchSelected, enableRateManagement } = useSettingsStore()
+const { setBranchSelected, setPercentage } = useSettingsStore()
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
 const currentTab: Ref<string> = ref('general_settings')
+let citySelected: Ref<City> = ref({})
+let branch: Ref<Branch> = ref({})
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
@@ -232,9 +268,16 @@ const editField = (fieldName: string) => {
   allFieldsDisabled.value = false
 }
 
-function rateManagement(branchId: number, cityId: number, enable: boolean): void {
+function selectBranch(b: Branch, city: City): void {
+  citySelected.value = city
+  branch.value = b
+  console.log(citySelected.value);
+  
+}
+
+function setPercentageModal(city: City, branchId: string): void {
   setLoading(true)
-  enableRateManagement(branchId, cityId, enable).catch(async e => {
+  setPercentage(branchId, city).catch(async e => {
     setLoading(false)
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   }).then(async () => {

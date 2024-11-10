@@ -106,8 +106,8 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	async enableRateManagement(branchId: number, cityId: number, enable: boolean): Promise<void> {
-		await set(ref(DBService.db, `settings/branches/${branchId}/cities/${cityId}/rate_management`), enable)
+	async setPercentage(branchId: string, cityId: string, percentage: number): Promise<void> {
+		await set(ref(DBService.db, `settings/branches/${branchId}/cities/${cityId}/percentage`), percentage)
 	}
 
 }

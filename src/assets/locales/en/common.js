@@ -35,7 +35,8 @@ export default {
     see: 'See',
     copy_phone: 'Copy phone',
     clear_filters: 'Clear Filters',
-    items_pages: 'Items per Pages'
+    items_pages: 'Items per Pages',
+    set_percentage: 'Set Percentage',
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -71,6 +72,7 @@ export default {
     route_info: 'Route and driver information',
     monthly: 'Monthly',
     percentage: 'Percentage',
+    current_percentage: 'Current percentage',
     description: {
       plate: 'Vehicle plate',
       vehicle_color: 'Vehicle Color',

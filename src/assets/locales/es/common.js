@@ -35,7 +35,8 @@ export default {
     see: 'Ver',
     copy_phone: 'Copiar teléfono',
     clear_filters: 'Limpiar Filtros',
-    items_pages: 'Elementos Por Pagina'
+    items_pages: 'Elementos Por Pagina',
+    set_percentage: 'Establecer Porcentaje',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -71,6 +72,7 @@ export default {
     route_info: 'Información de la ruta y conductor',
     monthly: 'Mensualidad',
     percentage: 'Porcentaje',
+    current_percentage: 'Porcentaje actual',
     description: {
       plate: 'Placa del veviculo',
       vehicle_color: 'Color de vehiculo',

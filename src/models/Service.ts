@@ -17,7 +17,6 @@ export default class Service implements ServiceInterface {
   amount: number | null = null
   applicants: Applicant | null = null
   metadata: Metadata | null = null
-  perform_balance: boolean
   wp_client_id: string
   driver_id: string | null = null
   client_id: string | null = null
@@ -42,12 +41,10 @@ export default class Service implements ServiceInterface {
 
   constructor() {
     const { defaultClient } = useWpClientsStore()
-    const { branchSelected } = useSettingsStore()
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING
     this.wp_client_id = defaultClient as string
-    this.perform_balance = branchSelected?.city.rate_management ?? false
   }
 
   isPending(): boolean {
