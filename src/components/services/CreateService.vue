@@ -209,6 +209,8 @@ function createService(values: ServiceInterface): void {
     values.created_by = AuthService.getCurrentUser()?.id ?? null;
   }
   const newService: Service = new Service()
+  start_loc.country = branchSelected!.id
+  start_loc.city = branchSelected!.city.id
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
   newService.name = values.name
@@ -253,7 +255,9 @@ function checkPhoneNoExists(phone: string) {
 
 function locSelected(element: AutoCompleteType): void {
   let place = findByName(element.value)
-  start_loc = { name: place.name, lat: place.lat, lng: place.lng}
+  start_loc = {
+    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+  }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
 }

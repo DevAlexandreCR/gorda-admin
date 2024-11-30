@@ -14,6 +14,7 @@ export default {
     canceled_by: 'Cancelado Por:',
     terminated_by: 'Terminado Por:',
     assigned_by: 'Asignado Por:',
+    rate_management: 'Rate Management',
   },
   models: {
     users: 'User | Users',
@@ -35,7 +36,8 @@ export default {
     see: 'See',
     copy_phone: 'Copy phone',
     clear_filters: 'Clear Filters',
-    items_pages: 'Items per Pages'
+    items_pages: 'Items per Pages',
+    set_percentage: 'Set Percentage',
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -50,9 +52,11 @@ export default {
     new_message: 'New message',
   },
   placeholders: {
+    optional: 'Optional',
     name: 'Enter name',
     email: 'Enter email',
     phone: 'Enter phone',
+    phone2: 'Enter phone 2 (Optional)',
     password: 'Password',
     confirm_password: 'Confirm password',
     restore_password: 'Reset Password?',
@@ -73,6 +77,9 @@ export default {
     first_place: 'First place',
     service_info: 'Service information',
     route_info: 'Route and driver information',
+    monthly: 'Monthly',
+    percentage: 'Percentage',
+    current_percentage: 'Current percentage',
     description: {
       plate: 'Vehicle plate',
       vehicle_color: 'Vehicle Color',

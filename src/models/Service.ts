@@ -5,6 +5,7 @@ import {LocationType} from '@/types/LocationType'
 import {Applicant} from '@/types/Applicant'
 import { Metadata } from '@/types/Metadata'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 export default class Service implements ServiceInterface {
   id: string
@@ -39,7 +40,7 @@ export default class Service implements ServiceInterface {
 
 
   constructor() {
-    const {defaultClient} =  useWpClientsStore()
+    const { defaultClient } = useWpClientsStore()
     this.id = dayjs().unix().toString()
     this.created_at = dayjs().unix()
     this.status = Service.STATUS_PENDING

@@ -56,4 +56,8 @@ export default class AuthService {
   public static logOut(): Promise<void> {
     return signOut(AuthService.auth)
   }
+
+  public static isAdmin(): boolean {
+    return AuthService.currentUser.isAdmin()
+  }
 }

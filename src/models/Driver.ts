@@ -3,6 +3,7 @@ import Vehicle from "@/models/Vehicle";
 import {VehicleInterface} from "@/types/VehicleInterface";
 import dayjs from 'dayjs'
 import {DeviceType} from '@/types/DeviceType'
+import { DriverPaymentMode } from "@/constants/DriverPaymentMode";
 
 export default class Driver implements DriverInterface {
 
@@ -15,16 +16,20 @@ export default class Driver implements DriverInterface {
   enabled_at = 0
   name: string
   phone: string
+  phone2: string | null = null
   photoUrl: string | null
   vehicle: VehicleInterface
-	device: DeviceType|null = null
+  device: DeviceType | null = null
+  balance = 0
+  paymentMode: DriverPaymentMode = DriverPaymentMode.MONTHLY
 
   constructor() {
     this.id = ''
     this.created_at = dayjs().unix()
     this.photoUrl = null
 		this.password = null
-		this.vehicle = new Vehicle()
+    this.vehicle = new Vehicle()
+    this.phone2 = null
   }
 
   isEnabled(): boolean {
