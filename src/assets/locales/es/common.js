@@ -13,7 +13,8 @@ export default {
     created_by: 'created by:',
     canceled_by: 'canceled by:',
     terminated_by: 'terminated by:',
-    assigned_by: 'assigned by:'
+    assigned_by: 'assigned by:',
+    rate_management: 'Gestión de Tarifas',
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -35,7 +36,8 @@ export default {
     see: 'Ver',
     copy_phone: 'Copiar teléfono',
     clear_filters: 'Limpiar Filtros',
-    items_pages: 'Elementos Por Pagina'
+    items_pages: 'Elementos Por Pagina',
+    set_percentage: 'Establecer Porcentaje',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -50,9 +52,11 @@ export default {
     new_message: 'Nuevo mensaje',
   },
   placeholders: {
+    optional: 'Opcional',
     name: 'Ingrese el nombre',
     email: 'Ingrese el email',
     phone: 'Ingrese el teléfono',
+    phone2: 'Ingrese el teléfono 2 (Opcional)',
     password: 'Contraseña',
     confirm_password: 'Confirmar contraseña',
     restore_password: '¿Restablecer Contraseña?',
@@ -73,6 +77,9 @@ export default {
     first_place: 'Primer lugar',
     service_info: 'Información del servicio',
     route_info: 'Información de la ruta y conductor',
+    monthly: 'Mensualidad',
+    percentage: 'Porcentaje',
+    current_percentage: 'Porcentaje actual',
     description: {
       plate: 'Placa del veviculo',
       vehicle_color: 'Color de vehiculo',

@@ -58,25 +58,17 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label>{{ $t('users.fields.phone') }}</label>
-                    <Field name="phone" type="phone" v-slot="{ field, errorMessage, meta }" v-model="driver.phone">
-                      <input class="form-control form-control-sm" id="phone" aria-label="Phone" aria-describedby="phone-addon"
-                             v-model="field.value" :placeholder="$t('common.placeholders.phone')" v-bind="field" />
-                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
+                    <Field name="phone" type="phone"  v-model="driver.phone" v-slot="{ errorMessage, meta }">
+                    <input class="form-control form-control-sm" v-model="driver.phone" :placeholder="$t('common.placeholders.phone')" id="phone" aria-label="Phone" aria-describedby="phone-addon"/>
+                      <span class="is-invalid" v-if="errorMessage && !meta.dirty">{{ errorMessage }}</span>
                     </Field>
                   </div>
                   <div class="col-sm-6">
-                    <label>{{ $t('users.fields.device') }}</label>
-                    <div class="input-group" v-if="driver.device">
-                      <input type="text" class="form-control form-control-sm disabled"
-                             disabled aria-label="Device" name="device.name"
-                             aria-describedby="device-addon" v-model="driver.device.name">
-                      <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()">
-                        <em class="fa fa-solid fa-trash"></em>
-                      </button>
-                    </div>
-                    <input type="text" class="form-control form-control-sm" v-else
-                           :placeholder="$t('common.placeholders.device')" disabled aria-label="Device" name="device"
-                           aria-describedby="password-addon" v-model="driver.device">
+                    <label>{{ $t('users.fields.phone2') }}</label>
+                    <Field name="phone2" type="phone"  v-model="driver.phone2" v-slot="{ errorMessage, meta }">
+                    <input class="form-control form-control-sm" v-model="driver.phone2" :placeholder="$t('common.placeholders.phone2')" id="phone2" aria-label="Phone 2" aria-describedby="phone2-addon"/>
+                      <span class="is-invalid" v-if="errorMessage && !meta.dirty">{{ errorMessage }}</span>
+                    </Field>
                   </div>
                 </div>
               </div>
@@ -100,13 +92,35 @@
                   </div>
                 </div>
               </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
-                  id="flexSwitchCheckDefault" @change="onEnable" />
-                <label class="form-check-label">{{
-                  $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
-                }}</label>
-                <ErrorMessage name="enable" />
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.fields.status') }}</label>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" @change="onEnable" :checked="driver.isEnabled()"/>
+                      <label class="form-check-label">{{
+                          $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
+                        }}</label>
+                      <ErrorMessage name="enable"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>{{ $t('drivers.fields.payment_mode') }}</label>
+                    <Field name="paymentMode" class="form-select form-select-sm" id="paymentMode" as="select" v-model="driver.paymentMode">
+                      <option selected :value="DriverPaymentMode.MONTHLY">{{ $t('common.placeholders.' + DriverPaymentMode.MONTHLY) }}</option>
+                      <option :value="DriverPaymentMode.PERCENTAGE">{{ $t('common.placeholders.' + DriverPaymentMode.PERCENTAGE) }}</option>
+                    </Field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col">
+                  <label>{{ $t('drivers.forms.current_balance') }}</label>
+                  <span class="form-control-plaintext">{{ driver.balance + branchSelected?.currency_code }}</span>
+                </div>
+                <button v-if="AuthService.isAdmin()"  type="button" class="col btn btn-sm btn-light" data-bs-target="#balance-modal" data-bs-toggle="modal">
+                  {{ $t('drivers.forms.manage_balance') }}
+                </button>
               </div>
             </div>
             <div class="col-md-6">
@@ -188,6 +202,20 @@
                   </Field>
                 </div>
               </div>
+              <div class="form-group">
+                <label>{{ $t('users.fields.device') }}</label>
+                <div class="input-group" v-if="driver.device">
+                  <input type="text" class="form-control form-control-sm disabled"
+                         disabled aria-label="Device" name="device.name"
+                         aria-describedby="device-addon" v-model="driver.device.name">
+                  <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()">
+                    <em class="fa fa-solid fa-trash"></em>
+                  </button>
+                </div>
+                <input type="text" class="form-control form-control-sm" v-else
+                       :placeholder="$t('common.placeholders.device')" disabled aria-label="Device" name="device"
+                       aria-describedby="password-addon" v-model="driver.device">
+              </div>
             </div>
           </div>
         </div>
@@ -202,37 +230,36 @@
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
       @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
-  <!-- Modal -->
-  <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal Balance-->
+  <div class="modal fade" id="balance-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('drivers.forms.add_balance') }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <Form @submit="updateEmail" :validation-schema="schemaEmail">
-          <div class="modal-body">
-            <div class="mb-3">
-              <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
-                <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
-                  v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field" />
-              </Field>
-              <ErrorMessage name="email" />
-            </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{ $t('drivers.forms.current_balance') }}</label>
+            <span class="form-control-plaintext">{{ driver.balance + branchSelected?.currency_code }}</span>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-              {{ $t('common.actions.close') }}
-            </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          <div class="form-group">
+            <label>{{ $t('drivers.forms.add_balance') }}</label>
+            <input type="number" class="form-control" v-model="newBalance" />
           </div>
-        </Form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+        </div>
       </div>
     </div>
   </div>
-  <!-- Modal -->
+  <!-- Modal Balance-->
   <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -291,6 +318,9 @@ import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
 import { useI18n } from 'vue-i18n'
 import AuthService from '@/services/AuthService'
+import { useSettingsStore } from '@/services/stores/SettingsStore'
+import { storeToRefs } from 'pinia'
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -307,6 +337,8 @@ const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const currentUser = AuthService.getCurrentUser()
 const { setLoading } = useLoadingState()
+const newBalance = ref(0)
+const { branchSelected } = storeToRefs(useSettingsStore())
 const schema = object().shape({
   name: string().required().min(3),
   phone: string().required().min(8),
@@ -403,6 +435,18 @@ function updatePassword(): void {
     setLoading(false)
     hide('editPassword')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
+    setLoading(false)
+   await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function addBalance(): void {
+  setLoading(true)
+  DriverRepository.addBalance(driver.value, newBalance.value).then(async () => {
+    setLoading(false)
+    hide('balance-modal')
+   await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
     setLoading(false)
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

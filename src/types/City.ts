@@ -1,5 +1,7 @@
 export type City = {
-    city: string
+    id: string
+    name: string
+    percentage: number
     location: {
         lat: number
         lng: number

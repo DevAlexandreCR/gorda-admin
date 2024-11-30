@@ -12,7 +12,9 @@ export default {
     plate: 'Placa',
     color: 'Color',
     soat_exp: 'Soat',
-    tec_exp: 'Tecno-mecánica'
+    tec_exp: 'Tecno-mecánica',
+    balance: 'Saldo',
+    payment_mode: 'Modo de pago'
   },
   forms: {
     edit: 'Editar información del conductor',
@@ -20,7 +22,10 @@ export default {
     create_vehicle: 'Información del vehículo',
     create_driver: 'Información del conductor',
     upload: 'Cargar foto de perfil',
-    upload_vehicle: 'Cargar foto del vehículo'
+    upload_vehicle: 'Cargar foto del vehículo',
+    current_balance: 'Saldo actual',
+    add_balance: 'Agregar saldo',
+    manage_balance: 'Administrar'
   },
   vehicle: {
     brand: 'Marca',

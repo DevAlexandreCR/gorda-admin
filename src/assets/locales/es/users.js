@@ -22,6 +22,7 @@ export default {
     password: 'Contraseña',
     confirm_password: 'Confirma tu contraseña',
     phone: 'Teléfono',
+    phone2: 'Teléfono 2',
     roles: 'Roles',
     admin: 'Administrador',
     operator: 'Operador',
