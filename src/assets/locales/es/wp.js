@@ -11,6 +11,7 @@ export default {
         default: 'Cliente por defecto para las confirmaciones',
         select_default: 'Selecccionar como cliente por defecto',
         select_wp_api: 'Conectar a Whatsapp API',
+        restart: 'El cliente se reiniciará, ¿desea continuar?',
     },
     titles: {
         confirmations_messages: 'Mensajes de Confirmación',

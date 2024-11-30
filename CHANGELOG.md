@@ -16,6 +16,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.4.x
 
+## [1.4.7(2024-10-21)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.7...1.4.6)
+
+### Added
+- Add top 5 metric. [#152](https://github.com/DevAlexandreCR/gorda-admin/pull/152)
+
+## [1.4.6(2024-10-14)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.6...1.4.5)
+
+### Added
+- Restart button from Connection. [#148](https://github.com/DevAlexandreCR/gorda-admin/pull/148)
+
+## [1.4.5(2024-09-15)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.5...1.4.4)
+
+### Changed
+- Use Baileys as default whatsapp service. [#146](https://github.com/DevAlexandreCR/gorda-admin/pull/146)
+
+## [1.4.4(2024-09-09)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.4...1.4.3)
+
+### Fixed
+- Client name not showing. [#146](https://github.com/DevAlexandreCR/gorda-admin/pull/146)
+
 ## [1.4.3(2024-09-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.4.3...1.4.2)
 
 ### Fixed

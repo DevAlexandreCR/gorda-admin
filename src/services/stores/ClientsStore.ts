@@ -22,10 +22,7 @@ export const useClientsStore = defineStore('clientsStore', {
         this.clients.push(client)
       })
     },
-    findById(id: string): Client {
-        if (!id.includes('@c.us')) {
-            id += '@c.us'
-        }
+    findById(id: string): Client {      
       const client = this.clients.find(el => el.id == id)
       return client ?? new Client()
     },
