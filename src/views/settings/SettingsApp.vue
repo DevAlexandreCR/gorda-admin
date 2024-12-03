@@ -103,10 +103,10 @@
                         <label class="form-control-label">{{ $t('common.settings.fees_minimum') }}</label>
                         <div class="input-group">
                           <input type="number" class="form-control form-control-sm"
-                                 :disabled="fieldEdited !== 'fees_minimum' || allFieldsDisabled" v-model="rideFees.fees_minimum" />
+                                 disabled v-model="rideFees.fees_minimum" />
                           <button class="badge bg-info border-0" type="button" @click="editField('fees_minimum')"
-                                  :disabled="fieldEdited === 'fees_minimum'">
-                            <em class="fas fa-pencil"></em>
+                                  disabled>
+                            <em class="fas fa-cancel"></em>
                           </button>
                         </div>
                       </div>
@@ -160,9 +160,79 @@
               </div>
             </div>
           </div>
+          <div class="col-md-10 col-lg-8 col-sm-12 col-xl-6 col-xxl-4 mx-auto text-center">
+            <div class="card mx-sm-2">
+              <div class="card-header">
+                <h6>{{ $t('common.settings.dynamic_min_fee') }}</h6>
+              </div>
+              <div class="card-body pt-2">
+                <Form>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="form-control-label">{{ $t('common.settings.fees_minimum_day') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 :disabled="fieldEdited !== 'price_kilometer' || allFieldsDisabled" v-model="rideFees.fees_min_day" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('price_kilometer')"
+                                  :disabled="fieldEdited === 'price_kilometer'">
+                            <em class="fas fa-pencil"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="form-control-label">{{ $t('common.settings.fees_minimum_nigth') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 :disabled="fieldEdited !== 'price_minute' || allFieldsDisabled" v-model="rideFees.fees_min_nigth" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('price_minute')"
+                                  :disabled="fieldEdited === 'price_minute'">
+                            <em class="fas fa-pencil"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="form-control-label">{{ $t('common.settings.fees_minimum_festive') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 :disabled="fieldEdited !== 'fees_base' || allFieldsDisabled" v-model="rideFees.fees_min_festive" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('fees_base')"
+                                  :disabled="fieldEdited === 'fees_base'">
+                            <em class="fas fa-pencil"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="form-control-label">{{ $t('common.settings.fees_minimum_festive_nigth') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 :disabled="fieldEdited !== 'fees_additional' || allFieldsDisabled" v-model="rideFees.fees_min_festive_nigth" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('fees_additional')"
+                                  :disabled="fieldEdited === 'fees_additional'">
+                            <em class="fas fa-pencil"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <button type="button" class="btn btn-primary float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled">
+                      {{ $t('common.actions.submit') }}
+                    </button>
+                  </div>
+                </Form>
+              </div>
+            </div>
           </div>
         </div>
-      <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+      </div>
+    <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
         <SettingsMsg v-if="currentTab === 'messages'" />
       </div>
       <div class="tap-pane fade show active" role="tabpanel" id="general_settings" aria-labelledby="settings-tab">
