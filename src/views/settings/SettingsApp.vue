@@ -41,7 +41,7 @@
     <div class="tab-content mt-3" id="myTabContent">
       <div class="tab-pane fade" role="tabpanel" id="ride-fees" aria-labelledby="ride-fees-tab">
         <div class="row">
-          <div class="col-md-10 col-lg-8 col-sm-12 col-xl-6 col-xxl-4 mx-auto text-center">
+          <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
               <div class="card-body pt-2">
                 <Form>
@@ -160,7 +160,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-10 col-lg-8 col-sm-12 col-xl-6 col-xxl-4 mx-auto text-center">
+          <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
               <div class="card-header">
                 <h6>{{ $t('common.settings.dynamic_min_fee') }}</h6>
