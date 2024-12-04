@@ -259,6 +259,35 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ $t('users.forms.edit') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <Form @submit="updateEmail" :validation-schema="schemaEmail">
+          <div class="modal-body">
+            <div class="mb-3">
+              <Field name="email" type="email" v-slot="{ field }" v-model="driver.email">
+                <input class="form-control form-control-sm" id="email" aria-label="Email" aria-describedby="email-addon"
+                  v-model="field.value" :placeholder="$t('common.placeholders.email')" v-bind="field" />
+              </Field>
+              <ErrorMessage name="email" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+              {{ $t('common.actions.close') }}
+            </button>
+            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          </div>
+        </Form>
+      </div>
+    </div>
+  </div>
   <!-- Modal Balance-->
   <div class="modal fade" id="editPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

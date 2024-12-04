@@ -43,16 +43,16 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <label>{{ $t('users.fields.phone') }}</label>
-                    <Field name="phone" type="phone"  v-model="driver.phone" v-slot="{ errorMessage, meta }">
-                    <input class="form-control form-control-sm" v-model="driver.phone" :placeholder="$t('common.placeholders.phone')" id="phone" aria-label="Phone" aria-describedby="phone-addon"/>
-                      <span class="is-invalid" v-if="errorMessage && !meta.dirty">{{ errorMessage }}</span>
+                    <Field name="phone" type="number"  v-model="driver.phone" v-slot="{ field, errorMessage, meta }">
+                      <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('common.placeholders.phone')" id="phone" aria-label="Phone" aria-describedby="phone-addon" v-bind="field"/>
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
                   </div>
                   <div class="col-sm-6">
                     <label>{{ $t('users.fields.phone2') }}</label>
-                    <Field name="phone2" type="phone"  v-model="driver.phone2" v-slot="{ errorMessage, meta }">
-                    <input class="form-control form-control-sm" v-model="driver.phone2" :placeholder="$t('common.placeholders.phone2')" id="phone2" aria-label="Phone 2" aria-describedby="phone2-addon"/>
-                      <span class="is-invalid" v-if="errorMessage && !meta.dirty">{{ errorMessage }}</span>
+                    <Field name="phone2" type="number"  v-model="driver.phone2" v-slot="{ field, errorMessage, meta }">
+                      <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('common.placeholders.phone2')" id="phone2" aria-label="Phone 2" aria-describedby="phone2-addon" v-bind="field"/>
+                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                     </Field>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ const schema: ObjectSchema<any> = object().shape({
   email: string().required().email(),
   password: string().required().min(6),
   phone: string().required().min(8),
-  phone2: string().min(8),
+  phone2: string().nullable(),
   docType: mixed().oneOf(Constants.DOC_TYPES).required(),
   document: string().required().min(6).max(10),
   paymentMode: mixed().oneOf([DriverPaymentMode.MONTHLY, DriverPaymentMode.PERCENTAGE]).required(),
