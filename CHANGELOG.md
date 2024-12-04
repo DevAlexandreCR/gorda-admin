@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.1(2024-12-02)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.1...1.5.0)
+
+### Added
+- Add dynamic min fee. [#148](https://github.com/DevAlexandreCR/gorda-admin/pull/148)
+
 ## [1.5.0(2024-11-30)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.0...1.4.3)
 
 ### Added
