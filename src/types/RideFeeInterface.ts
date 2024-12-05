@@ -8,7 +8,7 @@ export interface RideFeeInterface {
     fees_DxF: number
     fees_night_DxF: number
     fees_min_day: number
-    fees_min_night: number
+    fees_min_nigth: number
     fees_min_festive_day: number
     fees_min_festive_nigth: number
   }
