@@ -3,7 +3,7 @@ import firebaseConfig from '../../firebase.config'
 import {connectAuthEmulator, getAuth} from 'firebase/auth'
 import {connectDatabaseEmulator, getDatabase} from 'firebase/database'
 import {connectStorageEmulator, getStorage} from 'firebase/storage'
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
+import { connectFirestoreEmulator, CACHE_SIZE_UNLIMITED, persistentLocalCache, initializeFirestore } from 'firebase/firestore'
 
 export default class Firebase {
 
@@ -15,7 +15,10 @@ export default class Firebase {
       const auth = getAuth(Firebase.app)
       const db = getDatabase(Firebase.app)
       const st = getStorage(Firebase.app)
-      const fs = getFirestore(Firebase.app)
+      const fs = initializeFirestore(Firebase.app, {
+        localCache: persistentLocalCache({cacheSizeBytes: CACHE_SIZE_UNLIMITED}),
+      })
+
       if (process.env.NODE_ENV !== 'production') {
 				localStorage.clear()
         connectDatabaseEmulator(db, 'localhost', 9000)
