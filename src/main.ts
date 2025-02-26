@@ -34,3 +34,18 @@ app.use(i18n)
 	.use(router)
 	.provide('appName', process.env.VUE_APP_TITLE)
 	.mount('#app')
+
+updateFavicon()
+
+function updateFavicon() {
+	const favicon = process.env.VUE_APP_FAVICON || "/favicon.ico";
+	let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+	
+	if (!link) {
+		link = document.createElement("link");
+		link.rel = "icon";
+		document.head.appendChild(link);
+	}
+	
+	link.href = favicon;
+	}
