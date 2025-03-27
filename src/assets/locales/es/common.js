@@ -15,6 +15,7 @@ export default {
     terminated_by: 'terminated by:',
     assigned_by: 'assigned by:',
     rate_management: 'Gestión de Tarifas',
+    lastConnection: 'Última Conexión',
   },
   models: {
     users: 'Usuario | Usuarios',
