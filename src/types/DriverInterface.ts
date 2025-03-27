@@ -18,4 +18,5 @@ export interface DriverInterface {
   balance: number
   enabled_at: number
   created_at: number
+  last_connection: number
 }

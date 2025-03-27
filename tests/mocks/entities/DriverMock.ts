@@ -13,6 +13,7 @@ class DriverMock implements DriverInterface{
   phone2 = null;
   photoUrl = 'https://fakeUrl.com'
   created_at =  dayjs().unix()
+  last_connection = 0
   enabled_at = 0
   docType = 'CC'
   document = '1000000000'
