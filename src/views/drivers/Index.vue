@@ -41,6 +41,7 @@
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('drivers.fields.plate') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.status') }}</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.createdAt') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.lastConnection') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -80,6 +81,9 @@
               </td>
               <td class="align-middle text-center">
                 <span class="text-secondary text-xs font-weight-bold">{{ format(driver.created_at) }}</span>
+              </td>
+              <td class="align-middle text-center">
+                <span class="text-secondary text-xs font-weight-bold">{{ format(driver.last_connection) }}</span>
               </td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">

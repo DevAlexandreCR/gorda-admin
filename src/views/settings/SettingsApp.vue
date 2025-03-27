@@ -199,7 +199,7 @@
                         <label class="form-control-label">{{ $t('common.settings.fees_minimum_festive') }}</label>
                         <div class="input-group">
                           <input type="number" class="form-control form-control-sm"
-                                 :disabled="fieldEdited !== 'fees_base' || allFieldsDisabled" v-model="rideFees.fees_min_festive" />
+                                 :disabled="fieldEdited !== 'fees_base' || allFieldsDisabled" v-model="rideFees.fees_min_festive_day" />
                           <button class="badge bg-info border-0" type="button" @click="editField('fees_base')"
                                   :disabled="fieldEdited === 'fees_base'">
                             <em class="fas fa-pencil"></em>

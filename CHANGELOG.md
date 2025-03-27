@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.3(2025-03-26)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.3...1.5.2)
+
+### Added
+- Add last connection. [#151](https://github.com/DevAlexandreCR/gorda-admin/pull/151)
+
+## [1.5.2(2025-02-16)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.2...1.5.1)
+
+### Added
+- Add cache to chats. [#149](https://github.com/DevAlexandreCR/gorda-admin/pull/149)
+
 ## [1.5.1(2024-12-02)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.1...1.5.0)
 
 ### Added

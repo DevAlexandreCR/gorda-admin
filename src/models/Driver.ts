@@ -9,6 +9,7 @@ export default class Driver implements DriverInterface {
 
   id: string
   created_at: number
+  last_connection = 0;
   docType: string
   document: string
   email: string
