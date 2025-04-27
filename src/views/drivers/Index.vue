@@ -87,7 +87,7 @@
               </td>
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
-                  <div class="form-check form-switch col-2" v-if="currentUser && currentUser.isAdmin()">
+                  <div class="form-check form-switch col-2">
                     <input class="form-check-input" name="enable" type="checkbox" :checked="driver.isEnabled()"
                            :id="driver.id" @change="onEnable"/>
                   </div>
