@@ -483,10 +483,6 @@ function addBalance(): void {
 }
 
 function onEnable(event: Event): void {
-  if (!currentUser || !currentUser.isAdmin()) {
-    ToastService.toast(ToastService.ERROR, `${t('users.messages.permissions')}`)
-    return
-  }
   setLoading(true)
   const target = event.target as HTMLInputElement
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0

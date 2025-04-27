@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.4(2025-04-27)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.4...1.5.3)
+
+### Changed
+- Remove operator restriction. [#161](https://github.com/DevAlexandreCR/gorda-admin/pull/161)
+
 ## [1.5.3(2025-03-26)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.3...1.5.2)
 
 ### Added
