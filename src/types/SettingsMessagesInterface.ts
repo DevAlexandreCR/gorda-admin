@@ -7,5 +7,5 @@ export interface SettingsMessageInterface {
     description: string
     message: string
     enabled: boolean
-    interactive?: Interactive
+    interactive: Interactive | null
 }

@@ -34,7 +34,8 @@ class SettingsRepository {
 			name: messageData.name,
 			description: messageData.description,
 			message: messageData.message,
-			enabled: messageData.enabled
+			enabled: messageData.enabled,
+			interactive: messageData.interactive || null
 		}
 		messages.push(message)
 		})
@@ -48,7 +49,8 @@ class SettingsRepository {
 			name: message.name,
 			description: message.description,
 			message: message.message,
-			enabled: message.enabled
+			enabled: message.enabled,
+			interactive: message.interactive
 		}
 		await updateDoc(messageRef, dataToUpdate)
 	}

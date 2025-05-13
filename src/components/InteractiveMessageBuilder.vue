@@ -21,18 +21,20 @@
 
             <div v-if="message.type === 'button'" class="mb-3">
             <label class="form-label">{{ $t('wp.fields.buttons') }}</label><br>
-            <div v-for="(button, index) in message.action.buttons" :key="index" class="input-group mb-2">
+            <div v-for="(button, index) in message.action.buttons" :key="index" class="d-flex mb-1">
                 <input
-                class="form-control form-control-sm me-2"
+                class="form-control me-1"
                 v-model="button.reply.title"
                 placeholder="Button Title"
                 />
                 <input
-                class="form-control form-control-sm"
+                class="form-control me-1"
                 v-model="button.reply.id"
                 placeholder="Button ID"
                 />
-                <button class="btn btn-sm btn-outline-danger" @click="removeButton(index)">{{ $t('wp.actions.remove') }}</button>
+                <button class="btn btn-danger my-auto" @click="removeButton(index)">
+                    <em class="fa fa-trash"></em>
+                </button>
             </div>
             <button class="btn btn-outline-primary btn-sm" @click="addButton">{{ $t('wp.actions.add') }}</button>
             </div>
@@ -52,7 +54,7 @@ import { Interactive } from '@/types/Interactive';
 import TextEditor from './TextEditor.vue';
 
 const emit = defineEmits(['interactiveUpdated'])
-const props = defineProps<{ selectedInteractive: Interactive|undefined}>()
+const props = defineProps<{ selectedInteractive: Interactive|null}>()
 const formattedMessage = ref<string>('')
 const message = ref<Interactive>({
   type: 'button',

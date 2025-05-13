@@ -1,7 +1,7 @@
 <template>
   <!-- Modal -->
   <div :id="selectedMessage.id" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-lg">
+     <div class="modal-dialog modal-xl">
        <div class="modal-content">
          <div class="modal-header">
            <h5 class="modal-title">{{ $t('common.titles.title_modal') }}</h5>
@@ -44,7 +44,7 @@
            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
              {{ $t('common.actions.close') }}
            </button>
-           <button type="submit" class="btn bg-gradient-primary" @click="saveChanges">{{ $t('common.actions.submit') }}</button>
+           <button type="button" class="btn bg-gradient-primary" @click="saveChanges">{{ $t('common.actions.submit') }}</button>
          </div>
        </div>
      </div>
@@ -70,7 +70,7 @@ const formattedMessage = ref<string>('')
 const emit = defineEmits(['updateMessages'])
 const props = defineProps<{ selectedMessage: SettingsMessageInterface}>()
 const isInteractiveMessage = ref<boolean>(false)
-const interactiveMessage = ref<Interactive|undefined>(undefined)
+const interactiveMessage = ref<Interactive|null>(null)
 
 function updateFormattedMessage(text: string): void{
   formattedMessage.value = text
@@ -80,7 +80,7 @@ function updateMessage(content: string): void{
   text.value = content
 }
 
-function updateInteractiveMessage(message: Interactive|undefined): void {
+function updateInteractiveMessage(message: Interactive|null): void {
   interactiveMessage.value = message
 }
 
@@ -94,38 +94,42 @@ function updateTextareaDescription() {
 
 function toggleInteractiveMessage(): void {
   isInteractiveMessage.value = !isInteractiveMessage.value
-  if (isInteractiveMessage.value) {
-    props.selectedMessage.interactive = interactiveMessage.value
+  if (!isInteractiveMessage.value) {
+    interactiveMessage.value = null
   } else {
-    props.selectedMessage.interactive = undefined
-    interactiveMessage.value = undefined
+    interactiveMessage.value = {
+      type: 'button',
+      body: { text: text.value },
+      action: {
+        buttons: [],
+      },
+    }
   }
 }
 
 function saveChanges(): void {
-  if (props.selectedMessage && text.value) {
-    setLoading(true)
-    const updatedMessage = {
-      id: props.selectedMessage.id,
-      name: props.selectedMessage.name,
-      description: props.selectedMessage.description,
-      message: text.value,
-      enabled: props.selectedMessage.enabled,
-      interactive: interactiveMessage.value,
-    }
-    SettingsRepository.updateMessage(updatedMessage).then(async () => {
-      emit('updateMessages')
-      setLoading(false)
-      hide(updatedMessage.id)
-      await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
-    }).catch(async e => {
-      setLoading(false)
-      await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
-    })
+  setLoading(true)
+  const updatedMessage = {
+    id: props.selectedMessage.id,
+    name: props.selectedMessage.name,
+    description: props.selectedMessage.description,
+    message: text.value,
+    enabled: props.selectedMessage.enabled,
+    interactive: interactiveMessage.value,
   }
+  SettingsRepository.updateMessage(updatedMessage).then(async () => {
+    emit('updateMessages')
+    setLoading(false)
+    hide(updatedMessage.id)
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
+    setLoading(false)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
 }
 
 onMounted(() => {
   isInteractiveMessage.value = props.selectedMessage.interactive != undefined
+  text.value = props.selectedMessage.message  
 })
 </script>
