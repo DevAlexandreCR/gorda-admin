@@ -33,7 +33,7 @@
           <div class="row">
             <div class="col-md-12">
               <button type="button" class="btn btn-outline-primary" @click="toggleInteractiveMessage">
-                {{ isInteractiveMessage ? $t('common.actions.disable_interactive') : $t('common.actions.enable_interactive') }}
+                {{ isInteractiveMessage ? $t('wp.actions.disable_interactive') : $t('wp.actions.enable_interactive') }}
               </button>
             </div>
             <InteractiveMessageBuilder @interactive-updated="updateInteractiveMessage" :selectedInteractive="$props.selectedMessage.interactive" v-if="isInteractiveMessage"/>

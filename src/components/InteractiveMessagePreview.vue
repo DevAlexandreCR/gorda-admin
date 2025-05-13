@@ -20,7 +20,7 @@
 
       <!-- Location Request -->
       <div v-if="message.type === 'location_request_message'" class="location-box">
-        📍 Share your location
+        {{ $t('wp.actions.share_location') }}
       </div>
 
       <div v-if="message.footer" class="footer">

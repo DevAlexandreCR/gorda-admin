@@ -1,10 +1,18 @@
 export default {
     actions: {
         create: 'Crear nuevo cliente',
+        add: 'Agregar',
+        remove: 'Eliminar',
+        enable_interactive: 'Habilitar modo interactivo',
+        disable_interactive: 'Deshabilitar modo interactivo',
+        share_location: '📍 Compartir ubicación',
     },
     fields: {
         id: 'Teléfono',
-        alias: 'Alias'
+        alias: 'Alias',
+        buttons: 'Botones',
+        button: 'Botón',
+        location_request: 'Solicitud de ubicación',
     },
     placeholders: {
         delete: 'El cliente se eliminará, ¿desea continuar?',

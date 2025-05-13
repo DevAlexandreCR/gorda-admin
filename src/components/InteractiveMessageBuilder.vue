@@ -6,8 +6,8 @@
             <div class="mb-3">
             <label class="form-label">{{ $t('wp.placeholders.message_type') }}</label>
             <select class="form-select" v-model="message.type">
-                <option value="button">Button</option>
-                <option value="location_request_message">Location Request</option>
+                <option value="button">{{ $t('wp.fields.button') }}</option>
+                <option value="location_request_message">{{ $t('wp.fields.location_request') }}</option>
             </select>
             </div>
 
@@ -20,21 +20,21 @@
             </div>
 
             <div v-if="message.type === 'button'" class="mb-3">
-            <label class="form-label">Buttons</label>
+            <label class="form-label">{{ $t('wp.fields.buttons') }}</label><br>
             <div v-for="(button, index) in message.action.buttons" :key="index" class="input-group mb-2">
                 <input
-                class="form-control"
+                class="form-control form-control-sm me-2"
                 v-model="button.reply.title"
                 placeholder="Button Title"
                 />
                 <input
-                class="form-control"
+                class="form-control form-control-sm"
                 v-model="button.reply.id"
                 placeholder="Button ID"
                 />
-                <button class="btn btn-outline-danger" @click="removeButton(index)">Remove</button>
+                <button class="btn btn-sm btn-outline-danger" @click="removeButton(index)">{{ $t('wp.actions.remove') }}</button>
             </div>
-            <button class="btn btn-outline-primary btn-sm" @click="addButton">Add Button</button>
+            <button class="btn btn-outline-primary btn-sm" @click="addButton">{{ $t('wp.actions.add') }}</button>
             </div>
         </div>
         <div class="col col-sm-6">
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import InteractiveMessagePreview from './InteractiveMessagePreview.vue';
 import { Interactive } from '@/types/Interactive';
 import TextEditor from './TextEditor.vue';
@@ -54,7 +54,7 @@ import TextEditor from './TextEditor.vue';
 const emit = defineEmits(['interactiveUpdated'])
 const props = defineProps<{ selectedInteractive: Interactive|undefined}>()
 const formattedMessage = ref<string>('')
-let message = reactive<Interactive>({
+const message = ref<Interactive>({
   type: 'button',
   body: { text: '' },
   action: {
@@ -71,32 +71,35 @@ function updateFormattedMessage(text: string): void{
 }
 
 function updateMessage(text: string): void{
-  message.body = {
+  message.value.body = {
     text: text,
   }
 }
 
 function addButton() {
-  message.action.buttons?.push({
+  message.value.action.buttons?.push({
     type: 'reply',
     reply: {
       id: '',
       title: '',
     },
   });
+  emit('interactiveUpdated', message.value)
 }
 
 function removeButton(index: number) {
-  message.action.buttons?.splice(index, 1);
+  message.value.action.buttons?.splice(index, 1);
+  emit('interactiveUpdated', message.value)
 }
 
 onMounted(() => {
-  message = props.selectedInteractive ?? {
+  message.value = props.selectedInteractive ?? {
     type: 'button',
     body: { text: '' },
     action: {
       buttons: [],
     },
   }
+  emit('interactiveUpdated', message.value)
 })
 </script>

@@ -1,10 +1,20 @@
+import { remove } from "firebase/database";
+
 export default {
     actions: {
         create: 'Create new Client',
+        add: 'Add',
+        remove: 'Remove',
+        enable_interactive: 'Enable Interactive Mode',
+        disable_interactive: 'Disable Interactive Mode',
+        share_location: '📍 Share your location',
     },
     fields: {
         id: 'Phone',
-        alias: 'Alias'
+        alias: 'Alias',
+        buttons: 'Buttons',
+        button: 'Button',
+        location_request: 'Location Request',
     },
     placeholders: {
         delete: 'The client will be removed, do ypu want to continue?',
