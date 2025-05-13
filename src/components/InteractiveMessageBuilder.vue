@@ -12,11 +12,11 @@
             </div>
 
             <div class="mb-3">
-            <label class="form-label">Body Text</label>
-            <input class="form-control" v-model="message.body.text" placeholder="Enter message text" />
-            <div v-show="isEmojiPickerOpen" class="emoji-picker position-absolute">
-               <EmojiPicker @select="insertEmoji" />
-             </div>
+                <TextEditor
+                :selectedMessage="message.body?.text ?? ''"
+                @content-updated="updateFormattedMessage"
+                @message-updated="updateMessage"
+                />
             </div>
 
             <div v-if="message.type === 'button'" class="mb-3">
@@ -39,26 +39,42 @@
         </div>
         <div class="col col-sm-6">
             <h6 class="mt-4">{{ $t('common.fields.label_preview') }}</h6>
-            <InteractiveMessagePreview :message="message" />
+            <InteractiveMessagePreview :message="message" :formattedMessage="formattedMessage" />
         </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import InteractiveMessagePreview from './InteractiveMessagePreview.vue';
-import type { Interactive } from '@/types/Interactive';
+import { Interactive } from '@/types/Interactive';
+import TextEditor from './TextEditor.vue';
 
-const isEmojiPickerOpen = ref(false)
-
-const message = reactive<Interactive>({
+const emit = defineEmits(['interactiveUpdated'])
+const props = defineProps<{ selectedInteractive: Interactive|undefined}>()
+const formattedMessage = ref<string>('')
+let message = reactive<Interactive>({
   type: 'button',
   body: { text: '' },
   action: {
     buttons: [],
   },
 });
+
+watch(message, (newMessage) => {
+  emit('interactiveUpdated', newMessage)
+}, { deep: true });
+
+function updateFormattedMessage(text: string): void{
+  formattedMessage.value = text
+}
+
+function updateMessage(text: string): void{
+  message.body = {
+    text: text,
+  }
+}
 
 function addButton() {
   message.action.buttons?.push({
@@ -73,4 +89,14 @@ function addButton() {
 function removeButton(index: number) {
   message.action.buttons?.splice(index, 1);
 }
+
+onMounted(() => {
+  message = props.selectedInteractive ?? {
+    type: 'button',
+    body: { text: '' },
+    action: {
+      buttons: [],
+    },
+  }
+})
 </script>
