@@ -49,6 +49,7 @@ const placeholders = [
 
 onMounted(async() => {
   newMessage.value = props.selectedMessage?? ''
+  emit('messageUpdated', newMessage.value)
 })
 
 function updateTextareaMessage() {

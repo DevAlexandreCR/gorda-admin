@@ -108,6 +108,7 @@ function toggleInteractiveMessage(): void {
 }
 
 function saveChanges(): void {
+  if (!props.selectedMessage.message && !text.value) return
   setLoading(true)
   const updatedMessage = {
     id: props.selectedMessage.id,
