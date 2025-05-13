@@ -1,0 +1,107 @@
+<template>
+  <div class="whatsapp-container">
+    <div class="whatsapp-message">
+      <div v-if="message.header" class="header">
+        {{ message.header.text }}
+      </div>
+
+      <div class="body">
+        {{ message.body?.text }}
+      </div>
+
+      <!-- Button Message -->
+      <div v-if="message.type === 'button'" class="buttons">
+        <button
+          v-for="(button, idx) in message.action?.buttons"
+          :key="idx"
+          class="whatsapp-button"
+        >
+          {{ button.reply?.title }}
+        </button>
+      </div>
+
+      <!-- Location Request -->
+      <div v-if="message.type === 'location_request_message'" class="location-box">
+        📍 Share your location
+      </div>
+
+      <div v-if="message.footer" class="footer">
+        {{ message.footer.text }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import type { Interactive } from '@/types/Interactive';
+
+defineProps<{ message: Interactive }>();
+</script>
+
+<style scoped>
+.whatsapp-container {
+  background-color: #e5ddd5;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.whatsapp-message {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  font-size: 13px;
+  color: #075e54;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.body {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #303030;
+  white-space: pre-wrap;
+}
+
+.footer {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.whatsapp-button {
+  background-color: #25d366;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.whatsapp-button:hover {
+  background-color: #1ebd5f;
+}
+
+.location-box {
+  background-color: #f0f0f0;
+  color: #555;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;
+}
+</style>
