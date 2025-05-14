@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid pb-4">
+    <button @click="goBack" class="btn btn-secondary mb-3">{{ $t('common.back') }}}</button>
     <Form @submit="updateDriver" :validation-schema="schema">
       <div class="card mx-auto mx-xxl-5">
         <div class="card-header text-center text-capitalize">
@@ -337,9 +338,8 @@ import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import i18n from '@/plugins/i18n'
 import { onBeforeMount, ref, Ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useDriversStore } from '@/services/stores/DriversStore'
-import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
 import { mixed, object, date, string } from 'yup'
 import { useLoadingState } from '@/services/stores/LoadingState'
@@ -359,6 +359,7 @@ const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
+const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
 const soatExp: Ref<string> = ref('')
@@ -409,6 +410,18 @@ watch(color, (newColor) => {
 watch(tecExp, (newValue: string) => {
   driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
 })
+
+function goBack() {
+  router.push({
+    name: 'drivers.index',
+    query: {
+      enabled: route.query.enabled,
+      search: route.query.search,
+      page: route.query.page
+    }
+  });
+}
+
 
 onBeforeMount(() => {
   const id = route.params.id as string
