@@ -52,7 +52,7 @@
  </template>
 
 <script setup lang="ts">
-import {ref, defineProps, defineEmits, Ref, onMounted} from 'vue'
+import {ref, defineProps, defineEmits, Ref, onMounted, watch} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import ToastService from '@/services/ToastService'
 import { useLoadingState } from '@/services/stores/LoadingState'
@@ -63,12 +63,12 @@ import InteractiveMessageBuilder from '@/components/InteractiveMessageBuilder.vu
 import TextEditor from '@/components/TextEditor.vue'
 import { Interactive } from '@/types/Interactive'
 
+const props = defineProps<{ selectedMessage: SettingsMessageInterface}>()
 const { setLoading } = useLoadingState()
 const textArea = ref<HTMLTextAreaElement | null>(null)
 const text = ref<string>('')
 const formattedMessage = ref<string>('')
 const emit = defineEmits(['updateMessages'])
-const props = defineProps<{ selectedMessage: SettingsMessageInterface}>()
 const isInteractiveMessage = ref<boolean>(false)
 const interactiveMessage = ref<Interactive|null>(null)
 
@@ -76,7 +76,7 @@ function updateFormattedMessage(text: string): void{
   formattedMessage.value = text
 }
 
-function updateMessage(content: string): void{
+function updateMessage(content: string): void {
   text.value = content
 }
 
@@ -108,7 +108,7 @@ function toggleInteractiveMessage(): void {
 }
 
 function saveChanges(): void {
-  if (!props.selectedMessage.message && !text.value) return
+  if (!props.selectedMessage.message && text.value == '') return
   setLoading(true)
   const updatedMessage = {
     id: props.selectedMessage.id,
@@ -118,6 +118,7 @@ function saveChanges(): void {
     enabled: props.selectedMessage.enabled,
     interactive: interactiveMessage.value,
   }
+
   SettingsRepository.updateMessage(updatedMessage).then(async () => {
     emit('updateMessages')
     setLoading(false)
@@ -131,6 +132,6 @@ function saveChanges(): void {
 
 onMounted(() => {
   isInteractiveMessage.value = props.selectedMessage.interactive != undefined
-  text.value = props.selectedMessage.message  
+  text.value = props.selectedMessage.message    
 })
 </script>

@@ -48,7 +48,7 @@ const placeholders = [
 ]
 
 onMounted(async() => {
-  newMessage.value = props.selectedMessage?? ''
+  newMessage.value = props.selectedMessage
   emit('messageUpdated', newMessage.value)
 })
 
@@ -136,9 +136,15 @@ watch(newMessage, (newValue) => {
     }
 
     emit('contentUpdated', content)
+    emit('messageUpdated', newMessage.value)
+})
 
+watch(() => props.selectedMessage, (newValue) => {
+    newMessage.value = newValue
     if (textArea.value) {
-        emit('messageUpdated', textArea.value.value)
+        textArea.value.value = newValue
+        updateTextareaMessage()
     }
+    emit('messageUpdated', newMessage.value)
 })
 </script>
