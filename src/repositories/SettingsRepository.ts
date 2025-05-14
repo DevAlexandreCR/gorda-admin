@@ -45,6 +45,11 @@ class SettingsRepository {
 	/* istanbul ignore next */
 	async updateMessage(message: SettingsMessageInterface): Promise<void> {
 		const messageRef: DocumentReference = doc(FSService.messagesCollection(), message.id)
+		if (message.interactive && message.interactive.type === 'location_request_message') {
+			message.interactive.action = {
+			name: 'send_location'
+			}
+		}
 		const dataToUpdate = {
 			name: message.name,
 			description: message.description,

@@ -65,10 +65,6 @@ const message = ref<Interactive>({
 });
 
 watch(message, (newMessage) => {
-  if (newMessage.type === 'location_request_message') {
-    newMessage.action.buttons = []
-    newMessage.action.name = 'send_location'
-  }
   emit('interactiveUpdated', newMessage)
 }, { deep: true });
 
