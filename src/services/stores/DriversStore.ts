@@ -5,6 +5,7 @@ import {DriverConnectedInterface} from '@/types/DriverConnectedInterface'
 import {PlaceInterface} from '@/types/PlaceInterface'
 import CacheStore from '@/services/stores/CacheStore'
 import Vehicle from '@/models/Vehicle'
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -23,13 +24,23 @@ export const useDriversStore = defineStore('driverStore', {
     findById(id: string): Driver | undefined {
       return this.drivers.find(el => el.id == id)
     },
-    filter(search: string, enabled = -1): Driver[] {
-			const drivers = this.drivers.filter(driver => {
+    filter(search: string, enabled = -1, paymentMode: DriverPaymentMode | false = false): Driver[] {
+			let drivers = this.drivers.filter(driver => {
 				switch (enabled) {
 					case 1:
 						return driver.enabled_at > 0
 					case 0:
 						return driver.enabled_at == 0
+					default:
+						return driver
+				}
+			})
+      drivers = drivers.filter(driver => {
+				switch (paymentMode) {
+					case DriverPaymentMode.MONTHLY:
+						return driver.paymentMode == DriverPaymentMode.MONTHLY
+					case DriverPaymentMode.PERCENTAGE:
+						return driver.paymentMode == DriverPaymentMode.PERCENTAGE
 					default:
 						return driver
 				}
