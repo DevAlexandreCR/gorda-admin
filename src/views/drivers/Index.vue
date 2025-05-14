@@ -7,11 +7,15 @@
         </div>
         <div class="col-4 d-flex justify-content-end" :class="{ 'col-8': !(currentUser && currentUser.isAdmin()) }">
           <div class="form-group d-inline-flex">
-            <label class="me-2">{{ $t('common.actions.see') }}</label>
             <select class="form-select form-select-sm" v-model="enabled">
-              <option :value="-1">{{ $t('common.placeholders.all') }}</option>
+              <option :value="-1">{{ $t('common.fields.status') }}</option>
               <option :value="1">{{ $t('common.fields.enabled') }}</option>
               <option :value="0">{{ $t('common.fields.disabled') }}</option>
+            </select>
+            <select class="form-select form-select-sm" v-model="paymentMode">
+              <option :value="false">{{ $t('drivers.fields.payment_mode') }}</option>
+              <option :value="DriverPaymentMode.MONTHLY">{{ $t('common.placeholders.' + DriverPaymentMode.MONTHLY) }}</option>
+              <option :value="DriverPaymentMode.PERCENTAGE">{{ $t('common.placeholders.' + DriverPaymentMode.PERCENTAGE) }}</option>
             </select>
           </div>
         </div>
@@ -127,6 +131,7 @@ import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import AuthService from '@/services/AuthService'
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 const {drivers, filter, findById} = useDriversStore()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
@@ -134,6 +139,7 @@ const filteredDrivers: Ref<Array<Driver>> = ref([])
 const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
 const enabled: Ref<number> = ref(-1)
+const paymentMode: Ref<DriverPaymentMode | false> = ref(false)
 const currentUser = AuthService.getCurrentUser()
 
 function format(unix: number): string {
@@ -145,17 +151,7 @@ function getPaginatedData(data: []): void {
 }
 
 watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
-  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
-})
-
-watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
-  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
-})
-
-watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
+  const filtered = filter(searchDriver.value, enabled.value, paymentMode.value);
   filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
