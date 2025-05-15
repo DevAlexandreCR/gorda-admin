@@ -12,8 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
-### Added
-
 ## [1.5.5(2025-05-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.5...1.5.4)
 
 ### Added
