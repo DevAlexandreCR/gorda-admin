@@ -8,7 +8,6 @@ import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'
 import {Branch} from "@/types/Branch";
-import { City } from '@/types/City';
 
 class SettingsRepository {
 
