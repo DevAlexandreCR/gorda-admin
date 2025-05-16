@@ -412,17 +412,23 @@ watch(tecExp, (newValue: string) => {
 
 onBeforeMount(() => {
   const id = route.params.id as string
-  const driverTmp = driverStore.findById(id)
-  if (driverTmp) {
-    driver.value = driverTmp
-    if (!driver.value.vehicle.color) driver.value.vehicle.color = Constants.COLORS[0]
-    soatExp.value = DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD')
-    tecExp.value = DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
-    color.value = driverTmp.vehicle.color.hex
-  }
-  else {
-    router.push({ name: 'drivers' })
-  }
+  setLoading(true)
+  DriverRepository.getDriver(id)
+    .then(async (updatedDriverData) => {
+      const updatedDriver = new Driver()
+      Object.assign(updatedDriver, updatedDriverData)
+      driverStore.addDriver(updatedDriver)
+      Object.assign(driver.value, updatedDriver)
+      setLoading(false)
+    })
+    .catch(async (e) => {
+      setLoading(false)
+      await ToastService.toast(
+        ToastService.ERROR,
+        i18n.global.t('common.messages.error'),
+        e.message
+      )
+    })
 })
 
 function uploadImgDriver(url: string): void {
