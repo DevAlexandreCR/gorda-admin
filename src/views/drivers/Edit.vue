@@ -1,6 +1,10 @@
 <template>
   <div class="container-fluid pb-4">
-    <button @click="goBack" class="btn btn-secondary mb-3">{{ $t('common.back') }}}</button>
+    <div class="d-flex justify-content-end mb-3">
+      <button @click="goBack" class="btn btn-sm btn-info me-5">
+        <em class="fas fa-arrow-left me-1"></em> {{ $t('common.actions.back') }}
+      </button>
+    </div>
     <Form @submit="updateDriver" :validation-schema="schema">
       <div class="card mx-auto mx-xxl-5">
         <div class="card-header text-center text-capitalize">
@@ -350,6 +354,7 @@ import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
+import { useDashboardStore } from '@/services/stores/DashboardStore'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -362,6 +367,7 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
+const dashboardStore = useDashboardStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
@@ -415,11 +421,11 @@ function goBack() {
   router.push({
     name: 'drivers.index',
     query: {
-      enabled: route.query.enabled,
-      search: route.query.search,
-      page: route.query.page
+      search: dashboardStore.drivers.search || undefined,
+      enabled: dashboardStore.drivers.enabled !== -1 ? dashboardStore.drivers.enabled : undefined,
+      page: dashboardStore.drivers.currentPage !== 1 ? dashboardStore.drivers.currentPage : undefined
     }
-  });
+  })
 }
 
 
