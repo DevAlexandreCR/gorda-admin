@@ -35,6 +35,7 @@ export default {
     terminate: 'Terminate',
     filter: 'Filter',
     see: 'See',
+    back: 'Back',
     copy_phone: 'Copy phone',
     clear_filters: 'Clear Filters',
     items_pages: 'Items per Pages',

@@ -110,7 +110,7 @@
             </tbody>
           </table>
           <div class="container text-center mt-2">
-            <Paginator :data="filteredDrivers" :perPage="30" @paginatedData="getPaginatedData"/>
+            <Paginator :data="filteredDrivers" :currentPage="currentPage" :perPage="30" @paginatedData="getPaginatedData"/>
           </div>
         </div>
       </div>
@@ -122,23 +122,28 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
+import { useDashboardStore } from '../../services/stores/dashboardStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
-import {onMounted, ref, Ref, watchEffect} from 'vue'
+import {onMounted, ref, Ref, watch, watchEffect} from 'vue'
 import dayjs from 'dayjs'
 import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import AuthService from '@/services/AuthService'
+import { useRoute } from 'vue-router'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 const {drivers, filter, findById} = useDriversStore()
+const dashboardStore = useDashboardStore()
+const route = useRoute()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
-const searchDriver: Ref<string> = ref('')
 const {setLoading} = useLoadingState()
-const enabled: Ref<number> = ref(-1)
+const searchDriver: Ref<string> = ref(route.query.search as string || dashboardStore.drivers.search)
+const enabled: Ref<number> = ref(route.query.enabled ? Number(route.query.enabled) : dashboardStore.drivers.enabled)
+const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardStore.drivers.currentPage)
 const paymentMode: Ref<DriverPaymentMode | false> = ref(false)
 const currentUser = AuthService.getCurrentUser()
 
@@ -146,9 +151,37 @@ function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
 }
 
-function getPaginatedData(data: []): void {
+function getPaginatedData(data: any[], page: number): void {
   paginatedDrivers.value = data
+  currentPage.value = page
+  dashboardStore.setDriversState({
+    ...dashboardStore.drivers,
+    currentPage: page
+  })
 }
+
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value)
+  filteredDrivers.value = filtered
+  const totalPages = Math.ceil(filtered.length)
+  if (currentPage.value > totalPages && totalPages > 0) {
+    currentPage.value = 1
+    dashboardStore.setDriversState({
+      ...dashboardStore.drivers,
+      currentPage: 1
+    })
+  }
+})
+
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
+})
+
+watchEffect(() => {
+  const filtered = filter(searchDriver.value, enabled.value);
+  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
+})
 
 watchEffect(() => {
   const filtered = filter(searchDriver.value, enabled.value, paymentMode.value);
@@ -157,6 +190,14 @@ watchEffect(() => {
 
 onMounted(() => {
   filteredDrivers.value.splice(0, filteredDrivers.value.length, ...(drivers))
+})
+
+watch([searchDriver, enabled, currentPage], () => {
+  dashboardStore.setDriversState({
+    search: searchDriver.value,
+    enabled: enabled.value,
+    currentPage: currentPage.value
+  })
 })
 
 function onEnable(event: Event): void {
