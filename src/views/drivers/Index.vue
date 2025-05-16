@@ -7,11 +7,15 @@
         </div>
         <div class="col-4 d-flex justify-content-end" :class="{ 'col-8': !(currentUser && currentUser.isAdmin()) }">
           <div class="form-group d-inline-flex">
-            <label class="me-2">{{ $t('common.actions.see') }}</label>
             <select class="form-select form-select-sm" v-model="enabled">
-              <option :value="-1">{{ $t('common.placeholders.all') }}</option>
+              <option :value="-1">{{ $t('common.fields.status') }}</option>
               <option :value="1">{{ $t('common.fields.enabled') }}</option>
               <option :value="0">{{ $t('common.fields.disabled') }}</option>
+            </select>
+            <select class="form-select form-select-sm" v-model="paymentMode">
+              <option :value="false">{{ $t('drivers.fields.payment_mode') }}</option>
+              <option :value="DriverPaymentMode.MONTHLY">{{ $t('common.placeholders.' + DriverPaymentMode.MONTHLY) }}</option>
+              <option :value="DriverPaymentMode.PERCENTAGE">{{ $t('common.placeholders.' + DriverPaymentMode.PERCENTAGE) }}</option>
             </select>
           </div>
         </div>
@@ -129,6 +133,7 @@ import ToastService from '@/services/ToastService'
 import {useLoadingState} from '@/services/stores/LoadingState'
 import AuthService from '@/services/AuthService'
 import { useRoute } from 'vue-router'
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 const {drivers, filter, findById} = useDriversStore()
 const dashboardStore = useDashboardStore()
@@ -139,6 +144,7 @@ const {setLoading} = useLoadingState()
 const searchDriver: Ref<string> = ref(route.query.search as string || dashboardStore.drivers.search)
 const enabled: Ref<number> = ref(route.query.enabled ? Number(route.query.enabled) : dashboardStore.drivers.enabled)
 const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardStore.drivers.currentPage)
+const paymentMode: Ref<DriverPaymentMode | false> = ref(false)
 const currentUser = AuthService.getCurrentUser()
 
 function format(unix: number): string {
@@ -178,7 +184,7 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
+  const filtered = filter(searchDriver.value, enabled.value, paymentMode.value);
   filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 

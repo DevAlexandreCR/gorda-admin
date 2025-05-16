@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add support to interactive messages. [#165](https://github.com/DevAlexandreCR/gorda-admin/pull/165)
+
 # Release Notes for 1.5.x
+
+## [1.5.5(2025-05-13)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.5...1.5.4)
+
+### Added
+- Add payment mode filter to drivers. [#163](https://github.com/DevAlexandreCR/gorda-admin/pull/163)
 
 ## [1.5.4(2025-04-27)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.4...1.5.3)
 

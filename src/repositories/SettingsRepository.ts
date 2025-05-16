@@ -8,7 +8,6 @@ import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'
 import {Branch} from "@/types/Branch";
-import { City } from '@/types/City';
 
 class SettingsRepository {
 
@@ -34,7 +33,8 @@ class SettingsRepository {
 			name: messageData.name,
 			description: messageData.description,
 			message: messageData.message,
-			enabled: messageData.enabled
+			enabled: messageData.enabled,
+			interactive: messageData.interactive || null
 		}
 		messages.push(message)
 		})
@@ -44,11 +44,17 @@ class SettingsRepository {
 	/* istanbul ignore next */
 	async updateMessage(message: SettingsMessageInterface): Promise<void> {
 		const messageRef: DocumentReference = doc(FSService.messagesCollection(), message.id)
+		if (message.interactive && message.interactive.type === 'location_request_message') {
+			message.interactive.action = {
+			name: 'send_location'
+			}
+		}
 		const dataToUpdate = {
 			name: message.name,
 			description: message.description,
 			message: message.message,
-			enabled: message.enabled
+			enabled: message.enabled,
+			interactive: message.interactive
 		}
 		await updateDoc(messageRef, dataToUpdate)
 	}
