@@ -141,10 +141,10 @@ const route = useRoute()
 const paginatedDrivers: Ref<Array<Driver>> = ref([])
 const filteredDrivers: Ref<Array<Driver>> = ref([])
 const {setLoading} = useLoadingState()
-const searchDriver: Ref<string> = ref(route.query.search as string || dashboardStore.drivers.search)
-const enabled: Ref<number> = ref(route.query.enabled ? Number(route.query.enabled) : dashboardStore.drivers.enabled)
-const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardStore.drivers.currentPage)
-const paymentMode: Ref<DriverPaymentMode | false> = ref(false)
+const searchDriver: Ref<string> = ref(route.query.search as string || dashboardStore.driverFilters.search)
+const enabled: Ref<number> = ref(route.query.enabled ? Number(route.query.enabled) : dashboardStore.driverFilters.enabled)
+const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardStore.driverFilters.currentPage)
+const paymentMode: Ref<DriverPaymentMode | false> = ref(route.query.paymentMode ? route.query.paymentMode as DriverPaymentMode | false : dashboardStore.driverFilters.paymentMode)
 const currentUser = AuthService.getCurrentUser()
 
 function format(unix: number): string {
@@ -155,32 +155,22 @@ function getPaginatedData(data: any[], page: number): void {
   paginatedDrivers.value = data
   currentPage.value = page
   dashboardStore.setDriversState({
-    ...dashboardStore.drivers,
+    ...dashboardStore.driverFilters,
     currentPage: page
   })
 }
 
 watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value)
+  const filtered = filter(searchDriver.value, enabled.value, paymentMode.value);
   filteredDrivers.value = filtered
   const totalPages = Math.ceil(filtered.length)
   if (currentPage.value > totalPages && totalPages > 0) {
     currentPage.value = 1
     dashboardStore.setDriversState({
-      ...dashboardStore.drivers,
+      ...dashboardStore.driverFilters,
       currentPage: 1
     })
   }
-})
-
-watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
-  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
-})
-
-watchEffect(() => {
-  const filtered = filter(searchDriver.value, enabled.value);
-  filteredDrivers.value.splice(0, filteredDrivers.value.length, ...filtered)
 })
 
 watchEffect(() => {
@@ -192,11 +182,12 @@ onMounted(() => {
   filteredDrivers.value.splice(0, filteredDrivers.value.length, ...(drivers))
 })
 
-watch([searchDriver, enabled, currentPage], () => {
+watch([searchDriver, enabled, currentPage, paymentMode], () => {
   dashboardStore.setDriversState({
     search: searchDriver.value,
     enabled: enabled.value,
-    currentPage: currentPage.value
+    currentPage: currentPage.value,
+    paymentMode: paymentMode.value  
   })
 })
 

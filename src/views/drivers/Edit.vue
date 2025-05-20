@@ -421,9 +421,10 @@ function goBack() {
   router.push({
     name: 'drivers.index',
     query: {
-      search: dashboardStore.drivers.search || undefined,
-      enabled: dashboardStore.drivers.enabled !== -1 ? dashboardStore.drivers.enabled : undefined,
-      page: dashboardStore.drivers.currentPage !== 1 ? dashboardStore.drivers.currentPage : undefined
+      search: dashboardStore.driverFilters.search || undefined,
+      enabled: dashboardStore.driverFilters.enabled !== -1 ? dashboardStore.driverFilters.enabled : undefined,
+      page: dashboardStore.driverFilters.currentPage !== 1 ? dashboardStore.driverFilters.currentPage : undefined,
+      paymentMode: dashboardStore.driverFilters.paymentMode || undefined
     }
   })
 }
