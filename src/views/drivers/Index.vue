@@ -122,7 +122,7 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator.vue'
 import {useDriversStore} from '@/services/stores/DriversStore'
-import { useDashboardStore } from '../../services/stores/DashboardStore'
+import { useDashboardStore } from '@/services/stores/DashboardStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
 import {onMounted, ref, Ref, watch, watchEffect} from 'vue'
