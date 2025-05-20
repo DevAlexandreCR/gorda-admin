@@ -1,4 +1,5 @@
 import {MessagesEnum} from '@/constants/MessagesEnum'
+import { Interactive } from './Interactive'
 
 export interface SettingsMessageInterface {
     id: MessagesEnum
@@ -6,4 +7,5 @@ export interface SettingsMessageInterface {
     description: string
     message: string
     enabled: boolean
+    interactive: Interactive | null
 }
