@@ -1,5 +1,10 @@
 <template>
   <div class="container-fluid pb-4">
+    <div class="d-flex justify-content-end mb-3">
+      <button @click="goBack" class="btn btn-sm btn-info me-5">
+        <em class="fas fa-arrow-left me-1"></em> {{ $t('common.actions.back') }}
+      </button>
+    </div>
     <Form @submit="updateDriver" :validation-schema="schema">
       <div class="card mx-auto mx-xxl-5">
         <div class="card-header text-center text-capitalize">
@@ -337,9 +342,8 @@ import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import i18n from '@/plugins/i18n'
 import { onBeforeMount, ref, Ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useDriversStore } from '@/services/stores/DriversStore'
-import router from '@/router'
 import DateHelper from '@/helpers/DateHelper'
 import { mixed, object, date, string } from 'yup'
 import { useLoadingState } from '@/services/stores/LoadingState'
@@ -350,6 +354,7 @@ import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
+import { useDashboardStore } from '@/services/stores/DashboardStore'
 
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
@@ -359,8 +364,10 @@ const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
 const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
+const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
+const dashboardStore = useDashboardStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
@@ -410,19 +417,38 @@ watch(tecExp, (newValue: string) => {
   driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
 })
 
+function goBack() {
+  router.push({
+    name: 'drivers.index',
+    query: {
+      search: dashboardStore.driverFilters.search || undefined,
+      enabled: dashboardStore.driverFilters.enabled !== -1 ? dashboardStore.driverFilters.enabled : undefined,
+      page: dashboardStore.driverFilters.currentPage !== 1 ? dashboardStore.driverFilters.currentPage : undefined,
+      paymentMode: dashboardStore.driverFilters.paymentMode || undefined
+    }
+  })
+}
+
+
 onBeforeMount(() => {
   const id = route.params.id as string
-  const driverTmp = driverStore.findById(id)
-  if (driverTmp) {
-    driver.value = driverTmp
-    if (!driver.value.vehicle.color) driver.value.vehicle.color = Constants.COLORS[0]
-    soatExp.value = DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD')
-    tecExp.value = DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
-    color.value = driverTmp.vehicle.color.hex
-  }
-  else {
-    router.push({ name: 'drivers' })
-  }
+  setLoading(true)
+  DriverRepository.getDriver(id)
+    .then(async (updatedDriverData) => {
+      const updatedDriver = new Driver()
+      Object.assign(updatedDriver, updatedDriverData)
+      driverStore.addDriver(updatedDriver)
+      Object.assign(driver.value, updatedDriver)
+      setLoading(false)
+    })
+    .catch(async (e) => {
+      setLoading(false)
+      await ToastService.toast(
+        ToastService.ERROR,
+        i18n.global.t('common.messages.error'),
+        e.message
+      )
+    })
 })
 
 function uploadImgDriver(url: string): void {

@@ -24,49 +24,46 @@
     </nav>
   </div>
 </template>
-<script setup lang="ts">
 
+<script setup lang="ts">
 import {computed, onMounted, ref, Ref, watch} from 'vue'
 
 interface Props {
   data: Array<any>
   perPage?: number
+  currentPage?: number 
 }
 const props = defineProps<Props>()
 const emit = defineEmits(['paginatedData'])
 
-let page: Ref<number> = ref(1);
+const page: Ref<number> = ref(props.currentPage || 1)
 
-const data: Ref<Array<any>> = ref([])
-
-watch(props.data, (newData) => {
-  data.value = newData.map((item, index) => {
-    return { index: index, value: item };
-  })
+watch(() => props.currentPage, (newPage) => {
+  if (newPage && newPage !== page.value) {
+    page.value = newPage
+  }
 })
 
-const perPage = props.perPage?? 10
+const perPage = props.perPage ?? 10
 
 const paginatedData = computed(() =>
-    data.value.slice((page.value - 1) * perPage, page.value * perPage)
+  props.data.slice((page.value - 1) * perPage, page.value * perPage)
 )
 
 watch(paginatedData, (newData) => {
-  const paginated = newData.map((item) => {
-    return item.value
-  })
-  emit('paginatedData', paginated)
-})
+  const paginated = newData.map(item => item.value ?? item)
+  emit('paginatedData', paginated, page.value)
+}, { immediate: true })
 
 function nextPage(): void {
-  if (page.value !== Math.ceil(data.value.length / perPage)) {
-    page.value += 1;
+  if (page.value !== Math.ceil(props.data.length / perPage)) {
+    page.value += 1
   }
 }
 
 function backPage(): void {
   if (page.value !== 1) {
-    page.value -= 1;
+    page.value -= 1
   }
 }
 
@@ -75,9 +72,8 @@ function goToPage(numPage: number): void {
 }
 
 onMounted(() => {
-  data.value = props.data.map((item, index) => {
-    return { index: index, value: item };
-  })
+  const initialData = props.data.slice((page.value - 1) * perPage, page.value * perPage)
+  const paginated = initialData.map(item => item.value ?? item)
+  emit('paginatedData', paginated, page.value)
 })
 </script>
-
