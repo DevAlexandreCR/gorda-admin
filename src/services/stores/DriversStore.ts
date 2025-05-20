@@ -88,13 +88,18 @@ export const useDriversStore = defineStore('driverStore', {
       this.connectedDrivers = []
     },
 
-    addDriver(driver: Driver): void {
+   addDriver(driver: Driver): void {
+      const index = this.drivers.findIndex(d => d.id === driver.id)
       const driverTmp = new Driver()
       Object.assign(driverTmp, driver)
       const vehicleTmp = new Vehicle()
       Object.assign(vehicleTmp, driver.vehicle)
       driverTmp.vehicle = vehicleTmp
-      this.drivers.push(driverTmp)
+      if (index !== -1) {
+        this.drivers.splice(index, 1, driverTmp)
+      } else {
+        this.drivers.push(driverTmp)
+      }
     },
 		
 		setOccupiedDriver(driverId: string): void {
