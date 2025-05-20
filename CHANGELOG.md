@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Update driver store from database when a user open the driver view. [#167](https://github.com/DevAlexandreCR/gorda-admin/pull/167)
+
 ### Added
 - Add support to interactive messages. [#165](https://github.com/DevAlexandreCR/gorda-admin/pull/165)
 
