@@ -1,6 +1,6 @@
 <template>
-  <div id="send-fcm-modal" class="modal fade" tabindex="-1" :class="{ show: visible }">
-    <div class="modal-dialog">
+  <div id="send-fcm-modal" role="dialog" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -39,7 +39,6 @@ import { Modal } from 'bootstrap'
 
 const props = defineProps<{
   driverId: string | null
-  visible: boolean
 }>()
 const emit = defineEmits<{
   (e: 'close'): void
