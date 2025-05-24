@@ -62,11 +62,11 @@ async function sendMessage(): Promise<void> {
     FcmService.sendToDriver(props.driver.id, message.value).then(() => {
       ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
      fcmModal.value?.hide()
-      emit('sent')
     }).catch((err) => {
       ToastService.toast(ToastService.ERROR, err.message)
       error.value = err.message
     }).finally(() => {
+      close()
       setLoading(false)
     })
   } else {
@@ -76,6 +76,7 @@ async function sendMessage(): Promise<void> {
       ToastService.toast(ToastService.ERROR, err.message)
       error.value = err.message
     }).finally(() => {
+      close()
       setLoading(false)
     })
   }

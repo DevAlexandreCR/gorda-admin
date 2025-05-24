@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios'
-import ToastService from './ToastService'
 
 const API_BASE = process.env.VUE_APP_GORDA_API_URL
 
@@ -15,14 +14,6 @@ export default {
       to: driverId,
       all: false,
       message: message,
-    }).catch((error) => {
-        ToastService.toast(ToastService.ERROR, 'Error', error.message)
-        return {
-          data: {
-            success: false,
-            message: error.message,
-          },
-        } as AxiosResponse<FcmResponse>
     })
   },
 
@@ -30,14 +21,6 @@ export default {
     return axios.post<FcmResponse>(`${API_BASE}/messages/drivers`, {
       all: true,
       message: message,
-    }).catch((error) => {
-        ToastService.toast(ToastService.ERROR, 'Error', error.message)
-        return {
-          data: {
-            success: false,
-            message: error.message,
-          },
-        } as AxiosResponse<FcmResponse>
     })
   },
 }
