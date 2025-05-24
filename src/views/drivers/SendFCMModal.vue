@@ -2,14 +2,14 @@
   <div id="send-fcm-modal" role="dialog" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
+        <form @submit.prevent="sendMessage">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ driverId ? $t('drivers.send_message_to_driver') : $t('drivers.send_message_to_all') }}
+            {{ driverId ? $t('drivers.actions.send_message_to_driver') : $t('drivers.actions.send_message_to_all') }}
           </h5>
           <button type="button" class="btn-close" @click="close"></button>
         </div>
-        <form @submit.prevent="sendMessage">
-          <div class="modal-body">
+        <div class="modal-body">
             <div class="mb-3">
               <label for="message" class="form-label">{{ $t('common.fields.message') }}</label>
               <textarea id="message" class="form-control" v-model="message" required rows="3"></textarea>
@@ -19,13 +19,12 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="close">{{ $t('common.actions.cancel') }}</button>
             <button type="submit" class="btn btn-primary">
-              {{ $t('common.actions.send') }}
+              {{ $t('common.actions.submit') }}
             </button>
           </div>
         </form>
       </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
   </div>
 </template>
 

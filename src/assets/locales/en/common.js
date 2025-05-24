@@ -16,6 +16,7 @@ export default {
     assigned_by: 'Asignado Por:',
     rate_management: 'Rate Management',
     lastConnection: 'Last Connection',
+    message: 'Message',
   },
   models: {
     users: 'User | Users',

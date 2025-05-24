@@ -16,6 +16,10 @@ export default {
     balance: 'Balance',
     payment_mode: 'Payment mode'
   },
+  actions: {
+    send_message_to_all: 'Send message to all drivers',
+    sned_message_unique: 'Send message to unique driver',
+  },
   forms: {
     edit: 'Edit driver information',
     create: 'Create driver information',
