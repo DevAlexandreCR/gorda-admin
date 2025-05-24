@@ -18,7 +18,7 @@ export default {
   },
   actions: {
     send_message_to_all: 'Send message to all drivers',
-    sned_message_unique: 'Send message to unique driver',
+    send_message_to: 'Send message to {name}',
   },
   forms: {
     edit: 'Edit driver information',

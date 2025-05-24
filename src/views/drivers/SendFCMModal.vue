@@ -5,7 +5,7 @@
         <form @submit.prevent="sendMessage">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ driverId ? $t('drivers.actions.send_message_to_driver') : $t('drivers.actions.send_message_to_all') }}
+            {{ driver ? $t('drivers.actions.send_message_to', { name: driver.name }) : $t('drivers.actions.send_message_to_all') }}
           </h5>
           <button type="button" class="btn-close" @click="close"></button>
         </div>
@@ -35,9 +35,10 @@ import { useI18n } from 'vue-i18n'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import { Modal } from 'bootstrap'
+import { DriverInterface } from '@/types/DriverInterface'
 
 const props = defineProps<{
-  driverId: string | null
+  driver: DriverInterface | null
 }>()
 const emit = defineEmits<{
   (e: 'close'): void
@@ -57,8 +58,8 @@ function close(): void {
 
 async function sendMessage(): Promise<void> {
   setLoading(true)
-  if (props.driverId) {
-    FcmService.sendToDriver(props.driverId, message.value).then(() => {
+  if (props.driver) {
+    FcmService.sendToDriver(props.driver.id, message.value).then(() => {
       ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
      fcmModal.value?.hide()
       emit('sent')

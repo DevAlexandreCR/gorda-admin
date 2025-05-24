@@ -6,10 +6,11 @@
           <h6 class="ms-2">{{ $t('common.models.drivers', filteredDrivers.length) + ' ' + filteredDrivers.length }}</h6>
         </div>
         <div class="col-2">
-          <button class="btn btn-sm btn-warning" @click="showSendMessageModal">{{ $t('common.actions.send_message') }}</button>
+          <button class="btn btn-sm btn-warning" @click="showSendMessageModal()">{{ $t('common.actions.send_message') }}</button>
           <SendFcmModal
+            :key="messageTo?.toString()"
             ref="sendFcmModal"
-            :driverId="messageTo"
+            :driver="messageTo"
             @close="closeSendMessageModal"
           ></SendFcmModal>
         </div>
@@ -112,6 +113,11 @@
                       <em class="fas fa-pencil"></em>
                     </router-link>
                   </div>
+                  <div class="col-2">
+                    <button class="btn btn-sm btn-warning btn-rounded rounded-pill py-1 m-0" @click="showSendMessageModal(driver)">
+                      <em class="fas fa-paper-plane"></em>
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -133,7 +139,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import { useDashboardStore } from '@/services/stores/DashboardStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
-import {onMounted, ref, Ref, watch, watchEffect} from 'vue'
+import {nextTick, onMounted, ref, Ref, watch, watchEffect} from 'vue'
 import dayjs from 'dayjs'
 import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
@@ -144,6 +150,7 @@ import { useRoute } from 'vue-router'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 import { Modal } from 'bootstrap'
 import SendFcmModal from '@/views/drivers/SendFCMModal.vue'
+import { DriverInterface } from '@/types/DriverInterface'
 
 const {drivers, filter, findById} = useDriversStore()
 const dashboardStore = useDashboardStore()
@@ -157,7 +164,7 @@ const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardS
 const paymentMode: Ref<DriverPaymentMode | false> = ref(route.query.paymentMode ? route.query.paymentMode as DriverPaymentMode | false : dashboardStore.driverFilters.paymentMode)
 const currentUser = AuthService.getCurrentUser()
 const sendFcmModal = ref<Modal | null>(null)
-const messageTo = ref<string|null>(null)
+const messageTo = ref<DriverInterface|null>(null)
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
 }
@@ -218,7 +225,9 @@ function onEnable(event: Event): void {
   })
 }
 
-function showSendMessageModal(): void {
+async function showSendMessageModal(driver: DriverInterface | null = null): Promise<void> {
+  messageTo.value = driver
+  await nextTick()
   sendFcmModal.value = new Modal(document.getElementById('send-fcm-modal') as HTMLElement)
   sendFcmModal.value.show()
 }

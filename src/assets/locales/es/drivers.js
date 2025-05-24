@@ -18,7 +18,7 @@ export default {
   },
   actions: {
     send_message_to_all: 'Enviar mensaje a todos los conductores',
-    sned_message_unique: 'Enviar mensaje a conductor único'
+    send_message_to: 'Enviar mensaje a {name}',
   },
   forms: {
     edit: 'Editar información del conductor',
