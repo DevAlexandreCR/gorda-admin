@@ -12,14 +12,13 @@ export default {
   async sendToDriver(driverId: string, message: string): Promise<AxiosResponse<FcmResponse>> {
     return axios.post<FcmResponse>(`${API_BASE}/messages/drivers`, {
       to: driverId,
-      all: false,
       message: message,
     })
   },
 
   async sendToAllDrivers(message: string): Promise<AxiosResponse<FcmResponse>> {
     return axios.post<FcmResponse>(`${API_BASE}/messages/drivers`, {
-      all: true,
+      to: null,
       message: message,
     })
   },
