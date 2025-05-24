@@ -40,6 +40,7 @@ export default {
     clear_filters: 'Clear Filters',
     items_pages: 'Items per Pages',
     set_percentage: 'Set Percentage',
+    send_message: 'Send Message',
   },
   messages: {
     updated: 'Resource updated successfully',

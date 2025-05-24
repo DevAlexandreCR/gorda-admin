@@ -40,6 +40,7 @@ export default {
     clear_filters: 'Limpiar Filtros',
     items_pages: 'Elementos Por Pagina',
     set_percentage: 'Establecer Porcentaje',
+    send_message: 'Enviar Mensaje',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
