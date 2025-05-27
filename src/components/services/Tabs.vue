@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
+    <ul class="nav nav-tabs" id="myTab">
+      <li class="nav-item">
         <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">
           <div class="d-flex align-items-center">
@@ -17,7 +17,7 @@
           </div>
         </a>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item">
         <a class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">
           <div class="d-flex align-items-center">
@@ -33,7 +33,7 @@
           </div>
         </a>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item">
         <a class="nav-link" id="history-tab" data-bs-toggle="tab" @click="currentTap = 'history'"
                 data-bs-target="#history" type="button"
                 role="tab"
@@ -48,7 +48,7 @@
           </div>
         </a>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item">
         <a class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'"
                 data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">
