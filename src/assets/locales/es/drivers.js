@@ -16,6 +16,11 @@ export default {
     balance: 'Saldo',
     payment_mode: 'Modo de pago'
   },
+  actions: {
+    send_message_to_all: 'Enviar mensaje a todos los conductores',
+    send_message_to: 'Enviar mensaje a {name}',
+    sent_success: 'Mensaje enviado correctamente'
+  },
   forms: {
     edit: 'Editar información del conductor',
     create: 'Formulario de creación del conductor',

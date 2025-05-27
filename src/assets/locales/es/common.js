@@ -16,6 +16,9 @@ export default {
     assigned_by: 'assigned by:',
     rate_management: 'Gestión de Tarifas',
     lastConnection: 'Última Conexión',
+    message: 'Mensaje',
+    duration: 'Duración',
+    title: 'Título',
   },
   models: {
     users: 'Usuario | Usuarios',
@@ -40,6 +43,7 @@ export default {
     clear_filters: 'Limpiar Filtros',
     items_pages: 'Elementos Por Pagina',
     set_percentage: 'Establecer Porcentaje',
+    send_message: 'Enviar Mensaje',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -82,9 +86,10 @@ export default {
     monthly: 'Mensualidad',
     percentage: 'Porcentaje',
     current_percentage: 'Porcentaje actual',
+    duration: 'Duración (en minutos)',
     description: {
-      plate: 'Placa del veviculo',
-      vehicle_color: 'Color de vehiculo',
+      plate: 'Placa del vehículo',
+      vehicle_color: 'Color de vehículo',
       username: 'Nombre',
       company_number: 'Numero de Empresa',
       place_name: 'Lugar',
@@ -166,5 +171,8 @@ export default {
   titles: {
     title_modal: 'Editar Mensajes de WhatsApp',
     title_card: 'Tabla de Mensajes WhatsApp'
+  },
+  errors: {
+    invalid_duration: 'Duración inválida mínimo 1 minuto',
   }
 }

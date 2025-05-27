@@ -2,8 +2,17 @@
   <div class="mx-3">
       <div class="card mb-4">
       <div class="row m-3">
-        <div class="col-4" v-if="currentUser && currentUser.isAdmin()">
+        <div class="col-2" v-if="currentUser && currentUser.isAdmin()">
           <h6 class="ms-2">{{ $t('common.models.drivers', filteredDrivers.length) + ' ' + filteredDrivers.length }}</h6>
+        </div>
+        <div class="col-2">
+          <button class="btn btn-sm btn-warning" @click="showSendMessageModal()">{{ $t('common.actions.send_message') }}</button>
+          <SendFcmModal
+            :key="messageTo?.toString()"
+            ref="sendFcmModal"
+            :driver="messageTo"
+            @close="closeSendMessageModal"
+          ></SendFcmModal>
         </div>
         <div class="col-4 d-flex justify-content-end" :class="{ 'col-8': !(currentUser && currentUser.isAdmin()) }">
           <div class="form-group d-inline-flex">
@@ -53,7 +62,7 @@
               <td class="py-0">
                 <div class="d-flex px-2 py-1">
                   <div>
-                    <img :src="driver.photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
+                    <img :src="driver.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile">
                   </div>
                   <div class="d-flex flex-column justify-content-center">
                     <h6 class="mb-0 text-sm">{{ driver.name }}</h6>
@@ -67,7 +76,7 @@
               <td class="py-0">
                 <div class="d-flex px-2 py-1">
                   <div>
-                    <img :src="driver.vehicle.photoUrl" class="avatar avatar-sm me-3" alt="Profile image">
+                    <img :src="driver.vehicle.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile">
                   </div>
                   <div class="d-flex flex-column justify-content-center">
                     <h6 class="mb-0 text-sm">{{ driver.vehicle.brand }}</h6>
@@ -104,6 +113,11 @@
                       <em class="fas fa-pencil"></em>
                     </router-link>
                   </div>
+                  <div class="col-2">
+                    <button class="btn btn-sm btn-warning btn-rounded rounded-pill py-1 m-0" @click="showSendMessageModal(driver)">
+                      <em class="fas fa-paper-plane"></em>
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -125,7 +139,7 @@ import {useDriversStore} from '@/services/stores/DriversStore'
 import { useDashboardStore } from '@/services/stores/DashboardStore'
 import {Field} from 'vee-validate'
 import Driver from '@/models/Driver'
-import {onMounted, ref, Ref, watch, watchEffect} from 'vue'
+import {nextTick, onMounted, ref, Ref, watch, watchEffect} from 'vue'
 import dayjs from 'dayjs'
 import DriverRepository from '@/repositories/DriverRepository'
 import i18n from '@/plugins/i18n'
@@ -134,6 +148,9 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import AuthService from '@/services/AuthService'
 import { useRoute } from 'vue-router'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
+import { Modal } from 'bootstrap'
+import SendFcmModal from '@/views/drivers/SendFCMModal.vue'
+import { DriverInterface } from '@/types/DriverInterface'
 
 const {drivers, filter, findById} = useDriversStore()
 const dashboardStore = useDashboardStore()
@@ -146,7 +163,8 @@ const enabled: Ref<number> = ref(route.query.enabled ? Number(route.query.enable
 const currentPage = ref(route.query.page ? Number(route.query.page) : dashboardStore.driverFilters.currentPage)
 const paymentMode: Ref<DriverPaymentMode | false> = ref(route.query.paymentMode ? route.query.paymentMode as DriverPaymentMode | false : dashboardStore.driverFilters.paymentMode)
 const currentUser = AuthService.getCurrentUser()
-
+const sendFcmModal = ref<Modal | null>(null)
+const messageTo = ref<DriverInterface|null>(null)
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
 }
@@ -187,7 +205,7 @@ watch([searchDriver, enabled, currentPage, paymentMode], () => {
     search: searchDriver.value,
     enabled: enabled.value,
     currentPage: currentPage.value,
-    paymentMode: paymentMode.value  
+    paymentMode: paymentMode.value
   })
 })
 
@@ -205,5 +223,19 @@ function onEnable(event: Event): void {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
+}
+
+async function showSendMessageModal(driver: DriverInterface | null = null): Promise<void> {
+  messageTo.value = driver
+  await nextTick()
+  sendFcmModal.value = new Modal(document.getElementById('send-fcm-modal') as HTMLElement)
+  sendFcmModal.value.show()
+}
+
+function closeSendMessageModal(): void {
+  if (sendFcmModal.value) {
+    sendFcmModal.value.hide()
+  }
+  messageTo.value = null
 }
 </script>
