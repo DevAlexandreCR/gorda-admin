@@ -25,7 +25,7 @@
           <div v-if="error" class="alert alert-danger">{{ error }}</div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="close">{{ $t('common.actions.cancel') }}</button>
+            <button type="button" class="btn btn-danger" @click="close">{{ $t('common.actions.cancel') }}</button>
             <button type="submit" class="btn btn-primary">
               {{ $t('common.actions.submit') }}
             </button>
