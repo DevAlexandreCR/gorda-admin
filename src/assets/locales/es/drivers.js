@@ -19,6 +19,7 @@ export default {
   actions: {
     send_message_to_all: 'Enviar mensaje a todos los conductores',
     send_message_to: 'Enviar mensaje a {name}',
+    sent_success: 'Mensaje enviado correctamente'
   },
   forms: {
     edit: 'Editar información del conductor',

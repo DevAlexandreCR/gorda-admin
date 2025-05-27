@@ -61,7 +61,7 @@ const message = ref<FCMNotification>({
   title: '',
   body: '',
   data: {
-    duration: duration.value,
+    duration: duration.value.toString(),
   }
 })
 const { setLoading } = useLoadingState()
@@ -71,7 +71,7 @@ function close(): void {
     title: '',
     body: '',
     data: {
-      duration: duration.value,
+      duration: duration.value.toString(),
     }
   }
   error.value = null
@@ -86,7 +86,7 @@ watch(() => duration.value, (newDuration) => {
     error.value = null
   }
   message.value.data = {
-    duration: newDuration
+    duration: newDuration.toString()
   }
 })
 
@@ -94,8 +94,7 @@ async function sendMessage(): Promise<void> {
   setLoading(true)
   if (props.driver) {
     FcmService.sendToDriver(props.driver.id, message.value).then(() => {
-      ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
-     fcmModal.value?.hide()
+      ToastService.toast(ToastService.SUCCESS, t('drivers.actions.sent_success'))
     }).catch((err) => {
       ToastService.toast(ToastService.ERROR, err.message)
       error.value = err.message
@@ -105,7 +104,7 @@ async function sendMessage(): Promise<void> {
     })
   } else {
     FcmService.sendToAllDrivers(message.value).then(() => {
-      ToastService.toast(ToastService.SUCCESS, t('drivers.messages.sent_success'))
+      ToastService.toast(ToastService.SUCCESS, t('drivers.actions.sent_success'))
     }).catch((err) => {
       ToastService.toast(ToastService.ERROR, err.message)
       error.value = err.message
