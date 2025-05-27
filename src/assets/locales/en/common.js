@@ -17,6 +17,8 @@ export default {
     rate_management: 'Rate Management',
     lastConnection: 'Last Connection',
     message: 'Message',
+    duration: 'Duration',
+    title: 'Title',
   },
   models: {
     users: 'User | Users',
@@ -84,6 +86,7 @@ export default {
     monthly: 'Monthly',
     percentage: 'Percentage',
     current_percentage: 'Current percentage',
+    duration: 'Duration (in minutes)',
     description: {
       plate: 'Vehicle plate',
       vehicle_color: 'Vehicle Color',
@@ -168,5 +171,8 @@ export default {
   titles: {
     title_modal: 'Edit WhatsApp Messages',
     title_card: 'WhatsApp Message Table'
+  },
+  errors: {
+    invalid_duration: 'Invalid duration min 1 minutes',
   }
 }

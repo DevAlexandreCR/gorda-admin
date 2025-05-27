@@ -1,3 +1,4 @@
+import { FCMNotification } from '@/types/FCMNotifications'
 import axios, { AxiosResponse } from 'axios'
 
 const API_BASE = process.env.VUE_APP_GORDA_API_URL
@@ -9,14 +10,14 @@ export interface FcmResponse {
 }
 
 export default {
-  async sendToDriver(driverId: string, message: string): Promise<AxiosResponse<FcmResponse>> {
+  async sendToDriver(driverId: string, message: FCMNotification): Promise<AxiosResponse<FcmResponse>> {
     return axios.post<FcmResponse>(`${API_BASE}/messages/drivers`, {
       to: driverId,
       message: message,
     })
   },
 
-  async sendToAllDrivers(message: string): Promise<AxiosResponse<FcmResponse>> {
+  async sendToAllDrivers(message: FCMNotification): Promise<AxiosResponse<FcmResponse>> {
     return axios.post<FcmResponse>(`${API_BASE}/messages/drivers`, {
       to: null,
       message: message,

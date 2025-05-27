@@ -10,11 +10,19 @@
           <button type="button" class="btn-close" @click="close"></button>
         </div>
         <div class="modal-body">
-            <div class="mb-3">
-              <label for="message" class="form-label">{{ $t('common.fields.message') }}</label>
-              <textarea id="message" class="form-control" v-model="message" required rows="3"></textarea>
-            </div>
-            <div v-if="error" class="alert alert-danger">{{ error }}</div>
+          <div class="mb-3">
+            <label for="title" class="form-label">{{ $t('common.fields.title') }}</label>
+            <input id="title" class="form-control" v-model="message.title" required />
+          </div>
+          <div class="mb-3">
+            <label for="message" class="form-label">{{ $t('common.fields.message') }}</label>
+            <textarea id="message" class="form-control" v-model="message.body" required rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label">{{ $t('common.placeholders.duration') }}</label>
+            <input id="duration" class="form-control w-25" v-model="duration" required type="number"/>
+          </div>
+          <div v-if="error" class="alert alert-danger">{{ error }}</div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="close">{{ $t('common.actions.cancel') }}</button>
@@ -29,13 +37,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits, watch } from 'vue'
 import FcmService from '@/services/FcmService'
 import { useI18n } from 'vue-i18n'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import { Modal } from 'bootstrap'
 import { DriverInterface } from '@/types/DriverInterface'
+import { FCMNotification } from '@/types/FCMNotifications'
 
 const props = defineProps<{
   driver: DriverInterface | null
@@ -47,14 +56,39 @@ const emit = defineEmits<{
 const error = ref<string | null>(null)
 const fcmModal = ref<Modal | null>(null)
 const { t } = useI18n()
-const message = ref<string>('')
+const duration = ref<string>('15')
+const message = ref<FCMNotification>({
+  title: '',
+  body: '',
+  data: {
+    duration: duration.value,
+  }
+})
 const { setLoading } = useLoadingState()
 
 function close(): void {
-  message.value = ''
+  message.value = {
+    title: '',
+    body: '',
+    data: {
+      duration: duration.value,
+    }
+  }
   error.value = null
   emit('close')
 }
+
+watch(() => duration.value, (newDuration) => {
+  if (newDuration === '' || isNaN(Number(newDuration)) || Number(newDuration) <= 0) {
+    error.value = t('common.errors.invalid_duration')
+    newDuration = '15'
+  } else {
+    error.value = null
+  }
+  message.value.data = {
+    duration: newDuration
+  }
+})
 
 async function sendMessage(): Promise<void> {
   setLoading(true)
