@@ -45,6 +45,7 @@ import ToastService from '@/services/ToastService'
 import { Modal } from 'bootstrap'
 import { DriverInterface } from '@/types/DriverInterface'
 import { FCMNotification } from '@/types/FCMNotifications'
+import DateHelper from '@/helpers/DateHelper'
 
 const props = defineProps<{
   driver: DriverInterface | null
@@ -92,6 +93,10 @@ watch(() => duration.value, (newDuration) => {
 
 async function sendMessage(): Promise<void> {
   setLoading(true)
+  message.value.data = {
+    duration: duration.value.toString(),
+    timestamp: (DateHelper.unix() * 1000).toString()
+  }
   if (props.driver) {
     FcmService.sendToDriver(props.driver.id, message.value).then(() => {
       ToastService.toast(ToastService.SUCCESS, t('drivers.actions.sent_success'))
