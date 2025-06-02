@@ -191,18 +191,14 @@
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
                   <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value"
-                      :placeholder="$t('drivers.placeholders.soat_exp')" id="soat_exp" aria-label="Soat_exp"
-                      aria-describedby="soat_exp-addon" v-bind="field" autocomplete="none" />
+                      <input  type="date" v-model="soatExp" class="form-control form-control-sm" v-bind="field"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
                 <div class="form-group col-sm-6">
                   <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
                   <Field name="tec_exp" type="date" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm" type="date" v-model="field.value"
-                      :placeholder="$t('drivers.placeholders.tec_exp')" id="tec_exp" aria-label="Pec_exp"
-                      aria-describedby="tec_exp-addon" v-bind="field" autocomplete="none" />
+                      <input  type="date" v-model="tecExp" class="form-control form-control-sm" v-bind="field"/>
                     <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
                   </Field>
                 </div>
@@ -406,15 +402,20 @@ const schemaPassword = object().shape({
 
 
 watch(soatExp, (newValue: string) => {
-  driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
+  if (newValue) { 
+    driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
+  }
 })
+
 
 watch(color, (newColor) => {
   driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor) ?? Constants.COLORS[0]
 })
 
 watch(tecExp, (newValue: string) => {
-  driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
+  if (newValue) {
+    driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
+  }
 })
 
 function goBack() {
@@ -432,6 +433,16 @@ function goBack() {
 
 onBeforeMount(() => {
   const id = route.params.id as string
+  const driverTmp = driverStore.findById(id)
+  if (driverTmp) {
+    driver.value = driverTmp
+    soatExp.value = driverTmp.vehicle.soat_exp 
+      ? DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD') 
+      : ''
+    tecExp.value = driverTmp.vehicle.tec_exp 
+      ? DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
+      : ''
+  }
   setLoading(true)
   DriverRepository.getDriver(id)
     .then(async (updatedDriverData) => {

@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 # Release Notes for 1.5.x
+
+## [1.5.8(2025-06-01)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.8...1.5.7)
+
+### Fixed
+- Fix in update operation [#171](https://github.com/DevAlexandreCR/gorda-admin/pull/171)
 
 ## [1.5.7(2025-05-27)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.7...1.5.6)
 
