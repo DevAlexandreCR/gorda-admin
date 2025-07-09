@@ -159,6 +159,7 @@ export default {
     fees_minimum_festive: 'Minimum fee for festive day',
     fees_minimum_festive_nigth: 'Minimum fee for festive night',
     dynamic_min_fee: 'Dynamic min fee',
+    dynamic_multiplier_fee: 'Dynamic multiplier fee',
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',
     fees_night_DxF: 'Sundays and night holidays',

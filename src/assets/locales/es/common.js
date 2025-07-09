@@ -159,6 +159,7 @@ export default {
     fees_minimum_festive: 'Tarifa Mínima Festiva Diurna',
     fees_minimum_festive_nigth: 'Tarifa Mínima Festiva Nocturna',
     dynamic_min_fee: 'Tarifa Mínima Dinámica',
+    dynamic_multiplier_fee: 'Multiplicador Dinámico de Tarifa',
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
     fees_night_DxF: 'Domingos y Festivos Nocturnos',

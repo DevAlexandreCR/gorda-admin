@@ -11,4 +11,5 @@ export interface RideFeeInterface {
     fees_min_nigth: number
     fees_min_festive_day: number
     fees_min_festive_nigth: number
+    fee_multiplier: number
   }
