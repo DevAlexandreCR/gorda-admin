@@ -229,6 +229,29 @@
                 </Form>
               </div>
             </div>
+            <div class="card mx-sm-2 mt-2">
+              <div class="card-header">
+                <h6>{{ $t('common.settings.dynamic_multiplier_fee') }}</h6>
+              </div>
+              <div class="card-body pt-2">
+                <div class="row">
+                  <div class="col-12" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
+                    <h6>{{ multiplier.name }}</h6>
+                    <div class="form-group">
+                      <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
+                        <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.start" />
+                        <span class="mx-5">-</span>
+                        <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.end" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button type="button" class="btn btn-success float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled">
+                    {{ $t('common.actions.add') }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

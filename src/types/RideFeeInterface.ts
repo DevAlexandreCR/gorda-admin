@@ -1,3 +1,5 @@
+import { DynamicMultiplier } from "./DynamicMultiplier"
+
 export interface RideFeeInterface {
     price_kilometer: number
     price_minute: number
@@ -12,4 +14,5 @@ export interface RideFeeInterface {
     fees_min_festive_day: number
     fees_min_festive_nigth: number
     fee_multiplier: number
+    dynamic_multipliers: DynamicMultiplier[]
   }

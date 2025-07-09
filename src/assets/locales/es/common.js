@@ -44,6 +44,7 @@ export default {
     items_pages: 'Elementos Por Pagina',
     set_percentage: 'Establecer Porcentaje',
     send_message: 'Enviar Mensaje',
+    add: 'Agregar',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -160,6 +161,7 @@ export default {
     fees_minimum_festive_nigth: 'Tarifa Mínima Festiva Nocturna',
     dynamic_min_fee: 'Tarifa Mínima Dinámica',
     dynamic_multiplier_fee: 'Multiplicador Dinámico de Tarifa',
+    hour_range: 'Horarios',
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',
     fees_night_DxF: 'Domingos y Festivos Nocturnos',
