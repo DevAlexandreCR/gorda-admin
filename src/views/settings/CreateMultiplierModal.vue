@@ -108,8 +108,19 @@ const multiplier = ref<DynamicMultiplier>({
   name: '',
 });
 
-const saveMultiplier = (values: DynamicMultiplier) => {
-    SettingsRepository.addMultiplier(rideFees.value!!.dynamic_multipliers, values)
+const saveMultiplier = (values: any) => {
+    if (!rideFees.value?.dynamic_multipliers) return;
+    
+    const multiplierData: DynamicMultiplier = {
+        name: values.name,
+        multiplier: values.multiplier,
+        timeRanges: {
+            start: values.timeRanges.start,
+            end: values.timeRanges.end
+        }
+    };
+    
+    SettingsRepository.addMultiplier(rideFees.value.dynamic_multipliers, multiplierData)
         .then(() => {
             multiplier.value = {
                 timeRanges: {

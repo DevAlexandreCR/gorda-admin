@@ -43,8 +43,8 @@
         <div class="row">
           <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
-              <div class="card-body pt-2">
-                <Form v-if="rideFees">
+              <div class="card-body pt-2"  v-if="rideFees">
+                <Form>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -178,8 +178,8 @@
               <div class="card-header">
                 <h6>{{ $t('common.settings.dynamic_min_fee') }}</h6>
               </div>
-              <div class="card-body pt-2">
-                <Form v-if="rideFees">
+              <div class="card-body pt-2" v-if="rideFees">
+                <Form>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -247,8 +247,8 @@
                 <h6>{{ $t('common.settings.dynamic_multiplier_fee') }}</h6>
               </div>
               <div class="card-body pt-2">
-                <div class="row">
-                  <div class="col-12 bg-light my-1 p-2 elevation-2 rounded" v-if="rideFees" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
+                <div class="row" v-if="rideFees">
+                  <div class="col-12 bg-light my-1 p-2 elevation-2 rounded" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                       <h6 class="mb-0">{{ multiplier.name }} <div class="badge bg-secondary mx-2">{{ multiplier.multiplier }}</div></h6>
                       <button type="button" class="btn btn-danger btn-sm" @click="removeMultiplier(index)">
@@ -399,8 +399,10 @@ function setPercentageModal(city: City, branchId: string): void {
 }
 
 function updateAllFields(): void {
+  if (!rideFees.value) return
+  
   setLoading(true)
-  SettingsRepository.updateRideFee(rideFees.value!!).then(async () => {
+  SettingsRepository.updateRideFee(rideFees.value).then(async () => {
     setLoading(false)
     fieldEdited.value = ''
     allFieldsDisabled.value = true
