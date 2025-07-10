@@ -93,10 +93,10 @@ const { rideFees } = storeToRefs(useSettingsStore());
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   multiplier: yup.number().required().min(1).max(5),
-    timeRanges: yup.object().shape({
-        start: yup.string().required(),
-        end: yup.string().required()
-    })
+  timeRanges: yup.object().shape({
+    start: yup.string().required(),
+    end: yup.string().required()
+  })
 })
 
 const multiplier = ref<DynamicMultiplier>({

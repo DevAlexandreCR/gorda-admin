@@ -1,5 +1,3 @@
-import { start } from "@popperjs/core"
-
 export type DynamicMultiplier = {
     name: string
     multiplier: number
