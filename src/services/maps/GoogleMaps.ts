@@ -56,11 +56,7 @@ export class GoogleMaps {
 			content = `<span class="badge bg-${place.color}">${place.name}</span>`
 		}
 		infoWindow.setContent(content)
-		infoWindow.open({
-      anchor: marker,
-      map: this.map,
-      shouldFocus: false
-    })
+		infoWindow.open(this.map, marker)
     this.markers.push(marker)
   }
 
