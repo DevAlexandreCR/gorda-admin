@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.9(2025-07-09)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.9...1.5.8)
+
+### Added
+- Add fee multiplier dynamic. [#173](https://github.com/DevAlexandreCR/gorda-admin/pull/173)
+
 ## [1.5.8(2025-06-01)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.8...1.5.7)
 
 ### Fixed
