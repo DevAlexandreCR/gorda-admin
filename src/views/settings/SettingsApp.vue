@@ -44,7 +44,7 @@
           <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
               <div class="card-body pt-2">
-                <Form>
+                <Form v-if="rideFees">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -166,7 +166,7 @@
                 <h6>{{ $t('common.settings.dynamic_min_fee') }}</h6>
               </div>
               <div class="card-body pt-2">
-                <Form>
+                <Form v-if="rideFees">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -235,7 +235,7 @@
               </div>
               <div class="card-body pt-2">
                 <div class="row">
-                  <div class="col-12" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
+                  <div class="col-12" v-if="rideFees" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
                     <h6>{{ multiplier.name }}</h6>
                     <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
                     <div class="form-group d-flex align-items-center">
@@ -347,8 +347,7 @@ import CreateMultiplierModal from './CreateMultiplierModal.vue'
 
 const { setLoading } = useLoadingState()
 
-const rideFees: Ref<RideFeeInterface> = ref({})
-const { branches, branchSelected } = storeToRefs(useSettingsStore())
+const { branches, branchSelected, rideFees } = storeToRefs(useSettingsStore())
 const { setBranchSelected, setPercentage } = useSettingsStore()
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
@@ -383,7 +382,7 @@ function setPercentageModal(city: City, branchId: string): void {
 
 function updateAllFields(): void {
   setLoading(true)
-  SettingsRepository.updateRideFee(rideFees.value).then(async () => {
+  SettingsRepository.updateRideFee(rideFees.value!!).then(async () => {
     setLoading(false)
     fieldEdited.value = ''
     allFieldsDisabled.value = true
@@ -395,9 +394,4 @@ function updateAllFields(): void {
   })
 }
 
-onMounted(async () => {
-  SettingsRepository.getRideFees((fees) => {
-    rideFees.value = fees
-  })
-})
 </script>

@@ -3,12 +3,14 @@ import {Branch} from "@/types/Branch";
 import SettingsRepository from "@/repositories/SettingsRepository";
 import {City} from "@/types/City";
 import {BranchSelected} from "@/types/BranchSelected";
+import { RideFeeInterface } from "@/types/RideFeeInterface";
 
 export const useSettingsStore = defineStore('generalSettingsStore', {
     state: () => {
         return {
             branches: new Map<string, Branch>() as Map<string, Branch>,
-            branchSelected: null as BranchSelected | null
+            branchSelected: null as BranchSelected | null,
+            rideFees: null as RideFeeInterface | null 
         }
     },
     actions: {
@@ -43,6 +45,12 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
         async setPercentage(branchId: string, city: City): Promise<void> {
             await SettingsRepository.setPercentage(branchId, city.id, city.percentage)
             await this.getBranches()
+        },
+
+        async getRideFees(): Promise<void> {
+            SettingsRepository.getRideFees((rideFees) => {
+                this.rideFees = rideFees
+            })
         }
     }
 })

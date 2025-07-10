@@ -85,7 +85,11 @@ import { ErrorMessage, Form, Field } from 'vee-validate';
 import { ref } from 'vue';
 import * as yup from 'yup';
 import {useSettingsStore} from "@/services/stores/SettingsStore";
+import { storeToRefs } from 'pinia';
+import SettingsRepository from '@/repositories/SettingsRepository';
+import { Modal } from 'bootstrap';
 
+const { rideFees } = storeToRefs(useSettingsStore());
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   multiplier: yup.number().required().min(1).max(5),
@@ -105,7 +109,21 @@ const multiplier = ref<DynamicMultiplier>({
 });
 
 const saveMultiplier = (values: DynamicMultiplier) => {
-    console.log('Form values:', values);
-    
+    SettingsRepository.addMultiplier(rideFees.value!!.dynamic_multipliers, values)
+        .then(() => {
+            multiplier.value = {
+                timeRanges: {
+                    start: '00:00',
+                    end: '00:00'
+                },
+                multiplier: 1,
+                name: ''
+            };
+            const modal = document.getElementById('multiplierModal');
+            if (modal) {
+                const bootstrapModal = Modal.getInstance(modal);
+                bootstrapModal?.hide();
+            }
+        });
 };
 </script>

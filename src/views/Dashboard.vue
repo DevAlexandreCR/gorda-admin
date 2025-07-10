@@ -40,7 +40,7 @@ const { getClients } = useClientsStore()
 const { getDrivers } = useDriversStore()
 const { getHistoryServices, getPendingServices, getInProgressServices } = useServicesStore()
 const { getWpClients } = useWpClientsStore()
-const { getBranches } = useSettingsStore()
+const { getBranches, getRideFees } = useSettingsStore()
 const { getCurrentYearMetric } = useMetricsStore()
 
 const loadAllData = async () => {
@@ -53,7 +53,8 @@ const loadAllData = async () => {
     getPendingServices(),
     getInProgressServices(),
     getWpClients(),
-    getBranches()
+    getBranches(),
+    getRideFees()
   ])
 
   placesLoaded.value = true
