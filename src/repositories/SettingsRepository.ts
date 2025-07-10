@@ -8,6 +8,7 @@ import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc
 import FSService from '@/services/FSService';
 import {MessagesEnum} from '@/constants/MessagesEnum'
 import {Branch} from "@/types/Branch";
+import { DynamicMultiplier } from '@/types/DynamicMultiplier';
 
 class SettingsRepository {
 
@@ -65,9 +66,16 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
-	async getRideFees(): Promise<RideFeeInterface> {
-		const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/ride_fees'))
-		return <RideFeeInterface>snapshot.val()
+	async addMultiplier(multipliers: DynamicMultiplier[], multiplier: DynamicMultiplier): Promise<void> {
+		multipliers.push(multiplier);
+		await set(ref(DBService.db, `settings/ride_fees/dynamic_multipliers`), multipliers);
+	}
+
+	/* istanbul ignore next */
+	getRideFees(callback: (rideFees: RideFeeInterface) => void): void {
+		onValue(ref(DBService.db, 'settings/ride_fees'), (snapshot) => {
+			callback(<RideFeeInterface>snapshot.val())
+		})
 	}
 
 	/* istanbul ignore next */

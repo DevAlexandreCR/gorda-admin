@@ -237,8 +237,8 @@
                 <div class="row">
                   <div class="col-12" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
                     <h6>{{ multiplier.name }}</h6>
-                    <div class="form-group">
-                      <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
+                    <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
+                    <div class="form-group d-flex align-items-center">
                         <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.start" />
                         <span class="mx-5">-</span>
                         <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.end" />
@@ -246,7 +246,7 @@
                   </div>
                 </div>
                 <div class="mt-4">
-                  <button type="button" class="btn btn-success float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled">
+                  <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#multiplierModal">
                     {{ $t('common.actions.add') }}
                   </button>
                 </div>
@@ -254,6 +254,7 @@
             </div>
           </div>
         </div>
+      <CreateMultiplierModal/>
       </div>
     <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
         <SettingsMsg v-if="currentTab === 'messages'" />
@@ -342,6 +343,7 @@ import {useSettingsStore} from "@/services/stores/SettingsStore";
 import AuthService from '@/services/AuthService'
 import { City } from '@/types/City'
 import { Branch } from '@/types/Branch'
+import CreateMultiplierModal from './CreateMultiplierModal.vue'
 
 const { setLoading } = useLoadingState()
 
@@ -394,6 +396,8 @@ function updateAllFields(): void {
 }
 
 onMounted(async () => {
-  rideFees.value = await SettingsRepository.getRideFees()
+  SettingsRepository.getRideFees((fees) => {
+    rideFees.value = fees
+  })
 })
 </script>
