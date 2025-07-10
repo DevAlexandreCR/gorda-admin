@@ -113,6 +113,19 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
+                        <label class="form-control-label">{{ $t('settings.fees.fields.multiplier') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 disabled v-model="rideFees.fee_multiplier" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('fee_multiplier')"
+                                  disabled>
+                            <em class="fas fa-cancel"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
                         <label class="form-control-label">{{ $t('common.settings.fees_night') }}</label>
                         <div class="input-group">
                           <input type="number" class="form-control form-control-sm"
