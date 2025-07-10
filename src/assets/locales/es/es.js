@@ -4,6 +4,7 @@ import validations from '@/assets/locales/es/validations'
 import services from '@/assets/locales/es/services'
 import drivers from "@/assets/locales/es/drivers";
 import wp from "@/assets/locales/es/wp";
+import settings from "@/assets/locales/es/settings";
 
 export default {
   routes: {
@@ -19,5 +20,6 @@ export default {
   validations: validations,
   services: services,
   drivers: drivers,
-  wp: wp
+  wp: wp,
+  settings: settings
 }
