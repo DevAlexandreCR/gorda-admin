@@ -235,8 +235,13 @@
               </div>
               <div class="card-body pt-2">
                 <div class="row">
-                  <div class="col-12" v-if="rideFees" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
-                    <h6>{{ multiplier.name }}</h6>
+                  <div class="col-12 bg-light my-1 p-2 elevation-2 rounded" v-if="rideFees" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h6 class="mb-0">{{ multiplier.name }} <div class="badge bg-secondary mx-2">{{ multiplier.multiplier }}</div></h6>
+                      <button type="button" class="btn btn-danger btn-sm" @click="removeMultiplier(index)">
+                        <em class="fas fa-trash"></em>
+                      </button>
+                    </div>
                     <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
                     <div class="form-group d-flex align-items-center">
                         <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.start" />
@@ -353,8 +358,8 @@ const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
 const currentTab: Ref<string> = ref('general_settings')
-let citySelected: Ref<City> = ref({})
-let branch: Ref<Branch> = ref({})
+let citySelected: Ref<City> = ref({} as City)
+let branch: Ref<Branch> = ref({} as Branch)
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
@@ -392,6 +397,19 @@ function updateAllFields(): void {
     setLoading(false)
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
+}
+
+function removeMultiplier(index: number): void {
+  if (rideFees.value && rideFees.value.dynamic_multipliers) {
+    setLoading(true)
+    SettingsRepository.removeMultiplier(rideFees.value.dynamic_multipliers, index).then(async () => {
+      setLoading(false)
+      await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+    }).catch(async e => {
+      setLoading(false)
+      await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+    })
+  }
 }
 
 </script>

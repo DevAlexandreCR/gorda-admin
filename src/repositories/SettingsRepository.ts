@@ -72,6 +72,12 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
+	async removeMultiplier(multipliers: DynamicMultiplier[], index: number): Promise<void> {
+		multipliers.splice(index, 1);
+		await set(ref(DBService.db, `settings/ride_fees/dynamic_multipliers`), multipliers);
+	}
+
+	/* istanbul ignore next */
 	getRideFees(callback: (rideFees: RideFeeInterface) => void): void {
 		onValue(ref(DBService.db, 'settings/ride_fees'), (snapshot) => {
 			callback(<RideFeeInterface>snapshot.val())
