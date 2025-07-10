@@ -44,7 +44,7 @@
           <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
               <div class="card-body pt-2">
-                <Form>
+                <Form v-if="rideFees">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -113,6 +113,19 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
+                        <label class="form-control-label">{{ $t('settings.fees.fields.multiplier') }}</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control form-control-sm"
+                                 disabled v-model="rideFees.fee_multiplier" />
+                          <button class="badge bg-info border-0" type="button" @click="editField('fee_multiplier')"
+                                  disabled>
+                            <em class="fas fa-cancel"></em>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
                         <label class="form-control-label">{{ $t('common.settings.fees_night') }}</label>
                         <div class="input-group">
                           <input type="number" class="form-control form-control-sm"
@@ -166,7 +179,7 @@
                 <h6>{{ $t('common.settings.dynamic_min_fee') }}</h6>
               </div>
               <div class="card-body pt-2">
-                <Form>
+                <Form v-if="rideFees">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -229,8 +242,37 @@
                 </Form>
               </div>
             </div>
+            <div class="card mx-sm-2 mt-2">
+              <div class="card-header">
+                <h6>{{ $t('common.settings.dynamic_multiplier_fee') }}</h6>
+              </div>
+              <div class="card-body pt-2">
+                <div class="row">
+                  <div class="col-12 bg-light my-1 p-2 elevation-2 rounded" v-if="rideFees" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h6 class="mb-0">{{ multiplier.name }} <div class="badge bg-secondary mx-2">{{ multiplier.multiplier }}</div></h6>
+                      <button type="button" class="btn btn-danger btn-sm" @click="removeMultiplier(index)">
+                        <em class="fas fa-trash"></em>
+                      </button>
+                    </div>
+                    <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
+                    <div class="form-group d-flex align-items-center">
+                        <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.start" />
+                        <span class="mx-5">-</span>
+                        <input type="time" class="form-control form-control-sm" v-model="multiplier.timeRanges.end" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#multiplierModal">
+                    {{ $t('common.actions.add') }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      <CreateMultiplierModal/>
       </div>
     <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
         <SettingsMsg v-if="currentTab === 'messages'" />
@@ -319,18 +361,18 @@ import {useSettingsStore} from "@/services/stores/SettingsStore";
 import AuthService from '@/services/AuthService'
 import { City } from '@/types/City'
 import { Branch } from '@/types/Branch'
+import CreateMultiplierModal from './CreateMultiplierModal.vue'
 
 const { setLoading } = useLoadingState()
 
-const rideFees: Ref<RideFeeInterface> = ref({})
-const { branches, branchSelected } = storeToRefs(useSettingsStore())
+const { branches, branchSelected, rideFees } = storeToRefs(useSettingsStore())
 const { setBranchSelected, setPercentage } = useSettingsStore()
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
 const currentTab: Ref<string> = ref('general_settings')
-let citySelected: Ref<City> = ref({})
-let branch: Ref<Branch> = ref({})
+let citySelected: Ref<City> = ref({} as City)
+let branch: Ref<Branch> = ref({} as Branch)
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
@@ -358,7 +400,7 @@ function setPercentageModal(city: City, branchId: string): void {
 
 function updateAllFields(): void {
   setLoading(true)
-  SettingsRepository.updateRideFee(rideFees.value).then(async () => {
+  SettingsRepository.updateRideFee(rideFees.value!!).then(async () => {
     setLoading(false)
     fieldEdited.value = ''
     allFieldsDisabled.value = true
@@ -370,7 +412,17 @@ function updateAllFields(): void {
   })
 }
 
-onMounted(async () => {
-  rideFees.value = await SettingsRepository.getRideFees()
-})
+function removeMultiplier(index: number): void {
+  if (rideFees.value && rideFees.value.dynamic_multipliers) {
+    setLoading(true)
+    SettingsRepository.removeMultiplier(rideFees.value.dynamic_multipliers, index).then(async () => {
+      setLoading(false)
+      await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+    }).catch(async e => {
+      setLoading(false)
+      await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+    })
+  }
+}
+
 </script>
