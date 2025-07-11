@@ -109,7 +109,12 @@ const multiplier = ref<DynamicMultiplier>({
 });
 
 const saveMultiplier = (values: any) => {
-    if (!rideFees.value?.dynamic_multipliers) return;
+    if (!rideFees.value) {
+        return
+    }
+    if (!rideFees.value.dynamic_multipliers) {
+        rideFees.value.dynamic_multipliers = [];
+    }
     
     const multiplierData: DynamicMultiplier = {
         name: values.name,
