@@ -13,6 +13,9 @@
         </div>
         <ul class="navbar-nav  justify-content-end">
           <li class="nav-item d-flex align-items-center">
+            <a href="javascript:" class="nav-link text-body p-0" @click="toggleTheme" data-test="theme-toggle">
+              <i :class="mode === ThemeMode.DARK ? 'fas fa-sun' : 'fas fa-moon'"></i>
+            </a>
           </li>
           <li class="nav-item ps-3 d-flex align-items-center">
             <a href="javascript:" class="nav-link d-xxl-none text-body p-0" id="iconNavbarSidenav">
@@ -29,4 +32,13 @@
   </nav>
 </template>
 <script setup lang="ts">
+import {useThemeStore, ThemeMode} from '@/services/stores/ThemeStore'
+import {storeToRefs} from 'pinia'
+
+const themeStore = useThemeStore()
+const {mode} = storeToRefs(themeStore)
+
+function toggleTheme(): void {
+  themeStore.toggle()
+}
 </script>

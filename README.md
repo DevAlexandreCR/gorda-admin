@@ -25,6 +25,8 @@ The application is written in TypeScript using the Vue CLI and Pinia for state m
 - [Socket.IO](https://socket.io/) for WhatsApp events
 - Jest and Vue Test Utils for unit tests
 
+The interface supports a light and dark theme. Use the sun/moon button in the top navigation bar to switch modes.
+
 ## Installation
 
 1. Clone the repository and install dependencies:
