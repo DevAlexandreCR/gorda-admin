@@ -64,6 +64,9 @@ jest.mock('firebase/firestore', () => {
   return {
     getFirestore: jest.fn(),
     connectFirestoreEmulator: jest.fn(),
+    initializeFirestore: jest.fn(),
+    persistentLocalCache: jest.fn(),
+    CACHE_SIZE_UNLIMITED: 40,
     collection: jest.fn(),
     doc: jest.fn(),
     getDoc: jest.fn().mockResolvedValue({
