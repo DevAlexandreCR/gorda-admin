@@ -20,9 +20,9 @@
                 <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.phone }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.canceled_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ canceledBy }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.terminated_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ terminatedBy }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.created_by !== null">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.canceled_by !== null">{{$t('common.fields.canceled_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ canceledBy }}</span></span>
+                <span class="mb-2 text-sm" v-if="service.terminated_by !== null">{{$t('common.fields.terminated_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ terminatedBy }}</span></span>
               </div>
             </div>
             <div class="col-6">
