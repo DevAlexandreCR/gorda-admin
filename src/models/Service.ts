@@ -6,6 +6,8 @@ import {Applicant} from '@/types/Applicant'
 import { Metadata } from '@/types/Metadata'
 import {useWpClientsStore} from "@/services/stores/WpClientStore";
 import { useSettingsStore } from '@/services/stores/SettingsStore'
+import User from './User'
+import UserRepository from '@/repositories/UserRepository'
 
 export default class Service implements ServiceInterface {
   id: string
@@ -67,4 +69,20 @@ export default class Service implements ServiceInterface {
   async assign(driverId: string): Promise<void> {
     await ServiceRepository.assign(this.id, driverId)
   }
+
+  async getCreatedBy(): Promise<User| null> {
+		return this.created_by ? UserRepository.getUserById(this.created_by) : null
+	}
+
+	async getCanceledBy(): Promise<User| null>  {
+		return this.canceled_by ? UserRepository.getUserById(this.canceled_by) : null
+	}
+
+	async getTerminatedBy(): Promise<User| null> {
+		return this.terminated_by ? UserRepository.getUserById(this.terminated_by) : null
+	}
+
+	async getAssignedBy(): Promise<User| null>  {
+		return this.assigned_by ? UserRepository.getUserById(this.assigned_by) : null
+	}
 }

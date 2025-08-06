@@ -11,6 +11,7 @@ import i18n from '@/plugins/i18n'
 import {Pagination} from '@/types/Pagination'
 import Service from '@/models/Service'
 import {ServiceCursor} from '@/types/ServiceCursor'
+import { log } from 'console'
 
 
 export const useServicesStore = defineStore('servicesStore', {

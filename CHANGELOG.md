@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.10(2025-08-06)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.10...1.5.9)
+
+### Fixed
+- Service user info in historial.
+
 ## [1.5.9(2025-07-09)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.9...1.5.8)
 
 ### Added

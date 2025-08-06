@@ -94,8 +94,12 @@ class UserRepository {
   async passwordAuth(uid: string, password: string): Promise<AxiosResponse> {
     return axios.post(this.base_url + '/auth/update-password/', { uid: uid, password: password })
   }
+
+  /* istanbul ignore next */
+  async getUserById(id: string): Promise<User> {
+    const snapshot: DataSnapshot = await get(child(DBService.dbUsers(), id))
+    return <User>snapshot.val()
+  } 
 }
-
-
 
 export default new UserRepository()
