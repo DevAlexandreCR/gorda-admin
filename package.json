@@ -9,12 +9,11 @@
     "test:watch": "vue-cli-service test:unit --watchAll",
     "lint": "vue-cli-service lint",
     "build:dev": "vue-cli-service build --mode development",
-    "build:watch": "vue-cli-service build --mode development --watch --no-clean",
+    "watch": "vue-cli-service build --mode development --watch --no-clean",
     "i18n:report": "vue-cli-service i18n:report --src \\\"./src/**/*.?(js|vue)\\\" --locales \\\"src/assets/locales/**/*.json\\\"",
     "lint-check": "vue-cli-service lint --no-fix --ignore-path .eslintignore src/",
     "serve:firebase": "firebase serve",
-    "start:emulators": "firebase emulators:start --import dataEmulators --export-on-exit",
-    "watch": "build:watch"
+    "start:emulators": "firebase emulators:start --import dataEmulators --export-on-exit"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.14.3",
