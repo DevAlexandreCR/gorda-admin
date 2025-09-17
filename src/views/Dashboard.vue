@@ -46,7 +46,6 @@ const { getCurrentYearMetric } = useMetricsStore()
 const loadAllData = async () => {
   getCurrentYearMetric()
   await Promise.all([
-    getPlaces(),
     getClients(),
     getDrivers(),
     getHistoryServices(),
@@ -54,7 +53,8 @@ const loadAllData = async () => {
     getInProgressServices(),
     getWpClients(),
     getBranches(),
-    getRideFees()
+    getRideFees(),
+    getPlaces()
   ])
 
   placesLoaded.value = true
