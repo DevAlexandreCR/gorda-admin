@@ -1,4 +1,4 @@
-import { get, DataSnapshot, push, onChildAdded, child, remove } from 'firebase/database'
+import { onChildAdded } from 'firebase/database'
 import DBService from '@/services/DBService'
 import { PlaceInterface } from '@/types/PlaceInterface'
 import Place from '@/models/Place'
