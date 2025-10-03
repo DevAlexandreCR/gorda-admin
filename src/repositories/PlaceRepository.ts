@@ -8,12 +8,33 @@ class PlaceRepository {
 
   /* istanbul ignore next */
   async getAll(cityId: string): Promise<Array<PlaceInterface>> {
-    const response = await PlacesApiService.index(cityId)
-    if (response.data.success && response.data.data.places) {
-      return response.data.data.places as Array<PlaceInterface>
-    } else {
-      return []
-    }
+    return PlacesApiService.index(cityId)
+      .then(response => {
+        if (!response?.data) {
+          console.warn('Invalid response structure from PlacesApiService.index')
+          return []
+        }
+
+        const { data } = response
+
+        if (!data.success) {
+          console.error('API returned error:', data.message || 'Unknown error')
+          return []
+        }
+
+        const places = data.data?.places
+
+        if (!Array.isArray(places)) {
+          console.warn('Places data is not an array or is missing')
+          return []
+        }
+
+        return places as Array<PlaceInterface>
+      })
+      .catch(error => {
+        console.error('Error fetching places:', error)
+        return []
+      })
   }
 
   /**
