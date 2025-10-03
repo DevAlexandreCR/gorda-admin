@@ -26,12 +26,19 @@
         </button>
         <div class="list-options">
           <div 
-            v-for="(row, rowIdx) in message.action?.rows" 
-            :key="rowIdx" 
-            class="list-row"
+            v-for="(section, sectionIdx) in message.action?.sections" 
+            :key="sectionIdx" 
+            class="list-section"
           >
-            <div class="row-title">{{ row.title }}</div>
-            <div v-if="row.description" class="row-description">{{ row.description }}</div>
+            <div v-if="section.title" class="section-title">{{ section.title }}</div>
+            <div 
+              v-for="(row, rowIdx) in section.rows" 
+              :key="rowIdx" 
+              class="list-row"
+            >
+              <div class="row-title">{{ row.title }}</div>
+              <div v-if="row.description" class="row-description">{{ row.description }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,6 +140,23 @@ defineProps<{ message: Interactive, formattedMessage: string }>();
   background: white;
   max-height: 200px;
   overflow-y: auto;
+}
+
+.list-section {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.list-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
 }
 
 .list-row {

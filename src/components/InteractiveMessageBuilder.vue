@@ -51,7 +51,7 @@
                 </div>
                 
                 <label class="form-label">{{ $t('wp.fields.list_items') }}</label><br>
-                <div v-for="(row, rowIndex) in message.action.rows" :key="rowIndex" class="row mb-2">
+                <div v-for="(row, rowIndex) in getListRows()" :key="rowIndex" class="row mb-2">
                     <div class="col-3">
                         <input
                             class="form-control form-control-sm"
@@ -114,9 +114,7 @@ watch(message, (newMessage) => {
 // Watch for type changes to initialize proper structure
 watch(() => message.value.type, (newType) => {
   if (newType === 'list') {
-    if (!message.value.action.rows) {
-      message.value.action.rows = [];
-    }
+    ensureDefaultSection();
     if (!message.value.action.button) {
       message.value.action.button = '';
     }
@@ -153,12 +151,26 @@ function removeButton(index: number) {
   emit('interactiveUpdated', message.value)
 }
 
-// List management functions
-function addRow() {
-  if (!message.value.action.rows) {
-    message.value.action.rows = [];
+// List management functions (working with single default section)
+function getListRows() {
+  ensureDefaultSection();
+  return message.value.action.sections?.[0]?.rows || [];
+}
+
+function ensureDefaultSection() {
+  if (!message.value.action.sections) {
+    message.value.action.sections = [];
   }
-  message.value.action.rows.push({
+  if (message.value.action.sections.length === 0) {
+    message.value.action.sections.push({
+      rows: []
+    });
+  }
+}
+
+function addRow() {
+  ensureDefaultSection();
+  message.value.action.sections![0].rows.push({
     id: '',
     title: '',
     description: ''
@@ -167,7 +179,8 @@ function addRow() {
 }
 
 function removeRow(index: number) {
-  message.value.action.rows?.splice(index, 1);
+  ensureDefaultSection();
+  message.value.action.sections![0].rows.splice(index, 1);
   emit('interactiveUpdated', message.value)
 }
 
@@ -183,8 +196,8 @@ onMounted(() => {
   if (props.selectedInteractive) {
     message.value = { ...props.selectedInteractive };
     // Ensure proper structure for list messages
-    if (message.value.type === 'list' && !message.value.action.rows) {
-      message.value.action.rows = [];
+    if (message.value.type === 'list') {
+      ensureDefaultSection();
     }
   } else {
     message.value = defaultMessage;

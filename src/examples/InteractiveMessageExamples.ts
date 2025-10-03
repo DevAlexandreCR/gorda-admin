@@ -33,32 +33,36 @@ const buttonMessage: Interactive = {
   }
 }
 
-// List message example (simplified)
+// List message example (matches WhatsApp API structure with sections)
 const listMessage: Interactive = {
   type: 'list',
   body: { text: 'Choose from our menu:' },
   action: {
     button: 'View Menu',
-    rows: [
+    sections: [
       {
-        id: 'main1',
-        title: 'Grilled Chicken',
-        description: 'Tender grilled chicken with herbs'
-      },
-      {
-        id: 'main2',
-        title: 'Beef Steak',
-        description: 'Premium beef steak cooked to perfection'
-      },
-      {
-        id: 'dessert1',
-        title: 'Chocolate Cake',
-        description: 'Rich chocolate cake with cream'
-      },
-      {
-        id: 'dessert2',
-        title: 'Ice Cream',
-        description: 'Vanilla ice cream with toppings'
+        rows: [
+          {
+            id: 'main1',
+            title: 'Grilled Chicken',
+            description: 'Tender grilled chicken with herbs'
+          },
+          {
+            id: 'main2',
+            title: 'Beef Steak',
+            description: 'Premium beef steak cooked to perfection'
+          },
+          {
+            id: 'dessert1',
+            title: 'Chocolate Cake',
+            description: 'Rich chocolate cake with cream'
+          },
+          {
+            id: 'dessert2',
+            title: 'Ice Cream',
+            description: 'Vanilla ice cream with toppings'
+          }
+        ]
       }
     ]
   },

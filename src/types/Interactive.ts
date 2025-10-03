@@ -6,10 +6,13 @@ export type Interactive = {
   action: {
     name?: string,
     button?: string, // Button text for list messages
-    rows?: Array<{
-      id: string,
-      title: string,
-      description?: string
+    sections?: Array<{
+      title?: string,
+      rows: Array<{
+        id: string,
+        title: string,
+        description?: string
+      }>
     }>,
     buttons?: Array<{
       type: 'reply',
