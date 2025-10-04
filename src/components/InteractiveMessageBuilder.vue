@@ -25,8 +25,10 @@
             <div v-for="(button, index) in message.action.buttons" :key="index" class="d-flex mb-1">
                 <input
                 class="form-control me-1"
+                :class="{ 'is-invalid': isButtonTitleInvalid(button.reply?.title || '') }"
                 v-model="button.reply!.title"
                 placeholder="Button Title"
+                maxlength="20"
                 />
                 <input
                 class="form-control me-1"
@@ -37,6 +39,9 @@
                     <em class="fa fa-trash"></em>
                 </button>
             </div>
+            <div v-if="hasInvalidButtonTitles" class="text-danger small mb-2">
+                {{ $t('wp.validations.button_title_max_length') }}
+            </div>
             <button class="btn btn-outline-primary btn-sm" @click="addButton">{{ $t('wp.actions.add') }}</button>
             </div>
 
@@ -45,9 +50,17 @@
                     <label class="form-label">{{ $t('wp.fields.button_text') }}</label>
                     <input
                         class="form-control"
+                        :class="{ 'is-invalid': isButtonTextInvalid }"
                         v-model="message.action.button"
                         :placeholder="$t('wp.placeholders.button_text')"
+                        maxlength="20"
                     />
+                    <div v-if="isButtonTextInvalid" class="invalid-feedback">
+                        {{ $t('wp.validations.button_text_max_length') }}
+                    </div>
+                    <div class="form-text">
+                        {{ buttonTextLength }}/20 {{ $t('wp.fields.characters') }}
+                    </div>
                 </div>
                 
                 <label class="form-label">{{ $t('wp.fields.list_items') }}</label><br>
@@ -62,15 +75,19 @@
                     <div class="col-4">
                         <input
                             class="form-control form-control-sm"
+                            :class="{ 'is-invalid': isListItemTitleInvalid(row.title || '') }"
                             v-model="row.title"
                             :placeholder="$t('wp.placeholders.item_title')"
+                            maxlength="24"
                         />
                     </div>
                     <div class="col-4">
                         <input
                             class="form-control form-control-sm"
+                            :class="{ 'is-invalid': isListItemDescriptionInvalid(row.description || '') }"
                             v-model="row.description"
                             :placeholder="$t('wp.placeholders.item_description')"
+                            maxlength="72"
                         />
                     </div>
                     <div class="col-1">
@@ -78,6 +95,9 @@
                             <em class="fa fa-trash"></em>
                         </button>
                     </div>
+                </div>
+                <div v-if="hasInvalidListItems" class="text-danger small mb-2">
+                    {{ $t('wp.validations.list_items_max_length') }}
                 </div>
                 <button class="btn btn-outline-primary btn-sm" @click="addRow">{{ $t('wp.actions.add_item') }}</button>
             </div>
@@ -91,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import InteractiveMessagePreview from './InteractiveMessagePreview.vue';
 import { Interactive } from '@/types/Interactive';
 import TextEditor from './TextEditor.vue';
@@ -105,6 +125,44 @@ const message = ref<Interactive>({
   action: {
     buttons: [],
   },
+});
+
+// Computed properties for button text validation
+const buttonTextLength = computed(() => {
+  return message.value.action.button?.length || 0;
+});
+
+const isButtonTextInvalid = computed(() => {
+  return buttonTextLength.value > 20;
+});
+
+// Button title validation functions
+const isButtonTitleInvalid = (title: string) => {
+  return title.length > 20;
+};
+
+const hasInvalidButtonTitles = computed(() => {
+  return message.value.action.buttons?.some(button => 
+    isButtonTitleInvalid(button.reply?.title || '')
+  ) || false;
+});
+
+// List item title validation
+const isListItemTitleInvalid = (title: string) => {
+  return title.length > 24;
+};
+
+// List item description validation
+const isListItemDescriptionInvalid = (description: string) => {
+  return description.length > 72;
+};
+
+const hasInvalidListItems = computed(() => {
+  const rows = getListRows();
+  return rows.some(row => 
+    isListItemTitleInvalid(row.title || '') || 
+    isListItemDescriptionInvalid(row.description || '')
+  );
 });
 
 watch(message, (newMessage) => {

@@ -17,6 +17,7 @@ export default {
     list: 'Lista',
     list_items: 'Elementos de Lista',
     location_request: 'Solicitud de ubicación',
+    characters: 'caracteres',
   },
   placeholders: {
     delete: 'El cliente se eliminará, ¿desea continuar?',
@@ -29,6 +30,11 @@ export default {
     item_id: 'ID del Elemento',
     item_title: 'Título del Elemento',
     item_description: 'Descripción del Elemento (opcional)',
+  },
+  validations: {
+    button_text_max_length: 'El texto del botón debe tener 20 caracteres o menos',
+    button_title_max_length: 'Los títulos de botones deben tener 20 caracteres o menos',
+    list_items_max_length: 'Títulos máx 24 chars, descripciones máx 72 chars',
   },
   titles: {
     confirmations_messages: 'Mensajes de Confirmación',

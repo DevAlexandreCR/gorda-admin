@@ -17,6 +17,7 @@ export default {
     list: 'List',
     list_items: 'List Items',
     location_request: 'Location Request',
+    characters: 'chars',
   },
   placeholders: {
     delete: 'The client will be removed, do ypu want to continue?',
@@ -29,6 +30,11 @@ export default {
     item_id: 'Item ID',
     item_title: 'Item Title',
     item_description: 'Item Description (optional)',
+  },
+  validations: {
+    button_text_max_length: 'Button text must be 20 characters or less',
+    button_title_max_length: 'Button titles must be 20 characters or less',
+    list_items_max_length: 'Item titles max 24 chars, descriptions max 72 chars',
   },
   titles: {
     confirmations_messages: 'Confirmations Messages',
