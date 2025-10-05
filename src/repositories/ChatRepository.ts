@@ -33,7 +33,7 @@ class ChatRepository {
     const messageCollection = FSService.wpMessagesCollection(wpClientId, chatId)
     const messages = new Map<string, Message>()
     // Get last 50 messages in ascending order, then we'll reverse them
-    const queryMessages = query(messageCollection, orderBy('created_at', 'desc'), limitToLast(50))
+    const queryMessages = query(messageCollection, orderBy('created_at', 'desc'), limit(50))
 
     await getDocs(queryMessages).then((snapshot) => {
       snapshot.forEach((doc) => {
