@@ -63,10 +63,12 @@ const menuActions = [
 watch(() => wpChatStore.sortedChats, (newChats) => {
   const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
     const client = findById(chat.id)
+    const shouldShowUnread = wpChatStore.shouldShowAsUnread(chat)
+    
     return {
       roomId: chat.id,
       roomName: client.name ?? chat.clientName,
-      unreadCount: chat.archived? 0 : 1,
+      unreadCount: shouldShowUnread ? 1 : 0,
       lastMessage: {
         _id: chat.lastMessage.id,
         content: chat.lastMessage.body,
@@ -77,8 +79,8 @@ watch(() => wpChatStore.sortedChats, (newChats) => {
         index: chat.updated_at,
         saved: true,
         distributed: true,
-        seen: chat.lastMessage.fromMe ? true : !chat.archived,
-        new: chat.lastMessage.fromMe ? false : !chat.archived
+        seen: chat.lastMessage.fromMe ? true : !shouldShowUnread,
+        new: chat.lastMessage.fromMe ? false : shouldShowUnread
       },
       users: [
         {

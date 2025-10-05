@@ -32,6 +32,13 @@ export const useWpChatStore = defineStore('wpChatStore', {
     }
   },
   actions: {
+    shouldShowAsUnread(chat: Chat): boolean {
+      // Only show as unread if:
+      // 1. Chat is not archived
+      // 2. Last message is NOT from me (fromMe = false means it's from the user)
+      return !chat.archived && !chat.lastMessage.fromMe
+    },
+
     clearPlaceholderChats(): void {
       // Remove any placeholder chats that were created during search
       for (const [chatId, chat] of this.chats.entries()) {
@@ -78,6 +85,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
           if (!existingChat || (lastMessage && chat.lastMessage.id !== lastMessage.id)) {
             if (lastMessage && chat.lastMessage.id !== lastMessage.id) {
               this.getMessages(wpClientId, chat.id)
+              // Only notify if it's not from me (fromMe = false means it's from the user)
               if (!this.firstStart && !chat.lastMessage.fromMe) {
                 this.notify(chat)
               }
@@ -141,6 +149,11 @@ export const useWpChatStore = defineStore('wpChatStore', {
       }
     },
     notify(chat: Chat): void {
+      // Don't notify for messages from me (system/admin messages)
+      if (chat.lastMessage.fromMe) {
+        return
+      }
+
       if (this.hasPermission && DateHelper.unix() - this.lastNotify > 5) {
         this.lastNotify = DateHelper.unix()
         const notificationSound = new Audio(pingSound)
