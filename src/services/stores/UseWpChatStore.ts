@@ -60,6 +60,27 @@ export const useWpChatStore = defineStore('wpChatStore', {
     setActiveChat(chatId: string): void {
       this.activeChat = chatId
       sessionStorage.setItem('activeChat', chatId)
+
+      // Mark the chat as read (archived) when it becomes active
+      this.markChatAsRead(chatId)
+    },
+
+    markChatAsRead(chatId: string): void {
+      // Update in both chats and allChats maps
+      const chat = this.chats.get(chatId)
+      const allChat = this.allChats.get(chatId)
+
+      if (chat && !chat.archived) {
+        // Create a new object to trigger reactivity
+        const updatedChat = { ...chat, archived: true }
+        this.chats.set(chatId, updatedChat)
+      }
+
+      if (allChat && !allChat.archived) {
+        // Create a new object to trigger reactivity
+        const updatedAllChat = { ...allChat, archived: true }
+        this.allChats.set(chatId, updatedAllChat)
+      }
     },
 
     getChats(wpClientId: string): void {
@@ -140,11 +161,14 @@ export const useWpChatStore = defineStore('wpChatStore', {
         this.messages.set(chatId, sortedMessages)
       })
 
-      // Only update chat as archived if it's the active chat and not a placeholder
+      // Mark chat as read and update in database
       if (this.activeChat && this.activeChat === chatId) {
         const existingChat = this.chats.get(chatId)
         if (existingChat && existingChat.lastMessage.body !== 'Buscar conversación...') {
-          await ChatRepository.updateChat(wpClientId, this.activeChat, { archived: true })
+          // Update in database
+          await ChatRepository.updateChat(wpClientId, chatId, { archived: true })
+          // Update in local state
+          this.markChatAsRead(chatId)
         }
       }
     },
