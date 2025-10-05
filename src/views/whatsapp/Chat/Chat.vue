@@ -44,10 +44,11 @@ import {useClientsStore} from "@/services/stores/ClientsStore";
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
-const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat, filterChat } = useWpChatStore()
-const {activeChat, chats, messages, theme } = storeToRefs(useWpChatStore())
-const rooms = ref([])
-const chatMessages = ref([])
+const wpChatStore = useWpChatStore()
+const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat, filterChat } = wpChatStore
+const {activeChat, messages, theme } = storeToRefs(wpChatStore)
+const rooms = ref<any[]>([])
+const chatMessages = ref<any[]>([])
 let wpClient: WhatsAppClient
 let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
@@ -59,7 +60,7 @@ const menuActions = [
   { name: 'light', title: i18n.global.t('common.placeholders.' + ChatThemes.LIGHT) }
 ]
 
-watch(chats, (newChats) => {
+watch(() => wpChatStore.sortedChats, (newChats) => {
   const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
     const client = findById(chat.id)
     return {
@@ -96,13 +97,16 @@ watch(chats, (newChats) => {
     }
   })
 
-  rooms.value = chatsSorted.sort((a, b) => {
-    return b.lastMessage.index - a.lastMessage.index
-  })
+  // No need to sort again since sortedChats already returns sorted data
+  rooms.value = chatsSorted
 }, {deep: true})
 
 watch(messages, (newMessages) => {
-  chatMessages.value = newMessages.get(activeChat.value)?.map((message: Message) => {
+  const activeChatId = activeChat.value
+  if (!activeChatId) return
+  
+  const messageList = newMessages.get(activeChatId)
+  chatMessages.value = messageList?.map((message: Message) => {
     const date = DateHelper.formatTimestamp(message.created_at)
     return {
       _id: message.id,
@@ -118,11 +122,24 @@ watch(messages, (newMessages) => {
       seen: true,
       new: true
     }
-  })
+  }) || []
 }, {deep: true})
 
 function fetchMessages(data: CustomEvent): void {
   const {room} = data.detail[0]
+  
+  // Validate that the room exists and is not a placeholder
+  if (!room || !room.roomId) {
+    console.warn('Invalid room data:', room)
+    return
+  }
+  
+  // Don't fetch messages for placeholder chats
+  if (room.lastMessage && room.lastMessage.content === 'Buscar conversación...') {
+    console.log('Skipping placeholder chat:', room.roomId)
+    return
+  }
+  
   setActiveChat(room.roomId)
   getMessages(clientId.value, room.roomId)
 }
@@ -133,7 +150,7 @@ function sendMessage(data: CustomEvent): void {
   const newMessage = {
     _id: id,
     content: content,
-    senderId: clientId,
+    senderId: clientId.value,
     username: 'message.senderName',
     date: DateHelper.formatTimestamp(id).date,
     timestamp: DateHelper.formatTimestamp(id).timestamp,
@@ -144,7 +161,11 @@ function sendMessage(data: CustomEvent): void {
     seen: false,
     new: true
   }
-  chatMessages.value = [...chatMessages.value, newMessage]
+  if (chatMessages.value) {
+    chatMessages.value = [...chatMessages.value, newMessage]
+  } else {
+    chatMessages.value = [newMessage]
+  }
   wpClient.sendMessage(clientId.value, roomId, content)
 }
 
@@ -153,14 +174,16 @@ function onUpdate(socket: WhatsAppClient): void {
 }
 
 function copyText(): void {
-  navigator.clipboard.writeText(activeChat.value)
-    .then(() => {
-      showTooltip.value = true
-      setTimeout(() => { showTooltip.value = false }, 2000)
-    })
-    .catch(err => {
-      console.error('Failed to copy: ', err);
-    });
+  if (activeChat.value) {
+    navigator.clipboard.writeText(activeChat.value)
+      .then(() => {
+        showTooltip.value = true
+        setTimeout(() => { showTooltip.value = false }, 2000)
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+  }
 }
 
 function filter(data: CustomEvent) {
@@ -191,8 +214,12 @@ onBeforeMount(async () => {
   register()
   getChats(clientId.value)
   getConfig()
-  wpClient = WhatsAppClient.getInstance(getWpClient(clientId.value))
-  observer = new ClientObserver(onUpdate)
-  wpClient.attach(observer)
+  
+  const wpClientData = getWpClient(clientId.value)
+  if (wpClientData) {
+    wpClient = WhatsAppClient.getInstance(wpClientData)
+    observer = new ClientObserver(onUpdate as any)
+    wpClient.attach(observer)
+  }
 })
 </script>
