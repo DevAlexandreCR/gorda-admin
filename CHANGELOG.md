@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.12(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.12...1.5.11)
+
+### Changed
+
+- improve chat messages view. [#179](https://github.com/DevAlexandreCR/gorda-admin/pull/179)
+
 ## [1.5.11(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.11...1.5.10)
 
 ### Changed
