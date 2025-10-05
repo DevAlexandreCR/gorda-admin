@@ -1,8 +1,9 @@
-import {PlaceInterface} from "@/types/PlaceInterface";
+import { PlaceInterface } from "@/types/PlaceInterface"
 import PlaceRepository from '@/repositories/PlaceRepository'
 
 export default class Place implements PlaceInterface {
-  key: string|null = null
+  key: string
+  id: string
   name: string
   lat: number
   lng: number
