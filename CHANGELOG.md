@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 1.5.x
+
+## [1.5.11(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.11...1.5.10)
+
 ### Changed
 
 - use api for places not firebase directly. [#177](https://github.com/DevAlexandreCR/gorda-admin/pull/177)
 
-
-# Release Notes for 1.5.x
 
 ## [1.5.10(2025-08-06)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.10...1.5.9)
 
