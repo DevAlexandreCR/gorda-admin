@@ -1,13 +1,13 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import SideBar from '@/components/SideBar.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
-import {openServer, socket} from '../../testSetup'
-import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
+import { openServer, socket } from '../../testSetup'
+import { WhatsApp } from '@/services/gordaApi/constants/WhatsApp'
 import waitForExpect from 'wait-for-expect'
-import {useWpClientsStore} from "@/services/stores/WpClientStore";
-import {WhatsappServices} from "@/constants/WhatsappServices";
+import { useWpClientsStore } from "@/services/stores/WpClientStore"
+import { WhatsappServices } from "@/constants/WhatsappServices"
 
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
@@ -18,6 +18,7 @@ describe('SideBar.vue', () => {
       3103794656: {
         id: '3103794656',
         alias: 'Principal',
+        full: false,
         wpNotifications: false,
         chatBot: false,
         assistant: false,
@@ -47,16 +48,16 @@ describe('SideBar.vue', () => {
     expect(wrapper.find('#sidenav-main').exists()).toBeTruthy()
     expect(wrapper.html()).toContain(i18n.global.t('routes.users'))
   })
-  
+
   it('must change state to connected', async () => {
     socket.emit(WhatsApp.EVENT_CHANGE_STATE, WhatsApp.STATUS_CONNECTED)
     await wrapper.vm.$nextTick()
-    
+
     await waitForExpect(() => {
       expect(wrapper.vm.connectionState).toBeTruthy()
     })
   })
-  
+
   it('an user can sign out', async () => {
     const logout = jest.spyOn(AuthService, 'logOut')
     const btn = wrapper.find('#signOut')

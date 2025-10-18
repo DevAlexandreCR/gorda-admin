@@ -69,6 +69,7 @@ const newClient = reactive<WpClient>({
   id: '',
   alias: '',
   wpNotifications: false,
+  full: false,
   chatBot: false,
   assistant: false,
   service: WhatsappServices.BAILEYS

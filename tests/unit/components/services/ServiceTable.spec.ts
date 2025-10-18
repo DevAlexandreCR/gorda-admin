@@ -1,20 +1,20 @@
-import {mount, VueWrapper} from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
 import ServicesTable from '@/components/services/ServicesTable.vue'
 import Service from '@/models/Service'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
 import DriverMock from '../../../mocks/entities/DriverMock'
-import {nextTick} from 'vue'
-import {useDriversStore} from '@/services/stores/DriversStore'
+import { nextTick } from 'vue'
+import { useDriversStore } from '@/services/stores/DriversStore'
 import DriverRepository from '@/repositories/DriverRepository'
 import DateHelper from '@/helpers/DateHelper'
-import {ServiceList} from '@/models/ServiceList'
-import {Tables} from '@/constants/Tables'
-import {Pagination} from '@/types/Pagination'
+import { ServiceList } from '@/models/ServiceList'
+import { Tables } from '@/constants/Tables'
+import { Pagination } from '@/types/Pagination'
 import SettingsRepository from '@/repositories/SettingsRepository'
-import {useWpClientsStore} from '@/services/stores/WpClientStore'
-import {WhatsappServices} from "@/constants/WhatsappServices";
+import { useWpClientsStore } from '@/services/stores/WpClientStore'
+import { WhatsappServices } from "@/constants/WhatsappServices"
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -55,6 +55,7 @@ describe('ServicesTable.vue', () => {
       3103794656: {
         id: '3103794656',
         alias: 'Principal',
+        full: false,
         wpNotifications: false,
         chatBot: false,
         assistant: false,
@@ -65,7 +66,7 @@ describe('ServicesTable.vue', () => {
     jest.useFakeTimers()
     DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
     SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
-    const driverStore= useDriversStore()
+    const driverStore = useDriversStore()
     await driverStore.getDrivers()
     wrapper = mount(ServicesTable, options)
     await router.isReady()
