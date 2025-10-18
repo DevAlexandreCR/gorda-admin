@@ -94,6 +94,19 @@ export const useWpClientsStore = defineStore('settingsStore', {
         .then(() => setLoading(false))
     },
 
+    enableFull(client: WpClient, enabled: boolean): void {
+      const { setLoading } = useLoadingState()
+      setLoading(true)
+      SettingsRepository.enableFull(client.id, enabled).then(() => {
+        this.clients[client.id].full = enabled
+      })
+        .catch(async (e) => {
+          setLoading(false)
+          await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+        })
+        .then(() => setLoading(false))
+    },
+
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
       if (Object.values(this.clients).length) {

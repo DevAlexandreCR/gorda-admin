@@ -46,6 +46,7 @@ export default {
     send_message: 'Enviar Mensaje',
     add: 'Agregar',
     claim_chat: 'Reclamar Chat',
+    toggle_full: 'Modo Saturado',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',

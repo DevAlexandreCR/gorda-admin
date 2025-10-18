@@ -46,6 +46,7 @@ export default {
     send_message: 'Send Message',
     add: 'Add',
     claim_chat: 'Claim Chat',
+    toggle_full: 'Full Mode',
   },
   messages: {
     updated: 'Resource updated successfully',

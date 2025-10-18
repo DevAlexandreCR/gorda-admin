@@ -106,6 +106,11 @@ class SettingsRepository {
 	}
 
 	/* istanbul ignore next */
+	enableFull(clientId: string, enable: boolean): Promise<void> {
+		return set(ref(DBService.db, `settings/wp_clients/${clientId}/full/`), enable);
+	}
+
+	/* istanbul ignore next */
 	onWpNotifications(client: WpClient, listener: (enable: DataSnapshot) => void): void {
 		onValue(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), listener)
 	}
