@@ -45,6 +45,7 @@ export default {
     set_percentage: 'Establecer Porcentaje',
     send_message: 'Enviar Mensaje',
     add: 'Agregar',
+    claim_chat: 'Reclamar Chat',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
