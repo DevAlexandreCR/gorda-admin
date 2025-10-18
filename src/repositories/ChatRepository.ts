@@ -1,6 +1,6 @@
 import { Chat } from '@/types/Chat'
 import FSService from '@/services/FSService'
-import { limitToLast, orderBy, query, onSnapshot, getDocs, doc, updateDoc, limit } from 'firebase/firestore'
+import { orderBy, query, onSnapshot, getDocs, doc, updateDoc, limit } from 'firebase/firestore'
 import { Message } from '@/types/Message'
 
 class ChatRepository {
