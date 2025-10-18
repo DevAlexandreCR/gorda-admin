@@ -2,6 +2,20 @@
   <div v-if="showTooltip" class="alert alert-success centered-tooltip position-absolute ms-2 mt-2 z-index-sticky" role="alert">
     <strong>{{ activeChat }}</strong>  {{ $t('common.messages.copied') }}
   </div>
+  
+  <!-- Floating Claim Button -->
+  <button 
+    v-if="activeChat" 
+    @click="claimChat"
+    class="btn btn-danger position-fixed rounded-circle d-flex align-items-center justify-content-center shadow"
+    style="top: 80px; right: 20px; width: 60px; height: 60px; z-index: 1000; font-size: 20px;"
+    :disabled="isClaimingChat"
+    :title="$t('common.actions.claim_chat')"
+  >
+    <i v-if="!isClaimingChat" class="fas fa-hand-paper"></i>
+    <i v-else class="fas fa-spinner fa-spin"></i>
+  </button>
+  
   <vue-advanced-chat
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
@@ -41,6 +55,7 @@ import DateHelper from '@/helpers/DateHelper'
 import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
 import i18n from "@/plugins/i18n";
 import {useClientsStore} from "@/services/stores/ClientsStore";
+import SessionRepository from '@/repositories/SessionRepository'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -54,6 +69,7 @@ let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
 const  { findById, getClients } = useClientsStore()
 const showTooltip = ref(false)
+const isClaimingChat = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
   { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
@@ -206,6 +222,25 @@ function menuActionHandler(data: CustomEvent): void {
       setTheme(ChatThemes.LIGHT)
       break
   }
+}
+
+function claimChat(): void {
+  if (!activeChat.value || isClaimingChat.value) return
+  
+  isClaimingChat.value = true
+  
+  SessionRepository.setLastNonCompletedSessionToSupport(activeChat.value)
+    .then(() => {
+      console.log(`Successfully claimed chat: ${activeChat.value}`)
+      // You can add a success notification here if needed
+    })
+    .catch((error) => {
+      console.error('Failed to claim chat:', error)
+      // You can add an error notification here if needed
+    })
+    .finally(() => {
+      isClaimingChat.value = false
+    })
 }
 
 onBeforeMount(async () => {
