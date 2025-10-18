@@ -4,15 +4,10 @@ import { SessionStatuses } from '@/constants/SessionStatuses'
 
 class SessionRepository {
 
-  async claim(wpClientId: string, chatId: string): Promise<void> {
-    const sessionCollection = FSService.sessionCollection()
-    query(sessionCollection)
-  }
-
   async findLastNonCompletedSessionByChatId(chatId: string): Promise<any | null> {
     const sessionCollection = FSService.sessionCollection()
     const queryConstraints = [
-      where('chat_id', '==', chatId),
+      where('chat_id', '==', chatId + '@c.us'),
       orderBy('created_at', 'desc'), // Get the most recent
       limit(1)
     ]
