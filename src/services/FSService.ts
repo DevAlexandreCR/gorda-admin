@@ -15,8 +15,8 @@ class FirestoreService {
   }
 
   /* istanbul ignore next */
-  public sessionCollection(sessionId: string): CollectionReference<DocumentData> {
-    return collection(this.fs, `sessions/${sessionId}`)
+  public sessionCollection(): CollectionReference<DocumentData> {
+    return collection(this.fs, `sessions`)
   }
 
   /* istanbul ignore next */

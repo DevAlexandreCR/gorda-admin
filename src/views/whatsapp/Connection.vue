@@ -74,6 +74,13 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
+            <input class="form-check-input form-check-danger" name="enableFull" type="checkbox" :checked="props.client.full" :disabled="!connected"
+                   @click.prevent="enableFull(props.client, !props.client.full)"/>
+            <h6 class="mb-0">{{ $t('common.actions.toggle_full') }}</h6>
+          </div>
+        </div>
+        <div class="row mx-1 mt-3">
+          <div class="form-check form-switch">
             <input class="form-check-input" name="enable" type="checkbox" :checked="defaultClient === client.id"
                    :disabled="defaultClient === client.id" @change="setDefault(props.client.id)"/>
             <label class="form-check-label">{{
@@ -146,7 +153,7 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant, enableFull} = useWpClientsStore()
 const {defaultClient} = storeToRefs(useWpClientsStore())
 
 let wpClient: WhatsAppClient
@@ -191,3 +198,19 @@ onMounted(() => {
   connected.value = wpClient.isConnected()
 })
 </script>
+
+<style scoped>
+.form-check-danger:checked {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.form-check-danger:focus {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.form-check-danger:checked:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5) !important;
+}
+</style>

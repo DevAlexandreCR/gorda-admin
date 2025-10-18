@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.13(2025-10-18)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.13...1.5.12)
+
+### Added
+
+- Full modal and claim chat. [#180](https://github.com/DevAlexandreCR/gorda-admin/pull/180)
+
 ## [1.5.12(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.12...1.5.11)
 
 ### Changed

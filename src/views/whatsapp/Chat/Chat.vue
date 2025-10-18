@@ -2,6 +2,20 @@
   <div v-if="showTooltip" class="alert alert-success centered-tooltip position-absolute ms-2 mt-2 z-index-sticky" role="alert">
     <strong>{{ activeChat }}</strong>  {{ $t('common.messages.copied') }}
   </div>
+  
+  <!-- Floating Claim Button -->
+  <button 
+    v-if="activeChat && !isChatClaimed" 
+    @click="claimChat"
+    class="btn btn-danger position-fixed rounded-circle d-flex align-items-center justify-content-center shadow"
+    style="top: 80px; right: 20px; width: 60px; height: 60px; z-index: 1000; font-size: 20px;"
+    :disabled="isClaimingChat"
+    :title="$t('common.actions.claim_chat')"
+  >
+    <i v-if="!isClaimingChat" class="fas fa-hand-paper"></i>
+    <i v-else class="fas fa-spinner fa-spin"></i>
+  </button>
+  
   <vue-advanced-chat
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
@@ -41,6 +55,8 @@ import DateHelper from '@/helpers/DateHelper'
 import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
 import i18n from "@/plugins/i18n";
 import {useClientsStore} from "@/services/stores/ClientsStore";
+import SessionRepository from '@/repositories/SessionRepository'
+import Swal from 'sweetalert2'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -54,6 +70,8 @@ let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
 const  { findById, getClients } = useClientsStore()
 const showTooltip = ref(false)
+const isClaimingChat = ref(false)
+const isChatClaimed = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
   { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
@@ -126,6 +144,11 @@ watch(messages, (newMessages) => {
     }
   }) || []
 }, {deep: true})
+
+// Reset claimed status when switching chats
+watch(activeChat, () => {
+  isChatClaimed.value = false
+})
 
 function fetchMessages(data: CustomEvent): void {
   const {room} = data.detail[0]
@@ -206,6 +229,55 @@ function menuActionHandler(data: CustomEvent): void {
       setTheme(ChatThemes.LIGHT)
       break
   }
+}
+
+function claimChat(): void {
+  if (!activeChat.value || isClaimingChat.value || isChatClaimed.value) return
+  
+  isClaimingChat.value = true
+  
+  SessionRepository.setLastNonCompletedSessionToSupport(activeChat.value)
+    .then((result) => {
+      if (result) {
+        // Success: Session was found and updated
+        isChatClaimed.value = true
+        Swal.fire({
+          icon: 'success',
+          title: i18n.global.t('common.messages.updated'),
+          text: i18n.global.t('common.messages.chat_claimed_success'),
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'top-right'
+        })
+      } else {
+        // No session found to claim
+        Swal.fire({
+          icon: 'info',
+          title: i18n.global.t('common.messages.no_session_found'),
+          text: i18n.global.t('common.messages.no_session_found_text'),
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'top-right'
+        })
+      }
+    })
+    .catch((error) => {
+      console.error('Failed to claim chat:', error)
+      Swal.fire({
+        icon: 'error',
+        title: i18n.global.t('common.messages.error'),
+        text: i18n.global.t('common.messages.chat_claim_failed'),
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: 'top-right'
+      })
+    })
+    .finally(() => {
+      isClaimingChat.value = false
+    })
 }
 
 onBeforeMount(async () => {

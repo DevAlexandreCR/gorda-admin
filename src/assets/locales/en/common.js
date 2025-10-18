@@ -45,6 +45,8 @@ export default {
     set_percentage: 'Set Percentage',
     send_message: 'Send Message',
     add: 'Add',
+    claim_chat: 'Claim Chat',
+    toggle_full: 'Full Mode',
   },
   messages: {
     updated: 'Resource updated successfully',
@@ -57,6 +59,10 @@ export default {
     error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',
     copied: 'Copied to clipboard',
     new_message: 'New message',
+    chat_claimed_success: 'Chat claimed successfully',
+    chat_claim_failed: 'Failed to claim chat. Please try again.',
+    no_session_found: 'No Session Found',
+    no_session_found_text: 'No active session found to claim for this chat',
   },
   placeholders: {
     optional: 'Optional',
