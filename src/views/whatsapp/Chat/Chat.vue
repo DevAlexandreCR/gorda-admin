@@ -5,7 +5,7 @@
   
   <!-- Floating Claim Button -->
   <button 
-    v-if="activeChat" 
+    v-if="activeChat && !isChatClaimed" 
     @click="claimChat"
     class="btn btn-danger position-fixed rounded-circle d-flex align-items-center justify-content-center shadow"
     style="top: 80px; right: 20px; width: 60px; height: 60px; z-index: 1000; font-size: 20px;"
@@ -56,6 +56,7 @@ import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
 import i18n from "@/plugins/i18n";
 import {useClientsStore} from "@/services/stores/ClientsStore";
 import SessionRepository from '@/repositories/SessionRepository'
+import Swal from 'sweetalert2'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -70,6 +71,7 @@ const {getWpClient, getWpClients} = useWpClientsStore()
 const  { findById, getClients } = useClientsStore()
 const showTooltip = ref(false)
 const isClaimingChat = ref(false)
+const isChatClaimed = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
   { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
@@ -142,6 +144,11 @@ watch(messages, (newMessages) => {
     }
   }) || []
 }, {deep: true})
+
+// Reset claimed status when switching chats
+watch(activeChat, () => {
+  isChatClaimed.value = false
+})
 
 function fetchMessages(data: CustomEvent): void {
   const {room} = data.detail[0]
@@ -225,18 +232,48 @@ function menuActionHandler(data: CustomEvent): void {
 }
 
 function claimChat(): void {
-  if (!activeChat.value || isClaimingChat.value) return
+  if (!activeChat.value || isClaimingChat.value || isChatClaimed.value) return
   
   isClaimingChat.value = true
   
   SessionRepository.setLastNonCompletedSessionToSupport(activeChat.value)
-    .then(() => {
-      console.log(`Successfully claimed chat: ${activeChat.value}`)
-      // You can add a success notification here if needed
+    .then((result) => {
+      if (result) {
+        // Success: Session was found and updated
+        isChatClaimed.value = true
+        Swal.fire({
+          icon: 'success',
+          title: i18n.global.t('common.messages.updated'),
+          text: i18n.global.t('common.messages.chat_claimed_success'),
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'top-right'
+        })
+      } else {
+        // No session found to claim
+        Swal.fire({
+          icon: 'info',
+          title: i18n.global.t('common.messages.no_session_found'),
+          text: i18n.global.t('common.messages.no_session_found_text'),
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'top-right'
+        })
+      }
     })
     .catch((error) => {
       console.error('Failed to claim chat:', error)
-      // You can add an error notification here if needed
+      Swal.fire({
+        icon: 'error',
+        title: i18n.global.t('common.messages.error'),
+        text: i18n.global.t('common.messages.chat_claim_failed'),
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: 'top-right'
+      })
     })
     .finally(() => {
       isClaimingChat.value = false

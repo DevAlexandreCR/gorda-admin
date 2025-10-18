@@ -58,6 +58,10 @@ export default {
     error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',
     copied: 'Copied to clipboard',
     new_message: 'New message',
+    chat_claimed_success: 'Chat claimed successfully',
+    chat_claim_failed: 'Failed to claim chat. Please try again.',
+    no_session_found: 'No Session Found',
+    no_session_found_text: 'No active session found to claim for this chat',
   },
   placeholders: {
     optional: 'Optional',
