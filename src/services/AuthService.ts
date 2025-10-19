@@ -12,7 +12,7 @@ import Firebase from '@/services/Firebase'
 import User from '@/models/User'
 import UserRepository from '@/repositories/UserRepository'
 import router from '@/router'
-import {useLoadingState} from '@/services/stores/LoadingState'
+import { useLoadingState } from '@/services/stores/LoadingState'
 
 export default class AuthService {
   public static currentUser: User
@@ -25,19 +25,23 @@ export default class AuthService {
 
   /* istanbul ignore next */
   public static onAuthStateChanged(path: string): void {
-    const {setLoading} = useLoadingState()
+    const { setLoading } = useLoadingState()
     setLoading(true)
     onAuthStateChanged(AuthService.auth, async (userFB: UserFB | null) => {
       setLoading(false)
       if (userFB) {
-        const user = await UserRepository.getUser(userFB.uid)?? {}
-        if(user) {
+        const user = await UserRepository.getUser(userFB.uid) ?? {}
+        if (user) {
           this.currentUser = new User()
           Object.assign(this.currentUser, user)
         }
-        await router.push(path.includes('login') ? {name: 'main'} : path)
+        await router.push(path.includes('login') ? { name: 'main' } : path)
       } else {
-        await router.push({name: 'login'})
+        // Only redirect to login if the current path requires authentication
+        const publicPaths = ['/login', '/sign-up', '/info']
+        if (!publicPaths.includes(path)) {
+          await router.push({ name: 'login' })
+        }
       }
     })
   }
