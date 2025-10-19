@@ -597,66 +597,12 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Info',
-  mounted() {
-    // Asegurar que Bootstrap esté inicializado
-    this.$nextTick(() => {
-      // Verificar si Bootstrap está disponible
-      if (typeof window !== 'undefined' && window.bootstrap) {
-        console.log('Bootstrap accordion initialized')
-      } else {
-        // Fallback manual para el acordeón
-        this.initializeManualAccordion()
-      }
-    })
-  },
   methods: {
     scrollToContact() {
       const element = document.getElementById('contact')
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
       }
-    },
-    initializeManualAccordion() {
-      // Implementación manual del acordeón si Bootstrap no está disponible
-      const accordionButtons = document.querySelectorAll('.accordion-button')
-      accordionButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          e.preventDefault()
-          const target = button.getAttribute('data-bs-target')
-          if (target) {
-            const collapse = document.querySelector(target)
-            const isExpanded = button.getAttribute('aria-expanded') === 'true'
-            
-            // Cerrar todos los otros acordeones
-            accordionButtons.forEach(otherButton => {
-              if (otherButton !== button) {
-                const otherTarget = otherButton.getAttribute('data-bs-target')
-                if (otherTarget) {
-                  const otherCollapse = document.querySelector(otherTarget)
-                  if (otherCollapse) {
-                    otherCollapse.classList.remove('show')
-                    otherButton.classList.add('collapsed')
-                    otherButton.setAttribute('aria-expanded', 'false')
-                  }
-                }
-              }
-            })
-            
-            // Toggle el acordeón actual
-            if (collapse) {
-              if (isExpanded) {
-                collapse.classList.remove('show')
-                button.classList.add('collapsed')
-                button.setAttribute('aria-expanded', 'false')
-              } else {
-                collapse.classList.add('show')
-                button.classList.remove('collapsed')
-                button.setAttribute('aria-expanded', 'true')
-              }
-            }
-          }
-        })
-      })
     }
   }
 })
@@ -810,54 +756,14 @@ export default defineComponent({
 }
 
 /* FAQ Accordion */
-.accordion-button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 1rem 1.25rem;
-  font-size: 1rem;
-  text-align: left;
-  border: 0;
-  border-radius: 0;
-  overflow-anchor: none;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
-}
-
 .accordion-button:not(.collapsed) {
   background-color: #FCD34D !important;
   color: #111827 !important;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
 }
 
 .accordion-button:focus {
   border-color: #FCD34D;
   box-shadow: 0 0 0 0.25rem rgba(252, 211, 77, 0.25);
-}
-
-.accordion-button::after {
-  flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-left: auto;
-  content: "";
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-size: 1.25rem;
-  transition: transform 0.2s ease-in-out;
-}
-
-.accordion-button:not(.collapsed)::after {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23111827'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-  transform: rotate(-180deg);
-}
-
-.accordion-collapse {
-  transition: height 0.35s ease;
-}
-
-.accordion-body {
-  padding: 1rem 1.25rem;
 }
 
 /* Hero section buttons */
