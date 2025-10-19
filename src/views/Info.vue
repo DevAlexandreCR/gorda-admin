@@ -23,12 +23,14 @@
           </div>
           <div class="col-lg-6">
             <div class="text-center">
-              <img 
-                src="/redblanca.ico" 
-                alt="RedBlanca Logo" 
-                class="img-fluid rounded-circle shadow"
-                style="max-width: 300px; background: white; padding: 20px;"
-              >
+              <div class="hero-logo-container">
+                <img 
+                  src="/redblanca.jpg" 
+                  alt="RedBlanca Logo" 
+                  class="img-fluid hero-logo"
+                  onerror="this.src='/redblanca.ico'; this.style.padding='20px'; this.style.background='white'; this.style.borderRadius='50%';"
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -521,7 +523,7 @@
         <div class="row">
           <div class="col-lg-4 mb-4">
             <div class="d-flex align-items-center mb-3">
-              <img src="/redblanca.ico" alt="RedBlanca" style="width: 40px; height: 40px;" class="me-2">
+              <img src="/redblanca.png" alt="RedBlanca" class="footer-logo me-2">
               <h5 class="mb-0 fw-bold" style="color: #FCD34D;">RedBlanca</h5>
             </div>
             <p class="text-light">Plataforma líder en gestión de transporte a través de WhatsApp. Conectamos empresas con sus clientes de manera inteligente.</p>
@@ -585,6 +587,55 @@ export default defineComponent({
   background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
   min-height: 100vh;
   padding: 2rem 0;
+}
+
+/* Logo styling */
+.hero-logo-container {
+  position: relative;
+  display: inline-block;
+  padding: 2rem;
+}
+
+.hero-logo {
+  max-width: 400px;
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(252, 211, 77, 0.3));
+  transition: all 0.3s ease;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.hero-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Fallback styles for ICO format */
+.hero-logo[src$=".ico"] {
+  max-width: 300px;
+  padding: 20px;
+  background: white;
+  border-radius: 50%;
+}
+
+.hero-logo-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(252, 211, 77, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Footer logo */
+.footer-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(1.1);
 }
 
 .feature-card {
@@ -693,6 +744,20 @@ export default defineComponent({
   
   .display-5 {
     font-size: 2rem;
+  }
+  
+  .hero-logo {
+    max-width: 250px;
+  }
+  
+  .hero-logo-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-logo {
+    max-width: 200px;
   }
 }
 </style>
