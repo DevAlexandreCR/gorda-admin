@@ -13,11 +13,13 @@
               Gestión inteligente, comunicación directa y experiencia superior.
             </p>
             <div class="d-flex gap-3 flex-wrap">
-              <button class="btn btn-warning btn-lg" @click="scrollToContact">
-                Comenzar Ahora
+              <button class="btn btn-dark btn-lg" @click="scrollToContact" 
+                      style="background-color: #111827; border-color: #111827; color: #FCD34D; font-weight: 600;">
+                <i class="fa-solid fa-rocket me-2"></i>Comenzar Ahora
               </button>
-              <button class="btn btn-outline-warning btn-lg" @click="scrollToContact">
-                Contactar Ventas
+              <button class="btn btn-outline-dark btn-lg" @click="scrollToContact"
+                      style="border-color: #1F2937; color: #1F2937; font-weight: 600;">
+                <i class="fa-solid fa-phone me-2"></i>Contactar Ventas
               </button>
             </div>
           </div>
@@ -52,15 +54,15 @@
               <div class="mb-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 70px; height: 70px; background: #FCD34D; color: #111827;">
-                  <span class="fs-1">🤖</span>
+                  <i class="fa-solid fa-robot fs-1"></i>
                 </div>
               </div>
               <h4 class="fw-bold mb-3" style="color: #1F2937;">Chatbot IA</h4>
               <p class="text-muted">Asistente virtual inteligente que atiende a tus clientes 24/7 a través de WhatsApp. Procesa solicitudes, confirma viajes y mantiene informados a los usuarios automáticamente.</p>
               <div class="mt-3">
-                <small class="text-muted d-block">✓ Procesamiento de lenguaje natural</small>
-                <small class="text-muted d-block">✓ Respuestas automáticas inteligentes</small>
-                <small class="text-muted d-block">✓ Integración completa con WhatsApp</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Procesamiento de lenguaje natural</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Respuestas automáticas inteligentes</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Integración completa con WhatsApp</small>
               </div>
             </div>
           </div>
@@ -69,15 +71,15 @@
               <div class="mb-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 70px; height: 70px; background: #FCD34D; color: #111827;">
-                  <span class="fs-1">📱</span>
+                  <i class="fa-solid fa-mobile-screen-button fs-1"></i>
                 </div>
               </div>
               <h4 class="fw-bold mb-3" style="color: #1F2937;">App Móvil</h4>
               <p class="text-muted">Aplicación para conductores con GPS, gestión de viajes y comunicación directa. Interface intuitiva que facilita la operación diaria.</p>
               <div class="mt-3">
-                <small class="text-muted d-block">✓ GPS y navegación en tiempo real</small>
-                <small class="text-muted d-block">✓ Gestión de viajes y tarifas</small>
-                <small class="text-muted d-block">✓ Chat directo con clientes</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> GPS y navegación en tiempo real</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Gestión de viajes y tarifas</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Chat directo con clientes</small>
               </div>
             </div>
           </div>
@@ -86,15 +88,15 @@
               <div class="mb-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 70px; height: 70px; background: #FCD34D; color: #111827;">
-                  <span class="fs-1">💻</span>
+                  <i class="fa-solid fa-desktop fs-1"></i>
                 </div>
               </div>
               <h4 class="fw-bold mb-3" style="color: #1F2937;">Panel Admin</h4>
               <p class="text-muted">Dashboard completo para gestionar conductores, clientes y servicios. Control total de tu operación desde una interfaz web moderna.</p>
               <div class="mt-3">
-                <small class="text-muted d-block">✓ Monitoreo en tiempo real</small>
-                <small class="text-muted d-block">✓ Reportes y analytics</small>
-                <small class="text-muted d-block">✓ Gestión de tarifas y promociones</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Monitoreo en tiempo real</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Reportes y analytics</small>
+                <small class="text-muted d-block"><i class="fa-solid fa-check text-success me-1"></i> Gestión de tarifas y promociones</small>
               </div>
             </div>
           </div>
@@ -179,7 +181,7 @@
               <div class="flex-shrink-0 me-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 50px; height: 50px; background: #FEF3C7; color: #F59E0B;">
-                  <span class="fw-bold">✓</span>
+                  <i class="fa-solid fa-rocket"></i>
                 </div>
               </div>
               <div>
@@ -193,7 +195,7 @@
               <div class="flex-shrink-0 me-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 50px; height: 50px; background: #FEF3C7; color: #F59E0B;">
-                  <span class="fw-bold">✓</span>
+                  <i class="fa-solid fa-headset"></i>
                 </div>
               </div>
               <div>
@@ -207,7 +209,7 @@
               <div class="flex-shrink-0 me-3">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
                      style="width: 50px; height: 50px; background: #FEF3C7; color: #F59E0B;">
-                  <span class="fw-bold">✓</span>
+                  <i class="fa-solid fa-chart-line"></i>
                 </div>
               </div>
               <div>
@@ -246,7 +248,11 @@
               </div>
               <p class="text-muted mb-3">"RedBlanca revolucionó nuestra operación. Pasamos de 50 a 200 viajes diarios en solo 3 meses. El chatbot atiende el 80% de las solicitudes automáticamente."</p>
               <div class="text-warning">
-                ⭐⭐⭐⭐⭐
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
               </div>
             </div>
           </div>
@@ -266,7 +272,11 @@
               </div>
               <p class="text-muted mb-3">"La integración fue súper fácil. En una semana ya teníamos todo funcionando. Nuestros clientes aman poder pedir viajes por WhatsApp."</p>
               <div class="text-warning">
-                ⭐⭐⭐⭐⭐
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
               </div>
             </div>
           </div>
@@ -286,7 +296,11 @@
               </div>
               <p class="text-muted mb-3">"El soporte técnico es excepcional. Cualquier duda se resuelve inmediatamente. La plataforma es muy estable y confiable."</p>
               <div class="text-warning">
-                ⭐⭐⭐⭐⭐
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
               </div>
             </div>
           </div>
@@ -350,35 +364,35 @@
                   <div class="tech-item d-flex align-items-center">
                     <div class="d-inline-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; background: #25D366; border-radius: 50%;">
-                      <span style="color: white; font-weight: bold;">W</span>
+                      <i class="fa-brands fa-whatsapp" style="color: white;"></i>
                     </div>
                     <span>WhatsApp Business API</span>
                   </div>
                   <div class="tech-item d-flex align-items-center">
                     <div class="d-inline-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; background: #FCD34D; border-radius: 50%;">
-                      <span style="color: #111827; font-weight: bold;">🤖</span>
+                      <i class="fa-solid fa-brain" style="color: #111827;"></i>
                     </div>
                     <span>Motor de IA y NLP</span>
                   </div>
                   <div class="tech-item d-flex align-items-center">
                     <div class="d-inline-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; background: #0EA5E9; border-radius: 50%;">
-                      <span style="color: white; font-weight: bold;">☁️</span>
+                      <i class="fa-solid fa-cloud" style="color: white;"></i>
                     </div>
                     <span>Firebase Cloud Platform</span>
                   </div>
                   <div class="tech-item d-flex align-items-center">
                     <div class="d-inline-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; background: #F59E0B; border-radius: 50%;">
-                      <span style="color: white; font-weight: bold;">📱</span>
+                      <i class="fa-brands fa-android" style="color: white;"></i>
                     </div>
                     <span>App Mobile Android</span>
                   </div>
                   <div class="tech-item d-flex align-items-center">
                     <div class="d-inline-flex align-items-center justify-content-center me-3"
                          style="width: 40px; height: 40px; background: #10B981; border-radius: 50%;">
-                      <span style="color: white; font-weight: bold;">🗺️</span>
+                      <i class="fa-solid fa-map-location-dot" style="color: white;"></i>
                     </div>
                     <span>Google Maps Integration</span>
                   </div>
@@ -392,7 +406,7 @@
               <ul class="list-unstyled">
                 <li class="mb-3">
                   <div class="d-flex align-items-start">
-                    <span class="me-2" style="color: #FCD34D;">✓</span>
+                    <i class="fa-solid fa-check me-2" style="color: #FCD34D;"></i>
                     <div>
                       <strong>API RESTful</strong> - Integración fácil con sistemas existentes
                     </div>
@@ -400,7 +414,7 @@
                 </li>
                 <li class="mb-3">
                   <div class="d-flex align-items-start">
-                    <span class="me-2" style="color: #FCD34D;">✓</span>
+                    <i class="fa-solid fa-check me-2" style="color: #FCD34D;"></i>
                     <div>
                       <strong>Tiempo Real</strong> - Actualizaciones instantáneas de ubicación
                     </div>
@@ -408,7 +422,7 @@
                 </li>
                 <li class="mb-3">
                   <div class="d-flex align-items-start">
-                    <span class="me-2" style="color: #FCD34D;">✓</span>
+                    <i class="fa-solid fa-check me-2" style="color: #FCD34D;"></i>
                     <div>
                       <strong>Seguridad</strong> - Encriptación end-to-end en todas las comunicaciones
                     </div>
@@ -416,7 +430,7 @@
                 </li>
                 <li class="mb-3">
                   <div class="d-flex align-items-start">
-                    <span class="me-2" style="color: #FCD34D;">✓</span>
+                    <i class="fa-solid fa-check me-2" style="color: #FCD34D;"></i>
                     <div>
                       <strong>Escalabilidad</strong> - Arquitectura cloud que crece con tu negocio
                     </div>
@@ -844,6 +858,22 @@ export default defineComponent({
 
 .accordion-body {
   padding: 1rem 1.25rem;
+}
+
+/* Hero section buttons */
+.btn-dark:hover {
+  background-color: #1F2937 !important;
+  border-color: #1F2937 !important;
+  color: #FCD34D !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
+}
+
+.btn-outline-dark:hover {
+  background-color: #1F2937 !important;
+  border-color: #1F2937 !important;
+  color: #FCD34D !important;
+  transform: translateY(-2px);
 }
 
 /* Responsive */
