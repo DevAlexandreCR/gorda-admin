@@ -546,9 +546,9 @@
           </div>
           <div class="col-lg-4 mb-4">
             <h6 class="fw-bold mb-3" style="color: #FCD34D;">Contacto</h6>
-            <p class="text-light mb-2">📧 info@redblanca.com</p>
-            <p class="text-light mb-2">📱 WhatsApp: +57 300 123 4567</p>
-            <p class="text-light">🏢 Bogotá, Colombia</p>
+            <p class="text-light mb-2">📧 devalexandrecr@gmail.com</p>
+            <p class="text-light mb-2">📱 WhatsApp: +57 310 379 4656</p>
+            <p class="text-light">🏢 Popayán, Colombia</p>
           </div>
         </div>
         <hr style="border-color: #FCD34D; opacity: 0.3;">
