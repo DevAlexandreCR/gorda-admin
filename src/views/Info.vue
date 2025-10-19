@@ -442,48 +442,64 @@
           <div class="col-lg-8 mx-auto">
             <div class="accordion" id="faqAccordion">
               <div class="accordion-item mb-3 border-0 shadow-sm">
-                <h2 class="accordion-header">
-                  <button class="accordion-button fw-bold" type="button" style="background-color: #FFFBEB; color: #1F2937;">
+                <h2 class="accordion-header" id="faq1">
+                  <button class="accordion-button fw-bold" type="button" 
+                          data-bs-toggle="collapse" data-bs-target="#collapse1" 
+                          aria-expanded="true" aria-controls="collapse1"
+                          style="background-color: #FFFBEB; color: #1F2937;">
                     ¿Cuánto tiempo toma implementar RedBlanca?
                   </button>
                 </h2>
-                <div class="accordion-collapse collapse show">
+                <div id="collapse1" class="accordion-collapse collapse show" 
+                     aria-labelledby="faq1" data-bs-parent="#faqAccordion">
                   <div class="accordion-body">
                     La implementación básica toma entre 24-48 horas. Esto incluye la configuración de WhatsApp Business, personalización del chatbot y capacitación del equipo.
                   </div>
                 </div>
               </div>
               <div class="accordion-item mb-3 border-0 shadow-sm">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed fw-bold" type="button" style="background-color: #FFFBEB; color: #1F2937;">
+                <h2 class="accordion-header" id="faq2">
+                  <button class="accordion-button collapsed fw-bold" type="button" 
+                          data-bs-toggle="collapse" data-bs-target="#collapse2" 
+                          aria-expanded="false" aria-controls="collapse2"
+                          style="background-color: #FFFBEB; color: #1F2937;">
                     ¿Necesito conocimientos técnicos?
                   </button>
                 </h2>
-                <div class="accordion-collapse collapse">
+                <div id="collapse2" class="accordion-collapse collapse" 
+                     aria-labelledby="faq2" data-bs-parent="#faqAccordion">
                   <div class="accordion-body">
                     No, RedBlanca está diseñado para ser usado por cualquier persona. Nuestro equipo se encarga de toda la configuración técnica y te capacitamos en el uso de la plataforma.
                   </div>
                 </div>
               </div>
               <div class="accordion-item mb-3 border-0 shadow-sm">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed fw-bold" type="button" style="background-color: #FFFBEB; color: #1F2937;">
+                <h2 class="accordion-header" id="faq3">
+                  <button class="accordion-button collapsed fw-bold" type="button" 
+                          data-bs-toggle="collapse" data-bs-target="#collapse3" 
+                          aria-expanded="false" aria-controls="collapse3"
+                          style="background-color: #FFFBEB; color: #1F2937;">
                     ¿Cuántos viajes puede manejar la plataforma?
                   </button>
                 </h2>
-                <div class="accordion-collapse collapse">
+                <div id="collapse3" class="accordion-collapse collapse" 
+                     aria-labelledby="faq3" data-bs-parent="#faqAccordion">
                   <div class="accordion-body">
                     RedBlanca puede escalar desde pequeñas operaciones (10-50 viajes/día) hasta grandes empresas (10,000+ viajes/día). La infraestructura cloud se adapta automáticamente.
                   </div>
                 </div>
               </div>
               <div class="accordion-item mb-3 border-0 shadow-sm">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed fw-bold" type="button" style="background-color: #FFFBEB; color: #1F2937;">
+                <h2 class="accordion-header" id="faq4">
+                  <button class="accordion-button collapsed fw-bold" type="button" 
+                          data-bs-toggle="collapse" data-bs-target="#collapse4" 
+                          aria-expanded="false" aria-controls="collapse4"
+                          style="background-color: #FFFBEB; color: #1F2937;">
                     ¿Qué sucede si tengo problemas técnicos?
                   </button>
                 </h2>
-                <div class="accordion-collapse collapse">
+                <div id="collapse4" class="accordion-collapse collapse" 
+                     aria-labelledby="faq4" data-bs-parent="#faqAccordion">
                   <div class="accordion-body">
                     Ofrecemos soporte técnico 24/7 a través de WhatsApp, email y teléfono. Nuestro equipo de ingenieros resuelve cualquier inconveniente en tiempo real.
                   </div>
@@ -523,7 +539,7 @@
         <div class="row">
           <div class="col-lg-4 mb-4">
             <div class="d-flex align-items-center mb-3">
-              <img src="/redblanca.png" alt="RedBlanca" class="footer-logo me-2">
+              <img src="/redblanca.ico" alt="RedBlanca" class="footer-logo me-2">
               <h5 class="mb-0 fw-bold" style="color: #FCD34D;">RedBlanca</h5>
             </div>
             <p class="text-light">Plataforma líder en gestión de transporte a través de WhatsApp. Conectamos empresas con sus clientes de manera inteligente.</p>
@@ -567,12 +583,66 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Info',
+  mounted() {
+    // Asegurar que Bootstrap esté inicializado
+    this.$nextTick(() => {
+      // Verificar si Bootstrap está disponible
+      if (typeof window !== 'undefined' && window.bootstrap) {
+        console.log('Bootstrap accordion initialized')
+      } else {
+        // Fallback manual para el acordeón
+        this.initializeManualAccordion()
+      }
+    })
+  },
   methods: {
     scrollToContact() {
       const element = document.getElementById('contact')
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
       }
+    },
+    initializeManualAccordion() {
+      // Implementación manual del acordeón si Bootstrap no está disponible
+      const accordionButtons = document.querySelectorAll('.accordion-button')
+      accordionButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          const target = button.getAttribute('data-bs-target')
+          if (target) {
+            const collapse = document.querySelector(target)
+            const isExpanded = button.getAttribute('aria-expanded') === 'true'
+            
+            // Cerrar todos los otros acordeones
+            accordionButtons.forEach(otherButton => {
+              if (otherButton !== button) {
+                const otherTarget = otherButton.getAttribute('data-bs-target')
+                if (otherTarget) {
+                  const otherCollapse = document.querySelector(otherTarget)
+                  if (otherCollapse) {
+                    otherCollapse.classList.remove('show')
+                    otherButton.classList.add('collapsed')
+                    otherButton.setAttribute('aria-expanded', 'false')
+                  }
+                }
+              }
+            })
+            
+            // Toggle el acordeón actual
+            if (collapse) {
+              if (isExpanded) {
+                collapse.classList.remove('show')
+                button.classList.add('collapsed')
+                button.setAttribute('aria-expanded', 'false')
+              } else {
+                collapse.classList.add('show')
+                button.classList.remove('collapsed')
+                button.setAttribute('aria-expanded', 'true')
+              }
+            }
+          }
+        })
+      })
     }
   }
 })
@@ -726,14 +796,54 @@ export default defineComponent({
 }
 
 /* FAQ Accordion */
+.accordion-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  text-align: left;
+  border: 0;
+  border-radius: 0;
+  overflow-anchor: none;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+}
+
 .accordion-button:not(.collapsed) {
   background-color: #FCD34D !important;
   color: #111827 !important;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
 }
 
 .accordion-button:focus {
   border-color: #FCD34D;
   box-shadow: 0 0 0 0.25rem rgba(252, 211, 77, 0.25);
+}
+
+.accordion-button::after {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: auto;
+  content: "";
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23111827'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate(-180deg);
+}
+
+.accordion-collapse {
+  transition: height 0.35s ease;
+}
+
+.accordion-body {
+  padding: 1rem 1.25rem;
 }
 
 /* Responsive */
