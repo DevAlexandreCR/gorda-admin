@@ -44,6 +44,7 @@ export default {
   },
   errors: {
     facebook_sdk_not_loaded: 'El SDK de Facebook no se ha cargado correctamente',
+    failed_to_connect_phone: 'Error al conectar el número de teléfono',
   },
   success: {
     phone_number_connected: 'Número de teléfono conectado exitosamente',
