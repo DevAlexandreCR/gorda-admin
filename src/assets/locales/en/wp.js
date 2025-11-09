@@ -51,5 +51,7 @@ export default {
   },
   info: {
     signup_cancelled: 'Signup process cancelled',
+    processing: 'Processing...',
+    connecting_phone_number: 'Connecting phone number, please wait',
   }
 }

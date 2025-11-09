@@ -98,8 +98,18 @@ onMounted(() => {
 
 function launchWhatsAppSignup() {
   FacebookService.launchEmbeddedSignup(WHATSAPP_CONFIG_ID)
-    .then(code => processWhatsAppSignup(code))
+    .then(code => {
+      ToastService.showLoading(
+        t('wp.info.processing'),
+        t('wp.info.connecting_phone_number')
+      )
+      return processWhatsAppSignup(code)
+    })
+    .then(() => {
+      ToastService.close()
+    })
     .catch(error => {
+      ToastService.close()
       if (error.message !== 'User cancelled or did not authorize') {
         console.error('Error during signup:', error)
         ToastService.toast('error', t('wp.errors.failed_to_connect_phone'))
@@ -141,8 +151,6 @@ async function processWhatsAppSignup(code: string) {
   ToastService.toast('success', 
     `${t('wp.success.phone_number_connected')}: ${displayPhoneNumber || alias}`
   )
-  
-  setTimeout(() => location.reload(), 1500)
 }
 
 watch(newClient, (clientNew) => {
