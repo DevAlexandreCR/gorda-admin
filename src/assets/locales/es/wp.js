@@ -51,5 +51,7 @@ export default {
   },
   info: {
     signup_cancelled: 'Proceso de registro cancelado',
+    processing: 'Procesando...',
+    connecting_phone_number: 'Conectando número de teléfono, por favor espere',
   }
 }
