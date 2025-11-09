@@ -56,23 +56,20 @@ import Connection from "@/views/whatsapp/Connection.vue"
 import {storeToRefs} from "pinia"
 import {onMounted, reactive, ref, watch} from "vue";
 import {WpClient} from "@/types/WpClient";
-import {ErrorMessage, Field, Form, FormActions} from "vee-validate";
+import {ErrorMessage, Field, Form} from "vee-validate";
 import * as yup from "yup";
 import {StrHelper} from "@/helpers/StrHelper";
 import {hide} from "@/helpers/ModalHelper";
 import { useI18n } from "vue-i18n";
 import {WhatsappServices} from "@/constants/WhatsappServices";
 import ToastService from "@/services/ToastService";
+import FacebookService from "@/services/FacebookService";
 
 const {clients} = storeToRefs(useWpClientsStore())
 const {createClient} = useWpClientsStore()
 const {t} = useI18n()
 const useApi = ref<boolean>(false)
-
-// WhatsApp Business configuration
-const FACEBOOK_APP_ID = process.env.VUE_APP_FACEBOOK_APP_ID
-const WHATSAPP_CONFIG_ID = process.env.VUE_APP_WHATSAPP_CONFIG_ID
-const WHATSAPP_BUSINESS_ID = process.env.VUE_APP_WHATSAPP_BUSINESS_ID
+const WHATSAPP_CONFIG_ID = process.env.VUE_APP_WHATSAPP_CONFIG_ID || ''
 
 const newClient = reactive<WpClient>({
   id: '',
@@ -92,78 +89,60 @@ const schema = yup.object().shape({
   alias: yup.string()
     .required(`${t('validations.required')}`)
     .min(3, `${t('validations.requiredMinTree')}`)
-});
-
-// Initialize Facebook SDK
-onMounted(() => {
-  loadFacebookSDK()
 })
 
-function loadFacebookSDK() {
-  // Load Facebook SDK
-  if ((window as any).FB) {
-    initFacebookSDK()
-    return
-  }
-
-  const script = document.createElement('script')
-  script.id = 'facebook-jssdk'
-  script.src = 'https://connect.facebook.net/en_US/sdk.js'
-  script.async = true
-  script.defer = true
-  script.onload = initFacebookSDK
-  document.body.appendChild(script)
-}
-
-function initFacebookSDK() {
-  (window as any).fbAsyncInit = function() {
-    (window as any).FB.init({
-      appId: FACEBOOK_APP_ID,
-      autoLogAppEvents: true,
-      xfbml: true,
-      version: process.env.VUE_APP_FACEBOOK_GRAPH_API_VERSION || 'v23.0'
-    })
-  }
-
-  if ((window as any).FB) {
-    (window as any).FB.AppEvents.logPageView()
-  }
-}
+onMounted(() => {
+  FacebookService.loadSDK()
+    .catch(error => console.error('Failed to load Facebook SDK:', error))
+})
 
 function launchWhatsAppSignup() {
-  if (!(window as any).FB) {
-    ToastService.toast('error', t('wp.errors.facebook_sdk_not_loaded'))
-    return
-  }
-
-  // Launch WhatsApp signup with coexistence mode
-  (window as any).FB.login(
-    function(response: any) {
-      if (response.authResponse) {
-        const code = response.authResponse.code
-        console.log('WhatsApp signup code:', code)
-        
-        // Here you would send the code to your backend to complete the setup
-        ToastService.toast('success', t('wp.success.phone_number_connected'))
-        
-        // TODO: Call backend API to exchange code for access token and save phone number
-        // The backend should use the code to get the phone number details
+  FacebookService.launchEmbeddedSignup(WHATSAPP_CONFIG_ID)
+    .then(code => processWhatsAppSignup(code))
+    .catch(error => {
+      if (error.message !== 'User cancelled or did not authorize') {
+        console.error('Error during signup:', error)
+        ToastService.toast('error', t('wp.errors.failed_to_connect_phone'))
       } else {
-        console.log('User cancelled login or did not fully authorize.')
         ToastService.toast('info', t('wp.info.signup_cancelled'))
       }
-    },
-    {
-      config_id: WHATSAPP_CONFIG_ID,
-      response_type: 'code',
-      override_default_response_type: true,
-      extras: {
-        setup: {},
-        featureType: 'whatsapp_business_app_onboarding',
-        sessionInfoVersion: '3'
-      }
-    }
+    })
+}
+
+async function processWhatsAppSignup(code: string) {
+  const accessToken = await FacebookService.exchangeCodeForToken(code)
+  const wabaId = await FacebookService.getWABAIdFromToken(accessToken)
+  const phoneNumbers = await FacebookService.getPhoneNumbers(wabaId, accessToken)
+  
+  if (phoneNumbers.length === 0) {
+    throw new Error('No phone numbers found')
+  }
+  
+  const latestPhone = phoneNumbers[phoneNumbers.length - 1]
+  const phoneNumberId = latestPhone.id
+  const displayPhoneNumber = latestPhone.display_phone_number || latestPhone.phone_number
+  
+  const alias = displayPhoneNumber 
+    ? displayPhoneNumber.replace(/\D/g, '')
+    : phoneNumberId.slice(-4)
+  
+  const wpClient: WpClient = {
+    id: phoneNumberId,
+    alias: alias,
+    wpNotifications: false,
+    full: false,
+    chatBot: false,
+    assistant: false,
+    service: WhatsappServices.OFFICIAL
+  }
+  
+  await createClient(wpClient)
+  
+  ToastService.toast('success', 
+    `${t('wp.success.phone_number_connected')}: ${displayPhoneNumber || alias}`
   )
+  
+  setTimeout(() => location.reload(), 1500)
 }
 
 watch(newClient, (clientNew) => {
