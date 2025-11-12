@@ -3,6 +3,7 @@ export default {
     create: 'Crear nuevo cliente',
     add: 'Agregar',
     add_item: 'Agregar Elemento',
+    add_phone_number: 'Agregar Número WhatsApp',
     remove: 'Eliminar',
     enable_interactive: 'Habilitar modo interactivo',
     disable_interactive: 'Deshabilitar modo interactivo',
@@ -40,5 +41,17 @@ export default {
     confirmations_messages: 'Mensajes de Confirmación',
     chatbot_messages: 'Chatbot Mensajes',
     interactive_message: 'Editar Mensaje Interactivo',
+  },
+  errors: {
+    facebook_sdk_not_loaded: 'El SDK de Facebook no se ha cargado correctamente',
+    failed_to_connect_phone: 'Error al conectar el número de teléfono',
+  },
+  success: {
+    phone_number_connected: 'Número de teléfono conectado exitosamente',
+  },
+  info: {
+    signup_cancelled: 'Proceso de registro cancelado',
+    processing: 'Procesando...',
+    connecting_phone_number: 'Conectando número de teléfono, por favor espere',
   }
 }
