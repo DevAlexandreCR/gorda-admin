@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.14(2025-11-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.14...1.5.13)
+
+### Added
+
+- Embedded signup and coexistence. [#181](https://github.com/DevAlexandreCR/gorda-admin/pull/181)
+
 ## [1.5.13(2025-10-18)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.13...1.5.12)
 
 ### Added
