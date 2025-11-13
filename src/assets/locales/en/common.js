@@ -47,6 +47,8 @@ export default {
     add: 'Add',
     claim_chat: 'Claim Chat',
     toggle_full: 'Full Mode',
+    switch_to_dark: 'Switch to dark theme',
+    switch_to_light: 'Switch to light theme',
   },
   messages: {
     updated: 'Resource updated successfully',

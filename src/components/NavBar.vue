@@ -12,7 +12,11 @@
         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
         </div>
         <ul class="navbar-nav  justify-content-end">
-          <li class="nav-item d-flex align-items-center">
+          <li class="nav-item d-flex align-items-center me-2">
+            <ThemeToggle
+              class="d-inline-flex align-items-center"
+              label-class="fw-semibold d-none d-lg-inline"
+            />
           </li>
           <li class="nav-item ps-3 d-flex align-items-center">
             <a href="javascript:" class="nav-link d-xxl-none text-body p-0" id="iconNavbarSidenav">
@@ -29,4 +33,5 @@
   </nav>
 </template>
 <script setup lang="ts">
+import ThemeToggle from '@/components/ThemeToggle.vue'
 </script>

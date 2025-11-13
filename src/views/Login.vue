@@ -3,24 +3,30 @@
     <div class="row">
       <div class="col-12">
         <nav
-            class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+            class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4 login-navbar">
           <div class="container-fluid">
             <router-link :to="{ name: 'dashboard' }" tag="a" class="navbar-brand font-weight-bolder ms-lg-0 ms-3 ">{{
                 appName
               }}
             </router-link>
+            <ThemeToggle
+                class="ms-auto d-inline-flex"
+                variant="btn-outline-secondary"
+                size="btn-sm"
+                :show-label="false"
+            />
           </div>
         </nav>
       </div>
     </div>
   </div>
-  <main class="main-content mt-0 ps">
+  <main class="main-content mt-0 ps auth-main">
     <section>
-      <div class="page-header min-vh-75">
+      <div class="page-header min-vh-75 auth-page-header">
         <div class="container">
           <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-              <div class="card mt-8">
+              <div class="card mt-8 login-card">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="error">
                   <span class="alert-icon"><i class="ni ni-like-2"></i></span>
                   <span class="alert-text"><strong>{{ $t('users.upss') }}</strong>{{ $t('users.alert') }}</span>
@@ -61,7 +67,7 @@
               </div>
             </div>
             <div class="col-md-7">
-              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8 login-oblique">
                 <img class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
                      src="../assets/img/background_crystal.jpg" alt="">
               </div>
@@ -78,13 +84,15 @@ import {ErrorMessage, Field, Form} from 'vee-validate'
 import * as yup from 'yup'
 import {Options, Vue} from 'vue-class-component'
 import User from '@/models/User'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 
 @Options({
   inject: ['appName'],
   components: {
     Form,
     Field,
-    ErrorMessage
+    ErrorMessage,
+    ThemeToggle,
   },
 })
 
