@@ -1,7 +1,7 @@
-import {Chat} from '@/types/Chat'
+import { Chat } from '@/types/Chat'
 import FSService from '@/services/FSService'
-import {limitToLast, orderBy, query, onSnapshot, getDocs, doc, updateDoc, limit} from 'firebase/firestore'
-import {Message} from '@/types/Message'
+import { orderBy, query, onSnapshot, getDocs, doc, updateDoc, limit } from 'firebase/firestore'
+import { Message } from '@/types/Message'
 
 class ChatRepository {
   getChats(wpClientId: string, listener: (chats: Map<string, Chat>) => void): void {
@@ -25,14 +25,15 @@ class ChatRepository {
   async updateChat(wpClientId: string, chatId: string, data: Partial<Chat>): Promise<void> {
     const chatCollection = FSService.chatsCollection(wpClientId)
     await updateDoc(doc(chatCollection, chatId), data).catch(error => {
-        console.log(error.message)
+      console.log(error.message)
     })
   }
 
   async getMessages(wpClientId: string, chatId: string, listener: (messages: Map<string, Message>) => void): Promise<void> {
     const messageCollection = FSService.wpMessagesCollection(wpClientId, chatId)
     const messages = new Map<string, Message>()
-    const queryMessages = query(messageCollection, orderBy('created_at'), limitToLast(50))
+    // Get last 50 messages in ascending order, then we'll reverse them
+    const queryMessages = query(messageCollection, orderBy('created_at', 'desc'), limit(50))
 
     await getDocs(queryMessages).then((snapshot) => {
       snapshot.forEach((doc) => {

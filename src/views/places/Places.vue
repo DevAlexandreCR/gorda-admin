@@ -35,7 +35,7 @@
           </div>
         </Form>
         <div class="row min-vh-75">
-          <Map :places="selectedPlace" @onMapClick="onMapClick" :add-listener="true"/>
+          <Map v-if="branchSelected?.city" :places="selectedPlace" @onMapClick="onMapClick" :add-listener="true"/>
         </div>
       </div>
       <div class="col-sm-3 pe-4">
@@ -77,6 +77,8 @@ import {storeToRefs} from 'pinia'
 import {google} from 'google-maps'
 import {StrHelper} from '@/helpers/StrHelper'
 import {useLoadingState} from '@/services/stores/LoadingState'
+import { useSettingsStore } from '@/services/stores/SettingsStore'
+import { set } from 'firebase/database'
 
 const place: Ref<Place> = ref(new Place)
 const searchPlace: Ref<string> = ref('')
@@ -85,9 +87,15 @@ const placesStore = usePlacesStore()
 const {places} = storeToRefs(placesStore)
 const selectedPlace: Ref<Array<Place>> = ref([])
 const {setLoading} = useLoadingState()
+const { branchSelected } = useSettingsStore()
+const { getPlaces } = usePlacesStore()
 
 onMounted(() => {
   foundPlaces.value = places.value
+  if (!branchSelected?.city) {
+    ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
+    return
+  }
 })
 
 watch(searchPlace, findPlaceByName)
@@ -103,11 +111,18 @@ const schema = yup.object().shape({
 
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   setLoading(true)
-  place.value.name = StrHelper.toCamelCase(place.value.name)
-  PlacesRepository.create(place.value).then(() => {
+  if (!branchSelected?.city) {
     setLoading(false)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
+    return
+  }
+  place.value.name = StrHelper.toCamelCase(place.value.name)
+  PlacesRepository.create(place.value, branchSelected.city.id).then(() => {
     event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
+    getPlaces().finally(() => {
+      setLoading(false)
+    })
   }).catch(e => {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)

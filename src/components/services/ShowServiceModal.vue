@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { PlaceInterface } from '@/types/PlaceInterface'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import Map from '@/components/maps/Map.vue'
 import { ServiceList } from '@/models/ServiceList'
 import DateHelper from '@/helpers/DateHelper'
@@ -64,14 +64,43 @@ const props = defineProps<Props>()
 const location = reactive<Array<PlaceInterface>>([])
 const { branchSelected } = useSettingsStore()
 
-onMounted(() => {
+const createdBy = ref<string>('Sistema')
+const canceledBy = ref<string>('Sistema')
+const terminatedBy = ref<string>('Sistema')
+const assignedBy = ref<string>('Sistema')
+
+onMounted(async () => {
   location.push({
     key: props.service.id,
     name: props.service.start_loc.name,
     lat: props.service.start_loc.lat,
     lng: props.service.start_loc.lng
   })
+  
+  await loadUserData()
 })
+
+const loadUserData = async () => {
+  if (props.service.created_by) {
+    const user = await props.service.getCreatedBy()
+    createdBy.value = user?.name || 'Sistema'
+  }
+  
+  if (props.service.canceled_by) {
+    const user = await props.service.getCanceledBy()
+    canceledBy.value = user?.name || 'Sistema'
+  }
+  
+  if (props.service.terminated_by) {
+    const user = await props.service.getTerminatedBy()
+    terminatedBy.value = user?.name || 'Sistema'
+  }
+  
+  if (props.service.assigned_by) {
+    const user = await props.service.getAssignedBy()
+    assignedBy.value = user?.name || 'Sistema'
+  }
+}
 
 const time = computed(() => {
   if (props.service.metadata?.start_trip_at === undefined || props.service.metadata?.end_trip_at === undefined) return '0s'
@@ -95,21 +124,5 @@ const distance = computed(() => {
 
 const date = computed(() => {
   return DateHelper.unixToDate(props.service.created_at, 'MM-DD HH:mm:ss')
-})
-
-const createdBy = computed(() => {
-  return props.service.created_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
-})
-
-const canceledBy = computed(() => {
-  return props.service.canceled_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
-})
-
-const terminatedBy = computed(() => {
-  return props.service.terminated_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
-})
-
-const assignedBy = computed(() => {
-  return props.service.assigned_by ? AuthService.getCurrentUser()?.name ?? 'Sistema' : 'Sistema'
 })
 </script>

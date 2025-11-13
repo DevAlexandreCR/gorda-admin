@@ -7,8 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-
 # Release Notes for 1.5.x
+
+## [1.5.14(2025-11-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.14...1.5.13)
+
+### Added
+
+- Embedded signup and coexistence. [#181](https://github.com/DevAlexandreCR/gorda-admin/pull/181)
+
+## [1.5.13(2025-10-18)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.13...1.5.12)
+
+### Added
+
+- Full modal and claim chat. [#180](https://github.com/DevAlexandreCR/gorda-admin/pull/180)
+
+## [1.5.12(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.12...1.5.11)
+
+### Changed
+
+- improve chat messages view. [#179](https://github.com/DevAlexandreCR/gorda-admin/pull/179)
+
+## [1.5.11(2025-10-05)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.11...1.5.10)
+
+### Changed
+
+- use api for places not firebase directly. [#177](https://github.com/DevAlexandreCR/gorda-admin/pull/177)
+
+
+## [1.5.10(2025-08-06)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.10...1.5.9)
+
+### Fixed
+- Service user info in historial.
 
 ## [1.5.9(2025-07-09)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.9...1.5.8)
 

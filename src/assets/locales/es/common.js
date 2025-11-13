@@ -45,6 +45,8 @@ export default {
     set_percentage: 'Establecer Porcentaje',
     send_message: 'Enviar Mensaje',
     add: 'Agregar',
+    claim_chat: 'Reclamar Chat',
+    toggle_full: 'Modo Saturado',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',
@@ -57,6 +59,10 @@ export default {
     error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
     copied: 'Copiado al portapapeles!',
     new_message: 'Nuevo mensaje',
+    chat_claimed_success: 'Chat reclamado exitosamente',
+    chat_claim_failed: 'Error al reclamar el chat. Por favor intenta de nuevo.',
+    no_session_found: 'No se Encontró Sesión',
+    no_session_found_text: 'No se encontró una sesión activa para reclamar en este chat',
   },
   placeholders: {
     optional: 'Opcional',

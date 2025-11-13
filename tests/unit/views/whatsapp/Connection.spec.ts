@@ -1,22 +1,23 @@
-import {flushPromises, shallowMount, VueWrapper} from '@vue/test-utils'
+import { flushPromises, shallowMount, VueWrapper } from '@vue/test-utils'
 import Connection from '@/views/whatsapp/Connection.vue'
 import router from '@/router'
 import i18n from '@/plugins/i18n'
-import {openServer, socket} from '../../../testSetup'
+import { openServer, socket } from '../../../testSetup'
 import waitForExpect from 'wait-for-expect'
-import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
-import {useWpClientsStore} from "@/services/stores/WpClientStore";
-import {nextTick} from "vue";
-import {WpClient} from "@/types/WpClient";
-import SettingsRepository from "@/repositories/SettingsRepository";
-import Swal from "sweetalert2";
-import {WhatsappServices} from "@/constants/WhatsappServices";
+import { WhatsApp } from '@/services/gordaApi/constants/WhatsApp'
+import { useWpClientsStore } from "@/services/stores/WpClientStore"
+import { nextTick } from "vue"
+import { WpClient } from "@/types/WpClient"
+import SettingsRepository from "@/repositories/SettingsRepository"
+import Swal from "sweetalert2"
+import { WhatsappServices } from "@/constants/WhatsappServices"
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
   const client: WpClient = {
     id: '3103794656',
     alias: 'Principal',
+    full: false,
     wpNotifications: false,
     chatBot: false,
     assistant: false,
@@ -50,7 +51,7 @@ describe('Connection.vue', () => {
   }, 10000)
 
   test('an user cannot delete a wp-client when error', async () => {
-    const swal = jest.spyOn(Swal,'fire')
+    const swal = jest.spyOn(Swal, 'fire')
     SettingsRepository.deleteClient = jest.fn().mockRejectedValue(new Error('new error'))
     await nextTick()
     wrapper.vm.deleteWpClient()
@@ -69,7 +70,7 @@ describe('Connection.vue', () => {
     expect(wrapper.find('.btn-primary').exists()).toBeTruthy()
     expect(wrapper.vm.connected).toBeFalsy()
   })
-  
+
   test('it must throw event when click buttons', async () => {
     wrapper.vm.connected = false
     await nextTick()
@@ -77,7 +78,7 @@ describe('Connection.vue', () => {
     expect(wrapper.vm.qr).toBeNull()
     expect(wrapper.vm.connecting).toBeTruthy()
   })
-  
+
   test('set qr when io emit event qr', async () => {
     socket.emit(WhatsApp.EVENT_QR_CODE, 'fake-qr')
     await nextTick()
