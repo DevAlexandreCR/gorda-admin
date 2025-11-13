@@ -12,7 +12,18 @@
         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
         </div>
         <ul class="navbar-nav  justify-content-end">
-          <li class="nav-item d-flex align-items-center">
+          <li class="nav-item d-flex align-items-center me-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary theme-toggle"
+              :aria-label="themeButtonLabel"
+              :title="themeButtonLabel"
+              :aria-pressed="isDarkTheme"
+              @click="onToggleTheme"
+            >
+              <em :class="['fa-solid', isDarkTheme ? 'fa-sun' : 'fa-moon']"></em>
+              <span class="fw-semibold d-none d-lg-inline">{{ themeButtonLabel }}</span>
+            </button>
           </li>
           <li class="nav-item ps-3 d-flex align-items-center">
             <a href="javascript:" class="nav-link d-xxl-none text-body p-0" id="iconNavbarSidenav">
@@ -29,4 +40,19 @@
   </nav>
 </template>
 <script setup lang="ts">
+import {computed} from 'vue'
+import {storeToRefs} from 'pinia'
+import {useI18n} from 'vue-i18n'
+import {useThemeStore} from '@/services/stores/ThemeStore'
+
+const themeStore = useThemeStore()
+const {theme} = storeToRefs(themeStore)
+const {t} = useI18n()
+
+const isDarkTheme = computed(() => theme.value === 'dark')
+const themeButtonLabel = computed(() => isDarkTheme.value ? t('common.actions.switch_to_light') : t('common.actions.switch_to_dark'))
+
+const onToggleTheme = (): void => {
+  themeStore.toggleTheme()
+}
 </script>

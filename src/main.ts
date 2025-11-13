@@ -8,6 +8,7 @@ import { createPinia } from 'pinia'
 import axios from 'axios'
 import * as Sentry from "@sentry/vue"
 import { BrowserTracing } from "@sentry/tracing"
+import {useThemeStore} from '@/services/stores/ThemeStore'
 
 const pinia = createPinia()
 
@@ -34,7 +35,11 @@ app.use(i18n)
   .use(pinia)
   .use(router)
   .provide('appName', process.env.VUE_APP_TITLE)
-  .mount('#app')
+
+const themeStore = useThemeStore(pinia)
+themeStore.initialize()
+
+app.mount('#app')
 
 updateFavicon()
 

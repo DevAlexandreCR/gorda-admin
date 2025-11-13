@@ -47,6 +47,8 @@ export default {
     add: 'Agregar',
     claim_chat: 'Reclamar Chat',
     toggle_full: 'Modo Saturado',
+    switch_to_dark: 'Cambiar a tema oscuro',
+    switch_to_light: 'Cambiar a tema claro',
   },
   messages: {
     updated: 'Recurso actualizado correctamente',

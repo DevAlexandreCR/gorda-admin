@@ -1,0 +1,301 @@
+:root {
+  color-scheme: light;
+  --color-background: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f5f9;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-heading: #0f172a;
+  --color-primary: #5e72e4;
+  --color-on-primary: #ffffff;
+  --color-accent: #22d3ee;
+  --color-scrollbar-track: #e2e8f0;
+  --color-scrollbar-thumb: #cbd5f5;
+  --color-scrollbar-thumb-hover: #a5b4fc;
+  --shadow-elevation: 0 20px 27px rgba(15, 23, 42, 0.05);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-background: #0b1220;
+  --color-surface: #121b2d;
+  --color-surface-alt: #18243a;
+  --color-border: rgba(148, 163, 184, 0.28);
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-heading: #f8fafc;
+  --color-primary: #7c9cff;
+  --color-on-primary: #0b1220;
+  --color-accent: #38bdf8;
+  --color-scrollbar-track: #1e293b;
+  --color-scrollbar-thumb: #334155;
+  --color-scrollbar-thumb-hover: #475569;
+  --shadow-elevation: 0 20px 27px rgba(8, 15, 31, 0.45);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.theme-dark {
+  color-scheme: dark;
+}
+
+body.theme-light {
+  color-scheme: light;
+}
+
+#app {
+  min-height: 100vh;
+  background-color: inherit;
+}
+
+a {
+  color: var(--color-primary);
+  transition: color 0.2s ease;
+}
+
+a:hover,
+a:focus {
+  color: var(--color-accent);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.text-heading {
+  color: var(--color-heading);
+}
+
+.text-body {
+  color: var(--color-text) !important;
+}
+
+.text-muted,
+.text-secondary {
+  color: var(--color-text-muted) !important;
+}
+
+hr,
+.hr {
+  color: var(--color-border);
+  border-color: var(--color-border) !important;
+  opacity: 1;
+}
+
+.card,
+.navbar-main,
+.sidenav,
+.dropdown-menu,
+.modal-content,
+.list-group,
+.table,
+.bg-light,
+.bg-white,
+.toast,
+.offcanvas,
+.form-floating > label,
+.page-item .page-link,
+.popover,
+.swal2-popup {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text);
+  border-color: var(--color-border) !important;
+  box-shadow: var(--shadow-elevation);
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.toast,
+.offcanvas,
+.popover,
+.swal2-popup {
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.table thead,
+.table-striped > tbody > tr:nth-of-type(odd),
+.form-control,
+.form-select,
+.input-group-text,
+.list-group-item {
+  background-color: var(--color-surface-alt) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.table td,
+.table th {
+  border-color: var(--color-border) !important;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: rgba(124, 156, 255, 0.1) !important;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+  box-shadow: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.form-label,
+label {
+  color: var(--color-text-muted);
+}
+
+.btn-primary,
+.btn-outline-primary {
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-outline-primary {
+  color: var(--color-primary);
+  background-color: transparent;
+}
+
+.btn-primary,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.show > .btn-outline-primary.dropdown-toggle {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  box-shadow: 0 0.5rem 1rem rgba(94, 114, 228, 0.25);
+}
+
+.badge,
+.alert,
+.pagination .page-link {
+  border-color: var(--color-border) !important;
+}
+
+.pagination .page-link {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.pagination .page-link:hover {
+  color: var(--color-primary);
+}
+
+.table thead th {
+  color: var(--color-text-muted);
+}
+
+.sidenav {
+  border-right: 1px solid var(--color-border);
+}
+
+.sidenav .nav-link,
+.navbar-main .nav-link {
+  color: var(--color-text-muted);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.sidenav .nav-link.active,
+.sidenav .nav-link:hover,
+.navbar-main .nav-link:hover,
+.navbar-main .nav-link:focus {
+  color: var(--color-primary) !important;
+}
+
+.sidenav .icon.icon-shape,
+.navbar-main .icon.icon-shape {
+  background-color: var(--color-surface-alt) !important;
+  color: var(--color-primary);
+  box-shadow: none;
+}
+
+.dropdown-item,
+.list-group-item {
+  color: var(--color-text);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.list-group-item:hover {
+  background-color: rgba(124, 156, 255, 0.12);
+  color: var(--color-primary);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.theme-toggle .fa-solid {
+  font-size: 1rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+:root[data-theme='dark'] .theme-toggle .fa-solid.fa-sun {
+  color: #facc15;
+}
+
+:root[data-theme='dark'] .theme-toggle .fa-solid.fa-moon {
+  color: var(--color-text-muted);
+}
+
+:root[data-theme='light'] .theme-toggle .fa-solid.fa-moon {
+  color: #1e3a8a;
+}
+
+:root[data-theme='light'] .theme-toggle .fa-solid.fa-sun {
+  color: var(--color-text-muted);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid rgba(124, 156, 255, 0.35);
+  outline-offset: 2px;
+}
+
+::-webkit-calendar-picker-indicator,
+::-webkit-clear-button,
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  filter: invert(var(--webkit-invert, 0));
+}
+
+:root[data-theme='dark'] ::-webkit-calendar-picker-indicator,
+:root[data-theme='dark'] ::-webkit-clear-button,
+:root[data-theme='dark'] ::-webkit-inner-spin-button,
+:root[data-theme='dark'] ::-webkit-outer-spin-button {
+  --webkit-invert: 1;
+}
+
+::selection {
+  background-color: rgba(124, 156, 255, 0.35);
+  color: var(--color-heading);
+}
+
+:root[data-theme='dark'] ::selection {
+  background-color: rgba(56, 189, 248, 0.45);
+  color: var(--color-heading);
+}
