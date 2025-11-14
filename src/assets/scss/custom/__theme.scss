@@ -1,0 +1,100 @@
+/* CSS variables for light/dark theming of custom components */
+
+:root {
+  /* Browser-native styling hints */
+  color-scheme: light;
+
+  /* Scrollbar */
+  --scrollbar-track: #f0f0f0;
+  --scrollbar-thumb: #c0c0c0;
+
+  /* Surfaces */
+  --card-bg: #ffffff;
+  --card-text: #2b2b2b;
+  --muted-text: #6c757d;
+
+  /* WhatsApp preview */
+  --wp-bg: #e5ddd5;
+  --wp-card-bg: #ffffff;
+  --wp-header: #075e54;
+  --wp-text: #303030;
+  --wp-muted: #999999;
+  --wp-alt-bg: #f0f0f0;
+  --wp-alt-text: #555555;
+  --wp-button-bg: #0ba543;
+  --wp-button-bg-hover: #1ebd5f;
+  --wp-button-text: #ffffff;
+}
+
+body.dark-version {
+  color-scheme: dark;
+
+  --scrollbar-track: #2a2d3a;
+  --scrollbar-thumb: #50556a;
+
+  --card-bg: #111322;
+  --card-text: rgba(255,255,255,0.85);
+  --muted-text: rgba(255,255,255,0.6);
+
+  --wp-bg: #1f232b;
+  --wp-card-bg: #2a2f3a;
+  --wp-header: #25d366;
+  --wp-text: #e0e0e0;
+  --wp-muted: #a0a0a0;
+  --wp-alt-bg: #2a2f3a;
+  --wp-alt-text: #c0c0c0;
+  --wp-button-bg: #25d366;
+  --wp-button-bg-hover: #3ae084;
+  --wp-button-text: #0a0a0a;
+}
+
+/* Generic dark-mode bridges for leftover utilities */
+body.dark-version {
+  /* Utilities that force white backgrounds */
+  .bg-white,
+  .card.bg-white,
+  .toast.bg-white {
+    background-color: var(--card-bg) !important;
+    color: var(--card-text) !important;
+  }
+
+  .text-body { color: var(--card-text) !important; }
+  .text-muted { color: var(--muted-text) !important; }
+
+  /* Basic form controls not covered by SUI dark file */
+  .form-control,
+  .form-select,
+  textarea.form-control {
+    background-color: transparent !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.3) !important;
+  }
+
+  .form-control::placeholder,
+  textarea.form-control::placeholder {
+    color: var(--muted-text) !important;
+    opacity: 1;
+  }
+
+  /* Light buttons */
+  .btn-light,
+  .btn-white {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  /* Remaining bg helpers often used by layout */
+  .bg-gray-100 { background-color: #141728 !important; }
+  .bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
+  .badge.bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
+
+  /* Pills and nav variants */
+  .nav-pills .nav-link {
+    color: var(--card-text) !important;
+  }
+  .nav-pills .nav-link.active,
+  .nav-pills .show > .nav-link {
+    background-color: #2a2f3a !important;
+  }
+}
