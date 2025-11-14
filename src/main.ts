@@ -8,8 +8,12 @@ import { createPinia } from 'pinia'
 import axios from 'axios'
 import * as Sentry from "@sentry/vue"
 import { BrowserTracing } from "@sentry/tracing"
+import { useThemeStore } from '@/services/stores/ThemeStore'
 
 const pinia = createPinia()
+// Initialize theme early (bind to Pinia instance before mounting app)
+const themeStore = useThemeStore(pinia)
+themeStore.init()
 
 axios.defaults.baseURL = window.location.origin
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -30,6 +34,7 @@ Sentry.init({
   tracesSampleRate: 0.8,
 })
 
+// Install plugins
 app.use(i18n)
   .use(pinia)
   .use(router)
@@ -37,6 +42,8 @@ app.use(i18n)
   .mount('#app')
 
 updateFavicon()
+
+// Theme already initialized above
 
 function updateFavicon() {
   const favicon = process.env.VUE_APP_FAVICON || "/favicon.ico"
