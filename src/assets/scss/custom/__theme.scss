@@ -126,6 +126,18 @@ body.dark-version {
     color: #ffffff !important;
     border-color: transparent !important;
   }
+
+  /* Google Maps InfoWindow in dark */
+  .gm-style .gm-style-iw-c {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.45) !important;
+    border-radius: 12px !important;
+  }
+  .gm-style .gm-style-iw-d { color: var(--card-text) !important; }
+  .gm-style .gm-ui-hover-effect { filter: invert(1) brightness(1.2); }
+  .gm-style .gm-style-iw-tc { background-color: #2a2f3a !important; }
+  .gorda-infowindow { color: var(--card-text); }
 }
 
 /* Tabs (Bootstrap nav-tabs) */

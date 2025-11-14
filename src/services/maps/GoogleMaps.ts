@@ -79,8 +79,13 @@ export class GoogleMaps {
 		if (place.color !== undefined) {
 			content = `<span class="badge bg-${place.color}">${place.name}</span>`
 		}
-		infoWindow.setContent(content)
-		infoWindow.open(this.map, marker)
+			infoWindow.setContent(content)
+			// Wrap content to allow dark-mode styling of InfoWindow
+			const wrappedContent = place.color !== undefined
+			  ? `<div class="gorda-infowindow"><span class="badge bg-${place.color}">${place.name}</span></div>`
+			  : `<div class="gorda-infowindow">${place.name}</div>`
+			infoWindow.setContent(wrappedContent)
+			infoWindow.open(this.map, marker)
     this.markers.push(marker)
   }
 
