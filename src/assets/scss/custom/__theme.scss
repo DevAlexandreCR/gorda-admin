@@ -90,11 +90,39 @@ body.dark-version {
   .badge.bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
 
   /* Pills and nav variants */
-  .nav-pills .nav-link {
+  .nav.nav-pills {
+    background-color: #1f2530 !important; /* override default white tray */
+  }
+  .nav-pills .nav-link { color: var(--card-text) !important; }
+  .nav-pills .nav-link.active,
+  .nav-pills .show > .nav-link { background-color: #2a2f3a !important; }
+  .moving-tab .nav-link.active { background: #2a2f3a !important; color: var(--card-text) !important; }
+
+  /* Sidenav active item (make it dark, not white) */
+  .navbar-vertical .navbar-nav > .nav-item > .nav-link.active {
+    background-color: #2a2f3a !important;
     color: var(--card-text) !important;
   }
-  .nav-pills .nav-link.active,
-  .nav-pills .show > .nav-link {
+
+  /* Pagination */
+  .pagination .page-link {
     background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+  .pagination .page-link:hover {
+    background-color: #343a4a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.25) !important;
+  }
+  .pagination .page-item.disabled .page-link {
+    background-color: #242a38 !important;
+    color: var(--muted-text) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .pagination .page-item.active .page-link {
+    background-image: linear-gradient(310deg, #7928CA, #FF0080) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
   }
 }
