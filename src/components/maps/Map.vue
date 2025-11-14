@@ -8,10 +8,12 @@ import { PlaceInterface } from '@/types/PlaceInterface';
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
 import {google} from 'google-maps'
 import {useSettingsStore} from "@/services/stores/SettingsStore";
+import { useThemeStore } from '@/services/stores/ThemeStore'
 
 let googleMap: GoogleMaps
 let mapReady = false
 const { branchSelected } = useSettingsStore()
+const theme = useThemeStore()
 
 interface Props {
   places: Array<PlaceInterface>,
@@ -29,6 +31,8 @@ onMounted(async () => {
   googleMap = new GoogleMaps(icon, branchSelected?.city.location.lat, branchSelected?.city.location.lng)
   await googleMap.initMap('map').then(() => {
     mapReady = true
+    // Apply theme after map is ready
+    googleMap.setDarkMode(theme.isDark)
     props.places.forEach(place => {
       googleMap.addMarker(place)
     })
@@ -38,6 +42,11 @@ onMounted(async () => {
       googleMap.moveCamera(props.places[0])
     }
   })
+})
+
+// React to theme changes
+watch(() => theme.effective, () => {
+  if (mapReady) googleMap.setDarkMode(theme.isDark)
 })
 
 watch(() => [...props.places], (newPlaces, oldPlaces) => {
@@ -68,4 +77,3 @@ function onMapClick(latLng: google.maps.LatLng): void {
   emit('onMapClick', latLng)
 }
 </script>
-

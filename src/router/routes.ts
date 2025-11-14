@@ -11,8 +11,8 @@ import DriverEdit from '@/views/drivers/Edit.vue'
 import WpClientIndex from '@/views/whatsapp/Index.vue'
 import Places from '@/views/places/Places.vue'
 import UserCreate from '@/views/users/Create.vue'
-import adminGuard from "@/router/guards/AdminGuard";
-import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
+import adminGuard from "@/router/guards/AdminGuard"
+import { NavigationGuardNext, RouteLocationNormalized } from "vue-router"
 import Metrics from '@/views/metrics/Metrics.vue'
 import Settings from '@/views/settings/SettingsApp.vue'
 import MessagesIndex from '@/views/settings/messages/Index.vue'
@@ -26,7 +26,7 @@ const routes: Array<any> = [
   {
     path: '/',
     name: 'dashboard',
-    redirect: {name: 'main'},
+    redirect: { name: 'main' },
     component: Dashboard,
     meta: {
       requireRole: true
@@ -40,7 +40,7 @@ const routes: Array<any> = [
       {
         path: '/dashboard/users',
         name: 'users',
-        redirect: {name: 'users.index'},
+        redirect: { name: 'users.index' },
         component: Users,
         beforeEnter: (
           to: RouteLocationNormalized,
@@ -68,7 +68,7 @@ const routes: Array<any> = [
       {
         path: '/dashboard/drivers',
         name: 'drivers',
-        redirect: {name: 'drivers.index'},
+        redirect: { name: 'drivers.index' },
         component: Drivers,
         children: [
           {
@@ -91,7 +91,7 @@ const routes: Array<any> = [
       {
         path: 'dashboard/places',
         name: 'places',
-        redirect: {name: 'places.index'},
+        redirect: { name: 'places.index' },
         component: Places,
         children: [
           {
@@ -114,7 +114,7 @@ const routes: Array<any> = [
       {
         path: 'dashboard/metrics',
         name: 'metrics',
-        redirect: {name: 'metrics.index'},
+        redirect: { name: 'metrics.index' },
         component: Metrics,
         children: [
           {
@@ -127,7 +127,7 @@ const routes: Array<any> = [
       {
         path: 'dashboard/settings',
         name: 'settings',
-        redirect: {name: 'settings.index'},
+        redirect: { name: 'settings.index' },
         component: Settings,
         children: [
           {
@@ -171,6 +171,11 @@ const routes: Array<any> = [
     path: '/sign-up',
     name: 'sign-up',
     component: () => import('../views/SignUp.vue')
+  },
+  {
+    path: '/info',
+    name: 'info',
+    component: () => import('../views/Info.vue')
   }
 ]
 

@@ -87,33 +87,76 @@ import {
 } from 'chart.js'
 import {useI18n} from 'vue-i18n'
 import { TopFrequency } from '@/constants/TopFrequency'
+import { useThemeStore } from '@/services/stores/ThemeStore'
 
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
 const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric, top5DailyMetric, getTop5Metric, loaded, loading} = useMetricsStore()
 const {t} = useI18n()
-const percentChartOptions: ChartOptions = {
-  responsive: true,
-  maintainAspectRatio: true,
-  scales: {
-    y: {
-      ticks: {
-        callback: function(value) {
-          return value + '%';
-        }
-      }
+const theme = useThemeStore()
+
+function gridColor(isDark: boolean): string {
+  return isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)'
+}
+function tickColor(isDark: boolean): string {
+  return isDark ? 'rgba(255,255,255,0.7)' : '#6c757d'
+}
+function labelColor(isDark: boolean): string {
+  return isDark ? 'rgba(255,255,255,0.8)' : '#212529'
+}
+
+function makeLineOptions(isDark: boolean): ChartOptions {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      x: { grid: { color: gridColor(isDark) }, ticks: { color: tickColor(isDark) } },
+      y: { grid: { color: gridColor(isDark) }, ticks: { color: tickColor(isDark) } },
+    },
+    plugins: {
+      legend: { labels: { color: tickColor(isDark) } },
+      title: { color: labelColor(isDark) }
     }
   }
 }
-const chartOptions: ChartOptions = {
-  responsive: true,
-  maintainAspectRatio: true
+
+function makeBarOptions(isDark: boolean): ChartOptions {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { color: gridColor(isDark) }, ticks: { color: tickColor(isDark) } },
+      y: { grid: { color: gridColor(isDark) }, ticks: { color: tickColor(isDark) } },
+    },
+    plugins: {
+      legend: { labels: { color: tickColor(isDark) } }
+    }
+  }
 }
 
-const dailyTop5chartOptions: ChartOptions = {
-  responsive: true,
-  maintainAspectRatio: true,
-  indexAxis: 'y'
+function makePercentOptions(isDark: boolean): ChartOptions {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      x: { grid: { color: gridColor(isDark) }, ticks: { color: tickColor(isDark) } },
+      y: {
+        grid: { color: gridColor(isDark) },
+        ticks: {
+          color: tickColor(isDark),
+          callback: function(value) { return value + '%' }
+        }
+      }
+    },
+    plugins: {
+      legend: { labels: { color: tickColor(isDark) } }
+    }
+  }
 }
+
+const percentChartOptions = ref<ChartOptions>(makePercentOptions(theme.isDark))
+const chartOptions = ref<ChartOptions>(makeLineOptions(theme.isDark))
+const dailyTop5chartOptions = ref<ChartOptions>(makeBarOptions(theme.isDark))
 const isLoaded: Ref<boolean> = ref(false)
 const isTopLoaded: Ref<boolean> = ref(false)
 const frequency = ref<TopFrequency>(TopFrequency.Daily)
@@ -134,23 +177,45 @@ onBeforeMount(async () => {
   if (!loaded && !loading) await getCurrentYearMetric()
   isLoaded.value = true
   isTopLoaded.value = true
+  const yellow = '#ffd500'
+  const green = '#00ff05'
+  const red = '#ff0000'
+
   globalChartData = {
     labels: Array.from(globalYearMetric.keys()),
     datasets: [
       {
         label: t('services.total'),
         data: Array.from(globalYearMetric.values()),
-        backgroundColor: '#ffd500'
+        backgroundColor: yellow,
+        borderColor: yellow,
+        pointBackgroundColor: yellow,
+        pointBorderColor: yellow,
+        borderWidth: 2,
+        tension: 0.3,
+        fill: false
       },
       {
         label: t('services.statuses.terminated'),
         data: Array.from(completedYearMetric.values()),
-        backgroundColor: '#00ff05'
+        backgroundColor: green,
+        borderColor: green,
+        pointBackgroundColor: green,
+        pointBorderColor: green,
+        borderWidth: 2,
+        tension: 0.3,
+        fill: false
       },
       {
         label: t('services.statuses.canceled'),
         data: Array.from(canceledYearMetric.values()),
-        backgroundColor: '#ff0000'
+        backgroundColor: red,
+        borderColor: red,
+        pointBackgroundColor: red,
+        pointBorderColor: red,
+        borderWidth: 2,
+        tension: 0.3,
+        fill: false
       }
     ]
   }
@@ -166,6 +231,13 @@ onBeforeMount(async () => {
   }
 
   setTop5Metric()
+})
+
+// React to theme changes to update chart options
+watch(() => theme.effective, (/*mode*/) => {
+  chartOptions.value = makeLineOptions(theme.isDark)
+  percentChartOptions.value = makePercentOptions(theme.isDark)
+  dailyTop5chartOptions.value = makeBarOptions(theme.isDark)
 })
 
 function setTop5Metric(): void {
