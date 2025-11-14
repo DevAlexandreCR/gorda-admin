@@ -126,3 +126,14 @@ body.dark-version {
     border-color: transparent !important;
   }
 }
+
+/* Tabs (Bootstrap nav-tabs) */
+body.dark-version {
+  .nav.nav-tabs {
+    --bs-nav-tabs-border-color: rgba(255,255,255,0.15);
+    --bs-nav-tabs-link-hover-border-color: #343a4a #343a4a rgba(255,255,255,0.15);
+    --bs-nav-tabs-link-active-color: var(--card-text);
+    --bs-nav-tabs-link-active-bg: #2a2f3a;
+    --bs-nav-tabs-link-active-border-color: rgba(255,255,255,0.25) rgba(255,255,255,0.25) #2a2f3a;
+  }
+}
