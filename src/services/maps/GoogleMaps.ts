@@ -8,6 +8,29 @@ export class GoogleMaps {
   markers: Array<google.maps.Marker> = []
   icon: string
   center: google.maps.LatLngLiteral
+  static DARK_STYLE: google.maps.MapTypeStyle[] = [
+    { elementType: 'geometry', stylers: [{ color: '#1f2530' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#1f2530' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#8f9bb3' }] },
+    {
+      featureType: 'administrative.locality',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#c0c8d2' }]
+    },
+    {
+      featureType: 'poi',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#c0c8d2' }]
+    },
+    { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#1b202a' }] },
+    { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#8f9bb3' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a3040' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#3a4256' }] },
+    { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#b0bac8' }] },
+    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#2a3040' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f1623' }] },
+    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#8f9bb3' }] }
+  ]
   
   constructor(icon: string, lat: number, lng: number) {
     this.center = { lat: lat, lng: lng }
@@ -23,7 +46,8 @@ export class GoogleMaps {
     await this.loader.load().then((google)=> {
       const options: google.maps.MapOptions = {
         center: this.center,
-        zoom: 14
+        zoom: 14,
+        styles: document.body.classList.contains('dark-version') ? GoogleMaps.DARK_STYLE : []
       }
       this.map = new google.maps.Map(document.getElementById(id) as HTMLElement, options)
     }).catch(error => console.error(error))
@@ -121,5 +145,11 @@ export class GoogleMaps {
   clearMap(): void {
     this.markers.forEach(marker => marker.setMap(null))
     this.markers = []
+  }
+
+  /* istanbul ignore next */
+  setDarkMode(isDark: boolean): void {
+    if (!this.map) return
+    this.map.setOptions({ styles: isDark ? GoogleMaps.DARK_STYLE : [] })
   }
 }
