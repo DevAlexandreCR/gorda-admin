@@ -1,0 +1,183 @@
+/* CSS variables for light/dark theming of custom components */
+
+:root {
+  /* Browser-native styling hints */
+  color-scheme: light;
+
+  /* Scrollbar */
+  --scrollbar-track: #f0f0f0;
+  --scrollbar-thumb: #c0c0c0;
+
+  /* Surfaces */
+  --card-bg: #ffffff;
+  --card-text: #2b2b2b;
+  --muted-text: #6c757d;
+
+  /* WhatsApp preview */
+  --wp-bg: #e5ddd5;
+  --wp-card-bg: #ffffff;
+  --wp-header: #075e54;
+  --wp-text: #303030;
+  --wp-muted: #999999;
+  --wp-alt-bg: #f0f0f0;
+  --wp-alt-text: #555555;
+  --wp-button-bg: #0ba543;
+  --wp-button-bg-hover: #1ebd5f;
+  --wp-button-text: #ffffff;
+}
+
+body.dark-version {
+  color-scheme: dark;
+
+  --scrollbar-track: #2a2d3a;
+  --scrollbar-thumb: #50556a;
+
+  --card-bg: #111322;
+  --card-text: rgba(255,255,255,0.85);
+  --muted-text: rgba(255,255,255,0.6);
+
+  --wp-bg: #1f232b;
+  --wp-card-bg: #2a2f3a;
+  --wp-header: #25d366;
+  --wp-text: #e0e0e0;
+  --wp-muted: #a0a0a0;
+  --wp-alt-bg: #2a2f3a;
+  --wp-alt-text: #c0c0c0;
+  --wp-button-bg: #25d366;
+  --wp-button-bg-hover: #3ae084;
+  --wp-button-text: #0a0a0a;
+}
+
+/* Generic dark-mode bridges for leftover utilities */
+body.dark-version {
+  /* Utilities that force white backgrounds */
+  .bg-white,
+  .card.bg-white,
+  .toast.bg-white {
+    background-color: var(--card-bg) !important;
+    color: var(--card-text) !important;
+  }
+
+  .text-body { color: var(--card-text) !important; }
+  .text-muted { color: var(--muted-text) !important; }
+  .text-dark { color: var(--card-text) !important; }
+
+  /* Modal surfaces */
+  .modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.18) !important;
+    box-shadow: 0 20px 27px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer,
+  .modal-content .card-footer {
+    background-color: transparent;
+    color: var(--card-text);
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+
+  .modal-header .btn-close {
+    filter: invert(1) brightness(1.3);
+  }
+
+  /* Basic form controls not covered by SUI dark file */
+  .form-control,
+  .form-select,
+  textarea.form-control {
+    background-color: transparent !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.3) !important;
+  }
+
+  .form-control::placeholder,
+  textarea.form-control::placeholder {
+    color: var(--muted-text) !important;
+    opacity: 1;
+  }
+
+  /* Light buttons */
+  .btn-light,
+  .btn-white {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  /* Remaining bg helpers often used by layout */
+  .bg-gray-100 { background-color: #141728 !important; }
+  .bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
+  .badge.bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
+
+  /* Pills and nav variants */
+  .nav.nav-pills {
+    background-color: #1f2530 !important; /* override default white tray */
+  }
+  .nav-pills .nav-link { color: var(--card-text) !important; }
+  .nav-pills .nav-link.active,
+  .nav-pills .show > .nav-link { background-color: #2a2f3a !important; }
+  .moving-tab .nav-link.active { background: #2a2f3a !important; color: var(--card-text) !important; }
+
+  /* Sidenav active item (make it dark, not white) */
+  .navbar-vertical .navbar-nav > .nav-item > .nav-link.active {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+  }
+
+  /* Pagination */
+  .pagination .page-link {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+  .pagination .page-link:hover {
+    background-color: #343a4a !important;
+    color: var(--card-text) !important;
+    border-color: rgba(255,255,255,0.25) !important;
+  }
+  .pagination .page-item.disabled .page-link {
+    background-color: #242a38 !important;
+    color: var(--muted-text) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .pagination .page-item.active .page-link {
+    background-image: linear-gradient(310deg, #7928CA, #FF0080) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+  }
+
+  /* Google Maps InfoWindow in dark */
+  .gm-style .gm-style-iw-c {
+    background-color: #2a2f3a !important;
+    color: var(--card-text) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.45) !important;
+    border-radius: 12px !important;
+  }
+  .gm-style .gm-style-iw-d { color: var(--card-text) !important; }
+  .gm-style .gm-ui-hover-effect { filter: invert(1) brightness(1.2); }
+  .gm-style .gm-style-iw-tc { background-color: #2a2f3a !important; }
+  .gorda-infowindow { color: var(--card-text); }
+}
+
+/* Tabs (Bootstrap nav-tabs) */
+body.dark-version {
+  .nav.nav-tabs {
+    --bs-nav-tabs-border-color: rgba(255,255,255,0.15);
+    --bs-nav-tabs-link-hover-border-color: #343a4a #343a4a rgba(255,255,255,0.15);
+    --bs-nav-tabs-link-active-color: var(--card-text);
+    --bs-nav-tabs-link-active-bg: #2a2f3a;
+    --bs-nav-tabs-link-active-border-color: rgba(255,255,255,0.25) rgba(255,255,255,0.25) #2a2f3a;
+  }
+}
+
+/* Profile header blur card override in dark */
+body.dark-version {
+  .blur {
+    background-color: rgba(17, 19, 34, 0.6) !important; /* dark translucent */
+  }
+  .shadow-blur {
+    box-shadow: inset 0 0 1px 1px rgba(255,255,255,0.08), 0 20px 27px 0 rgba(0,0,0,0.35) !important;
+  }
+}

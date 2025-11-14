@@ -14,6 +14,16 @@
         <ul class="navbar-nav  justify-content-end">
           <li class="nav-item d-flex align-items-center">
           </li>
+          <li class="nav-item d-flex align-items-center me-3">
+            <button
+              class="nav-link btn btn-link text-body p-0"
+              type="button"
+              :aria-label="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+              @click="toggleTheme"
+            >
+              <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'" aria-hidden="true"></i>
+            </button>
+          </li>
           <li class="nav-item ps-3 d-flex align-items-center">
             <a href="javascript:" class="nav-link d-xxl-none text-body p-0" id="iconNavbarSidenav">
               <div class="sidenav-toggler-inner">
@@ -29,4 +39,10 @@
   </nav>
 </template>
 <script setup lang="ts">
+import {computed} from 'vue'
+import {useThemeStore} from '@/services/stores/ThemeStore'
+
+const theme = useThemeStore()
+const isDark = computed(() => theme.isDark)
+const toggleTheme = () => theme.toggle()
 </script>

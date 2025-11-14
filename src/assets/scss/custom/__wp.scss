@@ -1,5 +1,5 @@
 .whatsapp-container {
-  background-color: #e5ddd5;
+  background-color: var(--wp-bg);
   padding: 20px;
   border-radius: 10px;
   max-width: 400px;
@@ -7,7 +7,7 @@
 }
 
 .whatsapp-message {
-  background-color: #ffffff;
+  background-color: var(--wp-card-bg);
   border-radius: 8px;
   padding: 12px 16px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -15,7 +15,7 @@
 
 .header {
   font-size: 13px;
-  color: #075e54;
+  color: var(--wp-header);
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -23,13 +23,13 @@
 .preview-container {
   font-size: 15px;
   margin-bottom: 10px;
-  color: #303030;
+  color: var(--wp-text);
   white-space: pre-wrap;
 }
 
 .footer {
   font-size: 12px;
-  color: #999;
+  color: var(--wp-muted);
   margin-top: 8px;
 }
 
@@ -40,8 +40,8 @@
 }
 
 .whatsapp-button {
-  background-color: #0ba543;
-  color: white;
+  background-color: var(--wp-button-bg);
+  color: var(--wp-button-text);
   border: none;
   padding: 6px 12px;
   border-radius: 4px;
@@ -51,12 +51,12 @@
 }
 
 .whatsapp-button:hover {
-  background-color: #1ebd5f;
+  background-color: var(--wp-button-bg-hover);
 }
 
 .location-box {
-  background-color: #f0f0f0;
-  color: #555;
+  background-color: var(--wp-alt-bg);
+  color: var(--wp-alt-text);
   padding: 10px;
   border-radius: 4px;
   font-size: 14px;

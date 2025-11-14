@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.15(2025-11-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.15...1.5.14)
+
+### Added
+
+- Dark mode support. [#185](https://github.com/DevAlexandreCR/gorda-admin/pull/185)
+
 ## [1.5.14(2025-11-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.14...1.5.13)
 
 ### Added
