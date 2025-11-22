@@ -240,8 +240,10 @@ function onClientSelected(element: AutoCompleteType): void {
 }
 
 function createClient(client: ClientInterface): Promise<ClientInterface> {
-  client.id = countryCode.value.dialCode.replace(/\D/g, "").concat(client.phone).concat('@c.us')
-  return ClientRepository.create(client)
+  const identifiers = buildClientIdentifiers(client.phone)
+  client.phone = identifiers.phone
+  client.id = identifiers.id
+  return ClientRepository.create(client, identifiers.key)
 }
 
 function checkPhoneNoExists(phone: string) {
@@ -260,5 +262,34 @@ function locSelected(element: AutoCompleteType): void {
   }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
+}
+
+function buildClientIdentifiers(phone: string): { phone: string, id: string, key: string } {
+  const dialDigits = sanitizeDigits(countryCode.value?.dialCode ?? '')
+  const expectedLength = (countryCode.value?.dialCode?.includes('+56')) ? 9 : 10
+  let digitsOnlyPhone = sanitizeDigits(phone)
+  let localNumber = digitsOnlyPhone
+
+  if (dialDigits && localNumber.startsWith(dialDigits) && localNumber.length > expectedLength) {
+    localNumber = localNumber.substring(dialDigits.length)
+  }
+
+  if (localNumber.length > expectedLength) {
+    localNumber = localNumber.slice(-expectedLength)
+  }
+
+  const key = dialDigits.concat(localNumber)
+  const formattedPhone = key ? `+${key}` : localNumber
+  const identifier = key || localNumber
+
+  return {
+    phone: formattedPhone,
+    id: identifier,
+    key: identifier
+  }
+}
+
+function sanitizeDigits(value: string): string {
+  return value.replace(/[^\d]/g, '')
 }
 </script>

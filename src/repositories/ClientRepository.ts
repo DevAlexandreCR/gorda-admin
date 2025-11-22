@@ -12,9 +12,10 @@ class ClientRepository {
   }
   
   /* istanbul ignore next */
-  async create(client: ClientInterface): Promise<ClientInterface> {
+  async create(client: ClientInterface, key?: string): Promise<ClientInterface> {
     return new Promise((resolve, rejected) => {
-      set(ref(DBService.db, 'clients/'.concat(client.id.replace('@c.us', ''))), client).then(() => {
+      const clientKey = (key ?? client.id).replace(/[^\d]/g, '')
+      set(ref(DBService.db, 'clients/'.concat(clientKey)), client).then(() => {
         resolve(client)
       }).catch(e => {
         rejected(e)
