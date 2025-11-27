@@ -122,6 +122,7 @@ function launchWhatsAppSignup() {
 async function processWhatsAppSignup(code: string) {
   const accessToken = await FacebookService.exchangeCodeForToken(code)
   const wabaId = await FacebookService.getWABAIdFromToken(accessToken)
+  await FacebookService.subscribeWabaToWebhook(wabaId, accessToken)
   const phoneNumbers = await FacebookService.getPhoneNumbers(wabaId, accessToken)
   
   if (phoneNumbers.length === 0) {

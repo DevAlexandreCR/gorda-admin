@@ -119,6 +119,26 @@ class FacebookService {
     throw new Error('WABA ID not found in token permissions')
   }
 
+  async subscribeWabaToWebhook(wabaId: string, accessToken: string): Promise<void> {
+    const url = `https://graph.facebook.com/${this.graphApiVersion}/${wabaId}/subscribed_apps`
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        access_token: accessToken,
+        subscribed_fields: JSON.stringify(['messages'])
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`Failed to subscribe WABA to webhook: ${errorText}`)
+    }
+  }
+
   async getPhoneNumbers(wabaId: string, accessToken: string): Promise<any[]> {
     const url = `https://graph.facebook.com/${this.graphApiVersion}/${wabaId}/phone_numbers?` +
       `access_token=${accessToken}`
