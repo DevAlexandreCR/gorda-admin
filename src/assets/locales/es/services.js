@@ -32,6 +32,8 @@ export default {
   title: 'Servicio | Servicios',
   messages: {
     new_client: 'El cliente no existe, por lo que se ha creado uno nuevo',
-    no_start_loc: 'Debe seleccionar un lugar!'
+    no_start_loc: 'Debe seleccionar un lugar!',
+    driver_assigned: 'El servicio tiene un conductor asignado',
+    has_applicants: 'No se puede reiniciar el servicio porque tiene conductores postulados en el momento'
   }
 }

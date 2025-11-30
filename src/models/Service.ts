@@ -39,6 +39,7 @@ export default class Service implements ServiceInterface {
   static readonly EVENT_SHOW = 'show-service'
   static readonly EVENT_ASSIGN = 'assign-service'
   static readonly EVENT_RELEASE = 'release-service'
+  static readonly EVENT_RESTART = 'restart-service'
 
 
   constructor() {

@@ -47,6 +47,9 @@
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="props.table !== Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
+            <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service)"
+                    data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')">
+              <em class="fas fa-rotate-left"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
@@ -97,7 +100,8 @@ const emit = defineEmits([
   Service.EVENT_RELEASE,
   Service.EVENT_TERMINATE,
   'paginate',
-  Service.EVENT_SHOW
+  Service.EVENT_SHOW,
+  Service.EVENT_RESTART
 ])
 let interval: number
 const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
@@ -139,6 +143,10 @@ function end(service: Service): void {
 
 function show(service: Service): void {
   emit(Service.EVENT_SHOW, service)
+}
+
+function restart(service: ServiceList): void {
+  emit(Service.EVENT_RESTART, service)
 }
 
 function getPaginatedData(data: []): void {

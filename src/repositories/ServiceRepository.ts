@@ -11,6 +11,7 @@ import {
 	ref,
 	set,
 	update as updateDB,
+	remove,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import { ServiceInterface } from '@/types/ServiceInterface'
@@ -158,6 +159,27 @@ class ServiceRepository {
 			applicants: null,
 			metadata: null
 		})
+	}
+
+	/* istanbul ignore next */
+	async restart(service: ServiceInterface): Promise<void> {
+		if (!service.id) return Promise.reject(new Error('Id is necessary'))
+		if (service.driver_id) return Promise.reject(new Error('Service has a driver assigned'))
+		if (service.applicants) return Promise.reject(new Error('Service has applicants'))
+		const newService = new Service()
+		newService.start_loc = service.start_loc
+		newService.end_loc = service.end_loc
+		newService.phone = service.phone
+		newService.name = service.name
+		newService.comment = service.comment
+		newService.wp_client_id = service.wp_client_id
+		newService.client_id = service.client_id
+		newService.amount = service.amount ?? null
+		newService.applicants = service.applicants ?? null
+		newService.metadata = service.metadata ?? null
+
+		await remove(child(DBService.dbServices(), service.id))
+		return this.create(newService)
 	}
 
 	/* istanbul ignore next */
