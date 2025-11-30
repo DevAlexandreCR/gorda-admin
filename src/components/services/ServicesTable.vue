@@ -54,19 +54,19 @@
               :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
           <td v-else-if="showDriverNameColumn"></td>
           <td class="py-1 col-1" v-if="showActionColumn">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="props.table !== Tables.history"
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service, $event)" v-if="props.table !== Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service)"
+            <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service, $event)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')" :disabled="hasApplicants(service)">
               <em class="fas fa-rotate-left"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="release(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="release(service, $event)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
               <em class="fas fa-car-crash"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="end(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="end(service, $event)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="props.table === Tables.history"
@@ -91,6 +91,7 @@ import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
 import {onBeforeUnmount, onMounted, ref, Ref, watch, computed} from 'vue'
+import {Tooltip} from 'bootstrap'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
@@ -138,16 +139,19 @@ function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'MM-DD HH:mm:ss')
 }
 
-function cancel(service: Service): void {
+function cancel(service: Service, event?: Event): void {
+  hideTooltip(event)
   emit(Service.EVENT_CANCEL, service.id)
 }
 
-function release(service: ServiceList): void {
+function release(service: ServiceList, event?: Event): void {
+  hideTooltip(event)
   service.driver = null
   emit(Service.EVENT_RELEASE, service)
 }
 
-function end(service: Service): void {
+function end(service: Service, event?: Event): void {
+  hideTooltip(event)
   emit(Service.EVENT_TERMINATE, service.id)
 }
 
@@ -155,7 +159,8 @@ function show(service: Service): void {
   emit(Service.EVENT_SHOW, service)
 }
 
-function restart(service: ServiceList): void {
+function restart(service: ServiceList, event?: Event): void {
+  hideTooltip(event)
   emit(Service.EVENT_RESTART, service)
 }
 
@@ -187,5 +192,12 @@ function getTime(): void {
   paginatedServices.value.forEach(service => {
     service.a_go  = DateHelper.unix() - service.created_at
   })
+}
+
+function hideTooltip(event?: Event): void {
+  const target = event?.currentTarget as HTMLElement | null
+  if (!target) return
+  const instance = Tooltip.getInstance(target) ?? Tooltip.getOrCreateInstance(target)
+  instance.hide()
 }
 </script>
