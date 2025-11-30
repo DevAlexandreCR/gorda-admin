@@ -24,6 +24,8 @@ export default {
     WpMessages: 'Mensajes',
     WpActions: 'Acciones'
   },
+  edit_start_address: 'Editar dirección inicial',
+  current_start_address: 'Dirección inicial actual',
   placeholders: {
     end_address_optional: 'Ingresa dirección de destino (opcional)'
   },
@@ -34,6 +36,8 @@ export default {
     new_client: 'El cliente no existe, por lo que se ha creado uno nuevo',
     no_start_loc: 'Debe seleccionar un lugar!',
     driver_assigned: 'El servicio tiene un conductor asignado',
-    has_applicants: 'No se puede reiniciar el servicio porque tiene conductores postulados en el momento'
+    has_applicants: 'No se puede reiniciar el servicio porque tiene conductores postulados en el momento',
+    start_address_updated: 'Dirección de recogida actualizada',
+    branch_required: 'Seleccione una sucursal para actualizar la dirección de recogida'
   }
 }

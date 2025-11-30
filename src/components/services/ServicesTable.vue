@@ -31,7 +31,22 @@
           </td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
-          <td class="py-1">{{ service.start_loc?.name }}</td>
+          <td class="py-1">
+            <div class="d-flex align-items-center">
+              <span class="text-truncate" style="max-width: 180px" :title="service.start_loc?.name">{{ service.start_loc?.name }}</span>
+              <button
+                v-if="props.table !== Tables.history"
+                class="btn btn-link btn-sm text-secondary ms-2 p-0"
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('services.edit_start_address')"
+                @click="openStartLocationModal(service, $event)"
+              >
+                <em class="fas fa-pen"></em>
+              </button>
+            </div>
+          </td>
           <td class="py-1" v-if="showDestination">{{ service.end_loc?.name ?? 'N/A' }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
@@ -84,19 +99,79 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="editStartLocationModal"
+    tabindex="-1"
+    aria-hidden="true"
+    ref="startLocationModalRef"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ $t('services.edit_start_address') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-xs text-secondary mb-1">{{ $t('services.current_start_address') }}</p>
+          <p class="text-sm fw-bold mb-3">{{ currentStartAddress }}</p>
+          <AutoComplete
+            :key="startLocationFieldKey"
+            :idField="'edit-start-' + (editingService?.id ?? '')"
+            :fieldName="'start_address_edit'"
+            :elements="placesAutocomplete"
+            :search-handler="searchPlacesAutocomplete"
+            :placeholder="$t('common.placeholders.address')"
+            :classes="'form-control'"
+            @selected="onStartLocationSelected"
+            @on-change="onStartLocationChange"
+          />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            :disabled="!newStartLocation || isUpdatingStart"
+            @click="saveStartLocation"
+          >
+            <span
+              v-if="isUpdatingStart"
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            {{ $t('common.actions.edit') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
+import AutoComplete from '@/components/AutoComplete.vue'
 import {onBeforeUnmount, onMounted, ref, Ref, watch, computed} from 'vue'
-import {Tooltip} from 'bootstrap'
+import {Modal, Tooltip} from 'bootstrap'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from '@/types/ServiceCursor'
+import {AutoCompleteType} from '@/types/AutoCompleteType'
+import {LocationType} from '@/types/LocationType'
+import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
+import {usePlacesStore} from '@/services/stores/PlacesStore'
+import {useSettingsStore} from '@/services/stores/SettingsStore'
+import {storeToRefs} from 'pinia'
+import {useI18n} from 'vue-i18n'
 
 
 interface Props {
@@ -120,19 +195,41 @@ const showDestination = computed(() => props.table === Tables.pendings)
 const showDriverColumn = computed(() => props.table !== Tables.pendings)
 const showDriverNameColumn = computed(() => props.table !== Tables.pendings && props.table !== Tables.inProgress && props.table !== Tables.history)
 const showActionColumn = computed(() => true)
+const placesStore = usePlacesStore()
+const {places} = storeToRefs(placesStore)
+const {branchSelected} = storeToRefs(useSettingsStore())
+const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
+const editingService: Ref<ServiceList | null> = ref(null)
+const newStartLocation: Ref<LocationType | null> = ref(null)
+const startLocationModalRef = ref<HTMLElement | null>(null)
+let startLocationModal: Modal | null = null
+const startLocationFieldKey = ref(0)
+const isUpdatingStart = ref(false)
+const { t } = useI18n()
+const currentStartAddress = computed(() => editingService.value?.start_loc?.name ?? 'N/A')
 
 watch(props.services, (newServices) => {
   paginatedServices.value = Array.from(newServices)
+})
+
+watch(places, (newPlaces) => {
+  updateAutocompletePlaces(newPlaces)
 })
 
 
 onMounted(() => {
   paginatedServices.value = Array.from(props.services)
   if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
+  updateAutocompletePlaces(places.value)
+  if (startLocationModalRef.value) {
+    startLocationModal = new Modal(startLocationModalRef.value)
+    startLocationModalRef.value.addEventListener('hidden.bs.modal', resetStartLocationForm)
+  }
 })
 
 onBeforeUnmount(() => {
   window.clearInterval(interval)
+  startLocationModalRef.value?.removeEventListener('hidden.bs.modal', resetStartLocationForm)
 })
 
 function format(unix: number): string {
@@ -188,6 +285,78 @@ function paginatedData(page: number, next: boolean): void {
   }
   emit('paginate', page, cursor, next)
 }
+
+function openStartLocationModal(service: ServiceList, event?: Event): void {
+  hideTooltip(event)
+  editingService.value = service
+  newStartLocation.value = null
+  startLocationFieldKey.value++
+  placesStore.searchPlaces('').catch(() => undefined)
+  startLocationModal?.show()
+}
+
+function updateAutocompletePlaces(from: Array<{ id?: string, key?: string, name: string }>): void {
+  placesAutocomplete.value = from
+    .map(place => ({
+      id: place.key ?? place.id ?? '',
+      value: place.name
+    }))
+    .filter(option => option.id !== '')
+}
+
+async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const placesResult = await placesStore.searchPlaces(term, 50)
+  updateAutocompletePlaces(placesResult)
+  return placesAutocomplete.value.slice(0, 10)
+}
+
+function onStartLocationChange(): void {
+  newStartLocation.value = null
+}
+
+async function onStartLocationSelected(element: AutoCompleteType): Promise<void> {
+  const place = await placesStore.findByName(element.value)
+  if (!place || !branchSelected.value) return
+  newStartLocation.value = {
+    name: place.name,
+    lat: place.lat,
+    lng: place.lng,
+    country: branchSelected.value.id,
+    city: branchSelected.value.city.id
+  }
+}
+
+function resetStartLocationForm(): void {
+  newStartLocation.value = null
+  editingService.value = null
+  startLocationFieldKey.value++
+}
+
+async function saveStartLocation(): Promise<void> {
+  if (!editingService.value) return
+  if (!newStartLocation.value) {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.no_start_loc'))
+    return
+  }
+  if (!branchSelected.value) {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.branch_required'))
+    return
+  }
+  isUpdatingStart.value = true
+  ServiceRepository.updateStartLocation(editingService.value.id, newStartLocation.value)
+    .then(async () => {
+      editingService.value!.start_loc = {...newStartLocation.value}
+      await ToastService.toast(ToastService.SUCCESS, t('services.messages.start_address_updated'))
+      startLocationModal?.hide()
+    })
+    .catch(async (e) => {
+      await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+    })
+    .finally(() => {
+      isUpdatingStart.value = false
+    })
+}
+
 function getTime(): void {
   paginatedServices.value.forEach(service => {
     service.a_go  = DateHelper.unix() - service.created_at

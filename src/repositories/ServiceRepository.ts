@@ -34,6 +34,7 @@ import {
 	where,
 } from 'firebase/firestore'
 import { ServiceCursor } from '@/types/ServiceCursor'
+import {LocationType} from '@/types/LocationType'
 
 class ServiceRepository {
 
@@ -139,6 +140,14 @@ class ServiceRepository {
 	update(service: ServiceInterface): Promise<void> {
 		if (!service.id) return Promise.reject(new Error('Id is necessary'))
 		return set(ref(DBService.db, 'services/'.concat(service.id)), service)
+	}
+
+	/* istanbul ignore next */
+	updateStartLocation(serviceId: string, startLocation: LocationType): Promise<void> {
+		if (!serviceId) return Promise.reject(new Error('Id is necessary'))
+		return updateDB(child(DBService.dbServices(), serviceId), {
+			start_loc: startLocation
+		})
 	}
 
 	/* istanbul ignore next */

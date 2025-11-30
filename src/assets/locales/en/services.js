@@ -24,6 +24,8 @@ export default {
     fee_multiplier: 'Fee Multiplier',
     distance: 'Distance',
   },
+  edit_start_address: 'Edit pickup address',
+  current_start_address: 'Current pickup address',
   placeholders: {
     end_address_optional: 'Enter destination address (optional)'
   },
@@ -34,6 +36,8 @@ export default {
     new_client: 'Client does nor exists, therefor has been created a new one',
     no_start_loc: 'No place selected!',
     driver_assigned: 'Service has a driver assigned',
-    has_applicants: 'Cannot restart the service because drivers are currently applied'
+    has_applicants: 'Cannot restart the service because drivers are currently applied',
+    start_address_updated: 'Pickup address updated',
+    branch_required: 'Select a branch to update the pickup address'
   }
 }
