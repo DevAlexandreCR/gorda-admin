@@ -35,7 +35,7 @@
             <div class="d-flex align-items-center">
               <span class="text-truncate" style="max-width: 180px" :title="service.start_loc?.name">{{ service.start_loc?.name }}</span>
               <button
-                v-if="props.table !== Tables.history"
+                v-if="props.table === Tables.pendings"
                 class="btn btn-link btn-sm text-secondary ms-2 p-0"
                 type="button"
                 data-bs-toggle="tooltip"
@@ -54,7 +54,7 @@
             <div class="d-flex align-items-center text-truncate" style="max-width: 160px">
               <span class="text-truncate" :title="service.comment ?? 'N/A'">{{ service.comment ?? 'N/A' }}</span>
               <button
-                v-if="props.table !== Tables.history"
+                v-if="props.table === Tables.pendings"
                 class="btn btn-link btn-sm text-secondary ms-2 p-0"
                 type="button"
                 data-bs-toggle="tooltip"
@@ -358,6 +358,7 @@ function paginatedData(page: number, next: boolean): void {
 }
 
 function openStartLocationModal(service: ServiceList, event?: Event): void {
+  if (props.table !== Tables.pendings) return
   hideTooltip(event)
   editingService.value = service
   newStartLocation.value = null
@@ -367,6 +368,7 @@ function openStartLocationModal(service: ServiceList, event?: Event): void {
 }
 
 function openCommentModal(service: ServiceList, event?: Event): void {
+  if (props.table !== Tables.pendings) return
   hideTooltip(event)
   editingCommentService.value = service
   newComment.value = service.comment ?? ''
