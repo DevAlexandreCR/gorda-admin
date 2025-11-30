@@ -18,7 +18,17 @@
         </thead>
         <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
-          <td class="text-secondary font-weight-bolder opacity-7 text-center">{{ index + 1 }}</td>
+          <td class="text-secondary font-weight-bolder opacity-7 text-center position-relative">
+            {{ index + 1 }}
+            <span
+              v-if="props.table === Tables.pendings && applicantsCount(service) > 0"
+              class="position-absolute top-0 start-75 badge rounded-circle bg-danger shadow"
+              style="z-index: 2;"
+              :title="$t('services.messages.has_applicants')"
+            >
+              {{ applicantsCount(service) }}
+            </span>
+          </td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
@@ -50,8 +60,6 @@
             <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')" :disabled="hasApplicants(service)">
               <em class="fas fa-rotate-left"></em></button>
-            <span v-if="props.table === Tables.pendings && applicantsCount(service) > 0" class="badge bg-info text-white mx-1"
-                  :title="$t('services.messages.has_applicants')">{{ applicantsCount(service) }}</span>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
