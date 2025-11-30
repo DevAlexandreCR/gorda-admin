@@ -183,7 +183,7 @@ function restart(service: ServiceList): void {
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.driver_assigned'))
     return
   }
-  if (service.applicants) {
+  if (hasApplicants(service)) {
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.has_applicants'))
     return
   }
@@ -192,6 +192,14 @@ function restart(service: ServiceList): void {
   }).catch(async (e) => {
     await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
+}
+
+function hasApplicants(service: ServiceList): boolean {
+  const applicants = service.applicants as unknown
+  if (!applicants) return false
+  if (Array.isArray(applicants)) return applicants.length > 0
+  if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length > 0
+  return true
 }
 
 onMounted(() => {

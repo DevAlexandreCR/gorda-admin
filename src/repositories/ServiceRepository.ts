@@ -4,6 +4,7 @@ import {
 	equalTo,
 	get,
 	onChildAdded,
+	onChildChanged,
 	onChildRemoved,
 	orderByChild,
 	push,
@@ -165,7 +166,7 @@ class ServiceRepository {
 	async restart(service: ServiceInterface): Promise<void> {
 		if (!service.id) return Promise.reject(new Error('Id is necessary'))
 		if (service.driver_id) return Promise.reject(new Error('Service has a driver assigned'))
-		if (service.applicants) return Promise.reject(new Error('Service has applicants'))
+		if (this.hasApplicants(service.applicants as unknown)) return Promise.reject(new Error('Service has applicants'))
 		const newService = new Service()
 		newService.start_loc = service.start_loc
 		newService.end_loc = service.end_loc
@@ -182,6 +183,13 @@ class ServiceRepository {
 		return this.create(newService)
 	}
 
+	private hasApplicants(applicants: unknown): boolean {
+		if (!applicants) return false
+		if (Array.isArray(applicants)) return applicants.length > 0
+		if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length > 0
+		return true
+	}
+
 	/* istanbul ignore next */
 	updateStatus(serviceId: string, status: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
@@ -191,9 +199,11 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
-	pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
-		onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), added)
-		onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), removed)
+	pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void = () => undefined): void {
+		const pendingQuery = query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING))
+		onChildAdded(pendingQuery, added)
+		onChildRemoved(pendingQuery, removed)
+		onChildChanged(pendingQuery, changed)
 	}
 
 	/* istanbul ignore next */

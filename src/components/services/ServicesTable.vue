@@ -48,8 +48,10 @@
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
             <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service)"
-                    data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')">
+                    data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')" :disabled="hasApplicants(service)">
               <em class="fas fa-rotate-left"></em></button>
+            <span v-if="props.table === Tables.pendings && applicantsCount(service) > 0" class="badge bg-info text-white mx-1"
+                  :title="$t('services.messages.has_applicants')">{{ applicantsCount(service) }}</span>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
@@ -147,6 +149,18 @@ function show(service: Service): void {
 
 function restart(service: ServiceList): void {
   emit(Service.EVENT_RESTART, service)
+}
+
+function applicantsCount(service: ServiceList): number {
+  const applicants = service.applicants as unknown
+  if (!applicants) return 0
+  if (Array.isArray(applicants)) return applicants.length
+  if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length
+  return 1
+}
+
+function hasApplicants(service: ServiceList): boolean {
+  return applicantsCount(service) > 0
 }
 
 function getPaginatedData(data: []): void {
