@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use IndexDB to chats. [#189](https://github.com/DevAlexandreCR/gorda-admin/pull/189)
+
 # Release Notes for 1.5.x
 
 ## [1.5.16(2025-11-29)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.16...1.5.15)
