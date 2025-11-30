@@ -3,7 +3,7 @@
     <Field :name="props.fieldName ?? '12345'" :ref="input" v-model="searchElement"
            v-slot="{ errorMessage, meta }">
       <input :name="props.fieldName ?? '12345'" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
-             :placeholder="props.placeholder" autocomplete="none" @keyup="searchElements" v-model="searchElement"/>
+             :placeholder="props.placeholder" autocomplete="none" @keydown="onKeyDown" v-model="searchElement"/>
       <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
     </Field>
     <ErrorMessage :name="props.fieldName?? '12345'" v-slot="{ message }">
@@ -12,8 +12,8 @@
 
     <ul v-show="foundElements.length > 0"
         class="list-group autocomplete-list shadow-sm" :id="'list-' + props.idField + props.fieldName">
-      <li v-for="element in foundElements" :key="element.id" @click="selectElement(element)"
-          class="list-group-item" :id="element.id">
+      <li v-for="(element, idx) in foundElements" :key="element.id" @click="selectElement(element)"
+          class="list-group-item" :class="{ selected: idx === selectedIndex }" :id="element.id">
         {{ element.value }}
       </li>
     </ul>
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import {Field, ErrorMessage} from 'vee-validate'
 import {AutoCompleteType} from '@/types/AutoCompleteType'
-import {onMounted, ref, Ref, watch} from 'vue'
+import {ref, Ref, watch} from 'vue'
 
 interface Props {
   elements: Array<AutoCompleteType>
@@ -39,120 +39,20 @@ const props = defineProps<Props>()
 const input = ref<HTMLInputElement | null>(null)
 const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
+const selectedIndex = ref(-1)
 const emit = defineEmits(['on-change', 'selected'])
-const callback = function (mutationsList: MutationRecord[]) {
-  for (let mutation of mutationsList) {
-    if (mutation.type === 'childList') {
-      const list = document?.getElementById('list-' + props.idField + props.fieldName)
-      if (list && list.children.length > 0) {
-        addListener()
-      }
-    }
-  }
-}
 
 watch(searchElement, (newValue) => {
   if (props.normalizer) searchElement.value = props.normalizer(newValue)
 })
 
-onMounted(() => {
-  const targetNode = document.body
-  const config = {childList: true, subtree: true}
-  const observer = new MutationObserver(callback)
-  observer.observe(targetNode, config)
+watch(foundElements, () => {
+  selectedIndex.value = -1
 })
-
-function addListener(): void {
-  const ul = document.getElementById('list-' + props.idField + props.fieldName)
-  let liSelected: HTMLLIElement | null
-  let index = -1
-  if (!ul) return
-  document.addEventListener('keydown', function (event: KeyboardEvent) {
-    const len = ul.getElementsByTagName('li')?.length - 1
-    if (len <= -1) return
-    switch (event.code) {
-      case 'ArrowDown':
-        index++
-        if (liSelected) {
-          removeClass(liSelected, 'selected')
-          let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (next && index <= len) {
-
-            liSelected = next
-          } else {
-            index = 0
-            liSelected = ul.getElementsByTagName('li')[0] as HTMLLIElement
-          }
-          addClass(liSelected, ul, 'selected')
-        } else {
-          index = 0
-
-          liSelected = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (liSelected) addClass(liSelected, ul, 'selected')
-        }
-        break
-      case 'ArrowUp':
-        if (liSelected) {
-          removeClass(liSelected, 'selected')
-          index--
-          let next = ul.getElementsByTagName('li')[index] as HTMLLIElement
-          if (next && index >= 0) {
-            liSelected = next
-          } else {
-            index = len
-            liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
-          }
-          addClass(liSelected, ul, 'selected')
-        } else {
-          index = 0
-          liSelected = ul.getElementsByTagName('li')[len] as HTMLLIElement
-          if (liSelected) addClass(liSelected, ul, 'selected')
-        }
-        break
-      case 'Enter':
-        if (liSelected) {
-          input.value?.blur()
-          liSelected = ul.getElementsByClassName('selected')[0] as HTMLLIElement
-          liSelected.click()
-          liSelected.remove()
-          liSelected.remove()
-        }
-        break
-      default:
-        return
-    }
-  }, false)
-}
 
 function onChange(): void {
   emit('on-change', searchElement.value)
-}
-
-function removeClass(el: HTMLLIElement, className: string) {
-  if (!el.className.includes(className)) return
-  if (el.classList) {
-    el.classList.remove(className)
-  } else {
-    el.className = el.className
-        .replace(new RegExp('(^|\\b)' + className.split(' ')
-            .join('|') + '(\\b|$)', 'gi'), ' ')
-  }
-}
-
-function addClass(el: HTMLLIElement, ul: HTMLElement, className: string) {
-  const elements = ul.getElementsByClassName('selected')
-  if (elements) {
-    for (let i = 0; i < elements.length; i++) {
-      const li = elements.item(i) as HTMLLIElement
-      removeClass(li, 'selected')
-    }
-  }
-  if (el.className.includes(className)) return
-  if (el.classList) {
-    el.classList.add(className)
-  } else {
-    el.className += ' ' + className
-  }
+  searchElements()
 }
 
 function searchElements(): void {
@@ -166,7 +66,7 @@ function searchElements(): void {
     props.searchHandler(term).then((results) => {
       // Evita resultados desfasados si el usuario siguió escribiendo
       if (searchElement.value !== currentTerm) return
-      foundElements.value = results.slice(0, 5)
+      foundElements.value = results.slice(0, 10)
     }).catch(() => {
       foundElements.value = []
     })
@@ -176,7 +76,7 @@ function searchElements(): void {
   let matches = 0
   if (term.length > 2) {
     foundElements.value = props.elements.filter(element => {
-      if (element.value.toLowerCase().includes(term.toLowerCase()) && matches < 5) {
+      if (element.value.toLowerCase().includes(term.toLowerCase()) && matches < 10) {
         matches++
         return element
       }
@@ -190,5 +90,21 @@ function selectElement(element: AutoCompleteType): void {
   emit('selected', element, props.idField)
   searchElement.value = element.value
   foundElements.value = []
+}
+
+function onKeyDown(event: KeyboardEvent): void {
+  const len = foundElements.value.length
+  if (len === 0) return
+
+  if (event.code === 'ArrowDown') {
+    event.preventDefault()
+    selectedIndex.value = (selectedIndex.value + 1) % len
+  } else if (event.code === 'ArrowUp') {
+    event.preventDefault()
+    selectedIndex.value = selectedIndex.value <= 0 ? len - 1 : selectedIndex.value - 1
+  } else if (event.code === 'Enter' && selectedIndex.value >= 0) {
+    event.preventDefault()
+    selectElement(foundElements.value[selectedIndex.value])
+  }
 }
 </script>
