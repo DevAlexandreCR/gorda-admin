@@ -22,7 +22,7 @@
             {{ index + 1 }}
             <span
               v-if="props.table === Tables.pendings && applicantsCount(service) > 0"
-              class="position-absolute top-0 start-75 badge rounded-circle bg-danger shadow"
+              class="position-absolute top-0 start-75 badge font-weight-bolder rounded-circle bg-danger shadow"
               style="z-index: 2;"
               :title="$t('services.messages.has_applicants')"
             >
@@ -57,7 +57,7 @@
             <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="props.table !== Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="hideTooltip($event); restart(service)"
+            <button class="btn btn-sm btn-info btn-rounded py-1 px-2 mx-1 my-0" v-if="props.table === Tables.pendings && !service.driver_id" @click="restart(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.restart')" :disabled="hasApplicants(service)">
               <em class="fas fa-rotate-left"></em></button>
             <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
@@ -96,7 +96,6 @@ import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
 import {Pagination} from '@/types/Pagination'
 import {ServiceCursor} from '@/types/ServiceCursor'
-import { Tooltip } from 'bootstrap'
 
 
 interface Props {
@@ -158,13 +157,6 @@ function show(service: Service): void {
 
 function restart(service: ServiceList): void {
   emit(Service.EVENT_RESTART, service)
-}
-
-function hideTooltip(event: Event): void {
-  const target = event.currentTarget as HTMLElement | null
-  if (!target) return
-  const tooltip = Tooltip.getInstance(target) ?? new Tooltip(target)
-  tooltip.hide()
 }
 
 function applicantsCount(service: ServiceList): number {
