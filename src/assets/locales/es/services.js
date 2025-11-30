@@ -24,6 +24,9 @@ export default {
     WpMessages: 'Mensajes',
     WpActions: 'Acciones'
   },
+  placeholders: {
+    end_address_optional: 'Ingresa dirección de destino (opcional)'
+  },
   history: 'Historial',
   total: 'Total',
   title: 'Servicio | Servicios',

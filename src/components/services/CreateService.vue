@@ -45,9 +45,16 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
+              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
+            </div>
+          </div>
+          <div class="col-12 col-md px-1">
+            <div class="form-group">
+              <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
+                            :search-handler="searchPlacesAutocomplete"
+                            :placeholder="$t('services.placeholders.end_address_optional')"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -110,7 +117,8 @@ const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
 const {clients, searchClients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-let start_loc: LocationType
+let start_loc: LocationType | null = null
+let end_loc: LocationType | null = null
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
@@ -211,17 +219,30 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
+  if (!start_loc) {
+    setLoading(false)
+    return
+  }
   if (values.created_by === undefined) {
     values.created_by = AuthService.getCurrentUser()?.id ?? null;
   }
   const newService: Service = new Service()
-  start_loc.country = branchSelected!.id
-  start_loc.city = branchSelected!.city.id
+  const startLocWithBranch: LocationType = {
+    ...start_loc,
+    country: branchSelected!.id,
+    city: branchSelected!.city.id
+  }
+  const endLocWithBranch: LocationType | null = end_loc ? {
+    ...end_loc,
+    country: branchSelected!.id,
+    city: branchSelected!.city.id
+  } : null
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
   newService.name = values.name
   newService.phone = values.phone
-  newService.start_loc = start_loc
+  newService.start_loc = startLocWithBranch
+  newService.end_loc = endLocWithBranch
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
@@ -229,6 +250,8 @@ function createService(values: ServiceInterface): void {
     count.value = 1
     countryCode.value = countryCodes.value[31]
     service.value.wp_client_id = defaultClient.value as string
+    start_loc = null
+    end_loc = null
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)
@@ -269,8 +292,31 @@ async function locSelected(element: AutoCompleteType): Promise<void> {
   start_loc = {
     name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
   }
+  const endAddressInput = document.querySelector('input[name="end_address"]') as HTMLInputElement
+  if (endAddressInput) {
+    endAddressInput.focus()
+    return
+  }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
+}
+
+function onStartAddressChange(): void {
+  start_loc = null
+}
+
+async function endLocSelected(element: AutoCompleteType): Promise<void> {
+  const place = await findByName(element.value)
+  if (!place) return
+  end_loc = {
+    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+  }
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
+}
+
+function onEndAddressChange(): void {
+  end_loc = null
 }
 
 function buildClientIdentifiers(phone: string): { phone: string, id: string, key: string } {

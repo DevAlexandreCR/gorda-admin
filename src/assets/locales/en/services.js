@@ -24,6 +24,9 @@ export default {
     fee_multiplier: 'Fee Multiplier',
     distance: 'Distance',
   },
+  placeholders: {
+    end_address_optional: 'Enter destination address (optional)'
+  },
   history: 'History',
   total: 'Total',
   title: 'Service | Services',
