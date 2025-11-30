@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+## [1.5.16(2025-11-29)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.16...1.5.15)
+
+### Changed
+
+- change clients db to postgres. [#187](https://github.com/DevAlexandreCR/gorda-admin/pull/187)
+
+
 ## [1.5.15(2025-11-12)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.15...1.5.14)
 
 ### Added
