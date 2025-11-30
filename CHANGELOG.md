@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use IndexDB to chats. [#189](https://github.com/DevAlexandreCR/gorda-admin/pull/189)
+- Addrestart and edit pending services. [#189](https://github.com/DevAlexandreCR/gorda-admin/pull/189)
 
 # Release Notes for 1.5.x
 
