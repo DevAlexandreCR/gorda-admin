@@ -309,7 +309,7 @@ async function searchClientsAutocomplete(term: string): Promise<Array<AutoComple
     value: client.phone
   }))
   clientsPhone.value = mapped
-  return mapped.slice(0, 5)
+  return mapped.slice(0, 10)
 }
 
 async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
@@ -319,6 +319,6 @@ async function searchPlacesAutocomplete(term: string): Promise<Array<AutoComplet
     value: place.name
   }))
   placesAutocomplete.value = mapped
-  return mapped.slice(0, 5)
+  return mapped.slice(0, 10)
 }
 </script>

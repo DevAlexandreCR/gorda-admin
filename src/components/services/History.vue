@@ -226,7 +226,7 @@ async function onClientInput(term: string): Promise<void> {
 
 async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
   const results = await searchClients(term)
-  return results.slice(0, 5).map(client => ({
+  return results.slice(0, 10).map(client => ({
     id: client.id,
     value: client.phone
   }))
