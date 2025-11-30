@@ -4,40 +4,73 @@ import ClientRepository from '@/repositories/ClientRepository'
 import countryCodes from '../../assets/location/CountryCodes.json'
 import {CountryCodeType} from '@/types/CountryCodeType'
 import {ClientInterface} from '@/types/ClientInterface'
+import ClientCache from '@/services/ClientCache'
 
 interface ClientsState {
   clients: Array<Client>
+  clientsById: Map<string, Client>
   countryCodes: Array<CountryCodeType>
+  currentSearch: string
 }
 export const useClientsStore = defineStore('clientsStore', {
   state: (): ClientsState => {
     return {
       clients: Array<Client>(),
-      countryCodes: countryCodes
+      clientsById: new Map<string, Client>(),
+      countryCodes: countryCodes,
+      currentSearch: ''
     }
   },
   actions: {
+    buildClient(client: ClientInterface): Client {
+      const clientTmp = new Client()
+      Object.assign(clientTmp, client)
+      return clientTmp
+    },
     async getClients(): Promise<void> {
       this.clients = []
       const clients = await ClientRepository.getAll()
-      this.clients.push(...clients.map(client => {
-        const clientTmp = new Client()
-        Object.assign(clientTmp, client)
-        return clientTmp
-      }))
+      await ClientCache.replaceAll(clients).catch(() => {
+        // Swallow cache errors to avoid blocking UI
+      })
+      await this.searchClients(this.currentSearch)
     },
-    findById(id: string): Client {      
-      const client = this.clients.find(el => el.id == id)
-      return client ?? new Client()
+    async searchClients(term: string): Promise<Array<Client>> {
+      this.currentSearch = term
+      const results = await ClientCache.search(term)
+      this.clients = results.map(client => {
+        const built = this.buildClient(client)
+        this.clientsById.set(built.id, built)
+        return built
+      })
+      // Ensure reactivity for clientsById updates
+      this.clientsById = new Map(this.clientsById)
+      return this.clients
     },
-    updateClient(client: ClientInterface): void {
+    async findById(id: string): Promise<Client | null> {
+      const cached = this.clientsById.get(id)
+      if (cached) {
+        return cached
+      }
+      const client = await ClientCache.getById(id)
+      if (client) {
+        const built = this.buildClient(client)
+        this.clientsById.set(id, built)
+        this.clientsById = new Map(this.clientsById)
+        return built
+      }
+      return null
+    },
+    async updateClient(client: ClientInterface): Promise<void> {
+      const built = this.buildClient(client)
+      this.clientsById.set(client.id, built)
+      this.clientsById = new Map(this.clientsById)
+      await ClientCache.upsert(client).catch(() => {
+        // Ignore cache errors
+      })
       const index = this.clients.findIndex(cl => client.id === cl.id)
       if (index >= 0) {
-        this.clients[index] = Object.assign(new Client(), client)
-      } else {
-        const clientTmp = new Client()
-        Object.assign(clientTmp, client)
-        this.clients.push(clientTmp)
+        this.clients[index] = built
       }
     }
   }

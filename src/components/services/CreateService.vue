@@ -23,7 +23,8 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
+                            :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -45,6 +46,7 @@
           <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
+                            :search-handler="searchPlacesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
             </div>
           </div>
@@ -106,7 +108,7 @@ import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
-const {clients, findById, updateClient} = useClientsStore()
+const {clients, searchClients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
 let start_loc: LocationType
 const service: Ref<Partial<Service>> = ref(new Service())
@@ -135,6 +137,7 @@ onMounted(async () => {
   input?.focus()
   updateAutocompletePlaces(places)
   updateAutocompleteClients(clients)
+  await searchClients('')
 })
 
 function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
@@ -175,28 +178,31 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
     return
   }
-  if (!values.client_id || findById(values.client_id).name !== values.name) {
+  const currentClient = values.client_id ? await findById(values.client_id) : null
+  if (!values.client_id || currentClient?.name !== values.name) {
     setLoading(true)
-    await createClient({
-      id: '',
-      name: values.name,
-      phone: values.phone
-    }).then((client) => {
+    try {
+      const client = await createClient({
+        id: '',
+        name: values.name,
+        phone: values.phone
+      })
       setLoading(false)
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
-      if (!findById(values.client_id)) {
+      const found = await findById(values.client_id)
+      if (!found) {
         clientsPhone.value.push({
           id: client.id,
           value: client.phone
         })
       } else {
-        updateClient(client)
+        await updateClient(client)
       }
-    }).catch(e => {
+    } catch (e: any) {
       setLoading(false)
       ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
-    })
+    }
   }
 
   createService(values)
@@ -231,10 +237,12 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType): void {
-  let client = findById(element.id)
-  service.value.phone = client.phone
-  service.value.name = client.name
-  service.value.client_id = client.id
+  findById(element.id).then((client) => {
+    if (!client) return
+    service.value.phone = client.phone
+    service.value.name = client.name
+    service.value.client_id = client.id
+  })
   const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
   input?.focus()
 }
@@ -246,7 +254,7 @@ function createClient(client: ClientInterface): Promise<ClientInterface> {
   return ClientRepository.create(client, identifiers.key)
 }
 
-function checkPhoneNoExists(phone: string) {
+async function checkPhoneNoExists(phone: string) {
   if (phone.length > 3) {
     const phoneExists = clientsPhone.value.some(client => client.value.includes(phone))
     if (!phoneExists) {
@@ -255,8 +263,9 @@ function checkPhoneNoExists(phone: string) {
   }
 }
 
-function locSelected(element: AutoCompleteType): void {
-  let place = findByName(element.value)
+async function locSelected(element: AutoCompleteType): Promise<void> {
+  const place = await findByName(element.value)
+  if (!place) return
   start_loc = {
     name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
   }
@@ -291,5 +300,25 @@ function buildClientIdentifiers(phone: string): { phone: string, id: string, key
 
 function sanitizeDigits(value: string): string {
   return value.replace(/[^\d]/g, '')
+}
+
+async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const results = await searchClients(term)
+  const mapped = results.map(client => ({
+    id: client.id,
+    value: client.phone
+  }))
+  clientsPhone.value = mapped
+  return mapped.slice(0, 5)
+}
+
+async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const placesResult = await usePlacesStore().searchPlaces(term, 50)
+  const mapped = placesResult.map(place => ({
+    id: place.key ?? place.id,
+    value: place.name
+  }))
+  placesAutocomplete.value = mapped
+  return mapped.slice(0, 5)
 }
 </script>

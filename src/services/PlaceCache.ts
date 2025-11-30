@@ -117,7 +117,7 @@ class PlaceCache {
     })
   }
 
-  async searchPlaces(cityId: string, term: string): Promise<PlaceInterface[]> {
+  async searchPlaces(cityId: string, term: string, limit = 50): Promise<PlaceInterface[]> {
     const db = await this.getDb()
     if (!db) return []
 
@@ -134,11 +134,17 @@ class PlaceCache {
           if (!termLower || record.nameLower.includes(termLower)) {
             const { key, cityId: _, nameLower, ...place } = record
             results.push(place as PlaceInterface)
+            if (results.length >= limit) {
+              tx.abort()
+              resolve(results)
+              return
+            }
           }
           cursor.continue()
         }
       }
       tx.oncomplete = () => resolve(results)
+      tx.onabort = () => resolve(results)
       tx.onerror = () => resolve([])
     })
   }

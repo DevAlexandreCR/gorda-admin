@@ -78,9 +78,9 @@ const menuActions = [
   { name: 'light', title: i18n.global.t('common.placeholders.' + ChatThemes.LIGHT) }
 ]
 
-watch(() => wpChatStore.sortedChats, (newChats) => {
-  const chatsSorted = Array.from(newChats.values()).map((chat: Chat) => {
-    const client = findById(chat.id)
+watch(() => wpChatStore.sortedChats, async (newChats) => {
+  const chatsSorted = await Promise.all(Array.from(newChats.values()).map(async (chat: Chat) => {
+    const client = await findById(chat.id) ?? { name: chat.clientName }
     const shouldShowUnread = wpChatStore.shouldShowAsUnread(chat)
     
     return {
@@ -115,7 +115,7 @@ watch(() => wpChatStore.sortedChats, (newChats) => {
         }
       ]
     }
-  })
+  }))
 
   // No need to sort again since sortedChats already returns sorted data
   rooms.value = chatsSorted

@@ -32,6 +32,7 @@ interface Props {
   placeholder?: string
   idField?: string
   normalizer?: (str: string) => string
+  searchHandler?: (term: string) => Promise<Array<AutoCompleteType>>
 }
 
 const props = defineProps<Props>()
@@ -155,10 +156,27 @@ function addClass(el: HTMLLIElement, ul: HTMLElement, className: string) {
 }
 
 function searchElements(): void {
+  const term = searchElement.value
+  if (props.searchHandler) {
+    if (term.length <= 2) {
+      foundElements.value = []
+      return
+    }
+    const currentTerm = term
+    props.searchHandler(term).then((results) => {
+      // Evita resultados desfasados si el usuario siguió escribiendo
+      if (searchElement.value !== currentTerm) return
+      foundElements.value = results.slice(0, 5)
+    }).catch(() => {
+      foundElements.value = []
+    })
+    return
+  }
+
   let matches = 0
-  if (searchElement.value.length > 2) {
+  if (term.length > 2) {
     foundElements.value = props.elements.filter(element => {
-      if (element.value.toLowerCase().includes(searchElement.value.toLowerCase()) && matches < 5) {
+      if (element.value.toLowerCase().includes(term.toLowerCase()) && matches < 5) {
         matches++
         return element
       }

@@ -65,7 +65,7 @@ export const usePlacesStore = defineStore('placesStore', {
       })
       await this.searchPlaces('')
     },
-    async searchPlaces(term: string): Promise<Array<Place>> {
+    async searchPlaces(term: string, limit = 100): Promise<Array<Place>> {
       const { branchSelected } = useSettingsStore()
       if (!branchSelected?.city) {
         this.places = []
@@ -73,7 +73,7 @@ export const usePlacesStore = defineStore('placesStore', {
       }
       const cityId = branchSelected.city.id
       this.currentCityId = cityId
-      const cachedPlaces = await PlaceCache.searchPlaces(cityId, term)
+      const cachedPlaces = await PlaceCache.searchPlaces(cityId, term, limit)
       this.places = cachedPlaces.map(place => this.buildPlace(place))
       return this.places
     },
