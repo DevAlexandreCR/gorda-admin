@@ -151,6 +151,14 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
+	updateComment(serviceId: string, comment: string | null): Promise<void> {
+		if (!serviceId) return Promise.reject(new Error('Id is necessary'))
+		return updateDB(child(DBService.dbServices(), serviceId), {
+			comment: comment
+		})
+	}
+
+	/* istanbul ignore next */
 	async assign(serviceId: string, driverId: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
 			driver_id: driverId,

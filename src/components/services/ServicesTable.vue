@@ -50,8 +50,22 @@
           <td class="py-1" v-if="showDestination">{{ service.end_loc?.name ?? 'N/A' }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
-          <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
-            :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
+          <td class="py-1">
+            <div class="d-flex align-items-center text-truncate" style="max-width: 160px">
+              <span class="text-truncate" :title="service.comment ?? 'N/A'">{{ service.comment ?? 'N/A' }}</span>
+              <button
+                v-if="props.table !== Tables.history"
+                class="btn btn-link btn-sm text-secondary ms-2 p-0"
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('services.edit_comment')"
+                @click="openCommentModal(service, $event)"
+              >
+                <em class="fas fa-pen"></em>
+              </button>
+            </div>
+          </td>
           <td class="py-1" v-if="showDriverColumn && service.driver">
             <div class="d-flex px-2 py-0">
               <div>
@@ -150,6 +164,52 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="editCommentModal"
+    tabindex="-1"
+    aria-hidden="true"
+    ref="commentModalRef"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ $t('services.edit_comment') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-xs text-secondary mb-1">{{ $t('services.current_comment') }}</p>
+          <p class="text-sm fw-bold mb-3">{{ currentComment }}</p>
+          <textarea
+            class="form-control"
+            rows="3"
+            v-model="newComment"
+            :placeholder="$t('common.placeholders.comment')"
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            :disabled="isUpdatingComment"
+            @click="saveComment"
+          >
+            <span
+              v-if="isUpdatingComment"
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            {{ $t('common.actions.edit') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -205,8 +265,14 @@ const startLocationModalRef = ref<HTMLElement | null>(null)
 let startLocationModal: Modal | null = null
 const startLocationFieldKey = ref(0)
 const isUpdatingStart = ref(false)
+const editingCommentService: Ref<ServiceList | null> = ref(null)
+const commentModalRef = ref<HTMLElement | null>(null)
+let commentModal: Modal | null = null
+const newComment = ref<string>('')
+const isUpdatingComment = ref(false)
 const { t } = useI18n()
 const currentStartAddress = computed(() => editingService.value?.start_loc?.name ?? 'N/A')
+const currentComment = computed(() => editingCommentService.value?.comment ?? 'N/A')
 
 watch(props.services, (newServices) => {
   paginatedServices.value = Array.from(newServices)
@@ -225,11 +291,16 @@ onMounted(() => {
     startLocationModal = new Modal(startLocationModalRef.value)
     startLocationModalRef.value.addEventListener('hidden.bs.modal', resetStartLocationForm)
   }
+  if (commentModalRef.value) {
+    commentModal = new Modal(commentModalRef.value)
+    commentModalRef.value.addEventListener('hidden.bs.modal', resetCommentForm)
+  }
 })
 
 onBeforeUnmount(() => {
   window.clearInterval(interval)
   startLocationModalRef.value?.removeEventListener('hidden.bs.modal', resetStartLocationForm)
+  commentModalRef.value?.removeEventListener('hidden.bs.modal', resetCommentForm)
 })
 
 function format(unix: number): string {
@@ -295,6 +366,13 @@ function openStartLocationModal(service: ServiceList, event?: Event): void {
   startLocationModal?.show()
 }
 
+function openCommentModal(service: ServiceList, event?: Event): void {
+  hideTooltip(event)
+  editingCommentService.value = service
+  newComment.value = service.comment ?? ''
+  commentModal?.show()
+}
+
 function updateAutocompletePlaces(from: Array<{ id?: string, key?: string, name: string }>): void {
   placesAutocomplete.value = from
     .map(place => ({
@@ -332,6 +410,11 @@ function resetStartLocationForm(): void {
   startLocationFieldKey.value++
 }
 
+function resetCommentForm(): void {
+  newComment.value = ''
+  editingCommentService.value = null
+}
+
 async function saveStartLocation(): Promise<void> {
   if (!editingService.value) return
   if (!newStartLocation.value) {
@@ -345,15 +428,35 @@ async function saveStartLocation(): Promise<void> {
   isUpdatingStart.value = true
   ServiceRepository.updateStartLocation(editingService.value.id, newStartLocation.value)
     .then(async () => {
-      editingService.value!.start_loc = {...newStartLocation.value}
-      await ToastService.toast(ToastService.SUCCESS, t('services.messages.start_address_updated'))
+      if (editingService.value && newStartLocation.value) {
+        editingService.value.start_loc = newStartLocation.value
+      }
       startLocationModal?.hide()
+      await ToastService.toast(ToastService.SUCCESS, t('services.messages.start_address_updated'))
     })
     .catch(async (e) => {
       await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
     })
     .finally(() => {
       isUpdatingStart.value = false
+    })
+}
+
+async function saveComment(): Promise<void> {
+  if (!editingCommentService.value) return
+  isUpdatingComment.value = true
+  const updatedComment = newComment.value.trim() || null
+  ServiceRepository.updateComment(editingCommentService.value.id, updatedComment)
+    .then(async () => {
+      editingCommentService.value!.comment = updatedComment
+      commentModal?.hide()
+      await ToastService.toast(ToastService.SUCCESS, t('services.messages.comment_updated'))
+    })
+    .catch(async (e) => {
+      await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+    })
+    .finally(() => {
+      isUpdatingComment.value = false
     })
 }
 

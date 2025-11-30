@@ -26,6 +26,8 @@ export default {
   },
   edit_start_address: 'Edit pickup address',
   current_start_address: 'Current pickup address',
+  edit_comment: 'Edit comment',
+  current_comment: 'Current comment',
   placeholders: {
     end_address_optional: 'Enter destination address (optional)'
   },
@@ -38,6 +40,7 @@ export default {
     driver_assigned: 'Service has a driver assigned',
     has_applicants: 'Cannot restart the service because drivers are currently applied',
     start_address_updated: 'Pickup address updated',
-    branch_required: 'Select a branch to update the pickup address'
+    branch_required: 'Select a branch to update the pickup address',
+    comment_updated: 'Comment updated'
   }
 }

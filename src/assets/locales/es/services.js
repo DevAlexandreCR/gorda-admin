@@ -26,6 +26,8 @@ export default {
   },
   edit_start_address: 'Editar dirección inicial',
   current_start_address: 'Dirección inicial actual',
+  edit_comment: 'Editar comentario',
+  current_comment: 'Comentario actual',
   placeholders: {
     end_address_optional: 'Ingresa dirección de destino (opcional)'
   },
@@ -38,6 +40,7 @@ export default {
     driver_assigned: 'El servicio tiene un conductor asignado',
     has_applicants: 'No se puede reiniciar el servicio porque tiene conductores postulados en el momento',
     start_address_updated: 'Dirección de recogida actualizada',
-    branch_required: 'Seleccione una sucursal para actualizar la dirección de recogida'
+    branch_required: 'Seleccione una sucursal para actualizar la dirección de recogida',
+    comment_updated: 'Comentario actualizado'
   }
 }
