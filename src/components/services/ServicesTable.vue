@@ -8,12 +8,13 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.hour') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.status') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.start_address') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDestination">{{ $t('services.fields.end_address') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.driver') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.pendings">{{ $t('services.fields.driver_name') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="props.table !== Tables.history"></th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverColumn">{{ $t('services.fields.driver') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverNameColumn">{{ $t('services.fields.driver_name') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showActionColumn"></th>
         </thead>
         <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
@@ -21,11 +22,12 @@
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
           <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
           <td class="py-1">{{ service.start_loc?.name }}</td>
+          <td class="py-1" v-if="showDestination">{{ service.end_loc?.name ?? 'N/A' }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">{{ service.name }}</td>
           <td class="py-1 text-truncate" style="max-width: 100px" data-bs-target="tooltip"
             :title="service.comment" data-bs-placement="top">{{ service.comment ?? 'N/A' }}</td>
-          <td class="py-1" v-if="service.driver">
+          <td class="py-1" v-if="showDriverColumn && service.driver">
             <div class="d-flex px-2 py-0">
               <div>
                 <img :src="service.driver.photoUrl" class="avatar avatar-sm my-0 me-3"
@@ -37,26 +39,24 @@
               </div>
             </div>
           </td>
-          <td v-else></td>
-          <td class="py-1 text-truncate" v-if="service.driver" style="max-width: 100px" data-bs-target="tooltip"
+          <td v-else-if="showDriverColumn"></td>
+          <td class="py-1 text-truncate" v-if="showDriverNameColumn && service.driver" style="max-width: 100px" data-bs-target="tooltip"
               :title="service.driver.name" data-bs-placement="top">{{ service.driver.name }}</td>
-          <td class="py-1" v-else>
-              <button class="btn btn-link py-1 my-0" data-bs-placement="top"  data-bs-toggle="modal" :id="service.id" v-if="service.isPending()"
-                data-bs-target="#driverModal">{{ $t('common.actions.assign') }}</button></td>
-          <td class="py-1 col-1">
-            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="table != Tables.history"
+          <td v-else-if="showDriverNameColumn"></td>
+          <td class="py-1 col-1" v-if="showActionColumn">
+            <button class="btn btn-sm btn-danger btn-rounded py-1 px-2 mx-1 my-0" @click="cancel(service)" v-if="props.table !== Tables.history"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.cancel')">
               <em class="fas fa-ban"></em></button>
-            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending()"
+            <button class="btn btn-sm btn-secondary btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isPending() && props.table !== Tables.history"
               data-bs-placement="top" :title="$t('common.actions.assign')"  data-bs-toggle="modal" :id="service.id" data-bs-target="#driverModal">
               <em class="fas fa-car"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="release(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="release(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.release')">
               <em class="fas fa-car-crash"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress()" @click="end(service)"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" v-if="service.isInProgress() && props.table !== Tables.history" @click="end(service)"
                     data-bs-toggle="tooltip" data-bs-placement="top" :title="$t('common.actions.terminate')">
               <em class="fas fa-check"></em></button>
-            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="table === Tables.history"
+            <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="props.table === Tables.history"
                     :title="$t('common.actions.see')">
               <em class="fas fa-eye"></em></button>
           </td>
@@ -77,7 +77,7 @@
 import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
-import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue'
+import {onBeforeUnmount, onMounted, ref, Ref, watch, computed} from 'vue'
 import {ServiceList} from '@/models/ServiceList'
 import {Tables} from '@/constants/Tables'
 import DBPaginator from '@/components/DBPaginator.vue'
@@ -101,6 +101,10 @@ const emit = defineEmits([
 ])
 let interval: number
 const paginatedServices: Ref<Array<ServiceList>> = ref(Array<ServiceList>())
+const showDestination = computed(() => props.table === Tables.pendings)
+const showDriverColumn = computed(() => props.table !== Tables.pendings)
+const showDriverNameColumn = computed(() => props.table !== Tables.pendings && props.table !== Tables.inProgress && props.table !== Tables.history)
+const showActionColumn = computed(() => true)
 
 watch(props.services, (newServices) => {
   paginatedServices.value = Array.from(newServices)
@@ -155,4 +159,3 @@ function getTime(): void {
   })
 }
 </script>
-
