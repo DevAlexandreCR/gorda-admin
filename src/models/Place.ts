@@ -7,6 +7,7 @@ export default class Place implements PlaceInterface {
   name: string
   lat: number
   lng: number
+  color?: string
 
   async delete(): Promise<void> {
     return PlaceRepository.remove(this)
