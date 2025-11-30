@@ -7,6 +7,7 @@ import DateHelper from "@/helpers/DateHelper"
 import { ChatThemes } from "@/services/gordaApi/constants/ChatThemes"
 import { MessageTypes } from "@/types/MessageTypes"
 import i18n from "@/plugins/i18n"
+import ChatCache from '@/services/ChatCache'
 
 export const useWpChatStore = defineStore('wpChatStore', {
   state: () => {
@@ -60,6 +61,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
     setActiveChat(chatId: string): void {
       this.activeChat = chatId
       sessionStorage.setItem('activeChat', chatId)
+      this.keepOnlyChatMessages(chatId)
 
       // Mark the chat as read (archived) when it becomes active
       this.markChatAsRead(chatId)
@@ -144,9 +146,23 @@ export const useWpChatStore = defineStore('wpChatStore', {
             }
           }
           this.chats.set(chatId, placeholderChat)
-          this.messages.set(chatId, [])
+          this.setMessagesForActiveChat(chatId, [])
         }
       }
+    },
+    setMessagesForActiveChat(chatId: string, messages: Message[]): void {
+      if (this.activeChat !== chatId) {
+        return
+      }
+      this.messages = new Map([[chatId, messages]])
+    },
+    keepOnlyChatMessages(chatId: string | null): void {
+      if (!chatId) {
+        this.messages = new Map()
+        return
+      }
+      const current = this.messages.get(chatId)
+      this.messages = current ? new Map([[chatId, current]]) : new Map()
     },
     async getMessages(wpClientId: string, chatId: string): Promise<void> {
       // Don't fetch messages for placeholder chats
@@ -155,10 +171,20 @@ export const useWpChatStore = defineStore('wpChatStore', {
         return
       }
 
+      // Try to load cached messages first to avoid blocking the UI
+      const cachedMessages = await ChatCache.getMessages(wpClientId, chatId)
+      if (cachedMessages.length > 0) {
+        this.setMessagesForActiveChat(chatId, cachedMessages)
+      }
+
       await ChatRepository.getMessages(wpClientId, chatId, (messages) => {
         // Convert to array and sort by created_at ascending (oldest first for chat display)
         const sortedMessages = Array.from(messages.values()).sort((a, b) => a.created_at - b.created_at)
-        this.messages.set(chatId, sortedMessages)
+        ChatCache.cacheMessages(wpClientId, chatId, sortedMessages).catch(() => {
+          // Swallow cache errors to avoid blocking chat rendering
+        })
+
+        this.setMessagesForActiveChat(chatId, sortedMessages)
       })
 
       // Mark chat as read and update in database

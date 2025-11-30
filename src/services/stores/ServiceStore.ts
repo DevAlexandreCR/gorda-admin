@@ -56,7 +56,17 @@ export const useServicesStore = defineStore('servicesStore', {
         this.pendings.splice(index, 1)
       }
 
-      ServiceRepository.pendingListener(added, removed)
+      const changed = (snapshot: DataSnapshot): void => {
+        const service = this.setServiceFromDB(snapshot)
+        const index = this.pendings.findIndex(serv => serv.id === service.id)
+        if (index !== -1) {
+          this.pendings.splice(index, 1, service)
+        } else {
+          this.pendings.unshift(service)
+        }
+      }
+
+      ServiceRepository.pendingListener(added, removed, changed)
     },
 
     async getInProgressServices(): Promise<void> {

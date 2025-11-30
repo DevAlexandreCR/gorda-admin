@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release Notes for 1.5.x
 
+### Changed
+
+## [1.5.17(2025-11-30)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.17...1.5.16)
+
+- Use IndexDB to chats. [#189](https://github.com/DevAlexandreCR/gorda-admin/pull/189)
+- Addrestart and edit pending services. [#189](https://github.com/DevAlexandreCR/gorda-admin/pull/189)
+
+
 ## [1.5.16(2025-11-29)](https://github.com/DevAlexandreCR/admin-driver/compare/1.5.16...1.5.15)
 
 ### Changed

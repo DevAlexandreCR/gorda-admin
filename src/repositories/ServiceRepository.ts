@@ -4,6 +4,7 @@ import {
 	equalTo,
 	get,
 	onChildAdded,
+	onChildChanged,
 	onChildRemoved,
 	orderByChild,
 	push,
@@ -11,6 +12,7 @@ import {
 	ref,
 	set,
 	update as updateDB,
+	remove,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import { ServiceInterface } from '@/types/ServiceInterface'
@@ -32,6 +34,7 @@ import {
 	where,
 } from 'firebase/firestore'
 import { ServiceCursor } from '@/types/ServiceCursor'
+import {LocationType} from '@/types/LocationType'
 
 class ServiceRepository {
 
@@ -140,6 +143,22 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
+	updateStartLocation(serviceId: string, startLocation: LocationType): Promise<void> {
+		if (!serviceId) return Promise.reject(new Error('Id is necessary'))
+		return updateDB(child(DBService.dbServices(), serviceId), {
+			start_loc: startLocation
+		})
+	}
+
+	/* istanbul ignore next */
+	updateComment(serviceId: string, comment: string | null): Promise<void> {
+		if (!serviceId) return Promise.reject(new Error('Id is necessary'))
+		return updateDB(child(DBService.dbServices(), serviceId), {
+			comment: comment
+		})
+	}
+
+	/* istanbul ignore next */
 	async assign(serviceId: string, driverId: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
 			driver_id: driverId,
@@ -161,6 +180,34 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
+	async restart(service: ServiceInterface): Promise<void> {
+		if (!service.id) return Promise.reject(new Error('Id is necessary'))
+		if (service.driver_id) return Promise.reject(new Error('Service has a driver assigned'))
+		if (this.hasApplicants(service.applicants as unknown)) return Promise.reject(new Error('Service has applicants'))
+		const newService = new Service()
+		newService.start_loc = service.start_loc
+		newService.end_loc = service.end_loc
+		newService.phone = service.phone
+		newService.name = service.name
+		newService.comment = service.comment
+		newService.wp_client_id = service.wp_client_id
+		newService.client_id = service.client_id
+		newService.amount = service.amount ?? null
+		newService.applicants = service.applicants ?? null
+		newService.metadata = service.metadata ?? null
+
+		await remove(child(DBService.dbServices(), service.id))
+		return this.create(newService)
+	}
+
+	private hasApplicants(applicants: unknown): boolean {
+		if (!applicants) return false
+		if (Array.isArray(applicants)) return applicants.length > 0
+		if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length > 0
+		return true
+	}
+
+	/* istanbul ignore next */
 	updateStatus(serviceId: string, status: string): Promise<void> {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
 			status: status,
@@ -169,9 +216,11 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
-	pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void): void {
-		onChildAdded(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), added)
-		onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING)), removed)
+	pendingListener(added: (data: DataSnapshot) => void, removed: (data: DataSnapshot) => void, changed: (data: DataSnapshot) => void = () => undefined): void {
+		const pendingQuery = query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_PENDING))
+		onChildAdded(pendingQuery, added)
+		onChildRemoved(pendingQuery, removed)
+		onChildChanged(pendingQuery, changed)
 	}
 
 	/* istanbul ignore next */

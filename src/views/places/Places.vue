@@ -88,10 +88,9 @@ const {places} = storeToRefs(placesStore)
 const selectedPlace: Ref<Array<Place>> = ref([])
 const {setLoading} = useLoadingState()
 const { branchSelected } = useSettingsStore()
-const { getPlaces } = usePlacesStore()
 
 onMounted(() => {
-  foundPlaces.value = places.value
+  hydratePlaces('')
   if (!branchSelected?.city) {
     ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
     return
@@ -120,7 +119,7 @@ function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   PlacesRepository.create(place.value, branchSelected.city.id).then(() => {
     event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
-    getPlaces().finally(() => {
+    placesStore.getPlaces().finally(() => {
       setLoading(false)
     })
   }).catch(e => {
@@ -133,12 +132,8 @@ function selectPlace(placeSelected: Place): void {
   selectedPlace.value[0] = placeSelected
 }
 
-function findPlaceByName(placeName: string): void {
-  foundPlaces.value = places.value.filter(pl => {
-    if (pl.name.toLowerCase().includes(placeName.toLowerCase())) {
-      return pl
-    }
-  })
+async function findPlaceByName(placeName: string): Promise<void> {
+  await hydratePlaces(placeName)
 }
 
 function onMapClick(latLng: google.maps.LatLng): void {
@@ -158,5 +153,10 @@ async function deletePlace(deletedPlace: Place): Promise<void> {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
+}
+
+async function hydratePlaces(term: string): Promise<void> {
+  const placesResult = await placesStore.searchPlaces(term)
+  foundPlaces.value = placesResult
 }
 </script>

@@ -66,7 +66,7 @@
     <div class="tab-content pt-2" id="myTabContent">
       <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
         <create-service></create-service>
-        <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel" :pagination="paginationPendings"></services-table>
+        <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel" @restartService="restart" :pagination="paginationPendings"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
         <div class="form-group me-2 col-sm-4">
@@ -176,6 +176,30 @@ function end(serviceId: string): void {
   }).catch(async (e) => {
     await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
   })
+}
+
+function restart(service: ServiceList): void {
+  if (service.driver_id) {
+    ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.driver_assigned'))
+    return
+  }
+  if (hasApplicants(service)) {
+    ToastService.toast(ToastService.ERROR, t('common.messages.error'), t('services.messages.has_applicants'))
+    return
+  }
+  ServiceRepository.restart(service).then(async () => {
+    await ToastService.toast(ToastService.SUCCESS, t('common.messages.created'))
+  }).catch(async (e) => {
+    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+  })
+}
+
+function hasApplicants(service: ServiceList): boolean {
+  const applicants = service.applicants as unknown
+  if (!applicants) return false
+  if (Array.isArray(applicants)) return applicants.length > 0
+  if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length > 0
+  return true
 }
 
 onMounted(() => {

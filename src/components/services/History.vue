@@ -27,7 +27,8 @@
             <div class="col-md-2">
               <div class="form-group">
                 <label class="form-control-label" for="from">{{ $t('common.filters.number_client') }}</label>
-                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" :key="clientPhone"
+                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" @on-change="onClientInput" :key="clientPhone"
+                  :search-handler="searchClientsAutocomplete"
                   :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
                   :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'"/>
               </div>
@@ -161,7 +162,7 @@ import {ServiceList} from '@/models/ServiceList'
 const { getHistoryServices, resetCursor } = useServicesStore()
 const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
-const { clients } = useClientsStore()
+const { clients, searchClients } = useClientsStore()
 const { filter } = storeToRefs(useServicesStore())
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
@@ -217,6 +218,18 @@ function onClientSelected(element: AutoCompleteType): void {
   filter.value.clientId = element.id
   const input = document.querySelector('input[name="client"]') as HTMLInputElement
   input?.blur()
+}
+
+async function onClientInput(term: string): Promise<void> {
+  await searchClients(term)
+}
+
+async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const results = await searchClients(term)
+  return results.slice(0, 10).map(client => ({
+    id: client.id,
+    value: client.phone
+  }))
 }
 
 async function clearFilters(): Promise<void> {

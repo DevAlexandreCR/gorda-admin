@@ -15,11 +15,12 @@
               <div class="d-flex flex-column">
                 <h6 class="mb-3 text-sm">{{ $t('common.placeholders.service_info') }}</h6>
                 <span class="mb-2 text-sm">{{$t('services.fields.start_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.start_loc.name }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.end_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.end_loc?.name ?? 'N/A' }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ date }}</span></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${ service.status }`) }}</span></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.phone }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment ?? 'N/A' }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.created_by !== null">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.canceled_by !== null">{{$t('common.fields.canceled_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ canceledBy }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.terminated_by !== null">{{$t('common.fields.terminated_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ terminatedBy }}</span></span>
@@ -71,11 +72,21 @@ const assignedBy = ref<string>('Sistema')
 
 onMounted(async () => {
   location.push({
+    id: props.service.id,
     key: props.service.id,
     name: props.service.start_loc.name,
     lat: props.service.start_loc.lat,
     lng: props.service.start_loc.lng
   })
+  if (props.service.end_loc) {
+    location.push({
+      id: `${props.service.id}-end`,
+      key: `${props.service.id}-end`,
+      name: props.service.end_loc.name,
+      lat: props.service.end_loc.lat,
+      lng: props.service.end_loc.lng
+    })
+  }
   
   await loadUserData()
 })

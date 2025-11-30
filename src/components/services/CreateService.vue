@@ -23,7 +23,8 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists" :elements="clientsPhone"
+              <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
+                            :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -44,8 +45,16 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
-              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" :elements="placesAutocomplete"
+              <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
+                            :search-handler="searchPlacesAutocomplete"
                             :placeholder="$t('common.placeholders.address')"/>
+            </div>
+          </div>
+          <div class="col-12 col-md px-1">
+            <div class="form-group">
+              <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
+                            :search-handler="searchPlacesAutocomplete"
+                            :placeholder="$t('services.placeholders.end_address_optional')"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -106,9 +115,10 @@ import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const {places, findByName} = usePlacesStore()
-const {clients, findById, updateClient} = useClientsStore()
+const {clients, searchClients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
-let start_loc: LocationType
+let start_loc: LocationType | null = null
+let end_loc: LocationType | null = null
 const service: Ref<Partial<Service>> = ref(new Service())
 const {setLoading} = useLoadingState()
 const {countryCodes} = storeToRefs(useClientsStore())
@@ -135,6 +145,7 @@ onMounted(async () => {
   input?.focus()
   updateAutocompletePlaces(places)
   updateAutocompleteClients(clients)
+  await searchClients('')
 })
 
 function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
@@ -175,28 +186,31 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
     return
   }
-  if (!values.client_id || findById(values.client_id).name !== values.name) {
+  const currentClient = values.client_id ? await findById(values.client_id) : null
+  if (!values.client_id || currentClient?.name !== values.name) {
     setLoading(true)
-    await createClient({
-      id: '',
-      name: values.name,
-      phone: values.phone
-    }).then((client) => {
+    try {
+      const client = await createClient({
+        id: '',
+        name: values.name,
+        phone: values.phone
+      })
       setLoading(false)
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
-      if (!findById(values.client_id)) {
+      const found = await findById(values.client_id)
+      if (!found) {
         clientsPhone.value.push({
           id: client.id,
           value: client.phone
         })
       } else {
-        updateClient(client)
+        await updateClient(client)
       }
-    }).catch(e => {
+    } catch (e: any) {
       setLoading(false)
       ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
-    })
+    }
   }
 
   createService(values)
@@ -205,17 +219,30 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
+  if (!start_loc) {
+    setLoading(false)
+    return
+  }
   if (values.created_by === undefined) {
     values.created_by = AuthService.getCurrentUser()?.id ?? null;
   }
   const newService: Service = new Service()
-  start_loc.country = branchSelected!.id
-  start_loc.city = branchSelected!.city.id
+  const startLocWithBranch: LocationType = {
+    ...start_loc,
+    country: branchSelected!.id,
+    city: branchSelected!.city.id
+  }
+  const endLocWithBranch: LocationType | null = end_loc ? {
+    ...end_loc,
+    country: branchSelected!.id,
+    city: branchSelected!.city.id
+  } : null
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
   newService.name = values.name
   newService.phone = values.phone
-  newService.start_loc = start_loc
+  newService.start_loc = startLocWithBranch
+  newService.end_loc = endLocWithBranch
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
@@ -223,6 +250,8 @@ function createService(values: ServiceInterface): void {
     count.value = 1
     countryCode.value = countryCodes.value[31]
     service.value.wp_client_id = defaultClient.value as string
+    start_loc = null
+    end_loc = null
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch(e => {
     setLoading(false)
@@ -231,10 +260,12 @@ function createService(values: ServiceInterface): void {
 }
 
 function onClientSelected(element: AutoCompleteType): void {
-  let client = findById(element.id)
-  service.value.phone = client.phone
-  service.value.name = client.name
-  service.value.client_id = client.id
+  findById(element.id).then((client) => {
+    if (!client) return
+    service.value.phone = client.phone
+    service.value.name = client.name
+    service.value.client_id = client.id
+  })
   const input = document.querySelector('input[name="start_address"]') as HTMLInputElement
   input?.focus()
 }
@@ -246,7 +277,7 @@ function createClient(client: ClientInterface): Promise<ClientInterface> {
   return ClientRepository.create(client, identifiers.key)
 }
 
-function checkPhoneNoExists(phone: string) {
+async function checkPhoneNoExists(phone: string) {
   if (phone.length > 3) {
     const phoneExists = clientsPhone.value.some(client => client.value.includes(phone))
     if (!phoneExists) {
@@ -255,13 +286,37 @@ function checkPhoneNoExists(phone: string) {
   }
 }
 
-function locSelected(element: AutoCompleteType): void {
-  let place = findByName(element.value)
+async function locSelected(element: AutoCompleteType): Promise<void> {
+  const place = await findByName(element.value)
+  if (!place) return
   start_loc = {
+    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+  }
+  const endAddressInput = document.querySelector('input[name="end_address"]') as HTMLInputElement
+  if (endAddressInput) {
+    endAddressInput.focus()
+    return
+  }
+  const input = document.querySelector('input[name="comment"]') as HTMLInputElement
+  input?.focus()
+}
+
+function onStartAddressChange(): void {
+  start_loc = null
+}
+
+async function endLocSelected(element: AutoCompleteType): Promise<void> {
+  const place = await findByName(element.value)
+  if (!place) return
+  end_loc = {
     name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
   }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
+}
+
+function onEndAddressChange(): void {
+  end_loc = null
 }
 
 function buildClientIdentifiers(phone: string): { phone: string, id: string, key: string } {
@@ -291,5 +346,25 @@ function buildClientIdentifiers(phone: string): { phone: string, id: string, key
 
 function sanitizeDigits(value: string): string {
   return value.replace(/[^\d]/g, '')
+}
+
+async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const results = await searchClients(term)
+  const mapped = results.map(client => ({
+    id: client.id,
+    value: client.phone
+  }))
+  clientsPhone.value = mapped
+  return mapped.slice(0, 10)
+}
+
+async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  const placesResult = await usePlacesStore().searchPlaces(term, 50)
+  const mapped = placesResult.map(place => ({
+    id: place.key ?? place.id,
+    value: place.name
+  }))
+  placesAutocomplete.value = mapped
+  return mapped.slice(0, 10)
 }
 </script>
