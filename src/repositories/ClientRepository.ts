@@ -1,36 +1,51 @@
-import {get, DataSnapshot, set, ref, onChildAdded} from 'firebase/database'
-import DBService from '@/services/DBService'
-import {ClientInterface} from '@/types/ClientInterface'
-import Client from '@/models/Client'
+import { ClientInterface } from '@/types/ClientInterface'
+import ClientsApiService from '@/services/gordaApi/server/ClientsApiService'
 
 class ClientRepository {
 
-/* istanbul ignore next */
+  /* istanbul ignore next */
   async getAll(): Promise<Array<ClientInterface>> {
-    const snapshot: DataSnapshot = await get(DBService.dbClients())
-    return Object.values(snapshot.val())
-  }
-  
-  /* istanbul ignore next */
-  async create(client: ClientInterface, key?: string): Promise<ClientInterface> {
-    return new Promise((resolve, rejected) => {
-      const clientKey = (key ?? client.id).replace(/[^\d]/g, '')
-      set(ref(DBService.db, 'clients/'.concat(clientKey)), client).then(() => {
-        resolve(client)
-      }).catch(e => {
-        rejected(e)
+    return ClientsApiService.index()
+      .then(response => {
+        if (!response?.data) {
+          console.warn('Invalid response structure from ClientsApiService.index')
+          return []
+        }
+
+        const { data } = response
+        if (!data.success) {
+          console.error('API returned error:', data.message || 'Unknown error')
+          return []
+        }
+
+        const clients = data.data?.clients
+        if (!Array.isArray(clients)) {
+          console.warn('Clients data is not an array or is missing')
+          return []
+        }
+
+        return clients as Array<ClientInterface>
       })
-    })
+      .catch(error => {
+        console.error('Error fetching clients:', error)
+        return []
+      })
   }
-	
+
   /* istanbul ignore next */
-  onAll(onClientAdded: (place: Client) => void): void {
-    onChildAdded(DBService.dbClients(), (snapshot) => {
-      const client: ClientInterface = snapshot.val() as ClientInterface
-      const clientTmp = new Client()
-      Object.assign(clientTmp, client)
-      onClientAdded(clientTmp)
-    })
+  async create(client: ClientInterface): Promise<ClientInterface> {
+    return ClientsApiService.store(client)
+      .then(response => {
+        if (response?.data?.success && response.data.data?.client) {
+          return response.data.data.client as ClientInterface
+        }
+
+        throw new Error(response?.data?.message ?? 'Error storing client')
+      })
+      .catch(error => {
+        console.error('Error storing client:', error)
+        throw error
+      })
   }
 }
 
