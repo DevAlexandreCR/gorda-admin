@@ -334,13 +334,12 @@ function buildClientIdentifiers(phone: string): { phone: string, id: string, key
   }
 
   const key = dialDigits.concat(localNumber)
-  const formattedPhone = key ? `+${key}` : localNumber
-  const identifier = key || localNumber
+  const normalizedPhone = key || localNumber
 
   return {
-    phone: formattedPhone,
-    id: identifier,
-    key: identifier
+    phone: normalizedPhone,
+    id: normalizedPhone,
+    key: normalizedPhone
   }
 }
 
