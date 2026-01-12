@@ -33,6 +33,7 @@ interface Props {
   idField?: string
   normalizer?: (str: string) => string
   searchHandler?: (term: string) => Promise<Array<AutoCompleteType>>
+  debounceMs?: number
 }
 
 const props = defineProps<Props>()
@@ -41,6 +42,7 @@ const foundElements: Ref<Array<AutoCompleteType>> = ref([])
 const searchElement: Ref<string> = ref('')
 const selectedIndex = ref(-1)
 const emit = defineEmits(['on-change', 'selected'])
+let debounceTimer: number | undefined = undefined
 
 watch(searchElement, (newValue) => {
   if (props.normalizer) searchElement.value = props.normalizer(newValue)
@@ -52,7 +54,16 @@ watch(foundElements, () => {
 
 function onChange(): void {
   emit('on-change', searchElement.value)
-  searchElements()
+  
+  // Limpiar debounce anterior
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  
+  const debounce = props.debounceMs ?? 300
+  debounceTimer = window.setTimeout(() => {
+    searchElements()
+  }, debounce)
 }
 
 function searchElements(): void {

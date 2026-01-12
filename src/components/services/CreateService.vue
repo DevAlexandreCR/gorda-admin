@@ -25,7 +25,8 @@
             <div class="form-group">
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
                             :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
-                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"/>
+                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"
+                            :debounceMs="150"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
               </Field>
@@ -348,6 +349,22 @@ function sanitizeDigits(value: string): string {
 }
 
 async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
+  // Optimización: Si el término tiene 9-10 dígitos (número completo), hacer búsqueda exacta
+  const digitsOnly = term.replace(/[^\d]/g, '')
+  const isFullPhoneNumber = digitsOnly.length >= 9 && digitsOnly.length <= 10
+  
+  if (isFullPhoneNumber) {
+    // Búsqueda exacta en el array existente para números completos (más rápido)
+    const exactMatch = clientsPhone.value.filter(client => 
+      client.value.replace(/[^\d]/g, '').includes(digitsOnly)
+    )
+    
+    if (exactMatch.length > 0) {
+      return exactMatch.slice(0, 10)
+    }
+  }
+  
+  // Búsqueda normal para términos parciales o si no hay match exacto
   const results = await searchClients(term)
   const mapped = results.map(client => ({
     id: client.id,
