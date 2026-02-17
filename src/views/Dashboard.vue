@@ -10,9 +10,6 @@
           </main>
         </div>
       </template>
-      <template #fallback>
-        <div class="display-6">Loading...</div>
-      </template>
     </Suspense>
   </div>
 </template>
@@ -27,6 +24,7 @@ import { useServicesStore } from '@/services/stores/ServiceStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
 import { useSettingsStore } from "@/services/stores/SettingsStore";
 import { useMetricsStore } from "@/services/stores/MetricsStore";
+import { useLoadingState } from "@/services/stores/LoadingState";
 
 const placesLoaded = ref(false)
 const clientsLoaded = ref(false)
@@ -42,10 +40,11 @@ const { getHistoryServices, getPendingServices, getInProgressServices } = useSer
 const { getWpClients } = useWpClientsStore()
 const { getBranches, getRideFees } = useSettingsStore()
 const { getCurrentYearMetric } = useMetricsStore()
+const { setLoading } = useLoadingState()
 
 const loadAllData = async () => {
-  getCurrentYearMetric()
-  await Promise.all([
+  setLoading(true)
+  await Promise.allSettled([
     getClients(),
     getDrivers(),
     getHistoryServices(),
@@ -54,7 +53,8 @@ const loadAllData = async () => {
     getWpClients(),
     getBranches(),
     getRideFees(),
-    getPlaces()
+    getPlaces(),
+    getCurrentYearMetric()
   ])
 
   placesLoaded.value = true
@@ -63,6 +63,7 @@ const loadAllData = async () => {
   servicesLoaded.value = true
   wpClientsLoaded.value = true
   settingsLoaded.value = true
+  setLoading(false)
 }
 
 onMounted(async () => {
