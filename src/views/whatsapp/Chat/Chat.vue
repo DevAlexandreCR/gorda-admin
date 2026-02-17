@@ -128,10 +128,11 @@ watch(messages, (newMessages) => {
   const messageList = newMessages.get(activeChatId)
   chatMessages.value = messageList?.map((message: Message) => {
     const date = DateHelper.formatTimestamp(message.created_at)
+    const isFromBot = message.from === clientId.value || message.fromMe
     return {
       _id: message.id,
       content: message.body,
-      senderId: message.from,
+      senderId: isFromBot ? clientId.value : message.from,
       username: 'message.senderName',
       date: date.date,
       timestamp: date.timestamp,
@@ -140,7 +141,7 @@ watch(messages, (newMessages) => {
       saved: true,
       distributed: true,
       seen: true,
-      new: true
+      new: false
     }
   }) || []
 }, {deep: true})

@@ -37,7 +37,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
       // Only show as unread if:
       // 1. Chat is not archived
       // 2. Last message is NOT from me (fromMe = false means it's from the user)
-      return !chat.archived
+      return !chat.archived && !chat.lastMessage.fromMe
     },
 
     clearPlaceholderChats(): void {
