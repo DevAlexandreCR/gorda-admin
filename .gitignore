@@ -35,3 +35,4 @@ pubsub-debug.log
 *.sw?
 /coverage/
 ./.firebase
+/docs/
