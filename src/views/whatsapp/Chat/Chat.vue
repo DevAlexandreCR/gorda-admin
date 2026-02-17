@@ -57,6 +57,8 @@ import i18n from "@/plugins/i18n";
 import {useClientsStore} from "@/services/stores/ClientsStore";
 import SessionRepository from '@/repositories/SessionRepository'
 import Swal from 'sweetalert2'
+import { useLoadingState } from '@/services/stores/LoadingState'
+import { set } from 'firebase/database'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -69,6 +71,7 @@ let wpClient: WhatsAppClient
 let observer: ClientObserver
 const {getWpClient, getWpClients} = useWpClientsStore()
 const  { findById, getClients } = useClientsStore()
+const { setLoading } = useLoadingState()
 const showTooltip = ref(false)
 const isClaimingChat = ref(false)
 const isChatClaimed = ref(false)
@@ -282,6 +285,7 @@ function claimChat(): void {
 }
 
 onBeforeMount(async () => {
+  setLoading(true)
   checkPermission()
   await getClients()
   await getWpClients()
@@ -289,7 +293,7 @@ onBeforeMount(async () => {
   register()
   getChats(clientId.value)
   getConfig()
-  
+  setLoading(false)
   const wpClientData = getWpClient(clientId.value)
   if (wpClientData) {
     wpClient = WhatsAppClient.getInstance(wpClientData)
