@@ -1,14 +1,20 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
 export const useLoadingState = defineStore('clientsState', {
   state: () => {
     return {
-      isLoading: false
+      isLoading: false,
+      loadingCount: 0
     }
   },
   actions: {
     setLoading(loading: boolean): void {
-      this.isLoading = loading
+      if (loading) {
+        this.loadingCount += 1
+      } else {
+        this.loadingCount = Math.max(0, this.loadingCount - 1)
+      }
+      this.isLoading = this.loadingCount > 0
     }
   }
 })
