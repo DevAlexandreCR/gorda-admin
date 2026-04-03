@@ -1,139 +1,117 @@
-import DBService from '@/services/DBService'
-import { DataSnapshot, get, off, onValue, query, ref, remove, set } from 'firebase/database'
 import { WpClient } from '@/types/WpClient'
 import { RideFeeInterface } from '@/types/RideFeeInterface'
-import { ClientDictionary } from "@/types/ClientDiccionary"
+import { ClientDictionary } from '@/types/ClientDiccionary'
 import { SettingsMessageInterface } from '@/types/SettingsMessagesInterface'
-import { DocumentData, DocumentReference, QuerySnapshot, doc, getDocs, updateDoc } from 'firebase/firestore'
-import FSService from '@/services/FSService'
-import { MessagesEnum } from '@/constants/MessagesEnum'
-import { Branch } from "@/types/Branch"
+import { Branch } from '@/types/Branch'
 import { DynamicMultiplier } from '@/types/DynamicMultiplier'
+import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 
 class SettingsRepository {
-
-  /* istanbul ignore next */
   async getWpClients(): Promise<ClientDictionary> {
-    const snapshot: DataSnapshot = await get(DBService.dbWpClients())
+    const response = await serverApi.get<ApiResponse<{ clients: WpClient[] }>>('/master-data/wp-clients')
     const clients: ClientDictionary = {}
-    snapshot.forEach(data => {
-      if (data.key) clients[data.key] = <WpClient>data.val()
+
+    response.data.data.clients.forEach((client) => {
+      clients[client.id] = client
     })
+
     return clients
   }
 
-  /* istanbul ignore next */
   async getMessages(): Promise<Array<SettingsMessageInterface>> {
-    const snapshot: QuerySnapshot<DocumentData> = await getDocs(FSService.messagesCollection())
-    const messages: Array<SettingsMessageInterface> = []
-    snapshot.forEach((doc) => {
-      const messageData = doc.data()
-      const messageId = doc.id as MessagesEnum
-      const message = {
-        id: messageId,
-        name: messageData.name,
-        description: messageData.description,
-        message: messageData.message,
-        enabled: messageData.enabled,
-        interactive: messageData.interactive || null
-      }
-      messages.push(message)
-    })
-    return messages
+    const response = await serverApi.get<ApiResponse<{ messages: SettingsMessageInterface[] }>>(
+      '/master-data/chatbot-messages'
+    )
+
+    return response.data.data.messages
   }
 
-  /* istanbul ignore next */
   async updateMessage(message: SettingsMessageInterface): Promise<void> {
-    const messageRef: DocumentReference = doc(FSService.messagesCollection(), message.id)
-    if (message.interactive && message.interactive.type === 'location_request_message') {
-      message.interactive.action = {
-        name: 'send_location'
-      }
-    }
-    const dataToUpdate = {
-      name: message.name,
-      description: message.description,
-      message: message.message,
-      enabled: message.enabled,
-      interactive: message.interactive
-    }
-    await updateDoc(messageRef, dataToUpdate)
+    await serverApi.put(`/master-data/chatbot-messages/${message.id}`, message)
   }
 
-  /* istanbul ignore next */
   async updateRideFee(rideFee: RideFeeInterface): Promise<void> {
-    await set(ref(DBService.db, `settings/ride_fees/`), rideFee)
+    await serverApi.put('/master-data/ride-fees', rideFee)
   }
 
-  /* istanbul ignore next */
   async addMultiplier(multipliers: DynamicMultiplier[], multiplier: DynamicMultiplier): Promise<void> {
     multipliers.push(multiplier)
-    await set(ref(DBService.db, `settings/ride_fees/dynamic_multipliers`), multipliers)
-  }
-
-  /* istanbul ignore next */
-  async removeMultiplier(multipliers: DynamicMultiplier[], index: number): Promise<void> {
-    multipliers.splice(index, 1)
-    await set(ref(DBService.db, `settings/ride_fees/dynamic_multipliers`), multipliers)
-  }
-
-  /* istanbul ignore next */
-  getRideFees(callback: (rideFees: RideFeeInterface) => void): void {
-    onValue(ref(DBService.db, 'settings/ride_fees'), (snapshot) => {
-      callback(<RideFeeInterface>snapshot.val())
+    const current = await this.getRideFeesSnapshot()
+    await this.updateRideFee({
+      ...current,
+      dynamic_multipliers: multipliers,
     })
   }
 
-  /* istanbul ignore next */
-  async getBranches(): Promise<Map<string, Branch>> {
-    const snapshot: DataSnapshot = await get(ref(DBService.db, 'settings/branches'))
-    return <Map<string, Branch>>snapshot.val()
+  async removeMultiplier(multipliers: DynamicMultiplier[], index: number): Promise<void> {
+    multipliers.splice(index, 1)
+    const current = await this.getRideFeesSnapshot()
+    await this.updateRideFee({
+      ...current,
+      dynamic_multipliers: multipliers,
+    })
   }
 
-  /* istanbul ignore next */
+  getRideFees(callback: (rideFees: RideFeeInterface) => void): void {
+    void this.getRideFeesSnapshot().then(callback)
+  }
+
+  async getBranches(): Promise<Branch[]> {
+    const response = await serverApi.get<ApiResponse<{ branches: Branch[] }>>(
+      '/master-data/branches'
+    )
+    return response.data.data.branches
+  }
+
   enableWpNotifications(clientId: string, enable: boolean): Promise<void> {
-    return set(ref(DBService.db, `settings/wp_clients/${clientId}/wpNotifications/`), enable)
+    return serverApi
+      .patch(`/master-data/wp-clients/${clientId}`, { wpNotifications: enable })
+      .then(() => undefined)
   }
 
-  /* istanbul ignore next */
   enableChatBot(clientId: string, enable: boolean): Promise<void> {
-    return set(ref(DBService.db, `settings/wp_clients/${clientId}/chatBot/`), enable)
+    return serverApi
+      .patch(`/master-data/wp-clients/${clientId}`, { chatBot: enable })
+      .then(() => undefined)
   }
 
-  /* istanbul ignore next */
   enableAssistant(clientId: string, enable: boolean): Promise<void> {
-    return set(ref(DBService.db, `settings/wp_clients/${clientId}/assistant/`), enable)
+    return serverApi
+      .patch(`/master-data/wp-clients/${clientId}`, { assistant: enable })
+      .then(() => undefined)
   }
 
-  /* istanbul ignore next */
   enableFull(clientId: string, enable: boolean): Promise<void> {
-    return set(ref(DBService.db, `settings/wp_clients/${clientId}/full/`), enable)
+    return serverApi.patch(`/master-data/wp-clients/${clientId}`, { full: enable }).then(() => undefined)
   }
 
-  /* istanbul ignore next */
-  onWpNotifications(client: WpClient, listener: (enable: DataSnapshot) => void): void {
-    onValue(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), listener)
+  onWpNotifications(_client: WpClient, _listener: (enable: unknown) => void): void {
+    return
   }
 
-  /* istanbul ignore next */
-  offWpNotifications(client: WpClient): void {
-    off(query(ref(DBService.db, `wp_clients/${client.id}/wpNotifications`)), 'value')
+  offWpNotifications(_client: WpClient): void {
+    return
   }
 
-  /* istanbul ignore next */
   createClient(client: WpClient): Promise<void> {
-    return set(ref(DBService.db, `settings/wp_clients/${client.id}/`), client)
+    return serverApi.post('/master-data/wp-clients', client).then(() => undefined)
   }
 
-  /* istanbul ignore next */
   deleteClient(client: WpClient): Promise<void> {
-    return remove(ref(DBService.db, `settings/wp_clients/${client.id}/`))
+    return serverApi.delete(`/master-data/wp-clients/${client.id}`).then(() => undefined)
   }
 
-  /* istanbul ignore next */
   async setPercentage(branchId: string, cityId: string, percentage: number): Promise<void> {
-    await set(ref(DBService.db, `settings/branches/${branchId}/cities/${cityId}/percentage`), percentage)
+    await serverApi.patch(`/master-data/branches/${branchId}/cities/${cityId}`, { percentage })
   }
 
+  private async getRideFeesSnapshot(): Promise<RideFeeInterface> {
+    const response = await serverApi.get<ApiResponse<{ rideFees: RideFeeInterface }>>(
+      '/master-data/ride-fees'
+    )
+
+    return response.data.data.rideFees
+  }
 }
+
 export default new SettingsRepository()

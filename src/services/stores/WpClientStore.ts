@@ -3,7 +3,6 @@ import SettingsRepository from '@/repositories/SettingsRepository'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import { WpClient } from "@/types/WpClient"
 import { ClientDictionary } from "@/types/ClientDiccionary"
-import { DataSnapshot } from "firebase/database"
 import { Constants } from "@/constants/Constants"
 import ToastService from "@/services/ToastService"
 import i18n from "@/plugins/i18n"
@@ -129,9 +128,7 @@ export const useWpClientsStore = defineStore('settingsStore', {
     },
 
     onWpNotification(client: WpClient): void {
-      SettingsRepository.onWpNotifications(client, (snapshot: DataSnapshot) => {
-        this.clients[client.id].wpNotifications = snapshot.val()
-      })
+      SettingsRepository.onWpNotifications(client, () => undefined)
     },
 
     offWpNotifications(client: WpClient): void {

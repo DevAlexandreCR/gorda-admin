@@ -1,15 +1,12 @@
 import {
   child,
-  DataSnapshot,
-  get,
   onChildChanged,
   onChildAdded,
   onChildRemoved,
   orderByKey,
   query,
-  ref,
-  set,
-  off, remove,
+  off,
+  remove,
 } from 'firebase/database'
 import DBService from '@/services/DBService'
 import { DriverInterface } from '@/types/DriverInterface'
@@ -20,98 +17,96 @@ import UserRepository from '@/repositories/UserRepository'
 import { AxiosError } from 'axios'
 import { DriverConnectedInterface } from '@/types/DriverConnectedInterface'
 import CacheStore from '@/services/stores/CacheStore'
+import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 
 class DriverRepository {
-
-  /* istanbul ignore next */
   async getDriver(id: string): Promise<DriverInterface> {
-    const snapshot: DataSnapshot = await get(child(DBService.dbDrivers(), id))
-    return <DriverInterface>snapshot.val() ?? new Driver
+    const response = await serverApi.get<ApiResponse<{ driver: DriverInterface }>>(`/drivers/${id}`)
+    return response.data.data.driver ?? new Driver()
   }
 
-  /* istanbul ignore next */
   async getAll(): Promise<Array<DriverInterface>> {
-    const snapshot: DataSnapshot = await get(DBService.dbDrivers())
-    return Object.values(snapshot.val() ?? [])
+    const response = await serverApi.get<ApiResponse<{ drivers: DriverInterface[] }>>('/drivers')
+    return response.data.data.drivers ?? []
   }
 
-  /* istanbul ignore next */
   update(driver: DriverInterface): Promise<void> {
     CacheStore.clear(CacheStore.ALL_DRIVERS)
-    return set(ref(DBService.db, 'drivers/' + driver.id), driver)
+    return serverApi.put(`/drivers/${driver.id}`, driver).then(() => undefined)
   }
 
-  /* istanbul ignore next */
-  async addBalance(driver: Driver, amount: number): Promise<void> { 
+  async addBalance(driver: Driver, amount: number): Promise<void> {
     driver.balance += amount
-    return set(ref(DBService.db, 'drivers/' + driver.id + '/balance'), driver.balance)
+    await serverApi.patch(`/drivers/${driver.id}/balance`, { balance: driver.balance })
   }
 
-  /* istanbul ignore next */
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.enableAuth(driverId, enabledAt == 0).then(() => {
-        set(ref(DBService.db, 'drivers/' + driverId + '/enabled_at'), enabledAt).then(async () => {
-          if (enabledAt == 0) await remove(ref(DBService.db, 'online_drivers/' + driverId)).catch(e => {
-            reject(new Error(e.message))
+      UserRepository.enableAuth(driverId, enabledAt == 0)
+        .then(() => {
+          serverApi.patch(`/drivers/${driverId}/enabled`, { enabled_at: enabledAt }).then(async () => {
+            if (enabledAt == 0) {
+              await remove(child(DBService.dbOnlineDrivers(), driverId)).catch((e) => {
+                reject(new Error(e.message))
+              })
+            }
+            resolve()
+            CacheStore.clear(CacheStore.ALL_DRIVERS)
           })
-          resolve()
-          CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
-      }).catch((e) => {
-        reject(new Error(e.message))
-      })
+        .catch((e) => {
+          reject(new Error(e.message))
+        })
     })
   }
 
-  /* istanbul ignore next */
   async removeIndex(driverId: string): Promise<void> {
     return await remove(child(DBService.dbDriversAssigned(), driverId))
   }
 
-  /* istanbul ignore next */
   updateEmail(driverId: string, email: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.emailAuth(driverId, email).then(() => {
-        set(ref(DBService.db, 'drivers/' + driverId + '/email/'), email).then(() => {
-          resolve()
-          CacheStore.clear(CacheStore.ALL_DRIVERS)
+      UserRepository.emailAuth(driverId, email)
+        .then(() => {
+          serverApi.patch(`/drivers/${driverId}/email`, { email }).then(() => {
+            resolve()
+            CacheStore.clear(CacheStore.ALL_DRIVERS)
+          })
         })
-      }).catch((e) => {
-        reject(new Error(e.message))
-      })
+        .catch((e) => {
+          reject(new Error(e.message))
+        })
     })
   }
 
-  /* istanbul ignore next */
   updatePassword(driverId: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.passwordAuth(driverId, password).then(() => {
-        set(ref(DBService.db, 'drivers/' + driverId + '/password/'), password).then(() => {
-          resolve()
-          CacheStore.clear(CacheStore.ALL_DRIVERS);
+      UserRepository.passwordAuth(driverId, password)
+        .then(() => {
+          serverApi.patch(`/drivers/${driverId}/password`, { password }).then(() => {
+            resolve()
+            CacheStore.clear(CacheStore.ALL_DRIVERS)
+          })
         })
-      }).catch((e) => {
-        reject(new Error(e.message));
-      })
+        .catch((e) => {
+          reject(new Error(e.message))
+        })
     })
   }
 
-  /* istanbul ignore next */
-  onlineDriverListener(onAdded: (driver: DriverConnectedInterface) => void,
+  onlineDriverListener(
+    onAdded: (driver: DriverConnectedInterface) => void,
     onChanged: (driver: DriverConnectedInterface) => void,
-    onRemoved: (driver: DriverConnectedInterface) => void): void {
+    onRemoved: (driver: DriverConnectedInterface) => void
+  ): void {
     onChildAdded(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
-      const driver = data.val() as DriverConnectedInterface
-      onAdded(driver)
+      onAdded(data.val() as DriverConnectedInterface)
     })
     onChildChanged(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
-      const driver = data.val() as DriverConnectedInterface
-      onChanged(driver)
+      onChanged(data.val() as DriverConnectedInterface)
     })
     onChildRemoved(query(DBService.dbOnlineDrivers(), orderByKey()), (data) => {
-      const driver = data.val() as DriverConnectedInterface
-      onRemoved(driver)
+      onRemoved(data.val() as DriverConnectedInterface)
     })
   }
 
@@ -119,7 +114,6 @@ class DriverRepository {
     off(query(DBService.dbOnlineDrivers(), orderByKey()))
   }
 
-  /* istanbul ignore next */
   async create(driver: DriverInterface, password: string): Promise<string> {
     const userData: UserRequestType = {
       email: driver.email,
@@ -129,16 +123,19 @@ class DriverRepository {
       password: password,
       disabled: driver.enabled_at == 0,
     }
+
     return new Promise((resolve, reject) => {
-      UserRepository.createAuth(userData).then(async (res) => {
-        const id = res.data.data.uid
-        driver.id = id
-        await set(ref(DBService.db, 'drivers/' + id), driver)
-        CacheStore.clear(CacheStore.ALL_DRIVERS)
-        return resolve(id)
-      }).catch((e: AxiosError<UserResponse>) => {
-        reject(new Error(e.response?.data.data as string ?? e.message))
-      })
+      UserRepository.createAuth(userData)
+        .then(async (res) => {
+          const id = res.data.data.uid
+          driver.id = id
+          await serverApi.post('/drivers', driver)
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
+          return resolve(id)
+        })
+        .catch((e: AxiosError<UserResponse>) => {
+          reject(new Error((e.response?.data.data as string) ?? e.message))
+        })
     })
   }
 }

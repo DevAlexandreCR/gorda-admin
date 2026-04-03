@@ -18,7 +18,6 @@ themeStore.init()
 axios.defaults.baseURL = window.location.origin
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json;charset=UTF-8'
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 
 const app = createApp(App).provide('appName', process.env.VUE_APP_TITLE)
 

@@ -5,5 +5,5 @@ export type Branch = {
     calling_code: string
     country: string
     currency_code: string
-    cities: Map<string, City>
+    cities: City[]
 }

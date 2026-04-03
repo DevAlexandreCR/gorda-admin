@@ -280,7 +280,7 @@
       <div class="tap-pane fade show active" role="tabpanel" id="general_settings" aria-labelledby="settings-tab">
         <h3 class="ms-4">{{ $t('common.settings.branches') }}:</h3>
         <div class="row">
-          <div class="col-6" v-for="(branch , index) in branches" :key="index">
+          <div class="col-6" v-for="branch in branches" :key="branch.id">
             <div class="container mt-4">
               <div class="card">
                 <div class="card-header">
@@ -348,9 +348,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue'
+import { ref, Ref } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
-import { RideFeeInterface } from '@/types/RideFeeInterface'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import SettingsMsg from '@/views/settings/messages/Index.vue'
 import ToastService from '@/services/ToastService'
@@ -381,10 +380,12 @@ const editField = (fieldName: string) => {
 }
 
 function selectBranch(b: Branch, city: City): void {
-  citySelected.value = city
+  citySelected.value = {
+    ...city,
+    location: { ...city.location },
+    polygon: city.polygon.map((point) => ({ ...point })),
+  }
   branch.value = b
-  console.log(citySelected.value);
-  
 }
 
 function setPercentageModal(city: City, branchId: string): void {

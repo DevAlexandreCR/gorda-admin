@@ -8,7 +8,7 @@ import { RideFeeInterface } from "@/types/RideFeeInterface";
 export const useSettingsStore = defineStore('generalSettingsStore', {
     state: () => {
         return {
-            branches: new Map<string, Branch>() as Map<string, Branch>,
+            branches: [] as Branch[],
             branchSelected: null as BranchSelected | null,
             rideFees: null as RideFeeInterface | null 
         }
@@ -21,14 +21,23 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
             } else {
                 this.branchSelected = null
             }
-            this.branches = await SettingsRepository.getBranches().catch(() => new Map<string, Branch>())
-            if (this.branches.size === 1 && this.branchSelected === null) {
-                this.branches.forEach((branch: Branch) => {
-                    branch.cities.forEach((city: City) => {
-                        this.setBranchSelected(branch, city)
-                        return
-                    })
-                 })
+            this.branches = await SettingsRepository.getBranches().catch(() => [] as Branch[])
+            const selectedBranch = this.findSelectedBranch()
+
+            if (selectedBranch && this.branchSelected?.city?.id) {
+                const selectedCity = selectedBranch.cities.find((city) => city.id === this.branchSelected?.city.id)
+                if (selectedCity) {
+                    this.setBranchSelected(selectedBranch, selectedCity)
+                    return
+                }
+            }
+
+            if (this.branches.length === 1 && this.branchSelected === null) {
+                const branch = this.branches[0]
+                const city = branch?.cities[0]
+                if (branch && city) {
+                    this.setBranchSelected(branch, city)
+                }
             }
         },
         setBranchSelected(branch: Branch, city: City): void {
@@ -40,6 +49,13 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
                 city: city
             }
             sessionStorage.setItem('branchSelected', JSON.stringify(this.branchSelected))
+        },
+        findSelectedBranch(): Branch | null {
+            if (!this.branchSelected) {
+                return null
+            }
+
+            return this.branches.find((branch) => branch.id === this.branchSelected?.id) ?? null
         },
 
         async setPercentage(branchId: string, city: City): Promise<void> {

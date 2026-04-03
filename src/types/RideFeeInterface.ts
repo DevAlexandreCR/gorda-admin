@@ -13,6 +13,8 @@ export interface RideFeeInterface {
     fees_min_nigth: number
     fees_min_festive_day: number
     fees_min_festive_nigth: number
+    timeout_to_complete: number
+    timeout_to_connection: number
     fee_multiplier: number
     dynamic_multipliers: DynamicMultiplier[]
   }
