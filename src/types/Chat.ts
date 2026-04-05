@@ -1,4 +1,5 @@
 import {Message} from '@/types/Message'
+import {ActiveChatSession} from '@/types/ActiveChatSession'
 
 export type Chat = {
   id: string
@@ -6,4 +7,5 @@ export type Chat = {
   clientName: string
   lastMessage: Message
   updated_at: number
+  activeSession?: ActiveChatSession
 }

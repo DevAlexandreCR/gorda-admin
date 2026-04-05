@@ -161,6 +161,19 @@ export default class WhatsAppClient implements WPSubject {
     this.socket.emit(WhatsApp.EVENT_SEND_MESSAGE, wpClientId, chatId, message)
   }
 
+  on(event: string, listener: (...args: any[]) => void): void {
+    this.socket.on(event, listener)
+  }
+
+  off(event: string, listener?: (...args: any[]) => void): void {
+    if (listener) {
+      this.socket.off(event, listener)
+      return
+    }
+
+    this.socket.off(event)
+  }
+
   attach(observer: WPObserver): void {
     const isExist = this.observers.includes(observer)
     if (!isExist) this.observers.push(observer)

@@ -2,10 +2,9 @@
   <div v-if="showTooltip" class="alert alert-success centered-tooltip position-absolute ms-2 mt-2 z-index-sticky" role="alert">
     <strong>{{ activeChat }}</strong>  {{ $t('common.messages.copied') }}
   </div>
-  
-  <!-- Floating Claim Button -->
-  <button 
-    v-if="activeChat && !isChatClaimed" 
+
+  <button
+    v-if="canClaimChat"
     @click="claimChat"
     class="btn btn-danger position-fixed rounded-circle d-flex align-items-center justify-content-center shadow"
     style="top: 80px; right: 20px; width: 60px; height: 60px; z-index: 1000; font-size: 20px;"
@@ -15,7 +14,7 @@
     <i v-if="!isClaimingChat" class="fas fa-hand-paper"></i>
     <i v-else class="fas fa-spinner fa-spin"></i>
   </button>
-  
+
   <vue-advanced-chat
       :current-user-id="clientId"
       :rooms = "JSON.stringify(rooms)"
@@ -41,51 +40,72 @@
   />
 </template>
 <script setup lang="ts">
-import {register} from 'vue-advanced-chat'
-import {onBeforeMount, ref, Ref, watch} from 'vue'
-import {useRoute} from 'vue-router'
-import {useWpChatStore} from '@/services/stores/UseWpChatStore'
-import {Chat} from '@/types/Chat'
-import {storeToRefs} from 'pinia'
-import {Message} from '@/types/Message'
+import { register } from 'vue-advanced-chat'
+import { computed, onBeforeMount, onBeforeUnmount, ref, Ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useWpChatStore } from '@/services/stores/UseWpChatStore'
+import { Chat } from '@/types/Chat'
+import { storeToRefs } from 'pinia'
+import { Message } from '@/types/Message'
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {ClientObserver} from '@/services/gordaApi/ClientObserver'
-import {useWpClientsStore} from '@/services/stores/WpClientStore'
+import { ClientObserver } from '@/services/gordaApi/ClientObserver'
+import { useWpClientsStore } from '@/services/stores/WpClientStore'
 import DateHelper from '@/helpers/DateHelper'
-import {ChatThemes} from '@/services/gordaApi/constants/ChatThemes'
-import i18n from "@/plugins/i18n";
-import {useClientsStore} from "@/services/stores/ClientsStore";
+import { ChatThemes } from '@/services/gordaApi/constants/ChatThemes'
+import i18n from '@/plugins/i18n'
+import { useClientsStore } from '@/services/stores/ClientsStore'
 import SessionRepository from '@/repositories/SessionRepository'
 import Swal from 'sweetalert2'
 import { useLoadingState } from '@/services/stores/LoadingState'
-import { set } from 'firebase/database'
+import { SessionStatuses } from '@/constants/SessionStatuses'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
 const wpChatStore = useWpChatStore()
-const { getChats, getMessages, checkPermission, getConfig, setTheme, setActiveChat, filterChat } = wpChatStore
-const {activeChat, messages, theme } = storeToRefs(wpChatStore)
+const {
+  getChats,
+  getMessages,
+  checkPermission,
+  getConfig,
+  setTheme,
+  setActiveChat,
+  filterChat,
+  upsertChat,
+  appendMessage,
+  updateChatActiveSession
+} = wpChatStore
+const { activeChat, messages, theme } = storeToRefs(wpChatStore)
 const rooms = ref<any[]>([])
 const chatMessages = ref<any[]>([])
-let wpClient: WhatsAppClient
-let observer: ClientObserver
-const {getWpClient, getWpClients} = useWpClientsStore()
-const  { findById, getClients } = useClientsStore()
+let wpClient: WhatsAppClient | null = null
+let observer: ClientObserver | null = null
+const { getWpClient, getWpClients } = useWpClientsStore()
+const { findById, getClients } = useClientsStore()
 const { setLoading } = useLoadingState()
 const showTooltip = ref(false)
 const isClaimingChat = ref(false)
-const isChatClaimed = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
   { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
   { name: 'light', title: i18n.global.t('common.placeholders.' + ChatThemes.LIGHT) }
 ]
+const activeChatData = computed(() => {
+  if (!activeChat.value) {
+    return null
+  }
+
+  return wpChatStore.allChats.get(activeChat.value) ?? wpChatStore.chats.get(activeChat.value) ?? null
+})
+const activeSession = computed(() => activeChatData.value?.activeSession ?? null)
+const canClaimChat = computed(() => {
+  return !!activeChat.value && !!activeSession.value && activeSession.value.status !== SessionStatuses.SUPPORT
+})
 
 watch(() => wpChatStore.sortedChats, async (newChats) => {
   const chatsSorted = await Promise.all(Array.from(newChats.values()).map(async (chat: Chat) => {
     const client = await findById(chat.id) ?? { name: chat.clientName }
     const shouldShowUnread = wpChatStore.shouldShowAsUnread(chat)
-    
+
     return {
       roomId: chat.id,
       roomName: client.name ?? chat.clientName,
@@ -120,14 +140,13 @@ watch(() => wpChatStore.sortedChats, async (newChats) => {
     }
   }))
 
-  // No need to sort again since sortedChats already returns sorted data
   rooms.value = chatsSorted
-}, {deep: true})
+}, { deep: true })
 
 watch(messages, (newMessages) => {
   const activeChatId = activeChat.value
   if (!activeChatId) return
-  
+
   const messageList = newMessages.get(activeChatId)
   chatMessages.value = messageList?.map((message: Message) => {
     const date = DateHelper.formatTimestamp(message.created_at)
@@ -147,34 +166,26 @@ watch(messages, (newMessages) => {
       new: false
     }
   }) || []
-}, {deep: true})
-
-// Reset claimed status when switching chats
-watch(activeChat, () => {
-  isChatClaimed.value = false
-})
+}, { deep: true })
 
 function fetchMessages(data: CustomEvent): void {
-  const {room} = data.detail[0]
-  
-  // Validate that the room exists and is not a placeholder
+  const { room } = data.detail[0]
+
   if (!room || !room.roomId) {
-    console.warn('Invalid room data:', room)
+    void room
     return
   }
-  
-  // Don't fetch messages for placeholder chats
+
   if (room.lastMessage && room.lastMessage.content === 'Buscar conversación...') {
-    console.log('Skipping placeholder chat:', room.roomId)
     return
   }
-  
+
   setActiveChat(room.roomId)
   getMessages(clientId.value, room.roomId)
 }
 
 function sendMessage(data: CustomEvent): void {
-  const {content, roomId} = data.detail[0]
+  const { content, roomId } = data.detail[0]
   const id = DateHelper.unix()
   const newMessage = {
     _id: id,
@@ -190,16 +201,18 @@ function sendMessage(data: CustomEvent): void {
     seen: false,
     new: true
   }
+
   if (chatMessages.value) {
     chatMessages.value = [...chatMessages.value, newMessage]
   } else {
     chatMessages.value = [newMessage]
   }
-  wpClient.sendMessage(clientId.value, roomId, content)
+
+  wpClient?.sendMessage(clientId.value, roomId, content)
 }
 
 function onUpdate(socket: WhatsAppClient): void {
-  console.log(socket.isConnected())
+  void socket
 }
 
 function copyText(): void {
@@ -209,19 +222,19 @@ function copyText(): void {
         showTooltip.value = true
         setTimeout(() => { showTooltip.value = false }, 2000)
       })
-      .catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+      .catch((err) => {
+        void err
+      })
   }
 }
 
 function filter(data: CustomEvent) {
-  const {value} = data.detail[0]
+  const { value } = data.detail[0]
   filterChat(value)
 }
 
 function menuActionHandler(data: CustomEvent): void {
-  const {action} = data.detail[0]
+  const { action } = data.detail[0]
   switch (action.name) {
     case 'copy':
       copyText()
@@ -236,39 +249,28 @@ function menuActionHandler(data: CustomEvent): void {
 }
 
 function claimChat(): void {
-  if (!activeChat.value || isClaimingChat.value || isChatClaimed.value) return
-  
+  if (!activeChat.value || !activeSession.value || isClaimingChat.value) return
+
   isClaimingChat.value = true
-  
-  SessionRepository.setLastNonCompletedSessionToSupport(activeChat.value)
-    .then((result) => {
-      if (result) {
-        // Success: Session was found and updated
-        isChatClaimed.value = true
-        Swal.fire({
-          icon: 'success',
-          title: i18n.global.t('common.messages.updated'),
-          text: i18n.global.t('common.messages.chat_claimed_success'),
-          showConfirmButton: false,
-          timer: 3000,
-          toast: true,
-          position: 'top-right'
-        })
-      } else {
-        // No session found to claim
-        Swal.fire({
-          icon: 'info',
-          title: i18n.global.t('common.messages.no_session_found'),
-          text: i18n.global.t('common.messages.no_session_found_text'),
-          showConfirmButton: false,
-          timer: 3000,
-          toast: true,
-          position: 'top-right'
-        })
+
+  SessionRepository.updateSessionStatus(activeSession.value.sessionId, SessionStatuses.SUPPORT)
+    .then((session) => {
+      if (activeChat.value) {
+        updateChatActiveSession(activeChat.value, session)
       }
+
+      Swal.fire({
+        icon: 'success',
+        title: i18n.global.t('common.messages.updated'),
+        text: i18n.global.t('common.messages.chat_claimed_success'),
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: 'top-right'
+      })
     })
     .catch((error) => {
-      console.error('Failed to claim chat:', error)
+      void error
       Swal.fire({
         icon: 'error',
         title: i18n.global.t('common.messages.error'),
@@ -282,6 +284,17 @@ function claimChat(): void {
     .finally(() => {
       isClaimingChat.value = false
     })
+}
+
+function onChatUpsert(chat: Chat): void {
+  upsertChat(chat)
+}
+
+function onMessageCreated(payload: { chatId: string; message: Message }): void {
+  appendMessage(payload.chatId, {
+    ...payload.message,
+    from: payload.message.fromMe ? clientId.value : payload.chatId
+  })
 }
 
 onBeforeMount(async () => {
@@ -299,6 +312,19 @@ onBeforeMount(async () => {
     wpClient = WhatsAppClient.getInstance(wpClientData)
     observer = new ClientObserver(onUpdate as any)
     wpClient.attach(observer)
+    wpClient.on('whatsapp:chat-upsert', onChatUpsert)
+    wpClient.on('whatsapp:message-created', onMessageCreated)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (wpClient) {
+    wpClient.off('whatsapp:chat-upsert', onChatUpsert)
+    wpClient.off('whatsapp:message-created', onMessageCreated)
+  }
+
+  if (wpClient && observer) {
+    wpClient.detach(observer)
   }
 })
 </script>
