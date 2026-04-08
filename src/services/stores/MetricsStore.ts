@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import axios from 'axios'
 import {Metric} from '@/types/Metric'
 import DateHelper from '@/helpers/DateHelper'
 import {MetricItem} from '@/types/MetricItem'
@@ -8,8 +7,6 @@ import {useLoadingState} from '@/services/stores/LoadingState'
 import MetricRepository from '@/repositories/MetricRepository'
 import { useDriversStore } from './DriversStore'
 import { TopFrequency } from '@/constants/TopFrequency'
-
-const GLOBAL_METRIC_PATH = '/metrics/global'
 
 export const useMetricsStore = defineStore('metricsStore', {
 	state: () => {
@@ -48,17 +45,12 @@ export const useMetricsStore = defineStore('metricsStore', {
 
 			return new Promise((resolve, reject) => {
 				setLoading(true)
-				axios.get(process.env.VUE_APP_GORDA_API_URL + GLOBAL_METRIC_PATH, {
-					params: {
-						startDate: startDate,
-						endDate: endDate,
-					},
-				}).then((res) => {
+				MetricRepository.getGlobal(startDate, endDate).then((metrics) => {
 					this.setMetricQueryToday('lastMetricQuery')
 					setLoading(false)
 					this.loading = false
 					this.loaded = true
-					res.data.data.forEach((metric: Metric) => {
+					metrics.forEach((metric: Metric) => {
 						this.globalMetric.push(metric)
 					})
 					sessionStorage.setItem('globalMetric', JSON.stringify(this.globalMetric))
@@ -140,12 +132,16 @@ export const useMetricsStore = defineStore('metricsStore', {
 				from = DateHelper.startOfWeekUnix()
 			}
 			const endOfDay = DateHelper.endOfDayUnix()
-			const metrics = await MetricRepository.getDailyTopFive(from, endOfDay)
+			const metrics = await MetricRepository.getTopDrivers(
+				from,
+				endOfDay,
+				frequency === TopFrequency.Weekly ? 'weekly' : 'daily'
+			)
 			this.loading = false
 				
 			Array.from(metrics.entries()).forEach(([driverId, metric]) => {
 				const driver = findById(driverId)
-				if (driver) this.top5DailyMetric.set(driver.vehicle.plate, metric.count)
+				if (driver) this.top5DailyMetric.set(driver.vehicle.plate, metric)
 			})
 			
 			if (frequency === TopFrequency.Weekly) {

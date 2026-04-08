@@ -17,24 +17,17 @@ import {
 import DBService from '@/services/DBService'
 import { ServiceInterface } from '@/types/ServiceInterface'
 import Service from '@/models/Service'
-import FSService from '@/services/FSService'
 import AuthService from '@/services/AuthService'
-import {
-	CollectionReference,
-	endBefore,
-	getCountFromServer,
-	getDocs,
-	limit,
-	limitToLast,
-	orderBy,
-	query as queryFS,
-	Query,
-	startAfter,
-	startAt,
-	where,
-} from 'firebase/firestore'
 import { ServiceCursor } from '@/types/ServiceCursor'
 import {LocationType} from '@/types/LocationType'
+import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
+
+type HistoryPageResponse = {
+	services: Service[]
+	totalCount: number
+	terminatedCount: number
+	canceledCount: number
+}
 
 class ServiceRepository {
 
@@ -45,56 +38,46 @@ class ServiceRepository {
 	}
 
 	/* istanbul ignore next */
-	betweenDate(from: number, to: number, query?: Query): Query {
-		if (query === undefined) query = FSService.servicesCollection()
-		return queryFS(query,
-			where('created_at', '>=', from),
-			where('created_at', '<=', to)
-		);
-	}
-
-	/* istanbul ignore next */
-	byClientId(clientId: string, query?: Query): Query {
-		if (query === undefined) query = FSService.servicesCollection()
-		return queryFS(query,
-			where('client_id', '==', clientId)
-		);
-	}
-
-	/* istanbul ignore next */
-	byStatus(status: string, query?: Query): Query {
-		if (query === undefined) query = FSService.servicesCollection()
-		return queryFS(query,
-			where('status', '==', status)
-		);
-	}
-
-	/* istanbul ignore next */
-	async getCount(from: number, to: number, clientId: string | null, driverId?: string | null, status: string | null = null): Promise<number> {
-		let query = this.betweenDate(
-			from,
-			to
-		)
-
-		if (clientId) query = this.byClientId(clientId, query)
-
-		if (driverId) query = this.byDriverId(driverId, query)
-
-		if (status) query = this.byStatus(status, query)
-
-		return getCountFromServer(query).then(snapshot => {
-			return Promise.resolve(snapshot.data().count)
-		}).catch(e => {
-			return Promise.reject(e)
+	async getHistoryPage(options: {
+		from: number
+		to: number
+		driverId: string | null
+		clientId: string | null
+		perPage: number
+		cursor: ServiceCursor
+		next: boolean
+	}): Promise<HistoryPageResponse> {
+		const hasCursor = options.cursor.id !== '' && options.cursor.created > 0
+		const response = await serverApi.get<ApiResponse<{
+			services: Service[]
+			totalCount: number
+			terminatedCount: number
+			canceledCount: number
+		}>>('/services/history', {
+			params: {
+				from: options.from,
+				to: options.to,
+				driverId: options.driverId ?? undefined,
+				clientId: options.clientId ?? undefined,
+				perPage: options.perPage,
+				cursorCreated: hasCursor ? options.cursor.created : undefined,
+				cursorId: hasCursor ? options.cursor.id : undefined,
+				direction: options.next ? 'next' : 'prev',
+			},
 		})
-	}
 
-	/* istanbul ignore next */
-	byDriverId(driverId: string, query?: Query): Query {
-		if (query === undefined) query = FSService.servicesCollection()
-		return queryFS(query,
-			where('driver_id', '==', driverId)
-		);
+		const services = response.data.data.services.map((payload) => {
+			const service = new Service()
+			Object.assign(service, payload)
+			return service
+		})
+
+		return {
+			services,
+			totalCount: response.data.data.totalCount,
+			terminatedCount: response.data.data.terminatedCount,
+			canceledCount: response.data.data.canceledCount,
+		}
 	}
 
 	/* istanbul ignore next */
@@ -106,34 +89,41 @@ class ServiceRepository {
 		perPage: number
 		cursor: ServiceCursor
 		next: boolean
-	}, contain: boolean): Promise<Array<Service>> {
-		let query: Query | CollectionReference = this.betweenDate(
-			options.from,
-			options.to
-		)
+	}, _contain = false): Promise<Array<Service>> {
+		const response = await this.getHistoryPage(options)
+		return response.services
+	}
 
-		if (options.clientId) query = this.byClientId(options.clientId, query)
+	/* istanbul ignore next */
+	async getCount(
+		from: number,
+		to: number,
+		clientId: string | null,
+		driverId?: string | null,
+		status: string | null = null
+	): Promise<number> {
+		const response = await this.getHistoryPage({
+			from,
+			to,
+			driverId: driverId ?? null,
+			clientId,
+			perPage: 1,
+			cursor: {
+				id: '',
+				created: 0,
+			},
+			next: true,
+		})
 
-		if (options.driverId) query = this.byDriverId(options.driverId, query)
+		if (status === Service.STATUS_TERMINATED) {
+			return response.terminatedCount
+		}
 
-		query = queryFS(
-			query,
-			orderBy('created_at', 'desc'),
-			orderBy('id', 'desc'),
-			options.next ? contain ? startAt(options.cursor.created, options.cursor.id) : startAfter(options.cursor.created, options.cursor.id) : endBefore(options.cursor.created, options.cursor.id),
-			options.next ? limit(options.perPage) : limitToLast(options.perPage)
-		)
+		if (status === Service.STATUS_CANCELED) {
+			return response.canceledCount
+		}
 
-		return await getDocs(query).then(docs => {
-			const services = Array<Service>()
-			docs.forEach(dataSnapshot => {
-				const service = new Service()
-				Object.assign(service, dataSnapshot.data())
-				services.push(service)
-			})
-
-			return Promise.resolve(services)
-		}).catch(e => Promise.reject(e))
+		return response.totalCount
 	}
 
 	/* istanbul ignore next */

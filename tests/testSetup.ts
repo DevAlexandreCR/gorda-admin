@@ -7,11 +7,45 @@ import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
 import {config, enableAutoUnmount} from '@vue/test-utils'
 import {createPinia, setActivePinia} from 'pinia'
 import {WpClient} from '@/types/WpClient'
+import {AddressInfo} from 'net'
 require('./mocks/maps/googleMaps')
+
+class AudioContextMock {
+  createGain(): { connect: jest.Mock; gain: { value: number } } {
+    return {
+      connect: jest.fn(),
+      gain: {
+        value: 1,
+      },
+    }
+  }
+
+  createBufferSource(): { connect: jest.Mock; start: jest.Mock; stop: jest.Mock } {
+    return {
+      connect: jest.fn(),
+      start: jest.fn(),
+      stop: jest.fn(),
+    }
+  }
+
+  decodeAudioData(): Promise<ArrayBuffer> {
+    return Promise.resolve(new ArrayBuffer(0))
+  }
+
+  get destination(): Record<string, never> {
+    return {}
+  }
+}
+
+;(window as any).AudioContext = AudioContextMock
+;(window as any).webkitAudioContext = AudioContextMock
 
 
 
 jest.mock('google-maps')
+jest.mock('vue-advanced-chat', () => ({
+  register: jest.fn(),
+}))
 jest.mock('firebase/app')
 jest.mock('firebase/auth', () => {
   return {
@@ -23,7 +57,13 @@ jest.mock('firebase/auth', () => {
     })
   }
 })
-jest.mock('sweetalert2')
+jest.mock('sweetalert2', () => ({
+  __esModule: true,
+  default: {
+    fire: jest.fn(),
+  },
+  fire: jest.fn(),
+}))
 jest.mock('firebase/database', () => {
   return {
     getDatabase: jest.fn(),
@@ -116,17 +156,23 @@ let server: httpServer
 function openServer(done: jest.DoneCallback): void {
   server = createServer()
   socket = new Server(server)
-  server.listen(3000,() => {
+  server.listen(0,() => {
+    const address = server.address() as AddressInfo
+    process.env.VUE_APP_WP_CLIENT_API_URL = 'http://localhost'
+    process.env.VUE_APP_WP_CLIENT_API_PORT = String(address.port)
     socket.on('connection', () => {
       done()
     })
+    const instances = (WhatsAppClient as any).instances ?? {}
+    Object.values(instances).forEach((client: any) => client.disconnectSocket?.())
+    ;(WhatsAppClient as any).instances = {}
+    WhatsAppClient.getInstance({
+      id: '3103794656',
+      wpNotifications: false,
+      chatBot: false,
+      alias: 'Test'
+    } as WpClient)
   })
-  WhatsAppClient.getInstance({
-    id: '3103794656',
-    wpNotifications: false,
-    chatBot: false,
-    alias: 'Test'
-  } as WpClient)
 }
 
 export {

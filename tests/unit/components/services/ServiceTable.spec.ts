@@ -33,7 +33,6 @@ describe('ServicesTable.vue', () => {
     attachTo: '#root',
     props: {
       services: Array<ServiceList>(),
-      drivers: [DriverMock],
       table: Tables.pendings,
       pagination: pagination
     },
@@ -64,7 +63,7 @@ describe('ServicesTable.vue', () => {
     }
 
     jest.useFakeTimers()
-    DriverRepository.getAll = jest.fn().mockResolvedValue(options.props.drivers)
+    DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
     SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
     const driverStore = useDriversStore()
     await driverStore.getDrivers()
@@ -78,7 +77,6 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.html()).toContain(service.start_loc.name)
     expect(wrapper.html()).toContain(service.phone)
     expect(wrapper.html()).toContain(service.name)
-    expect(wrapper.html()).toContain(DriverMock.vehicle.plate)
     expect(wrapper.findAll('tr').length).toBe(2)
     expect(wrapper.find('.fa-car').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
@@ -97,7 +95,6 @@ describe('ServicesTable.vue', () => {
     service.status = Service.STATUS_IN_PROGRESS
     options.props = {
       services: [service],
-      drivers: [DriverMock],
       table: Tables.inProgress,
       pagination: pagination
     }
@@ -109,13 +106,13 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.find('.fa-check').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
     expect(wrapper.find('.fa-car').exists()).toBeFalsy()
+    expect(wrapper.html()).toContain(DriverMock.vehicle.plate)
   })
 
   it('emmit events cancel when make click in button cancel', async () => {
     service.status = Service.STATUS_PENDING
     options.props = {
       services: [service],
-      drivers: [DriverMock],
       table: Tables.pendings,
       pagination: pagination
     }
@@ -133,7 +130,6 @@ describe('ServicesTable.vue', () => {
     service.status = Service.STATUS_IN_PROGRESS
     options.props = {
       services: [service],
-      drivers: [DriverMock],
       table: Tables.inProgress,
       pagination: pagination
     }

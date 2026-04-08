@@ -11,8 +11,6 @@ import i18n from '@/plugins/i18n'
 import {Pagination} from '@/types/Pagination'
 import Service from '@/models/Service'
 import {ServiceCursor} from '@/types/ServiceCursor'
-import { log } from 'console'
-
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -90,15 +88,11 @@ export const useServicesStore = defineStore('servicesStore', {
       ServiceRepository.inProgressListener(added, removed)
     },
 
-    async getHistoryServices(next = true, contain = false): Promise<void> {
+    async getHistoryServices(next = true, _contain = false): Promise<void> {
       const { setLoading } = useLoadingState();
       const from = DateHelper.getFromDate(this.filter.from)
       const to = DateHelper.getToDate(this.filter.to);
       setLoading(true);
-
-      if (this.pagination.currentPage === 1 && contain) {
-        this.resetCursor()
-      }
 
       const options = {
         from: from,
@@ -110,14 +104,13 @@ export const useServicesStore = defineStore('servicesStore', {
         next: next
       }
 
-      this.pagination.totalCount = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId)
-      this.completed = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_TERMINATED)
-      this.canceled = await ServiceRepository.getCount(options.from, options.to, options.clientId, options.driverId, Service.STATUS_CANCELED)
-
-      await ServiceRepository.getPaginated(options, contain)
-        .then((dbServices) => {
+      await ServiceRepository.getHistoryPage(options)
+        .then((response) => {
+          this.pagination.totalCount = response.totalCount
+          this.completed = response.terminatedCount
+          this.canceled = response.canceledCount
           this.history.splice(0)
-          dbServices.forEach((dbService) => {
+          response.services.forEach((dbService) => {
             const service = this.setServiceFromFS(dbService);
             this.history.push(service)
           })
