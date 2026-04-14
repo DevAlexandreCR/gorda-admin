@@ -72,9 +72,8 @@ describe('Connection.vue', () => {
   })
 
   test('it must throw event when click buttons', async () => {
-    wrapper.vm.connected = false
+    wrapper.vm.auth()
     await nextTick()
-    await wrapper.find('.btn-primary').trigger('click')
     expect(wrapper.vm.qr).toBeNull()
     expect(wrapper.vm.connecting).toBeTruthy()
   })

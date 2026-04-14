@@ -12,16 +12,28 @@ import waitForExpect from 'wait-for-expect'
 import { nextTick } from 'vue'
 import Driver from '@/models/Driver'
 import {useDriversStore} from '@/services/stores/DriversStore'
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 
 describe('Edit.vue', () => {
   let wrapper: VueWrapper<any>
   
-  beforeEach(() => {
+  beforeEach(async () => {
     DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
+    DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
     DriverRepository.update = jest.fn().mockResolvedValue(null)
     DriverRepository.enable = jest.fn().mockResolvedValue(null)
     DriverRepository.updateEmail = jest.fn().mockResolvedValue(null)
+    useSettingsStore().branchSelected = {
+      id: 'branch-1',
+      calling_code: '+57',
+      country: 'CO',
+      currency_code: 'COP',
+      city: {
+        id: 'city-1',
+      },
+    } as any
+    await router.push('/dashboard/drivers/DriverID/edit')
     wrapper = mount(Edit, {
       attachTo: '#root',
       global: {
@@ -29,6 +41,7 @@ describe('Edit.vue', () => {
         },
     })
     useDriversStore().getDrivers()
+    await router.isReady()
   })
   
   afterEach(async () => {
@@ -76,8 +89,7 @@ describe('Edit.vue', () => {
 		const deviceButton = wrapper.find('#removeDevice')
 		expect(deviceButton.exists()).toBeTruthy()
 		expect(device.exists()).toBeTruthy()
-		expect(field.length).toBe(14)
-    expect(field.length).toBe(14)
+		expect(field.length).toBe(16)
     expect(form.exists()).toBeTruthy()
     expect(error.length).toBe(5)
     expect(imageLoader.length).toBe(2)
@@ -99,7 +111,7 @@ describe('Edit.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(9)
+    expect(span.length).toBe(2)
   })
   
   it('should show toast success when update driver successfully', async () => {

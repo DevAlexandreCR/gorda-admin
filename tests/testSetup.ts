@@ -153,7 +153,7 @@ AuthService.currentUser = Object.assign(new User(), UserMock)
 let socket: Server
 let server: httpServer
 
-function openServer(done: jest.DoneCallback): void {
+function openServer(done: jest.DoneCallback | (() => void)): void {
   server = createServer()
   socket = new Server(server)
   server.listen(0,() => {

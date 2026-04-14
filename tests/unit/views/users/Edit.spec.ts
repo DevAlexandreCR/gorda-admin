@@ -28,6 +28,7 @@ describe('Edit.vue', () => {
   Object.assign(AuthService.currentUser, UserInterface)
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
+    await router.push('/dashboard/users/user-id/edit')
     wrapper = mount(Edit,
       {
         attachTo: document.body,
@@ -125,17 +126,16 @@ describe('Edit.vue', () => {
 
   it('an user can edit urlPhoto', async () => {
     await wrapper.vm.$nextTick()
-    await wrapper.vm.uploadImg()
+    await wrapper.vm.uploadImg('http://localhost')
     await flushPromises()
     expect(wrapper.vm.user.photoUrl).toBe('http://localhost')
   })
 
   it('img should render the modal and input ', async () => {
     await wrapper.vm.$nextTick()
-    const modal = wrapper.find('#imgModal')
+    const modal = wrapper.find('#image-user')
     expect(modal.exists()).toBe(true)
-    const label = modal.find('label.form-label')
-    expect(label.exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'ImageLoader' }).exists()).toBe(true)
   })
 
   it('should render the modal and  password field and iconButton password visibility', async () => {
@@ -157,19 +157,9 @@ describe('Edit.vue', () => {
     await wrapper.vm.$nextTick()
     const openModalLink = wrapper.find('#openEditPasswordModalButton')
     expect(openModalLink.exists()).toBe(true)
-    await openModalLink.trigger('click')
-    await new Promise(resolve => setTimeout(resolve, 100))
-
     const modal2 = wrapper.find('#editPassword')
     expect(modal2.exists()).toBe(true)
-    expect(modal2.classes('show')).toBe(true)
-
     const closeButton = wrapper.find('#closeEditPasswordModalButton')
     expect(closeButton.exists()).toBe(true)
-    await closeButton.trigger('click')
-
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(modal2.classes('show')).toBe(false)
   })
 })

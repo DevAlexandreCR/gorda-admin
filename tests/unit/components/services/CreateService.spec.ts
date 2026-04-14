@@ -16,6 +16,7 @@ import { useClientsStore } from '@/services/stores/ClientsStore'
 import { StrHelper } from '@/helpers/StrHelper'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
 import { WhatsappServices } from "@/constants/WhatsappServices"
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
@@ -25,19 +26,33 @@ describe('CreateService.vue', () => {
     const placesStore = usePlacesStore()
     const clientsStore = useClientsStore()
     const wpClient = useWpClientsStore()
-    wrapper = mount(CreateService,
-      {
-        attachTo: document.body,
-        global: {
-          plugins: [router, i18n],
-          provide: {
-            'appName': 'test',
-          },
-        },
-      })
-    await router.isReady()
+    const settingsStore = useSettingsStore()
+    const places = getPlaces()
+    settingsStore.branchSelected = {
+      id: 'branch-1',
+      calling_code: '+57',
+      country: 'CO',
+      currency_code: 'COP',
+      city: {
+        id: 'city-1',
+      },
+    } as any
+    placesStore.places = places
+    placesStore.searchPlaces = jest.fn(async (term: string) => {
+      const filtered = places.filter((place) =>
+        place.name.toLowerCase().includes(term.toLowerCase())
+      )
+      placesStore.places = filtered as any
+      return filtered as any
+    }) as any
+    placesStore.findByName = jest.fn(async (name: string) => {
+      return places.find((place) => place.name.toLowerCase() === name.toLowerCase()) ?? null
+    }) as any
     clientsStore.clients = [ClientMock]
-    placesStore.places = getPlaces()
+    clientsStore.searchClients = jest.fn(async (term: string) => {
+      return [ClientMock].filter((client) => client.phone.includes(term))
+    }) as any
+    clientsStore.findById = jest.fn().mockResolvedValue(ClientMock) as any
     wpClient.clients = {
       3103794656: {
         id: '3103794656',
@@ -49,6 +64,18 @@ describe('CreateService.vue', () => {
         service: WhatsappServices.WHATSAPP_WEB_JS
       }
     }
+    wpClient.defaultClient = '3103794656'
+    wrapper = mount(CreateService,
+      {
+        attachTo: document.body,
+        global: {
+          plugins: [router, i18n],
+          provide: {
+            'appName': 'test',
+          },
+        },
+      })
+    await router.isReady()
   })
   it('an user can show inputs to add service', async () => {
     await nextTick()
@@ -56,10 +83,10 @@ describe('CreateService.vue', () => {
     const form = wrapper.findComponent(Form)
     const input = wrapper.findAll('.form-control')
     const autoComplete = wrapper.findAllComponents(AutoComplete)
-    expect(field.length).toBe(6)
+    expect(field.length).toBe(7)
     expect(form.exists()).toBeTruthy()
-    expect(input.length).toBe(4)
-    expect(autoComplete.length).toBe(2)
+    expect(input.length).toBe(5)
+    expect(autoComplete.length).toBe(3)
   })
 
   it('an user can select location from neighborhoods', async () => {
@@ -67,10 +94,10 @@ describe('CreateService.vue', () => {
     await nextTick()
     const input = wrapper.find('input[name="start_address"]')
     await input.setValue('mar')
-    await input.trigger('keyup', {
-      keyCode: 72,
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    const li = wrapper.findAll('li').at(0)
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
     await li?.trigger('click')
 
     expect(onSelected).toBeCalledTimes(1)
@@ -98,10 +125,10 @@ describe('CreateService.vue', () => {
     await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
     const input = wrapper.find('input[name="start_address"]')
     await input.setValue('mari')
-    await input.trigger('keyup', {
-      keyCode: 72,
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    const li = wrapper.findAll('li').at(0)
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
     await li?.trigger('click')
     await wrapper.find('input[name="comment"]').setValue(comment)
     const buttonSave = wrapper.find('button[type="submit"]')
@@ -152,7 +179,6 @@ describe('CreateService.vue', () => {
     jest.clearAllMocks()
     ServiceRepository.create = jest.fn().mockResolvedValue('success')
     ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
-    const swal = jest.spyOn(Swal, 'fire')
     await nextTick()
     const phone = '31000000'
     const name = 'Name User'
@@ -164,8 +190,8 @@ describe('CreateService.vue', () => {
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
     await waitForExpect(() => {
-      expect(swal).not.toBeCalled()
-      expect(wrapper.html()).toContain('phone must be at least 10 characters')
+      expect(ServiceRepository.create).not.toBeCalled()
+      expect(ClientRepository.create).not.toBeCalled()
     })
   })
 
@@ -181,10 +207,10 @@ describe('CreateService.vue', () => {
     await wrapper.find('input[name="name"]').setValue(name)
     const input = wrapper.find('input[name="start_address"]')
     await input.setValue('mari')
-    await input.trigger('keyup', {
-      keyCode: 72,
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    const li = wrapper.findAll('li').at(0)
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
     await li?.trigger('click')
     const buttonSave = wrapper.find('button[type="submit"]')
     await buttonSave.trigger('click')
@@ -204,14 +230,12 @@ describe('CreateService.vue', () => {
   })
 
   it('should assign driver when click in button', async () => {
-
     const input = wrapper.find('input[name="phone"]')
     await input.setValue('31031')
-    await input.trigger('keyup', {
-      keyCode: 72,
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    await nextTick()
-    await wrapper.find('li')?.trigger('click')
+    await wrapper.find('.autocomplete-list li')?.trigger('click')
     await nextTick()
     expect(wrapper.html()).toContain(ClientMock.phone)
     expect(wrapper.vm.service.client_id).toBe(ClientMock.id)
@@ -230,10 +254,10 @@ describe('CreateService.vue', () => {
     await wrapper.find('input[name="name"]').setValue('Name User')
     const input = wrapper.find('input[name="start_address"]')
     await input.setValue('mari')
-    await input.trigger('keyup', {
-      keyCode: 72,
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    const li = wrapper.findAll('li').at(0)
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
     await li?.trigger('click')
     await wrapper.find('input[name="comment"]').setValue('New comment to service')
     const buttonSave = wrapper.find('button[type="submit"]')

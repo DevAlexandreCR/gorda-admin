@@ -4,6 +4,7 @@ import i18n from '@/plugins/i18n'
 import ShowServiceModal from '@/components/services/ShowServiceModal.vue'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
 import { ServiceList } from '@/models/ServiceList'
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 describe('ShowServiceModal.vue', () => {
   let wrapper: VueWrapper<any>
@@ -11,12 +12,26 @@ describe('ShowServiceModal.vue', () => {
 
   beforeEach(async () => {
     service = new ServiceMock()
+    useSettingsStore().branchSelected = {
+      id: 'branch-1',
+      calling_code: '+57',
+      country: 'CO',
+      currency_code: 'COP',
+      city: {
+        id: 'city-1',
+      },
+    } as any
     wrapper = mount(ShowServiceModal, {
       props: {
         service: service,
       },
       global: {
         plugins: [i18n],
+        stubs: {
+          Map: {
+            template: '<div data-test="map-stub"></div>',
+          },
+        },
         mocks: {
           AuthService: {
             getCurrentUser: jest.fn().mockReturnValue({ name: 'Test User' }),

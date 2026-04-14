@@ -13,12 +13,32 @@ import {usePlacesStore} from '@/services/stores/PlacesStore'
 import {GoogleMaps} from '@/services/maps/GoogleMaps'
 import {google} from 'google-maps'
 import Swal from 'sweetalert2'
+import {useSettingsStore} from '@/services/stores/SettingsStore'
 
 describe('Places.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     const placesStore = usePlacesStore()
-    placesStore.places = getPlaces()
+    const settingsStore = useSettingsStore()
+    const places = getPlaces()
+    settingsStore.branchSelected = {
+      id: 'branch-1',
+      calling_code: '+57',
+      country: 'CO',
+      currency_code: 'COP',
+      city: {
+        id: 'city-1',
+      },
+    } as any
+    placesStore.places = places as any
+    placesStore.searchPlaces = jest.fn(async (term: string) => {
+      const filtered = places.filter((place) =>
+        place.name.toLowerCase().includes(term.toLowerCase())
+      )
+      placesStore.places = filtered as any
+      return filtered as any
+    }) as any
+    placesStore.getPlaces = jest.fn().mockResolvedValue(undefined) as any
     GoogleMaps.prototype.addMarker = jest.fn()
     GoogleMaps.prototype.moveCamera = jest.fn()
     PlaceRepository.create = jest.fn().mockResolvedValue({})
@@ -33,6 +53,11 @@ describe('Places.vue', () => {
         attachTo: '#root',
         global: {
           plugins: [router, i18n],
+          stubs: {
+            Map: {
+              template: '<div data-test="map-stub"></div>'
+            }
+          },
           provide: {
             'appName': 'test'
           }

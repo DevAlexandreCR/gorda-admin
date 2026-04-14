@@ -12,6 +12,10 @@ import { WhatsappServices } from "@/constants/WhatsappServices"
 describe('SideBar.vue', () => {
   let wrapper: VueWrapper<any>
 
+  beforeAll((done) => {
+    openServer(done)
+  }, 10000)
+
   beforeEach(async () => {
     const wpClient = useWpClientsStore()
     wpClient.clients = {
@@ -36,11 +40,7 @@ describe('SideBar.vue', () => {
     await router.isReady()
   })
 
-  beforeEach((done) => {
-    openServer(done)
-  }, 10000)
-
-  afterEach((done) => {
+  afterAll((done) => {
     socket.close(done)
   }, 10000)
 

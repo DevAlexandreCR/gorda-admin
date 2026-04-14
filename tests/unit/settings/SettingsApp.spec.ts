@@ -18,27 +18,15 @@ describe('SettingsApp.vue', () => {
 
   it('renders elements correctly', async () => {
     await nextTick()
-    const labels = wrapper.findAll('.form-control-label')
+    const tabs = wrapper.findAll('.nav-link')
     const inputs = wrapper.findAll('input')
-    const editButtons = wrapper.findAll('.badge')
-    const submitButton = wrapper.find('.btn-primary')
-    expect(inputs.length).toBe(8)
-    expect(labels.length).toBe(8)
-    expect(editButtons.length).toBe(8)
-    expect(submitButton.exists()).toBe(true)
+    expect(tabs.length).toBe(3)
+    expect(inputs.length).toBe(5)
   })
 
-  it('verify that all input and the submit button are initially disabled', async () => {
+  it('renders the general settings tab as active on initial load', async () => {
     await nextTick()
-    const inputs = wrapper.findAll('input')
-    inputs.forEach((input) => {
-      expect(input.attributes()).toHaveProperty('disabled')
-    })
-    const editButtons = wrapper.findAll('.badge')
-    editButtons.forEach((editButton) => {
-      expect(editButton.attributes()).not.toHaveProperty('disabled')
-    })
-    const submitButton = wrapper.find('.btn-primary')
-    expect(submitButton.attributes()).toHaveProperty('disabled')
+    expect(wrapper.find('#settings-tab').classes()).toContain('active')
+    expect(wrapper.text()).toContain(i18n.global.t('common.settings.general_settings'))
   })
 })

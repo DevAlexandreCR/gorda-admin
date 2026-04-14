@@ -12,6 +12,7 @@ describe('AutoComplete.vue', () => {
   })
   
   beforeEach(() => {
+    jest.useFakeTimers()
     wrapper = mount(AutoComplete, {
       attachTo: '#root',
       props: {
@@ -21,6 +22,10 @@ describe('AutoComplete.vue', () => {
         idField: 'field'
       }
     })
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
   })
   
   it('an user can show input and can not show list', () => {
@@ -36,12 +41,11 @@ describe('AutoComplete.vue', () => {
     await wrapper.vm.$nextTick()
     const input = wrapper.find('input[name="fieldName"]')
     await input.setValue('san')
-    await input.trigger('keyup', {
-      keyCode: 72
-    })
+    jest.runAllTimers()
+    await nextTick()
     const list = wrapper.find('ul')
 		expect(list.exists()).toBeTruthy()
-		expect(wrapper.vm.foundElements.length).toBe(5)
+		expect(wrapper.vm.foundElements.length).toBe(10)
   })
   
   it('emit on-change when write input', async () => {
@@ -57,11 +61,10 @@ describe('AutoComplete.vue', () => {
     await wrapper.vm.$nextTick()
 		const input = wrapper.find('input[name="fieldName"]')
 		await input.setValue('san')
-    await input.trigger('keyup', {
-      keyCode: 72
-    })
+    jest.runAllTimers()
+    await nextTick()
     const items = wrapper.findAll('li')
-    expect(items.length).toBe(5)
+    expect(items.length).toBe(10)
     
     await items.at(0)?.trigger('click')
     expect(wrapper.vm.foundElements.length).toBe(0)
@@ -71,9 +74,8 @@ describe('AutoComplete.vue', () => {
     await nextTick()
 		const input = wrapper.find('input[name="fieldName"]')
 		await input.setValue('sa')
-    await input.trigger('keyup', {
-      keyCode: 72
-    })
+    jest.runAllTimers()
+    await nextTick()
     expect(wrapper.vm.foundElements).toStrictEqual([])
   })
 

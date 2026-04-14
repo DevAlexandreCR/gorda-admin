@@ -11,6 +11,7 @@ import User from "@/models/User";
 import dayjs from 'dayjs'
 import AuthService from '@/services/AuthService'
 import StorageService from "@/services/StorageService";
+import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 describe('Create.vue', () => {
   AuthService.currentUser = new User()
@@ -20,6 +21,15 @@ describe('Create.vue', () => {
     UserRepository.update = jest.fn().mockResolvedValue('id-user')
     StorageService.uploadFile = jest.fn().mockResolvedValue('http://localhost/image')
     StorageService.getStorageReference = jest.fn()
+    useSettingsStore().branchSelected = {
+      id: 'branch-1',
+      calling_code: '+57',
+      country: 'CO',
+      currency_code: 'COP',
+      city: {
+        id: 'city-1',
+      },
+    } as any
       wrapper = mount(Create,
         {
           attachTo: '#root',
@@ -95,4 +105,3 @@ describe('Create.vue', () => {
     })
   })
 })
-

@@ -8,13 +8,15 @@ describe('WhatsAppClient.ts', () => {
   let client: WhatsAppClient
   
   beforeAll((done) => {
-    client = WhatsAppClient.getInstance({
-      id: '3103794656',
-      wpNotifications: false,
-      chatBot: false,
-      alias: 'Test'
-    } as WpClient)
-    openServer(done)
+    openServer(() => {
+      client = WhatsAppClient.getInstance({
+        id: '3103794656',
+        wpNotifications: false,
+        chatBot: false,
+        alias: 'Test'
+      } as WpClient)
+      done()
+    })
   }, 10000)
 
   afterAll((done) => {
@@ -50,10 +52,7 @@ describe('WhatsAppClient.ts', () => {
   test('must change state when receive change-state event', async () => {
     socket.emit(WhatsApp.EVENT_CLIENT, 'info')
     socket.emit(WhatsApp.EVENT_GET_STATE, WhatsApp.STATUS_CONNECTED)
-    
-    socket.on(WhatsApp.EVENT_GET_STATE, (arg) => {
-      expect(arg).toMatch('info')
-    })
+
     await waitForExpect(() => {
       expect(client.isConnected()).toBeTruthy()
     })

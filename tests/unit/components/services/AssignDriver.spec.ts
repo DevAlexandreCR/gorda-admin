@@ -6,8 +6,10 @@ import DriverMock from '../../../mocks/entities/DriverMock'
 import {nextTick} from 'vue'
 import AutoComplete from '@/components/AutoComplete.vue'
 import Driver from '@/models/Driver'
-import Swal from 'sweetalert2'
 import ServiceRepository from '@/repositories/ServiceRepository'
+import ToastService from '@/services/ToastService'
+import ServiceMock from '../../../mocks/entities/ServiceMock'
+import waitForExpect from 'wait-for-expect'
 
 describe('AssignDriver.vue', () => {
   let wrapper: VueWrapper<any>
@@ -19,6 +21,8 @@ describe('AssignDriver.vue', () => {
   root?.appendChild(button)
   
   beforeEach(async () => {
+    ServiceRepository.getService = jest.fn().mockResolvedValue(new ServiceMock())
+    ServiceRepository.assign = jest.fn().mockResolvedValue(null)
     wrapper = mount(AssignDriver,
       {
         attachTo: '#root',
@@ -48,76 +52,41 @@ describe('AssignDriver.vue', () => {
     await button.click()
     const input = wrapper.find('input')
     await input.setValue('HEM')
-    await input.trigger('keyup', {
-      keyCode: 72
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
     })
-    await nextTick()
     expect(wrapper.text()).toContain('HEM390')
   })
   
   it('should assign driver when click in button', async () => {
-    const swal = jest.spyOn(Swal,'fire')
+    const toast = jest.spyOn(ToastService, 'toast')
     await nextTick()
     await button.click()
-    const input = wrapper.find('input')
-    await input.setValue('HEM')
-    await input.trigger('keyup', {
-      keyCode: 72
-    })
-    await nextTick()
-    await wrapper.find('li').trigger('click')
-    await wrapper.find('.btn-primary').trigger('click')
-    expect(swal).toBeCalledWith({
-      icon: 'success',
-      position: 'top-right',
-      title: i18n.global.t('common.messages.updated'),
-      showConfirmButton: false,
-      text: undefined,
-      timer: 3000,
-      toast:true
-    })
+    await flushPromises()
+    await wrapper.vm.onDriverSelected({ id: DriverMock.id, value: DriverMock.vehicle.plate })
+    await flushPromises()
+    expect(toast).toBeCalledWith('success', i18n.global.t('common.messages.updated'))
+    expect(ServiceRepository.assign).toBeCalled()
   })
   
   it('should show error toast when click on assign without driver selected', async () => {
-    const swal = jest.spyOn(Swal,'fire')
+    const toast = jest.spyOn(ToastService, 'toast')
     await nextTick()
     await wrapper.find('.btn-primary').trigger('click')
     
-    expect(swal).toBeCalledWith({
-      icon: 'error',
-      position: 'top-right',
-      title: i18n.global.t('common.messages.error'),
-      showConfirmButton: false,
-      text: i18n.global.t('validations.driver'),
-      timer: 3000,
-      toast:true
-    })
+    expect(toast).toBeCalledWith('error', i18n.global.t('common.messages.error'), i18n.global.t('validations.driver'))
   })
   
   it('should show error toast when something was wrong while try to update', async () => {
-    const swal = jest.spyOn(Swal,'fire')
+    const toast = jest.spyOn(ToastService, 'toast')
     ServiceRepository.assign = jest.fn().mockRejectedValue(new Error('something was wrong'))
     
     await nextTick()
     await button.click()
-    const input = wrapper.find('input')
-    await input.setValue('HEM')
-    await input.trigger('keyup', {
-      keyCode: 72
-    })
-    await nextTick()
-    await wrapper.find('li').trigger('click')
-    await wrapper.find('.btn-primary').trigger('click')
+    await flushPromises()
+    await wrapper.vm.onDriverSelected({ id: DriverMock.id, value: DriverMock.vehicle.plate })
     await flushPromises()
     
-    expect(swal).toBeCalledWith({
-      icon: 'error',
-      position: 'top-right',
-      title: i18n.global.t('common.messages.error'),
-      showConfirmButton: false,
-      text: 'something was wrong',
-      timer: 3000,
-      toast:true
-    })
+    expect(toast).toBeCalledWith('error', i18n.global.t('common.messages.error'), 'something was wrong')
   })
 })

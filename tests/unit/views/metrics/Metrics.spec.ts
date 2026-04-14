@@ -3,13 +3,14 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import {nextTick} from 'vue'
 import Metrics from '@/views/metrics/Metrics.vue'
-import axios from 'axios'
+import MetricRepository from '@/repositories/MetricRepository'
 import {ServiceStatus} from '@/types/ServiceStatus'
 import waitForExpect from 'wait-for-expect'
 
-axios.get = jest.fn().mockResolvedValue({
-	data: {
-		data: [
+describe('Metrics.vue', () => {
+	let wrapper: VueWrapper<any>
+	beforeEach(async () => {
+		MetricRepository.getGlobal = jest.fn().mockResolvedValue([
 			{
 				count: 30,
 				date: '2023-01-01',
@@ -22,13 +23,8 @@ axios.get = jest.fn().mockResolvedValue({
 				type: 0,
 				status: ServiceStatus.Canceled
 			}
-		]
-	}
-})
-
-describe('Metrics.vue', () => {
-	let wrapper: VueWrapper<any>
-	beforeEach(async () => {
+		])
+		MetricRepository.getTopDrivers = jest.fn().mockResolvedValue(new Map())
 		wrapper = mount(Metrics,
 			{
 				global: {
