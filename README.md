@@ -41,7 +41,7 @@ The application is written in TypeScript using the Vue CLI and Pinia for state m
 npm run serve
 ```
 
-This starts the development server on port `5000` (configured in `package.json`). The app will connect to the Firebase project and APIs specified in your `.env` file.
+This starts the development server on port `5005` in Docker Compose. The app will connect to the Firebase project and APIs specified in your `.env` file.
 
 ### Tests and Linting
 
@@ -109,4 +109,3 @@ A separate mobile driver application (not included in this repository) consumes 
 ## License
 
 No explicit license file is provided in this repository.  All rights reserved by the original authors.
-
