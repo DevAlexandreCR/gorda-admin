@@ -6,6 +6,7 @@ export default {
   required: 'email is a required field',
   remindme: 'Remind me',
   login: 'Sign in',
+  loggingIn: 'Signing in...',
   logOut: 'Sign Out',
   signUp: 'Sign Up',
   alert: 'Incorrect username or password!',
@@ -36,6 +37,20 @@ export default {
     edit_password: 'Enter your new password',
     upload: 'Upload photo profile',
     select_img: 'Choose image from files'
+  },
+  loginErrors: {
+    invalidCredentials: {
+      title: 'We could not sign you in',
+      message: 'Check your email and password, then try again.'
+    },
+    missingProfile: {
+      title: 'Your account is not ready yet',
+      message: 'Authentication succeeded, but your user is not available or enabled in the admin panel yet.'
+    },
+    serverError: {
+      title: 'We could not complete the sign-in',
+      message: 'There was a problem loading your profile. Please try again in a few seconds.'
+    }
   },
   messages: {
     enabled: 'User has been enabled!',

@@ -6,6 +6,7 @@ export default {
   pass: 'Contraseña debe tener al menos 8 caracteres',
   remindme: 'Recuérdame',
   login: 'Iniciar Sesión',
+  loggingIn: 'Ingresando...',
   logOut: 'Cerrar Sesión',
   signUp: 'Regístrate',
   alert: 'Usuario o contraseña incorrectos!',
@@ -36,6 +37,20 @@ export default {
     edit_password: 'Ingresa tu nueva contraseña',
     upload: 'Subir foto de perfil',
     select_img: 'Seleccione una imagen del archivo'
+  },
+  loginErrors: {
+    invalidCredentials: {
+      title: 'No pudimos iniciar sesión',
+      message: 'Verifica tu correo y contraseña e inténtalo de nuevo.'
+    },
+    missingProfile: {
+      title: 'Tu cuenta aún no está lista',
+      message: 'La autenticación fue exitosa, pero tu usuario todavía no existe o no está habilitado en el panel administrativo.'
+    },
+    serverError: {
+      title: 'No pudimos completar el acceso',
+      message: 'Ocurrió un problema cargando tu perfil. Inténtalo de nuevo en unos segundos.'
+    }
   },
   messages: {
     enabled: 'El usuario ha sido habilitado!',

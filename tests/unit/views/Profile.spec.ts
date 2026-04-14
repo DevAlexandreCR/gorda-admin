@@ -6,9 +6,11 @@ import User from '@/models/User'
 import UserInterface from '../../mocks/entities/UserMock'
 import Profile from '@/views/users/Profile.vue'
 
+const currentUser = new User()
+Object.assign(currentUser, UserInterface)
+
 describe('Profile.vue', () => {
-  AuthService.currentUser = new User()
-  Object.assign(AuthService.currentUser, UserInterface)
+  AuthService.currentUser = currentUser
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
     wrapper = mount(Profile,
@@ -21,10 +23,10 @@ describe('Profile.vue', () => {
   })
 
   it('profile component show user information', async () => {
-    expect(wrapper.vm.user).toStrictEqual(AuthService.currentUser)
-    expect(wrapper.html()).toContain(AuthService.currentUser.name)
-    expect(wrapper.html()).toContain(AuthService.currentUser.email)
-    expect(wrapper.html()).toContain(AuthService.currentUser.phone)
+    expect(wrapper.vm.user).toStrictEqual(currentUser)
+    expect(wrapper.html()).toContain(currentUser.name)
+    expect(wrapper.html()).toContain(currentUser.email)
+    expect(wrapper.html()).toContain(currentUser.phone)
     expect(wrapper.html()).toContain(i18n.global.t('users.fields.admin'))
     expect(wrapper.html()).not.toContain(i18n.global.t('users.fields.operator'))
   })
