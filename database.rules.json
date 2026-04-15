@@ -27,16 +27,16 @@
       ".read": "auth.uid != null",
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
       "$uid": {
-        ".validate": "newData.hasChildren(['location', 'id'])"
+        ".validate": "newData.hasChildren(['location', 'id', 'version', 'versionCode']) && newData.child('id').val() === auth.uid && newData.child('version').isString() && newData.child('versionCode').isNumber() && newData.child('versionCode').val() >= root.child('settings').child('version_policy').child('min_driver_version_code').val()"
       }
     },
     "drivers_assigned": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0"
     },
     "service_connections": {
       ".read": "auth.uid != null",
-      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0",
+      ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true || root.child('drivers').child(auth.uid).child('enabled_at').val() > 0"
     },
     "places": {
       ".read": "auth.uid != null",
@@ -46,9 +46,14 @@
       ".read": "auth.uid != null",
       ".write": "root.child('users').child(auth.uid).child('roles').child('admin').val() == true || root.child('users').child(auth.uid).child('roles').child('operator').val() == true",
       "wp_clients": {
-        "$client" : {
+        "$client": {
           ".write": "newData.exists() && newData.child('id').exists() && newData.child('alias').exists()",
           ".validate": "(newData.child('chatBot').val() === false && newData.child('wpNotifications').val() === false) || newData.child('chatBot').val() !== newData.child('wpNotifications').val()"
+        }
+      },
+      "version_policy": {
+        "min_driver_version_code": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
         }
       }
     },

@@ -5,6 +5,7 @@ import {WhatsApp} from '@/services/gordaApi/constants/WhatsApp'
 import {LoadingType} from '@/types/LoadingType'
 import {WpClient} from "@/types/WpClient";
 import {WPClientDictionary} from "@/types/WPClientDiccionary";
+import { ADMIN_APP_VERSION, handleVersionUnsupported } from '@/services/VersionGuard'
 
 export default class WhatsAppClient implements WPSubject {
   
@@ -24,7 +25,15 @@ export default class WhatsAppClient implements WPSubject {
     this.socket = io( url + ':' + port, {
       reconnectionDelay: 5000,
       query: {
-        clientId: this.wpClient.id
+        clientId: this.wpClient.id,
+        clientPlatform: 'admin',
+        clientVersion: ADMIN_APP_VERSION,
+      }
+    })
+    this.socket.on('connect_error', (error: Error & { data?: { admin?: { minVersion?: string } } }) => {
+      const minVersion = error.data?.admin?.minVersion
+      if (error.message === 'client_version_unsupported' && minVersion) {
+        handleVersionUnsupported(minVersion)
       }
     })
     this.onQRCode()
