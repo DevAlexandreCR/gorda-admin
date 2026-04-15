@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Release Notes for 2.0.x
+
+## [2.0.0(2026-04-14)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.0...1.5.17)
+
+### Added
+
+Change firestore by SQL database
+
+
 # Release Notes for 1.5.x
 
 ### Changed
