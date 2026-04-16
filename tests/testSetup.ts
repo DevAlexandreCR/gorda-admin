@@ -37,7 +37,7 @@ class AudioContextMock {
   }
 }
 
-;(window as any).AudioContext = AudioContextMock
+(window as any).AudioContext = AudioContextMock
 ;(window as any).webkitAudioContext = AudioContextMock
 
 

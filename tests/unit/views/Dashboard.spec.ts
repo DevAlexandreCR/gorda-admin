@@ -4,11 +4,24 @@ import router from '@/router'
 import i18n from '@/plugins/i18n'
 import AuthService from '@/services/AuthService'
 import User from '@/models/User'
+import { reactive } from 'vue'
 import UserInterface from '../../mocks/entities/UserMock'
 import DriverRepository from '@/repositories/DriverRepository'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ServiceMock from '../../mocks/entities/ServiceMock'
 import SettingsRepository from "@/repositories/SettingsRepository";
+
+const mockDriversStore = reactive({
+  drivers: [] as Array<{ id: string }>,
+  getDrivers: jest.fn(),
+})
+const mockGetDrivers = jest.fn().mockImplementation(async () => {
+  mockDriversStore.drivers = [{ id: 'DriverID' }]
+})
+const mockRehydrateServiceDrivers = jest.fn().mockResolvedValue(undefined)
+const mockGetHistoryServices = jest.fn().mockResolvedValue(undefined)
+const mockGetPendingServices = jest.fn().mockResolvedValue(undefined)
+const mockGetInProgressServices = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('@/services/stores/PlacesStore', () => ({
   usePlacesStore: () => ({
@@ -23,16 +36,15 @@ jest.mock('@/services/stores/ClientsStore', () => ({
 }))
 
 jest.mock('@/services/stores/DriversStore', () => ({
-  useDriversStore: () => ({
-    getDrivers: jest.fn().mockResolvedValue(undefined),
-  }),
+  useDriversStore: () => mockDriversStore,
 }))
 
 jest.mock('@/services/stores/ServiceStore', () => ({
   useServicesStore: () => ({
-    getHistoryServices: jest.fn().mockResolvedValue(undefined),
-    getPendingServices: jest.fn().mockResolvedValue(undefined),
-    getInProgressServices: jest.fn().mockResolvedValue(undefined),
+    getHistoryServices: mockGetHistoryServices,
+    getPendingServices: mockGetPendingServices,
+    getInProgressServices: mockGetInProgressServices,
+    rehydrateServiceDrivers: mockRehydrateServiceDrivers,
   }),
 }))
 
@@ -65,6 +77,13 @@ describe('Dashboard.vue', () => {
   SettingsRepository.getWpClients = jest.fn().mockResolvedValue([])
 	let wrapper: VueWrapper<any>
   beforeEach(async () => {
+    mockDriversStore.drivers = []
+    mockDriversStore.getDrivers = mockGetDrivers
+    mockGetDrivers.mockClear()
+    mockGetHistoryServices.mockClear()
+    mockGetPendingServices.mockClear()
+    mockGetInProgressServices.mockClear()
+    mockRehydrateServiceDrivers.mockClear()
     wrapper = mount(Dashboard,
       {
         global: {

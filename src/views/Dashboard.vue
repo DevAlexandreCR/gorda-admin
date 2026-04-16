@@ -14,7 +14,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
 import { usePlacesStore } from '@/services/stores/PlacesStore'
@@ -35,8 +36,11 @@ const settingsLoaded = ref(false)
 
 const { getPlaces } = usePlacesStore()
 const { getClients } = useClientsStore()
-const { getDrivers } = useDriversStore()
-const { getHistoryServices, getPendingServices, getInProgressServices } = useServicesStore()
+const driverStore = useDriversStore()
+const servicesStore = useServicesStore()
+const { getDrivers } = driverStore
+const { drivers } = storeToRefs(driverStore)
+const { getHistoryServices, getPendingServices, getInProgressServices, rehydrateServiceDrivers } = servicesStore
 const { getWpClients } = useWpClientsStore()
 const { getBranches, getRideFees } = useSettingsStore()
 const { getCurrentYearMetric } = useMetricsStore()
@@ -44,9 +48,11 @@ const { setLoading } = useLoadingState()
 
 const loadAllData = async () => {
   setLoading(true)
+  await getDrivers().catch(() => undefined)
+  rehydrateServiceDrivers()
+
   await Promise.allSettled([
     getClients(),
-    getDrivers(),
     getHistoryServices(),
     getPendingServices(),
     getInProgressServices(),
@@ -65,6 +71,10 @@ const loadAllData = async () => {
   settingsLoaded.value = true
   setLoading(false)
 }
+
+watch(drivers, () => {
+  rehydrateServiceDrivers()
+}, { deep: true })
 
 onMounted(async () => {
   await loadAllData()

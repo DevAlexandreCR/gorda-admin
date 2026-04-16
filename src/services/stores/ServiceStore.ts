@@ -42,6 +42,18 @@ export const useServicesStore = defineStore('servicesStore', {
     }
   },
   actions: {
+    attachDriver(service: ServiceList): ServiceList {
+      const {findById} = useDriversStore()
+      service.driver = service.driver_id ? findById(service.driver_id) ?? null : null
+      return service
+    },
+
+    rehydrateServiceDrivers(): void {
+      this.pendings.forEach((service) => this.attachDriver(service))
+      this.inProgress.forEach((service) => this.attachDriver(service))
+      this.history.forEach((service) => this.attachDriver(service))
+    },
+
     async getPendingServices(): Promise<void> {
       const added = (snapshot: DataSnapshot): void => {
         const service = this.setServiceFromDB(snapshot)
@@ -138,24 +150,14 @@ export const useServicesStore = defineStore('servicesStore', {
 		},
 	
 		setServiceFromFS(dbService: Service): ServiceList {
-			const {findById} = useDriversStore()
       const service = Object.assign(new ServiceList(), dbService)
-			if (service.driver_id != null) {
-				const driver = findById(service.driver_id)
-				service.driver = driver?? null
-			}
-			return  service
+			return this.attachDriver(service)
 		},
 
 		setServiceFromDB(snapshot?: DataSnapshot): ServiceList {
-			const {findById} = useDriversStore()
 			const service = Object.assign(new ServiceList(), snapshot?.val())
-			if (service.driver_id != null) {
-				const driver = findById(service.driver_id)
-				service.driver = driver?? null
-			}
 			service.id = snapshot?.key as string
-			return  service
+			return this.attachDriver(service)
 		},
 
     resetCursor(): void {
