@@ -4,4 +4,6 @@ export interface DriverConnectedInterface {
     lat: number,
     lng: number
   }
+  last_seen_at?: number
+  session_id?: string
 }

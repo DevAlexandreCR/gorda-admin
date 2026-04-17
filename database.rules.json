@@ -12,7 +12,7 @@
       ".read": "auth.uid != null",
       ".write": "auth.uid != null",
       "$uid": {
-        ".validate": "newData.hasChildren(['location', 'id', 'version', 'versionCode']) && newData.child('id').val() === auth.uid && newData.child('version').isString() && newData.child('versionCode').isNumber() && newData.child('versionCode').val() >= root.child('settings').child('version_policy').child('min_driver_version_code').val()"
+        ".validate": "newData.hasChildren(['location', 'id', 'version', 'versionCode']) && newData.child('id').val() === auth.uid && newData.child('version').isString() && newData.child('versionCode').isNumber() && newData.child('versionCode').val() >= root.child('settings').child('version_policy').child('min_driver_version_code').val() && (!newData.child('last_seen_at').exists() || newData.child('last_seen_at').isNumber()) && (!newData.child('session_id').exists() || newData.child('session_id').isString())"
       }
     },
     "drivers_assigned": {
