@@ -52,8 +52,8 @@ class SettingsRepository {
     })
   }
 
-  getRideFees(callback: (rideFees: RideFeeInterface) => void): void {
-    void this.getRideFeesSnapshot().then(callback)
+  async getRideFees(): Promise<RideFeeInterface> {
+    return this.getRideFeesSnapshot()
   }
 
   async getBranches(): Promise<Branch[]> {

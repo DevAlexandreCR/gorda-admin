@@ -15,7 +15,7 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="ride-fees-tab" data-bs-toggle="tab" data-bs-target="#ride-fees" type="button"
-          role="tab" aria-controls="ride-fees" aria-selected="false" @click="currentTab = 'rideFees'">
+          role="tab" aria-controls="ride-fees" aria-selected="false" @click="handleRideFeesTabClick">
           <div class="d-flex align-items-center">
             <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
               :class="{ 'shadow': currentTab === 'rideFees' }">
@@ -364,14 +364,36 @@ import CreateMultiplierModal from './CreateMultiplierModal.vue'
 
 const { setLoading } = useLoadingState()
 
-const { branches, branchSelected, rideFees } = storeToRefs(useSettingsStore())
-const { setBranchSelected, setPercentage } = useSettingsStore()
+const settingsStore = useSettingsStore()
+const { branches, branchSelected, rideFees } = storeToRefs(settingsStore)
+const { setBranchSelected, setPercentage } = settingsStore
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
 const allFieldsDisabled: Ref<boolean> = ref(true);
 const currentTab: Ref<string> = ref('general_settings')
 let citySelected: Ref<City> = ref({} as City)
 let branch: Ref<Branch> = ref({} as Branch)
+
+function resetRideFeesFormState(): void {
+  fieldEdited.value = ''
+  submitButtonEnabled.value = false
+  allFieldsDisabled.value = true
+}
+
+async function handleRideFeesTabClick(): Promise<void> {
+  currentTab.value = 'rideFees'
+  setLoading(true)
+
+  try {
+    await settingsStore.getRideFees()
+    resetRideFeesFormState()
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : undefined
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
+  } finally {
+    setLoading(false)
+  }
+}
 
 const editField = (fieldName: string) => {
   fieldEdited.value = fieldEdited.value === fieldName ? '' : fieldName
@@ -405,9 +427,7 @@ function updateAllFields(): void {
   setLoading(true)
   SettingsRepository.updateRideFee(rideFees.value).then(async () => {
     setLoading(false)
-    fieldEdited.value = ''
-    allFieldsDisabled.value = true
-    submitButtonEnabled.value = false
+    resetRideFeesFormState()
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
     setLoading(false)

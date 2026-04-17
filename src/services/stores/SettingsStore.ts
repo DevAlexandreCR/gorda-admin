@@ -64,9 +64,7 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
         },
 
         async getRideFees(): Promise<void> {
-            SettingsRepository.getRideFees((rideFees) => {
-                this.rideFees = rideFees
-            })
+            this.rideFees = await SettingsRepository.getRideFees()
         }
     }
 })
