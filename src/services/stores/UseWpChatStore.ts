@@ -16,6 +16,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
       allChats: new Map<string, Chat>(),
       messages: new Map<string, Message[]>(),
       activeChat: null as string | null,
+      activeWpClientId: null as string | null,
       hasPermission: false,
       lastNotify: 0,
       firstStart: true,
@@ -167,6 +168,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
     keepOnlyChatMessages(chatId: string | null): void {
       if (!chatId) {
         this.messages = new Map()
+        this.activeWpClientId = null
         return
       }
 
@@ -176,13 +178,13 @@ export const useWpChatStore = defineStore('wpChatStore', {
 
     appendMessage(chatId: string, message: Message): void {
       const currentMessages = this.messages.get(chatId) ?? []
-      const exists = currentMessages.some((currentMessage) => currentMessage.id === message.id)
+      const nextMessages = ChatRepository.mergeMessages([...currentMessages, message])
 
-      if (exists) {
-        return
+      if (this.activeWpClientId && this.activeChat === chatId) {
+        ChatCache.cacheMessages(this.activeWpClientId, chatId, nextMessages).catch((error) => {
+          void error
+        })
       }
-
-      const nextMessages = [...currentMessages, message].sort((a, b) => a.created_at - b.created_at)
 
       if (this.activeChat === chatId) {
         this.setMessagesForActiveChat(chatId, nextMessages)
@@ -190,6 +192,7 @@ export const useWpChatStore = defineStore('wpChatStore', {
     },
 
     async getMessages(wpClientId: string, chatId: string): Promise<void> {
+      this.activeWpClientId = wpClientId
       const chat = this.chats.get(chatId)
       if (chat && chat.lastMessage.body === 'Buscar conversación...') {
         return
@@ -202,12 +205,17 @@ export const useWpChatStore = defineStore('wpChatStore', {
 
       await ChatRepository.getMessages(wpClientId, chatId)
         .then((messages) => {
-          const sortedMessages = Array.from(messages.values()).sort((a, b) => a.created_at - b.created_at)
-          ChatCache.cacheMessages(wpClientId, chatId, sortedMessages).catch((error) => {
+          const existingMessages = this.messages.get(chatId) ?? cachedMessages
+          const mergedMessages = ChatRepository.mergeMessages([
+            ...existingMessages,
+            ...Array.from(messages.values())
+          ])
+
+          ChatCache.cacheMessages(wpClientId, chatId, mergedMessages).catch((error) => {
             void error
           })
 
-          this.setMessagesForActiveChat(chatId, sortedMessages)
+          this.setMessagesForActiveChat(chatId, mergedMessages)
         })
         .catch((error) => {
           void error

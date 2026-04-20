@@ -36,11 +36,15 @@
           <div class="col" v-else>
           </div>
           <div class="col d-flex justify-content-end mt-0 mb-3" v-if="props.client.service === WhatsappServices.OFFICIAL">
-            <router-link :to="{ name: 'whatsapp.chat', params: {id: client.id}}" tag="a"
-                         class="btn btn-slack"
-                         data-original-title="Chat">
+            <a
+              :href="chatUrl"
+              class="btn btn-slack"
+              data-original-title="Chat"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <em class="fas fa-message"></em>
-            </router-link>
+            </a>
           </div>
         </div>
         <div class="row mx-1 mt-3">
@@ -134,7 +138,7 @@
 
 <script setup lang="ts">
 import WhatsAppClient from '@/services/gordaApi/WhatsAppClient'
-import {onBeforeUnmount, onMounted, ref, Ref} from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref, Ref} from 'vue'
 import QRCode from 'qrcode'
 import {ClientObserver} from '@/services/gordaApi/ClientObserver'
 import {useWpClientsStore} from '@/services/stores/WpClientStore'
@@ -143,6 +147,7 @@ import {WpClient} from "@/types/WpClient";
 import {hide} from "@/helpers/ModalHelper";
 import {storeToRefs} from "pinia";
 import {WhatsappServices} from "@/constants/WhatsappServices";
+import {useRouter} from "vue-router";
 
 interface Props {
   client: WpClient
@@ -153,8 +158,13 @@ const qr: Ref<string|null> = ref(null)
 const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
+const router = useRouter()
 const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant, enableFull} = useWpClientsStore()
 const {defaultClient} = storeToRefs(useWpClientsStore())
+const chatUrl = computed(() => router.resolve({
+  name: 'whatsapp.chat',
+  params: { id: props.client.id }
+}).href)
 
 let wpClient: WhatsAppClient
 let observer: ClientObserver

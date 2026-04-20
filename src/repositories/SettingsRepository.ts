@@ -7,6 +7,14 @@ import { DynamicMultiplier } from '@/types/DynamicMultiplier'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 
 class SettingsRepository {
+  async getPublicWpClient(clientId: string): Promise<WpClient | null> {
+    const response = await serverApi.get<ApiResponse<{ client: WpClient }>>(
+      `/public/master-data/wp-clients/${clientId}`
+    )
+
+    return response.data.data.client ?? null
+  }
+
   async getWpClients(): Promise<ClientDictionary> {
     const response = await serverApi.get<ApiResponse<{ clients: WpClient[] }>>('/master-data/wp-clients')
     const clients: ClientDictionary = {}

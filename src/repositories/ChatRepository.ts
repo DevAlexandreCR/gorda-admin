@@ -40,6 +40,15 @@ class ChatRepository {
 
     return messages
   }
+
+  mergeMessages(messages: Message[]): Message[] {
+    return Array.from(
+      messages.reduce((mergedMessages, message) => {
+        mergedMessages.set(message.id, message)
+        return mergedMessages
+      }, new Map<string, Message>()).values()
+    ).sort((a, b) => a.created_at - b.created_at)
+  }
 }
 
 export default new ChatRepository()

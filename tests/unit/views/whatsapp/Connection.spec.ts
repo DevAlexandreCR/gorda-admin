@@ -21,7 +21,7 @@ describe('Connection.vue', () => {
     wpNotifications: false,
     chatBot: false,
     assistant: false,
-    service: WhatsappServices.WHATSAPP_WEB_JS
+    service: WhatsappServices.OFFICIAL
   }
 
   beforeEach(async () => {
@@ -69,6 +69,16 @@ describe('Connection.vue', () => {
     expect(wrapper.find('.btn-danger').exists()).toBeTruthy()
     expect(wrapper.find('.btn-primary').exists()).toBeTruthy()
     expect(wrapper.vm.connected).toBeFalsy()
+  })
+
+  test('chat button opens in a new tab', async () => {
+    await nextTick()
+    const chatLink = wrapper.find('a.btn-slack')
+
+    expect(chatLink.exists()).toBeTruthy()
+    expect(chatLink.attributes('href')).toContain('/whatsapp/chat/3103794656/')
+    expect(chatLink.attributes('target')).toBe('_blank')
+    expect(chatLink.attributes('rel')).toBe('noopener noreferrer')
   })
 
   test('it must throw event when click buttons', async () => {

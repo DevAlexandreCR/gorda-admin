@@ -58,6 +58,7 @@ import SessionRepository from '@/repositories/SessionRepository'
 import Swal from 'sweetalert2'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import { SessionStatuses } from '@/constants/SessionStatuses'
+import SettingsRepository from '@/repositories/SettingsRepository'
 
 const route = useRoute()
 const clientId: Ref<string> = ref('')
@@ -79,8 +80,8 @@ const rooms = ref<any[]>([])
 const chatMessages = ref<any[]>([])
 let wpClient: WhatsAppClient | null = null
 let observer: ClientObserver | null = null
-const { getWpClient, getWpClients } = useWpClientsStore()
-const { findById, getClients } = useClientsStore()
+const { getWpClient } = useWpClientsStore()
+const { findById } = useClientsStore()
 const { setLoading } = useLoadingState()
 const showTooltip = ref(false)
 const isClaimingChat = ref(false)
@@ -103,12 +104,13 @@ const canClaimChat = computed(() => {
 
 watch(() => wpChatStore.sortedChats, async (newChats) => {
   const chatsSorted = await Promise.all(Array.from(newChats.values()).map(async (chat: Chat) => {
-    const client = await findById(chat.id) ?? { name: chat.clientName }
+    const client = await findById(chat.id)
     const shouldShowUnread = wpChatStore.shouldShowAsUnread(chat)
+    const roomName = client?.name ?? chat.clientName
 
     return {
       roomId: chat.id,
-      roomName: client.name ?? chat.clientName,
+      roomName,
       unreadCount: shouldShowUnread ? 1 : 0,
       lastMessage: {
         _id: chat.lastMessage.id,
@@ -299,21 +301,22 @@ function onMessageCreated(payload: { chatId: string; message: Message }): void {
 
 onBeforeMount(async () => {
   setLoading(true)
-  checkPermission()
-  await getClients()
-  await getWpClients()
-  clientId.value = route.params.id as string
-  register()
-  getChats(clientId.value)
-  getConfig()
-  setLoading(false)
-  const wpClientData = getWpClient(clientId.value)
-  if (wpClientData) {
-    wpClient = WhatsAppClient.getInstance(wpClientData)
-    observer = new ClientObserver(onUpdate as any)
-    wpClient.attach(observer)
-    wpClient.on('whatsapp:chat-upsert', onChatUpsert)
-    wpClient.on('whatsapp:message-created', onMessageCreated)
+  try {
+    checkPermission()
+    clientId.value = route.params.id as string
+    register()
+    getChats(clientId.value)
+    getConfig()
+    const wpClientData = getWpClient(clientId.value) ?? await SettingsRepository.getPublicWpClient(clientId.value).catch(() => null)
+    if (wpClientData) {
+      wpClient = WhatsAppClient.getInstance(wpClientData)
+      observer = new ClientObserver(onUpdate as any)
+      wpClient.attach(observer)
+      wpClient.on('whatsapp:chat-upsert', onChatUpsert)
+      wpClient.on('whatsapp:message-created', onMessageCreated)
+    }
+  } finally {
+    setLoading(false)
   }
 })
 
