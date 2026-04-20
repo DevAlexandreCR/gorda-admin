@@ -38,10 +38,11 @@ The application is written in TypeScript using the Vue CLI and Pinia for state m
 ## Running Locally
 
 ```bash
-npm run serve
+cd ../dock
+docker compose up -d --build admin functions emulators api
 ```
 
-This starts the development server on port `5005` in Docker Compose. The app will connect to the Firebase project and APIs specified in your `.env` file.
+This starts the admin watcher and Firebase Hosting Emulator in Docker Compose. Open `http://localhost:5005` to access the SPA served from `dist`, while the app continues to connect to the Firebase project and APIs specified in your `.env` file.
 
 ### Tests and Linting
 

@@ -18,13 +18,14 @@ This document summarizes the current codebase so autonomous agents can execute t
 6. **Routing & Guards** – `src/router/` includes dynamic route definitions plus guards enforcing role-based access (admin > operator) through `AuthService`.
 
 ## External Integrations
-- **Firebase Emulators** – Non-production builds auto-connect via `src/services/Firebase.ts`. Standard emulator ports: Auth 9099, Realtime DB 9000, Firestore 8080, Storage 9199, Functions 5001.
+- **Firebase Emulators** – Non-production builds auto-connect via `src/services/Firebase.ts`. Standard emulator ports: Hosting 5000 inside Docker (`localhost:5005` on the host), Auth 9099, Realtime DB 9000, Firestore 8080, Storage 9199, Functions 5001.
 - **REST API** – Commands such as user creation (`POST /auth/create-user/`) go through Axios clients with interceptors and toast-based error feedback.
 - **Socket.IO / WhatsApp** – `WhatsAppClient.ts` is a singleton per configured number. It emits QR/auth events and syncs chats with Firestore collections defined in `ChatRepository`.
 
 ## Development Workflow
 - Install deps (`npm install`), copy `.env.example` → `.env.local`, and update Firebase/API URLs.
-- Local dev: `npm run serve` (port 5000). Optional: `npm run start:emulators` to launch Firebase suites with exported seed data in `dataEmulators/`.
+- Local Docker dev: from `dock/`, run `docker compose up -d --build admin functions emulators api` and open `http://localhost:5005`; `admin` runs `npm run watch` and Firebase Hosting Emulator serves `dist`.
+- Standalone frontend dev without Docker: `npm run serve`.
 - Quality gates: `npm run lint`, `npm run test:unit`, `npm run build` for production bundles in `dist/`.
 - Firebase deploys rely on `firebase.json`, `firebase.config.js`, and `storage.rules`/`database.rules.json`.
 
