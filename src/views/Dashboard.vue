@@ -2,7 +2,7 @@
   <div>
     <Suspense>
       <template #default>
-        <div v-if="placesLoaded && clientsLoaded && driversLoaded && servicesLoaded && wpClientsLoaded && settingsLoaded">
+        <div v-if="coreLoaded">
           <SideBar></SideBar>
           <main class="main-content mt-1 border-radius-lg " id="main">
             <NavBar/>
@@ -27,24 +27,26 @@ import { useSettingsStore } from "@/services/stores/SettingsStore";
 import { useMetricsStore } from "@/services/stores/MetricsStore";
 import { useLoadingState } from "@/services/stores/LoadingState";
 
-const placesLoaded = ref(false)
-const clientsLoaded = ref(false)
-const driversLoaded = ref(false)
-const servicesLoaded = ref(false)
-const wpClientsLoaded = ref(false)
-const settingsLoaded = ref(false)
+const coreLoaded = ref(false)
 
-const { getPlaces } = usePlacesStore()
-const { getClients } = useClientsStore()
+const placesStore = usePlacesStore()
+const clientsStore = useClientsStore()
 const driverStore = useDriversStore()
 const servicesStore = useServicesStore()
 const { getDrivers } = driverStore
 const { drivers } = storeToRefs(driverStore)
 const { getHistoryServices, getPendingServices, getInProgressServices, rehydrateServiceDrivers } = servicesStore
 const { getWpClients } = useWpClientsStore()
-const { getBranches, getRideFees } = useSettingsStore()
+const settingsStore = useSettingsStore()
+const { getBranches, getRideFees } = settingsStore
+const { branchSelected } = storeToRefs(settingsStore)
 const { getCurrentYearMetric } = useMetricsStore()
 const { setLoading } = useLoadingState()
+
+const startHeavyHydration = (): void => {
+  clientsStore.hydrateClientsInBackground().catch(() => undefined)
+  placesStore.hydratePlacesInBackground(branchSelected.value?.city?.id).catch(() => undefined)
+}
 
 const loadAllData = async () => {
   setLoading(true)
@@ -52,28 +54,34 @@ const loadAllData = async () => {
   rehydrateServiceDrivers()
 
   await Promise.allSettled([
-    getClients(),
     getHistoryServices(),
     getPendingServices(),
     getInProgressServices(),
     getWpClients(),
     getBranches(),
     getRideFees(),
-    getPlaces(),
-    getCurrentYearMetric()
+    getCurrentYearMetric(),
   ])
 
-  placesLoaded.value = true
-  clientsLoaded.value = true
-  driversLoaded.value = true
-  servicesLoaded.value = true
-  wpClientsLoaded.value = true
-  settingsLoaded.value = true
+  coreLoaded.value = true
   setLoading(false)
+  startHeavyHydration()
 }
 
 watch(drivers, () => {
   rehydrateServiceDrivers()
+}, { deep: true })
+
+watch(branchSelected, (selectedBranch, previousBranch) => {
+  if (!coreLoaded.value) {
+    return
+  }
+
+  if (selectedBranch?.city?.id === previousBranch?.city?.id) {
+    return
+  }
+
+  placesStore.hydratePlacesInBackground(selectedBranch?.city?.id).catch(() => undefined)
 }, { deep: true })
 
 onMounted(async () => {

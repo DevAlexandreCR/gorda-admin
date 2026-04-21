@@ -63,43 +63,53 @@
 </template>
 
 <script setup lang="ts">
-import {Ref, ref, watch, onMounted} from 'vue'
-import {Field, Form, FormActions} from 'vee-validate'
+import { Ref, ref, watch, onMounted } from 'vue'
+import { Field, Form, FormActions } from 'vee-validate'
 import * as yup from 'yup'
 import PlacesRepository from '@/repositories/PlaceRepository'
 import { PlaceInterface } from '@/types/PlaceInterface'
 import ToastService from '@/services/ToastService'
 import Place from '@/models/Place'
 import i18n from '@/plugins/i18n'
-import {usePlacesStore} from '@/services/stores/PlacesStore'
+import { usePlacesStore } from '@/services/stores/PlacesStore'
 import Map from '@/components/maps/Map.vue'
-import {storeToRefs} from 'pinia'
-import {google} from 'google-maps'
-import {StrHelper} from '@/helpers/StrHelper'
-import {useLoadingState} from '@/services/stores/LoadingState'
+import { storeToRefs } from 'pinia'
+import { google } from 'google-maps'
+import { StrHelper } from '@/helpers/StrHelper'
+import { useLoadingState } from '@/services/stores/LoadingState'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
-import { set } from 'firebase/database'
 
-const place: Ref<Place> = ref(new Place)
+const place: Ref<Place> = ref(new Place())
 const searchPlace: Ref<string> = ref('')
 const foundPlaces: Ref<Array<Place>> = ref([])
 const placesStore = usePlacesStore()
-const {places} = storeToRefs(placesStore)
+const { results, isReady, currentCityId } = storeToRefs(placesStore)
+const settingsStore = useSettingsStore()
+const { branchSelected } = storeToRefs(settingsStore)
 const selectedPlace: Ref<Array<Place>> = ref([])
-const {setLoading} = useLoadingState()
-const { branchSelected } = useSettingsStore()
+const { setLoading } = useLoadingState()
 
 onMounted(() => {
-  hydratePlaces('')
-  if (!branchSelected?.city) {
+  if (!branchSelected.value?.city) {
     ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
     return
   }
+  hydratePlaces(searchPlace.value).catch(() => undefined)
 })
 
-watch(searchPlace, findPlaceByName)
-watch(places, (newPlaces) => {
+watch(searchPlace, (placeName) => {
+  hydratePlaces(placeName).catch(() => undefined)
+})
+
+watch(results, (newPlaces) => {
   foundPlaces.value = newPlaces
+})
+
+watch([isReady, currentCityId], async ([ready]) => {
+  if (!ready) {
+    return
+  }
+  await hydratePlaces(searchPlace.value)
 })
 
 const schema = yup.object().shape({
@@ -110,30 +120,26 @@ const schema = yup.object().shape({
 
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
   setLoading(true)
-  if (!branchSelected?.city) {
+  if (!branchSelected.value?.city) {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
     return
   }
   place.value.name = StrHelper.toCamelCase(place.value.name)
-  PlacesRepository.create(place.value, branchSelected.city.id).then(() => {
+  PlacesRepository.create(place.value, branchSelected.value.city.id).then(() => {
     event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
-    placesStore.getPlaces().finally(() => {
+    placesStore.hydratePlacesInBackground(branchSelected.value?.city?.id).then(() => hydratePlaces(searchPlace.value)).finally(() => {
       setLoading(false)
     })
-  }).catch(e => {
+  }).catch((e) => {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function selectPlace(placeSelected: Place): void {
-  selectedPlace.value[0] = placeSelected
-}
-
-async function findPlaceByName(placeName: string): Promise<void> {
-  await hydratePlaces(placeName)
+  selectedPlace.value = [placeSelected]
 }
 
 function onMapClick(latLng: google.maps.LatLng): void {
@@ -147,9 +153,11 @@ async function deletePlace(deletedPlace: Place): Promise<void> {
   deletedPlace.delete().then(() => {
     setLoading(false)
     searchPlace.value = ''
+    const deletedPlaceId = deletedPlace.id || deletedPlace.key
+    foundPlaces.value = foundPlaces.value.filter((placeItem) => (placeItem.id || placeItem.key) !== deletedPlaceId)
     placesStore.remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
-  }).catch(e => {
+  }).catch((e) => {
     setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })

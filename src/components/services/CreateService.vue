@@ -26,7 +26,7 @@
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
                             :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
                             v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"
-                            :debounceMs="150"/>
+                            :debounceMs="150" :disabled="!clientsAutocompleteReady"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
               </Field>
@@ -48,14 +48,14 @@
             <div class="form-group">
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('common.placeholders.address')"/>
+                            :placeholder="$t('common.placeholders.address')" :disabled="!placesAutocompleteReady"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
               <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.end_address_optional')"/>
+                            :placeholder="$t('services.placeholders.end_address_optional')" :disabled="!placesAutocompleteReady"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -90,96 +90,75 @@
   </div>
 </template>
 <script setup lang="ts">
-import {Field, Form, FormActions, ErrorMessage} from 'vee-validate'
+import { Field, Form, FormActions, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import Service from '@/models/Service'
 import AutoComplete from '@/components/AutoComplete.vue'
-import {AutoCompleteType} from '@/types/AutoCompleteType'
+import { AutoCompleteType } from '@/types/AutoCompleteType'
 import ClientRepository from '@/repositories/ClientRepository'
-import {LocationType} from '@/types/LocationType'
-import {ServiceInterface} from '@/types/ServiceInterface'
-import {onMounted, ref, Ref, watch} from 'vue'
+import { LocationType } from '@/types/LocationType'
+import { ServiceInterface } from '@/types/ServiceInterface'
+import { computed, onMounted, ref, Ref, watch } from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
-import {ClientInterface} from '@/types/ClientInterface'
-import {usePlacesStore} from '@/services/stores/PlacesStore'
-import {useClientsStore} from '@/services/stores/ClientsStore'
-import {PlaceInterface} from '@/types/PlaceInterface'
-import {useLoadingState} from '@/services/stores/LoadingState'
-import {storeToRefs} from 'pinia'
-import {CountryCodeType} from '@/types/CountryCodeType'
-import {StrHelper} from '@/helpers/StrHelper'
-import {useWpClientsStore} from "@/services/stores/WpClientStore";
+import { ClientInterface } from '@/types/ClientInterface'
+import { usePlacesStore } from '@/services/stores/PlacesStore'
+import { useClientsStore } from '@/services/stores/ClientsStore'
+import { useLoadingState } from '@/services/stores/LoadingState'
+import { storeToRefs } from 'pinia'
+import { CountryCodeType } from '@/types/CountryCodeType'
+import { StrHelper } from '@/helpers/StrHelper'
+import { useWpClientsStore } from "@/services/stores/WpClientStore";
 import AuthService from '@/services/AuthService'
-import {useSettingsStore} from "@/services/stores/SettingsStore";
+import { useSettingsStore } from "@/services/stores/SettingsStore";
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
-const {places, findByName} = usePlacesStore()
-const {clients, searchClients, findById, updateClient} = useClientsStore()
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
+const placesStore = usePlacesStore()
+const clientsStore = useClientsStore()
+const settingsStore = useSettingsStore()
 let start_loc: LocationType | null = null
 let end_loc: LocationType | null = null
 const service: Ref<Partial<Service>> = ref(new Service())
-const {setLoading} = useLoadingState()
-const {countryCodes} = storeToRefs(useClientsStore())
+const { setLoading } = useLoadingState()
+const {
+  countryCodes,
+  isReady: clientsReady,
+} = storeToRefs(clientsStore)
+const {
+  isReady: placesReady,
+} = storeToRefs(placesStore)
 const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[0])
 const count: Ref<number> = ref(1)
-const {clients: wpClients, defaultClient} = storeToRefs(useWpClientsStore())
-const {branchSelected} = useSettingsStore()
-
-watch(clients, (newClients) => {
-  updateAutocompleteClients(newClients)
-})
-
-watch(places, (newPlaces) => {
-  updateAutocompletePlaces(newPlaces)
-})
+const { clients: wpClients, defaultClient } = storeToRefs(useWpClientsStore())
+const { branchSelected } = storeToRefs(settingsStore)
 
 watch(() => service.value.name, (name) => {
-  service.value.name = StrHelper.toCamelCase(name?? '')
+  service.value.name = StrHelper.toCamelCase(name ?? '')
 })
-
-onMounted(async () => {
-  countryCode.value = countryCodes.value.filter(code => code.dialCode === branchSelected?.calling_code)[0]
-  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
-  input?.focus()
-  updateAutocompletePlaces(places)
-  updateAutocompleteClients(clients)
-  await searchClients('')
-})
-
-function updateAutocompletePlaces(from: Array<PlaceInterface>): void {
-  placesAutocomplete.value = []
-  from.forEach(place => {
-    placesAutocomplete.value.push({
-      id: place.key?? '0',
-      value: place.name
-    })
-  })
-}
-
-function updateAutocompleteClients(from: Array<ClientInterface>): void {
-  clientsPhone.value = []
-  from.forEach(clientDB => {
-    clientsPhone.value.push({
-      id: clientDB.id,
-      value: clientDB.phone
-    })
-  })
-}
 
 const schema = yup.object().shape({
   wp_client_id: yup.string().required().min(9),
   name: yup.string().required().min(3),
   phone: yup.string().required().min(9).max(10),
   start_address: yup.string().required(),
-  comment: yup.string().nullable()
+  comment: yup.string().nullable(),
+})
+
+const fallbackCountryCode = computed(() => countryCodes.value[31] ?? countryCodes.value[0])
+const clientsAutocompleteReady = computed(() => clientsReady.value || clientsStore.clients.length > 0)
+const placesAutocompleteReady = computed(() => placesReady.value || placesStore.places.length > 0)
+
+onMounted(() => {
+  countryCode.value = countryCodes.value.find((code) => code.dialCode === branchSelected.value?.calling_code) ?? fallbackCountryCode.value
+  const input = document.querySelector('input[name="phone"]') as HTMLInputElement
+  input?.focus()
 })
 
 function submitFromEnter(event: Event) {
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
-  if(input !== document.activeElement) event.preventDefault()
+  if (input !== document.activeElement) event.preventDefault()
 }
 
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
@@ -187,31 +166,28 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
     return
   }
-  const currentClient = values.client_id ? await findById(values.client_id) : null
+
+  const currentClient = values.client_id ? await clientsStore.findById(values.client_id) : null
   if (!values.client_id || currentClient?.name !== values.name) {
     setLoading(true)
     try {
       const client = await createClient({
         id: '',
         name: values.name,
-        phone: values.phone
+        phone: values.phone,
       })
-      setLoading(false)
-      ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
       values.client_id = client.id
-      const found = await findById(values.client_id)
-      if (!found) {
-        clientsPhone.value.push({
-          id: client.id,
-          value: client.phone
-        })
-      } else {
-        await updateClient(client)
-      }
+      await clientsStore.updateClient(client)
+      clientsPhone.value = [{ id: client.id, value: client.phone }, ...clientsPhone.value]
+        .filter((candidate, index, collection) => collection.findIndex((item) => item.id === candidate.id) === index)
+        .slice(0, 10)
+      ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
     } catch (e: any) {
+      ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
       setLoading(false)
-      ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+      return
     }
+    setLoading(false)
   }
 
   createService(values)
@@ -220,23 +196,23 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
 function createService(values: ServiceInterface): void {
   setLoading(true)
-  if (!start_loc) {
+  if (!start_loc || !branchSelected.value) {
     setLoading(false)
     return
   }
   if (values.created_by === undefined) {
-    values.created_by = AuthService.getCurrentUser()?.id ?? null;
+    values.created_by = AuthService.getCurrentUser()?.id ?? null
   }
   const newService: Service = new Service()
   const startLocWithBranch: LocationType = {
     ...start_loc,
-    country: branchSelected!.id,
-    city: branchSelected!.city.id
+    country: branchSelected.value.id,
+    city: branchSelected.value.city.id,
   }
   const endLocWithBranch: LocationType | null = end_loc ? {
     ...end_loc,
-    country: branchSelected!.id,
-    city: branchSelected!.city.id
+    country: branchSelected.value.id,
+    city: branchSelected.value.city.id,
   } : null
   newService.comment = values.comment ?? null
   newService.client_id = values.client_id
@@ -249,19 +225,19 @@ function createService(values: ServiceInterface): void {
   ServiceRepository.create(newService, count.value).then(() => {
     setLoading(false)
     count.value = 1
-    countryCode.value = countryCodes.value[31]
+    countryCode.value = fallbackCountryCode.value
     service.value.wp_client_id = defaultClient.value as string
     start_loc = null
     end_loc = null
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
-  }).catch(e => {
+  }).catch((e) => {
     setLoading(false)
-    ToastService.toast(ToastService.ERROR,  i18n.global.t('common.messages.error'), e.message)
+    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function onClientSelected(element: AutoCompleteType): void {
-  findById(element.id).then((client) => {
+  clientsStore.findById(element.id).then((client) => {
     if (!client) return
     service.value.phone = client.phone
     service.value.name = client.name
@@ -275,23 +251,31 @@ function createClient(client: ClientInterface): Promise<ClientInterface> {
   const identifiers = buildClientIdentifiers(client.phone)
   client.phone = identifiers.phone
   client.id = identifiers.id
-  return ClientRepository.create(client, identifiers.key)
+  return ClientRepository.create(client)
 }
 
-async function checkPhoneNoExists(phone: string) {
-  if (phone.length > 3) {
-    const phoneExists = clientsPhone.value.some(client => client.value.includes(phone))
-    if (!phoneExists) {
-      service.value.name = i18n.global.t('common.models.users')
-    }
+async function checkPhoneNoExists(phone: string): Promise<void> {
+  if (!clientsAutocompleteReady.value || phone.length <= 3) {
+    return
+  }
+
+  const matchingClients = await clientsStore.searchClients(phone, 10)
+  const normalizedPhone = sanitizeDigits(phone)
+  const phoneExists = matchingClients.some((client) => sanitizeDigits(client.phone).includes(normalizedPhone))
+  if (!phoneExists) {
+    service.value.name = i18n.global.t('common.models.users')
   }
 }
 
 async function locSelected(element: AutoCompleteType): Promise<void> {
-  const place = await findByName(element.value)
-  if (!place) return
+  const place = await placesStore.findByName(element.value)
+  if (!place || !branchSelected.value) return
   start_loc = {
-    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+    name: place.name,
+    lat: place.lat,
+    lng: place.lng,
+    country: branchSelected.value.country,
+    city: branchSelected.value.city.id,
   }
   const endAddressInput = document.querySelector('input[name="end_address"]') as HTMLInputElement
   if (endAddressInput) {
@@ -307,10 +291,14 @@ function onStartAddressChange(): void {
 }
 
 async function endLocSelected(element: AutoCompleteType): Promise<void> {
-  const place = await findByName(element.value)
-  if (!place) return
+  const place = await placesStore.findByName(element.value)
+  if (!place || !branchSelected.value) return
   end_loc = {
-    name: place.name, lat: place.lat, lng: place.lng, country: branchSelected!.country, city: branchSelected!.city.id
+    name: place.name,
+    lat: place.lat,
+    lng: place.lng,
+    country: branchSelected.value.country,
+    city: branchSelected.value.city.id,
   }
   const input = document.querySelector('input[name="comment"]') as HTMLInputElement
   input?.focus()
@@ -320,9 +308,9 @@ function onEndAddressChange(): void {
   end_loc = null
 }
 
-function buildClientIdentifiers(phone: string): { phone: string, id: string, key: string } {
+function buildClientIdentifiers(phone: string): { phone: string, id: string } {
   const dialDigits = sanitizeDigits(countryCode.value?.dialCode ?? '')
-  const expectedLength = (countryCode.value?.dialCode?.includes('+56')) ? 9 : 10
+  const expectedLength = countryCode.value?.dialCode?.includes('+56') ? 9 : 10
   let digitsOnlyPhone = sanitizeDigits(phone)
   let localNumber = digitsOnlyPhone
 
@@ -334,13 +322,11 @@ function buildClientIdentifiers(phone: string): { phone: string, id: string, key
     localNumber = localNumber.slice(-expectedLength)
   }
 
-  const key = dialDigits.concat(localNumber)
-  const normalizedPhone = key || localNumber
+  const normalizedPhone = dialDigits.concat(localNumber) || localNumber
 
   return {
     phone: normalizedPhone,
     id: normalizedPhone,
-    key: normalizedPhone
   }
 }
 
@@ -349,38 +335,22 @@ function sanitizeDigits(value: string): string {
 }
 
 async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
-  // Optimización: Si el término tiene 9-10 dígitos (número completo), hacer búsqueda exacta
-  const digitsOnly = term.replace(/[^\d]/g, '')
-  const isFullPhoneNumber = digitsOnly.length >= 9 && digitsOnly.length <= 10
-  
-  if (isFullPhoneNumber) {
-    // Búsqueda exacta en el array existente para números completos (más rápido)
-    const exactMatch = clientsPhone.value.filter(client => 
-      client.value.replace(/[^\d]/g, '').includes(digitsOnly)
-    )
-    
-    if (exactMatch.length > 0) {
-      return exactMatch.slice(0, 10)
-    }
-  }
-  
-  // Búsqueda normal para términos parciales o si no hay match exacto
-  const results = await searchClients(term)
-  const mapped = results.map(client => ({
+  const results = await clientsStore.searchClients(term, 10)
+  const mapped = results.map((client) => ({
     id: client.id,
-    value: client.phone
+    value: client.phone,
   }))
   clientsPhone.value = mapped
-  return mapped.slice(0, 10)
+  return mapped
 }
 
 async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
-  const placesResult = await usePlacesStore().searchPlaces(term, 50)
-  const mapped = placesResult.map(place => ({
+  const placesResult = await placesStore.searchPlaces(term, 10)
+  const mapped = placesResult.map((place) => ({
     id: place.key ?? place.id,
-    value: place.name
+    value: place.name,
   }))
   placesAutocomplete.value = mapped
-  return mapped.slice(0, 10)
+  return mapped
 }
 </script>

@@ -1,13 +1,27 @@
 import { ClientInterface } from '@/types/ClientInterface'
 
 const DB_NAME = process.env.VUE_APP_CLIENT_CACHE_DB_NAME || 'clients-cache'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const CLIENT_STORE = 'clients'
+const META_STORE = 'meta'
+const READY_META_KEY = 'clients-ready'
+const LAST_SYNC_META_KEY = 'clients-last-synced-at'
+const WRITE_BATCH_SIZE = 500
 
 type CachedClientRecord = ClientInterface & {
   key: string
   nameLower: string
   phoneNormalized: string
+}
+
+type CachedMetaRecord = {
+  key: string
+  value: boolean | number
+}
+
+type HydrationState = {
+  isReady: boolean
+  lastSyncedAt: number | null
 }
 
 class ClientCache {
@@ -26,7 +40,7 @@ class ClientCache {
       ...client,
       key: this.buildKey(client.id),
       nameLower: client.name.toLowerCase(),
-      phoneNormalized: this.normalizePhone(client.phone)
+      phoneNormalized: this.normalizePhone(client.phone),
     }
   }
 
@@ -44,17 +58,21 @@ class ClientCache {
 
       request.onupgradeneeded = () => {
         const db = request.result
-        let store: IDBObjectStore
+        let clientStore: IDBObjectStore
         if (!db.objectStoreNames.contains(CLIENT_STORE)) {
-          store = db.createObjectStore(CLIENT_STORE, { keyPath: 'key' })
+          clientStore = db.createObjectStore(CLIENT_STORE, { keyPath: 'key' })
         } else {
-          store = request.transaction?.objectStore(CLIENT_STORE) as IDBObjectStore
+          clientStore = request.transaction?.objectStore(CLIENT_STORE) as IDBObjectStore
         }
-        if (!store.indexNames.contains('byName')) {
-          store.createIndex('byName', 'nameLower', { unique: false })
+        if (!clientStore.indexNames.contains('byName')) {
+          clientStore.createIndex('byName', 'nameLower', { unique: false })
         }
-        if (!store.indexNames.contains('byPhone')) {
-          store.createIndex('byPhone', 'phoneNormalized', { unique: false })
+        if (!clientStore.indexNames.contains('byPhone')) {
+          clientStore.createIndex('byPhone', 'phoneNormalized', { unique: false })
+        }
+
+        if (!db.objectStoreNames.contains(META_STORE)) {
+          db.createObjectStore(META_STORE, { keyPath: 'key' })
         }
       }
 
@@ -74,12 +92,13 @@ class ClientCache {
     })
   }
 
-  async replaceAll(clients: ClientInterface[]): Promise<void> {
-    const db = await this.getDb()
-    if (!db) return
+  private async yieldToUi(): Promise<void> {
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 0)
+    })
+  }
 
-    await this.clearAll(db)
-
+  private async writeBatch(db: IDBDatabase, clients: ClientInterface[]): Promise<void> {
     await new Promise<void>((resolve) => {
       const tx = db.transaction(CLIENT_STORE, 'readwrite')
       const store = tx.objectStore(CLIENT_STORE)
@@ -87,6 +106,62 @@ class ClientCache {
       tx.oncomplete = () => resolve()
       tx.onerror = () => resolve()
     })
+  }
+
+  private async setMetaValue(key: string, value: boolean | number): Promise<void> {
+    const db = await this.getDb()
+    if (!db) return
+
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction(META_STORE, 'readwrite')
+      tx.objectStore(META_STORE).put({ key, value } as CachedMetaRecord)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => resolve()
+    })
+  }
+
+  private async getMetaValue<T extends boolean | number>(key: string): Promise<T | null> {
+    const db = await this.getDb()
+    if (!db) return null
+
+    return new Promise((resolve) => {
+      const tx = db.transaction(META_STORE, 'readonly')
+      const request = tx.objectStore(META_STORE).get(key)
+      request.onsuccess = () => {
+        const record = request.result as CachedMetaRecord | undefined
+        resolve((record?.value as T | undefined) ?? null)
+      }
+      request.onerror = () => resolve(null)
+    })
+  }
+
+  async replaceAll(clients: ClientInterface[]): Promise<void> {
+    const db = await this.getDb()
+    if (!db) return
+
+    await this.clearAll(db)
+
+    for (let start = 0; start < clients.length; start += WRITE_BATCH_SIZE) {
+      const batch = clients.slice(start, start + WRITE_BATCH_SIZE)
+      await this.writeBatch(db, batch)
+      await this.yieldToUi()
+    }
+
+    const syncedAt = Date.now()
+    await this.setMetaValue(READY_META_KEY, true)
+    await this.setMetaValue(LAST_SYNC_META_KEY, syncedAt)
+  }
+
+  async getHydrationState(): Promise<HydrationState> {
+    const [isReady, lastSyncedAt] = await Promise.all([
+      this.getMetaValue<boolean>(READY_META_KEY),
+      this.getMetaValue<number>(LAST_SYNC_META_KEY),
+    ])
+
+    return {
+      isReady: isReady ?? false,
+      lastSyncedAt,
+    }
   }
 
   async upsert(client: ClientInterface): Promise<void> {

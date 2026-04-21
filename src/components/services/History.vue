@@ -30,7 +30,7 @@
                 <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" @on-change="onClientInput" :key="clientPhone"
                   :search-handler="searchClientsAutocomplete"
                   :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
-                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'"/>
+                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'" :disabled="!clientsReady"/>
               </div>
             </div>
             <div class="col-md-2">
@@ -162,7 +162,8 @@ import {ServiceList} from '@/models/ServiceList'
 const { getHistoryServices, resetCursor } = useServicesStore()
 const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
-const { clients, searchClients } = useClientsStore()
+const clientsStore = useClientsStore()
+const { isReady: clientsReady } = storeToRefs(clientsStore)
 const { filter } = storeToRefs(useServicesStore())
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
@@ -190,17 +191,9 @@ watch(() => pagination.value.perPage, async () => {
 })
 
 watchEffect(async () => {
-  drivers.forEach(driver => {
-    if (driver.id) plates.value.push({ id: driver.id, value: driver.vehicle.plate })
-  })
-
-  clientsPhone.value = []
-  clients.forEach(clientDB => {
-    clientsPhone.value.push({
-      id: clientDB.id,
-      value: clientDB.phone
-    })
-  })
+  plates.value = drivers
+    .filter(driver => driver.id)
+    .map(driver => ({ id: driver.id as string, value: driver.vehicle.plate }))
 })
 
 onBeforeMount(async () => {
@@ -221,15 +214,19 @@ function onClientSelected(element: AutoCompleteType): void {
 }
 
 async function onClientInput(term: string): Promise<void> {
-  await searchClients(term)
+  if (term.length <= 2) {
+    filter.value.clientId = null
+    clientsPhone.value = []
+  }
 }
 
 async function searchClientsAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
-  const results = await searchClients(term)
-  return results.slice(0, 10).map(client => ({
+  const results = await clientsStore.searchClients(term, 10)
+  clientsPhone.value = results.map(client => ({
     id: client.id,
     value: client.phone
   }))
+  return clientsPhone.value
 }
 
 async function clearFilters(): Promise<void> {

@@ -3,7 +3,7 @@
     <Field :name="props.fieldName ?? '12345'" :ref="input" v-model="searchElement"
            v-slot="{ errorMessage, meta }">
       <input :name="props.fieldName ?? '12345'" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
-             :placeholder="props.placeholder" autocomplete="none" @keydown="onKeyDown" v-model="searchElement"/>
+             :placeholder="props.placeholder" autocomplete="none" @keydown="onKeyDown" v-model="searchElement" :disabled="props.disabled"/>
       <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
     </Field>
     <ErrorMessage :name="props.fieldName?? '12345'" v-slot="{ message }">
@@ -34,6 +34,7 @@ interface Props {
   normalizer?: (str: string) => string
   searchHandler?: (term: string) => Promise<Array<AutoCompleteType>>
   debounceMs?: number
+  disabled?: boolean
 }
 
 const props = defineProps<Props>()
@@ -52,7 +53,17 @@ watch(foundElements, () => {
   selectedIndex.value = -1
 })
 
+watch(() => props.disabled, (disabled) => {
+  if (disabled) {
+    foundElements.value = []
+  }
+})
+
 function onChange(): void {
+  if (props.disabled) {
+    foundElements.value = []
+    return
+  }
   emit('on-change', searchElement.value)
   
   // Limpiar debounce anterior
@@ -67,6 +78,10 @@ function onChange(): void {
 }
 
 function searchElements(): void {
+  if (props.disabled) {
+    foundElements.value = []
+    return
+  }
   const term = searchElement.value
   if (props.searchHandler) {
     if (term.length <= 2) {

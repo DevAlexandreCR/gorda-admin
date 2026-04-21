@@ -224,7 +224,7 @@ function navbarFixed(el) {
     navbarBlurOnScroll('navbarBlur');
     el.removeAttribute("checked");
   }
-};
+}
 
 // Navbar blur on scroll
 function navbarBlurOnScroll(id) {
@@ -305,7 +305,7 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
+}
 
 //Set Sidebar Type
 function sidebarType(a) {

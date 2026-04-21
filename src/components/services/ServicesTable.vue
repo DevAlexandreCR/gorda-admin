@@ -138,6 +138,7 @@
             :search-handler="searchPlacesAutocomplete"
             :placeholder="$t('common.placeholders.address')"
             :classes="'form-control'"
+            :disabled="!placesReady"
             @selected="onStartLocationSelected"
             @on-change="onStartLocationChange"
           />
@@ -256,7 +257,7 @@ const showDriverColumn = computed(() => props.table !== Tables.pendings)
 const showDriverNameColumn = computed(() => props.table !== Tables.pendings && props.table !== Tables.inProgress && props.table !== Tables.history)
 const showActionColumn = computed(() => true)
 const placesStore = usePlacesStore()
-const {places} = storeToRefs(placesStore)
+const { isReady: placesReady } = storeToRefs(placesStore)
 const {branchSelected} = storeToRefs(useSettingsStore())
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const editingService: Ref<ServiceList | null> = ref(null)
@@ -278,15 +279,9 @@ watch(props.services, (newServices) => {
   paginatedServices.value = Array.from(newServices)
 })
 
-watch(places, (newPlaces) => {
-  updateAutocompletePlaces(newPlaces)
-})
-
-
 onMounted(() => {
   paginatedServices.value = Array.from(props.services)
   if(props.table !== Tables.history) interval = window.setInterval(getTime, 1000)
-  updateAutocompletePlaces(places.value)
   if (startLocationModalRef.value) {
     startLocationModal = new Modal(startLocationModalRef.value)
     startLocationModalRef.value.addEventListener('hidden.bs.modal', resetStartLocationForm)
@@ -363,7 +358,7 @@ function openStartLocationModal(service: ServiceList, event?: Event): void {
   editingService.value = service
   newStartLocation.value = null
   startLocationFieldKey.value++
-  placesStore.searchPlaces('').catch(() => undefined)
+  placesStore.searchPlaces('', 10).then(updateAutocompletePlaces).catch(() => undefined)
   startLocationModal?.show()
 }
 
@@ -385,9 +380,9 @@ function updateAutocompletePlaces(from: Array<{ id?: string, key?: string, name:
 }
 
 async function searchPlacesAutocomplete(term: string): Promise<Array<AutoCompleteType>> {
-  const placesResult = await placesStore.searchPlaces(term, 50)
+  const placesResult = await placesStore.searchPlaces(term, 10)
   updateAutocompletePlaces(placesResult)
-  return placesAutocomplete.value.slice(0, 10)
+  return placesAutocomplete.value
 }
 
 function onStartLocationChange(): void {
@@ -446,11 +441,12 @@ async function saveStartLocation(): Promise<void> {
 
 async function saveComment(): Promise<void> {
   if (!editingCommentService.value) return
+  const targetService = editingCommentService.value
   isUpdatingComment.value = true
   const updatedComment = newComment.value.trim() || null
-  ServiceRepository.updateComment(editingCommentService.value.id, updatedComment)
+  ServiceRepository.updateComment(targetService.id, updatedComment)
     .then(async () => {
-      editingCommentService.value!.comment = updatedComment
+      targetService.comment = updatedComment
       commentModal?.hide()
       await ToastService.toast(ToastService.SUCCESS, t('services.messages.comment_updated'))
     })
