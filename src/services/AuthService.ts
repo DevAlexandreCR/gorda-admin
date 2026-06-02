@@ -103,6 +103,10 @@ export default class AuthService {
     return AuthService.currentUser?.isAdmin() ?? false
   }
 
+  public static isSuperAdmin(): boolean {
+    return AuthService.currentUser?.isSuperAdmin() ?? false
+  }
+
   private static isPublicPath(path: string): boolean {
     return ['/login', '/sign-up', '/info'].includes(path)
   }

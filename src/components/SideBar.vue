@@ -86,6 +86,17 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link :to="{ name: 'billing'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/billing') ? 'nav-link active': 'nav-link'"
+                       v-if="isSuperAdmin">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-solid fa-file-invoice-dollar"></em>
+            </div>
+            <span class="nav-link-text ms-1">Billing</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <router-link :to="{ name: 'settings'}" tag="a"
                        :class="$router.currentRoute.value.path.includes('/dashboard/settings/') ? 'nav-link active': 'nav-link'">
             <div
@@ -122,6 +133,7 @@ import {useWpClientsStore} from "@/services/stores/WpClientStore";
 
 let user: Ref<User> = ref(new User())
 let isAdmin: Ref<boolean> = ref(false)
+let isSuperAdmin: Ref<boolean> = ref(false)
 let connectionState: Ref<boolean> = ref(false)
 let socket: WhatsAppClient
 let observer: ClientObserver
@@ -140,6 +152,7 @@ const onUpdate = (socket: WhatsAppClient): void => {
 onMounted(async () => {
   user.value = AuthService.getCurrentUser()
   isAdmin.value = user.value.isAdmin()
+  isSuperAdmin.value = user.value.isSuperAdmin()
   if (getDefault()) {
     socket = WhatsAppClient.getInstance(getDefault())
     observer = new ClientObserver(onUpdate)

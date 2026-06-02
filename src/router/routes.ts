@@ -12,6 +12,7 @@ import WpClientIndex from '@/views/whatsapp/Index.vue'
 import Places from '@/views/places/Places.vue'
 import UserCreate from '@/views/users/Create.vue'
 import adminGuard from "@/router/guards/AdminGuard"
+import superAdminGuard from "@/router/guards/SuperAdminGuard"
 import { NavigationGuardNext, RouteLocationNormalized } from "vue-router"
 import Metrics from '@/views/metrics/Metrics.vue'
 import Settings from '@/views/settings/SettingsApp.vue'
@@ -123,6 +124,16 @@ const routes: Array<any> = [
             component: Metrics
           },
         ]
+      },
+      {
+        path: '/dashboard/billing',
+        name: 'billing',
+        component: () => import('@/views/billing/Billing.vue'),
+        beforeEnter: (
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) => superAdminGuard(to, from, next),
       },
       {
         path: 'dashboard/settings',

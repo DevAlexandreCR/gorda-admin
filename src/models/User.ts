@@ -20,6 +20,10 @@ export default class User implements UserInterface {
     return this.roles.admin ?? false
   }
 
+  isSuperAdmin(): boolean {
+    return this.roles.superadmin ?? false
+  }
+
   isEnabled(): boolean {
     return !!this.enabled_at
   }
