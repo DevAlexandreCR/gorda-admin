@@ -429,9 +429,11 @@ const notification = ref<{
   type: "success" | "danger";
   message: string;
 } | null>(null);
+const emailPreviewHtml = ref("");
 const billingSummary = ref<BillingSummaryResponse>(
   createEmptySummary(selectedMonth.value)
 );
+let previewRequestTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const selectedMonthLabel = computed(
   () => billingSummary.value.monthLabel || formatMonthLabel(selectedMonth.value)
@@ -447,6 +449,36 @@ async function loadBillingSummary() {
   }
 }
 
+async function loadEmailPreview() {
+  try {
+    emailPreviewHtml.value = await BillingRepository.getPreviewHtml({
+      month: selectedMonth.value,
+      lineCharges: lineCharges.value,
+      softwareRental: softwareRental.value,
+      extras: extras.value,
+    });
+  } catch {
+    emailPreviewHtml.value = buildBillingEmailPreviewHtml({
+      summary: billingSummary.value,
+      lineCharges: lineCharges.value,
+      softwareRental: softwareRental.value,
+      extras: extras.value,
+      totalCop: totalCop.value,
+    });
+  }
+}
+
+function scheduleEmailPreviewLoad() {
+  if (previewRequestTimeout) {
+    clearTimeout(previewRequestTimeout);
+  }
+
+  previewRequestTimeout = setTimeout(() => {
+    previewRequestTimeout = null;
+    void loadEmailPreview();
+  }, 200);
+}
+
 async function loadConfig() {
   try {
     const config = await BillingRepository.getConfig();
@@ -460,10 +492,20 @@ async function loadConfig() {
 
 watch(selectedMonth, () => {
   void loadBillingSummary();
+  scheduleEmailPreviewLoad();
 });
+
+watch(
+  [lineCharges, softwareRental, extras],
+  () => {
+    scheduleEmailPreviewLoad();
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   await Promise.all([loadBillingSummary(), loadConfig()]);
+  await loadEmailPreview();
 });
 
 function addExtra() {
@@ -495,16 +537,6 @@ function formatCopCompact(amount: number): string {
   if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}k`;
   return `$${amount.toLocaleString("es-CO")}`;
 }
-
-const emailPreviewHtml = computed(() => {
-  return buildBillingEmailPreviewHtml({
-    summary: billingSummary.value,
-    lineCharges: lineCharges.value,
-    softwareRental: softwareRental.value,
-    extras: extras.value,
-    totalCop: totalCop.value,
-  });
-});
 
 function showNotification(type: "success" | "danger", message: string) {
   notification.value = { type, message };

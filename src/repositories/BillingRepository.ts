@@ -27,6 +27,13 @@ export interface BillingSendPayload {
   extras: BillingExtra[];
 }
 
+export interface BillingPreviewPayload {
+  month: string;
+  lineCharges: BillingLineCharge[];
+  softwareRental: number;
+  extras: BillingExtra[];
+}
+
 export interface BillingSummarySource {
   key: "admin" | "bot" | "unidentified";
   label: string;
@@ -59,6 +66,10 @@ export interface BillingSummaryResponse {
   whatsappLines: BillingWhatsappLineSummary[];
 }
 
+export interface BillingPreviewResponse {
+  html: string;
+}
+
 class BillingRepository {
   async getConfig(): Promise<BillingConfigResponse> {
     const response = await serverApi.get<ApiResponse<BillingConfigResponse>>(
@@ -75,6 +86,14 @@ class BillingRepository {
       }
     );
     return response.data.data;
+  }
+
+  async getPreviewHtml(payload: BillingPreviewPayload): Promise<string> {
+    const response = await serverApi.post<ApiResponse<BillingPreviewResponse>>(
+      "/billing/preview",
+      payload
+    );
+    return response.data.data.html;
   }
 
   async saveConfig(payload: BillingSavePayload): Promise<void> {
