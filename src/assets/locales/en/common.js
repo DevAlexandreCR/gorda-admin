@@ -109,7 +109,10 @@ export default {
       number_pqr: 'PQR',
       place_name: 'Place',
       company_name: 'Company',
-    }
+    },
+    timeline: 'Timeline',
+    canceled_by_section: 'Cancellation',
+    no_destination: 'No destination',
   },
   filters: {
     title: 'Filters',

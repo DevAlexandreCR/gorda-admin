@@ -109,7 +109,10 @@ export default {
       number_pqr: 'PQR',
       place_name: 'Lugar',
       company_name: 'Empresa',
-    }
+    },
+    timeline: 'Línea de tiempo',
+    canceled_by_section: 'Cancelación',
+    no_destination: 'Sin destino',
   },
   forms: {
     select_img: 'Choose image from files'
