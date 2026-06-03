@@ -2,15 +2,15 @@ import {
   BillingExtra,
   BillingLineCharge,
   BillingSummaryResponse,
-} from "@/repositories/BillingRepository";
+} from "@/repositories/BillingRepository"
 
 type BillingEmailPreviewParams = {
-  summary: BillingSummaryResponse;
-  lineCharges: BillingLineCharge[];
-  softwareRental: number;
-  extras: BillingExtra[];
-  totalCop: number;
-};
+  summary: BillingSummaryResponse
+  lineCharges: BillingLineCharge[]
+  softwareRental: number
+  extras: BillingExtra[]
+  totalCop: number
+}
 
 export function buildBillingEmailPreviewHtml({
   summary,
@@ -30,18 +30,18 @@ export function buildBillingEmailPreviewHtml({
       "Mensajes WhatsApp",
       `${summary.totalMessages} total · ${summary.totalInboundMessages} entrantes / ${summary.totalOutboundMessages} salientes`,
     ],
-  ];
+  ]
 
   const sourceRows: Array<[string, string]> = summary.serviceSources.map(
     (source) => [source.label, String(source.count)]
-  );
+  )
 
   const chargeRows: Array<[string, string]> = [
     ...lineCharges.map(
       (charge) =>
         [charge.alias, formatCop(charge.amountCop)] as [string, string]
     ),
-    ["Renta de software", formatCop(softwareRental)],
+    ["Renta mensual", formatCop(softwareRental)],
     ...extras.map(
       (extra) =>
         [
@@ -49,29 +49,29 @@ export function buildBillingEmailPreviewHtml({
           formatCop(extra.amountCop),
         ] as [string, string]
     ),
-  ];
+  ]
 
   const activityRows =
     summary.whatsappLines.length > 0
       ? summary.whatsappLines
-          .map(
-            (line) => `<tr>
+        .map(
+          (line) => `<tr>
         <td style="${TABLE_CELL_LEFT_STYLE}">${escapeHtml(line.alias)}</td>
         <td style="${TABLE_CELL_RIGHT_STYLE}">${line.sessions}</td>
         <td style="${TABLE_CELL_RIGHT_STYLE}">${line.inboundMessages}</td>
         <td style="${TABLE_CELL_RIGHT_STYLE}">${line.outboundMessages}</td>
       </tr>`
-          )
-          .join("")
-      : `<tr><td colspan="4" style="${EMPTY_ROW_STYLE}">Sin actividad registrada en el periodo.</td></tr>`;
+        )
+        .join("")
+      : `<tr><td colspan="4" style="${EMPTY_ROW_STYLE}">Sin actividad registrada en el periodo.</td></tr>`
 
   return `<div style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e6eaf2;border-radius:18px;overflow:hidden;box-shadow:0 16px 36px rgba(15,23,42,0.08);color:#344767;">
     <div style="padding:28px 30px 10px;">
       <p style="margin:0;font-size:14px;line-height:1.75;color:#344767;">
         Cordial saludo,<br><br>
         De acuerdo con nuestro acuerdo comercial, relaciono el cierre correspondiente a ${escapeHtml(
-          summary.monthText
-        )}, con el resumen de actividad y los valores a facturar durante el periodo comprendido entre ${escapeHtml(
+    summary.monthText
+  )}, con el resumen de actividad y los valores a facturar durante el periodo comprendido entre ${escapeHtml(
     summary.startDateLabel
   )} y ${escapeHtml(summary.endDateLabel)}.
       </p>
@@ -83,9 +83,9 @@ export function buildBillingEmailPreviewHtml({
 
       ${buildSectionTitle("Actividad por línea WhatsApp")}
       ${buildMatrixTable(
-        ["Línea", "Sesiones", "Entrantes", "Salientes"],
-        activityRows
-      )}
+    ["Línea", "Sesiones", "Entrantes", "Salientes"],
+    activityRows
+  )}
 
       ${buildSectionTitle("Origen de servicios")}
       ${buildKeyValueTable(sourceRows)}
@@ -97,8 +97,8 @@ export function buildBillingEmailPreviewHtml({
         <tr style="background:#1f2937;">
           <td style="padding:14px 18px;font-size:13px;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:0.04em;">Total</td>
           <td style="padding:14px 18px;font-size:16px;font-weight:700;color:#ffffff;text-align:right;">${formatCop(
-            totalCop
-          )}</td>
+    totalCop
+  )}</td>
         </tr>
       </table>
 
@@ -113,13 +113,13 @@ export function buildBillingEmailPreviewHtml({
         Este correo fue generado automáticamente desde Gorda Driver.
       </p>
     </div>
-  </div>`;
+  </div>`
 }
 
 function buildSectionTitle(title: string): string {
   return `<p style="margin:22px 0 10px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#7b809a;">${escapeHtml(
     title
-  )}</p>`;
+  )}</p>`
 }
 
 function buildKeyValueTable(rows: Array<[string, string]>): string {
@@ -130,31 +130,30 @@ function buildKeyValueTable(rows: Array<[string, string]>): string {
       <td style="${TABLE_CELL_RIGHT_STYLE}">${escapeHtml(value)}</td>
     </tr>`
     )
-    .join("");
+    .join("")
 
   return `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e9edf5;border-radius:14px;overflow:hidden;">
     ${body}
-  </table>`;
+  </table>`
 }
 
 function buildMatrixTable(headers: string[], rowsHtml: string): string {
   const headerHtml = headers
     .map(
       (header, index) =>
-        `<th style="padding:12px 16px;background:#f8fafc;color:#7b809a;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;text-align:${
-          index === 0 ? "left" : "right"
+        `<th style="padding:12px 16px;background:#f8fafc;color:#7b809a;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;text-align:${index === 0 ? "left" : "right"
         };border-bottom:1px solid #e9edf5;">${escapeHtml(header)}</th>`
     )
-    .join("");
+    .join("")
 
   return `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e9edf5;border-radius:14px;overflow:hidden;">
     <thead><tr>${headerHtml}</tr></thead>
     <tbody>${rowsHtml}</tbody>
-  </table>`;
+  </table>`
 }
 
 function formatCop(amount: number): string {
-  return `$${amount.toLocaleString("es-CO")} COP`;
+  return `$${amount.toLocaleString("es-CO")} COP`
 }
 
 function escapeHtml(value: string): string {
@@ -163,14 +162,14 @@ function escapeHtml(value: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/'/g, "&#39;")
 }
 
 const TABLE_CELL_LEFT_STYLE =
-  "padding:12px 16px;font-size:13px;color:#344767;border-bottom:1px solid #eef2f7;";
+  "padding:12px 16px;font-size:13px;color:#344767;border-bottom:1px solid #eef2f7;"
 
 const TABLE_CELL_RIGHT_STYLE =
-  "padding:12px 16px;font-size:13px;font-weight:600;color:#344767;text-align:right;border-bottom:1px solid #eef2f7;";
+  "padding:12px 16px;font-size:13px;font-weight:600;color:#344767;text-align:right;border-bottom:1px solid #eef2f7;"
 
 const EMPTY_ROW_STYLE =
-  "padding:14px 16px;font-size:13px;color:#8392ab;text-align:center;background:#fbfcfe;";
+  "padding:14px 16px;font-size:13px;color:#8392ab;text-align:center;background:#fbfcfe;"

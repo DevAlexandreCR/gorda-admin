@@ -209,7 +209,7 @@
                 <em class="fas fa-laptop-code text-white"></em>
               </div>
               <div>
-                <h6 class="mb-0">Renta de software</h6>
+                <h6 class="mb-0">Renta mensual</h6>
                 <p class="text-xs text-muted mb-0">
                   Licencia mensual de uso de la plataforma
                 </p>
