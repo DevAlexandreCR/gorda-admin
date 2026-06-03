@@ -2,12 +2,18 @@
   <div class="container-fluid py-4 px-4 billing-page">
     <div class="row mb-3 align-items-end billing-page-header">
       <div class="col">
-        <p class="text-sm text-muted mb-0 text-uppercase font-weight-bold tracking-wider">Administración</p>
+        <p
+          class="text-sm text-muted mb-0 text-uppercase font-weight-bold tracking-wider"
+        >
+          Administración
+        </p>
         <h5 class="mb-0 font-weight-bolder">Facturación</h5>
       </div>
       <div class="col-auto">
         <label class="card shadow-sm border-0 billing-month-control">
-          <div class="billing-icon billing-icon--month billing-panel-icon-secondary billing-month-icon-button">
+          <div
+            class="billing-icon billing-icon--month billing-panel-icon-secondary billing-month-icon-button"
+          >
             <em class="fas fa-calendar-days text-white"></em>
             <input
               type="month"
@@ -15,7 +21,9 @@
               v-model="selectedMonth"
             />
           </div>
-          <span class="text-sm font-weight-bold billing-month-value">{{ selectedMonthLabel }}</span>
+          <span class="text-sm font-weight-bold billing-month-value">{{
+            selectedMonthLabel
+          }}</span>
         </label>
       </div>
     </div>
@@ -24,18 +32,24 @@
       <div class="col-6 col-lg-3">
         <div class="card shadow billing-stat-card">
           <div class="card-header p-3 pt-2 billing-stat-card__header">
-            <div class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-dark">
+            <div
+              class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-dark"
+            >
               <em class="fas fa-layer-group text-white"></em>
             </div>
             <div class="text-end pt-1 billing-stat-card__content">
               <p class="text-sm mb-0 text-capitalize">Total servicios</p>
-              <h4 class="mb-0 font-weight-bolder">{{ stats.total }}</h4>
+              <h4 class="mb-0 font-weight-bolder">
+                {{ billingSummary.totalServices }}
+              </h4>
             </div>
           </div>
           <hr class="dark horizontal my-0" />
           <div class="card-footer p-3">
             <p class="mb-0 text-sm">
-              <span class="text-success font-weight-bolder me-1">{{ selectedMonthLabel }}</span>
+              <span class="text-success font-weight-bolder me-1">{{
+                selectedMonthLabel
+              }}</span>
             </p>
           </div>
         </div>
@@ -43,19 +57,25 @@
       <div class="col-6 col-lg-3">
         <div class="card shadow billing-stat-card">
           <div class="card-header p-3 pt-2 billing-stat-card__header">
-            <div class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-success">
+            <div
+              class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-success"
+            >
               <em class="fas fa-circle-check text-white"></em>
             </div>
             <div class="text-end pt-1 billing-stat-card__content">
-              <p class="text-sm mb-0 text-capitalize">Completados</p>
-              <h4 class="mb-0 font-weight-bolder">{{ stats.completed }}</h4>
+              <p class="text-sm mb-0 text-capitalize">Sesiones WhatsApp</p>
+              <h4 class="mb-0 font-weight-bolder">
+                {{ billingSummary.totalSessions }}
+              </h4>
             </div>
           </div>
           <hr class="dark horizontal my-0" />
           <div class="card-footer p-3">
             <p class="mb-0 text-sm">
-              <span class="text-success font-weight-bolder me-1">{{ completedPercent }}%</span>
-              <span class="text-muted">tasa de éxito</span>
+              <span class="text-success font-weight-bolder me-1">{{
+                billingSummary.whatsappLines.length
+              }}</span>
+              <span class="text-muted">líneas con actividad</span>
             </p>
           </div>
         </div>
@@ -63,19 +83,34 @@
       <div class="col-6 col-lg-3">
         <div class="card shadow billing-stat-card">
           <div class="card-header p-3 pt-2 billing-stat-card__header">
-            <div class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-danger">
+            <div
+              class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-danger"
+            >
               <em class="fas fa-ban text-white"></em>
             </div>
             <div class="text-end pt-1 billing-stat-card__content">
-              <p class="text-sm mb-0 text-capitalize">Cancelados</p>
-              <h4 class="mb-0 font-weight-bolder">{{ stats.canceled }}</h4>
+              <p class="text-sm mb-0 text-capitalize">Mensajes WhatsApp</p>
+              <h4 class="mb-0 font-weight-bolder">
+                {{ billingSummary.totalMessages }}
+              </h4>
             </div>
           </div>
           <hr class="dark horizontal my-0" />
           <div class="card-footer p-3">
             <p class="mb-0 text-sm">
-              <span :class="stats.canceled > 0 ? 'text-danger' : 'text-success'" class="font-weight-bolder me-1">{{ stats.cancelPercent }}%</span>
-              <span class="text-muted">cancelación</span>
+              <span
+                class="font-weight-bolder me-1"
+                :class="
+                  billingSummary.totalInboundMessages > 0
+                    ? 'text-danger'
+                    : 'text-success'
+                "
+                >{{ billingSummary.totalInboundMessages }}</span
+              >
+              <span class="text-muted"
+                >entrantes ·
+                {{ billingSummary.totalOutboundMessages }} salientes</span
+              >
             </p>
           </div>
         </div>
@@ -83,12 +118,16 @@
       <div class="col-6 col-lg-3">
         <div class="card shadow billing-stat-card">
           <div class="card-header p-3 pt-2 billing-stat-card__header">
-            <div class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-primary">
+            <div
+              class="billing-icon billing-icon--stat billing-stat-card__icon billing-stat-icon-primary"
+            >
               <em class="fas fa-file-invoice-dollar text-white"></em>
             </div>
             <div class="text-end pt-1 billing-stat-card__content">
               <p class="text-sm mb-0 text-capitalize">Total cobro</p>
-              <h5 class="mb-0 font-weight-bolder">{{ formatCopCompact(totalCop) }}</h5>
+              <h5 class="mb-0 font-weight-bolder">
+                {{ formatCopCompact(totalCop) }}
+              </h5>
             </div>
           </div>
           <hr class="dark horizontal my-0" />
@@ -107,27 +146,44 @@
         <div class="card shadow border-0 mb-3 billing-panel">
           <div class="card-header border-0 pb-0 billing-panel__header">
             <div class="d-flex align-items-center">
-              <div class="billing-icon billing-icon--panel billing-panel-icon-primary me-2">
+              <div
+                class="billing-icon billing-icon--panel billing-panel-icon-primary me-2"
+              >
                 <em class="fas fa-mobile-screen text-white"></em>
               </div>
               <div>
                 <h6 class="mb-0">Cobros por línea</h6>
-                <p class="text-xs text-muted mb-0">Monto mensual por cada cliente WhatsApp</p>
+                <p class="text-xs text-muted mb-0">
+                  Monto mensual por cada línea de WhatsApp
+                </p>
               </div>
             </div>
           </div>
           <div class="card-body pt-3">
-            <div v-if="lineCharges.length === 0" class="text-center py-3 text-muted text-sm billing-empty-state">
-              <em class="fas fa-mobile-screen fa-lg mb-2 d-block opacity-50"></em>
+            <div
+              v-if="lineCharges.length === 0"
+              class="text-center py-3 text-muted text-sm billing-empty-state"
+            >
+              <em
+                class="fas fa-mobile-screen fa-lg mb-2 d-block opacity-50"
+              ></em>
               Sin líneas configuradas
             </div>
-            <div v-for="charge in lineCharges" :key="charge.wpClientId" class="billing-charge-row mb-2">
-              <div class="d-flex align-items-center justify-content-between py-2 px-3 border-radius-lg billing-charge-item">
+            <div
+              v-for="charge in lineCharges"
+              :key="charge.wpClientId"
+              class="billing-charge-row mb-2"
+            >
+              <div
+                class="d-flex align-items-center justify-content-between py-2 px-3 border-radius-lg billing-charge-item"
+              >
                 <div class="d-flex align-items-center gap-2">
                   <div class="billing-icon billing-icon--avatar billing-avatar">
                     <em class="fas fa-phone text-white"></em>
                   </div>
-                  <span class="text-sm font-weight-bold">{{ charge.alias }}</span>
+                  <span class="text-sm font-weight-bold">{{
+                    charge.alias
+                  }}</span>
                 </div>
                 <div class="d-flex align-items-center gap-1 billing-amount">
                   <input
@@ -147,12 +203,16 @@
         <div class="card shadow border-0 mb-3 billing-panel">
           <div class="card-header border-0 pb-0 billing-panel__header">
             <div class="d-flex align-items-center">
-              <div class="billing-icon billing-icon--panel billing-panel-icon-info me-2">
+              <div
+                class="billing-icon billing-icon--panel billing-panel-icon-info me-2"
+              >
                 <em class="fas fa-laptop-code text-white"></em>
               </div>
               <div>
-                <h6 class="mb-0">Software rental</h6>
-                <p class="text-xs text-muted mb-0">Licencia mensual de uso de la plataforma</p>
+                <h6 class="mb-0">Renta de software</h6>
+                <p class="text-xs text-muted mb-0">
+                  Licencia mensual de uso de la plataforma
+                </p>
               </div>
             </div>
           </div>
@@ -173,23 +233,37 @@
         <div class="card shadow border-0 mb-3 billing-panel">
           <div class="card-header border-0 pb-0 billing-panel__header">
             <div class="d-flex align-items-center billing-panel__title">
-              <div class="billing-icon billing-icon--panel billing-panel-icon-warning me-2">
+              <div
+                class="billing-icon billing-icon--panel billing-panel-icon-warning me-2"
+              >
                 <em class="fas fa-circle-plus text-white"></em>
               </div>
               <div>
                 <h6 class="mb-0">Otros cobros</h6>
-                <p class="text-xs text-muted mb-0">Cargos adicionales para este mes</p>
+                <p class="text-xs text-muted mb-0">
+                  Cargos adicionales para este mes
+                </p>
               </div>
-              <button class="btn btn-sm btn-outline-primary mb-0 py-1 px-2 ms-auto billing-add-button" @click="addExtra">
+              <button
+                class="btn btn-sm btn-outline-primary mb-0 py-1 px-2 ms-auto billing-add-button"
+                @click="addExtra"
+              >
                 <em class="fas fa-plus me-1"></em>Agregar
               </button>
             </div>
           </div>
           <div class="card-body pt-3">
-            <div v-if="extras.length === 0" class="text-center py-2 text-sm text-muted billing-empty-state">
+            <div
+              v-if="extras.length === 0"
+              class="text-center py-2 text-sm text-muted billing-empty-state"
+            >
               Sin cobros adicionales este mes
             </div>
-            <div v-for="(extra, idx) in extras" :key="idx" class="d-flex align-items-center gap-2 mb-2 billing-extra-row">
+            <div
+              v-for="(extra, idx) in extras"
+              :key="idx"
+              class="d-flex align-items-center gap-2 mb-2 billing-extra-row"
+            >
               <input
                 type="text"
                 class="form-control form-control-sm"
@@ -204,7 +278,11 @@
                 min="0"
               />
               <span class="text-xs text-muted">COP</span>
-              <button class="btn btn-sm btn-link text-danger mb-0 px-1 py-0 billing-delete-button" @click="removeExtra(idx)" title="Eliminar">
+              <button
+                class="btn btn-sm btn-link text-danger mb-0 px-1 py-0 billing-delete-button"
+                @click="removeExtra(idx)"
+                title="Eliminar"
+              >
                 <em class="fas fa-trash-can text-sm"></em>
               </button>
             </div>
@@ -213,19 +291,34 @@
 
         <div class="card shadow border-0 billing-panel">
           <div class="card-body p-3">
-            <div class="border-radius-lg p-3 mb-3 d-flex align-items-center justify-content-between billing-total-banner">
+            <div
+              class="border-radius-lg p-3 mb-3 d-flex align-items-center justify-content-between billing-total-banner"
+            >
               <div>
-                <p class="text-xs text-white opacity-8 text-uppercase mb-1 tracking-wider">Total a cobrar este mes</p>
-                <h3 class="text-white mb-0 font-weight-bolder">{{ formatCop(totalCop) }}</h3>
+                <p
+                  class="text-xs text-white opacity-8 text-uppercase mb-1 tracking-wider"
+                >
+                  Total a cobrar este mes
+                </p>
+                <h3 class="text-white mb-0 font-weight-bolder">
+                  {{ formatCop(totalCop) }}
+                </h3>
               </div>
-              <div class="billing-icon billing-icon--total billing-total-banner__icon">
+              <div
+                class="billing-icon billing-icon--total billing-total-banner__icon"
+              >
                 <em class="fas fa-receipt text-dark"></em>
               </div>
             </div>
 
-            <label class="form-label text-xs font-weight-bold text-uppercase text-muted mb-1">Destinatario</label>
+            <label
+              class="form-label text-xs font-weight-bold text-uppercase text-muted mb-1"
+              >Destinatario</label
+            >
             <div class="position-relative mb-3 billing-recipient-field">
-              <em class="fas fa-envelope position-absolute text-muted billing-field-icon"></em>
+              <em
+                class="fas fa-envelope position-absolute text-muted billing-field-icon"
+              ></em>
               <input
                 type="email"
                 class="form-control form-control-sm billing-email-input"
@@ -245,19 +338,33 @@
                 ]"
                 role="alert"
               >
-                <em :class="`fas ${notification.type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'} me-1`"></em>
+                <em
+                  :class="`fas ${
+                    notification.type === 'success'
+                      ? 'fa-circle-check'
+                      : 'fa-triangle-exclamation'
+                  } me-1`"
+                ></em>
                 {{ notification.message }}
               </div>
             </transition>
 
             <div class="d-grid gap-2 billing-action-group">
-              <button class="btn btn-primary mb-0 billing-action-button billing-action-button--primary" @click="sendInvoice" :disabled="isSending">
+              <button
+                class="btn btn-primary mb-0 billing-action-button billing-action-button--primary"
+                @click="sendInvoice"
+                :disabled="isSending || isSaving"
+              >
                 <em class="fas fa-paper-plane me-2"></em>
-                {{ isSending ? 'Enviando...' : 'Enviar cuenta de cobro' }}
+                {{ isSending ? "Enviando..." : "Enviar cuenta de cobro" }}
               </button>
-              <button class="btn btn-outline-secondary btn-sm mb-0 billing-action-button billing-action-button--secondary" @click="saveConfig" :disabled="isSaving">
+              <button
+                class="btn btn-outline-secondary btn-sm mb-0 billing-action-button billing-action-button--secondary"
+                @click="saveConfig"
+                :disabled="isSaving || isSending"
+              >
                 <em class="fas fa-floppy-disk me-2"></em>
-                {{ isSaving ? 'Guardando...' : 'Guardar configuración' }}
+                {{ isSaving ? "Guardando..." : "Guardar configuración" }}
               </button>
             </div>
           </div>
@@ -266,21 +373,32 @@
 
       <div class="col-xl-7">
         <div class="card shadow border-0 billing-panel billing-preview-panel">
-          <div class="card-header border-0 pb-0 d-flex align-items-center justify-content-between billing-panel__header">
+          <div
+            class="card-header border-0 pb-0 d-flex align-items-center justify-content-between billing-panel__header"
+          >
             <div class="d-flex align-items-center gap-2">
-              <div class="billing-icon billing-icon--panel billing-panel-icon-secondary">
+              <div
+                class="billing-icon billing-icon--panel billing-panel-icon-secondary"
+              >
                 <em class="fas fa-envelope-open-text text-white"></em>
               </div>
               <div>
                 <h6 class="mb-0">Vista previa del correo</h6>
-                <p class="text-xs text-muted mb-0">Así recibirá el correo el destinatario</p>
+                <p class="text-xs text-muted mb-0">
+                  Este contenido coincide con el correo enviado
+                </p>
               </div>
             </div>
-            <span class="badge text-xs px-2 py-1 billing-preview-badge">PREVIEW</span>
+            <span class="badge text-xs px-2 py-1 billing-preview-badge"
+              >PREVIEW</span
+            >
           </div>
           <div class="card-body p-2">
             <div class="border-radius-lg overflow-hidden billing-preview-shell">
-              <div class="p-3 billing-preview-content" v-html="emailPreviewHtml"></div>
+              <div
+                class="p-3 billing-preview-content"
+                v-html="emailPreviewHtml"
+              ></div>
             </div>
           </div>
         </div>
@@ -290,198 +408,199 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import dayjs from 'dayjs'
-import MetricRepository from '@/repositories/MetricRepository'
-import BillingRepository, { BillingLineCharge, BillingExtra } from '@/repositories/BillingRepository'
+import { ref, computed, watch, onMounted } from "vue";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+import BillingRepository, {
+  BillingExtra,
+  BillingLineCharge,
+  BillingSummaryResponse,
+} from "@/repositories/BillingRepository";
+import { buildBillingEmailPreviewHtml } from "./billingEmailPreview";
 
-const selectedMonth = ref(dayjs().format('YYYY-MM'))
-const lineCharges = ref<BillingLineCharge[]>([])
-const softwareRental = ref(0)
-const extras = ref<BillingExtra[]>([])
-const recipientEmail = ref('')
-const isSending = ref(false)
-const isSaving = ref(false)
-const notification = ref<{ type: 'success' | 'danger'; message: string } | null>(null)
-const stats = ref({ total: 0, completed: 0, canceled: 0, cancelPercent: '0.0' })
+const selectedMonth = ref(dayjs().format("YYYY-MM"));
+const lineCharges = ref<BillingLineCharge[]>([]);
+const softwareRental = ref(0);
+const extras = ref<BillingExtra[]>([]);
+const recipientEmail = ref("");
+const isSending = ref(false);
+const isSaving = ref(false);
+const notification = ref<{
+  type: "success" | "danger";
+  message: string;
+} | null>(null);
+const billingSummary = ref<BillingSummaryResponse>(
+  createEmptySummary(selectedMonth.value)
+);
 
-const selectedMonthLabel = computed(() =>
-  dayjs(`${selectedMonth.value}-01`).format('MMM YYYY')
-)
+const selectedMonthLabel = computed(
+  () => billingSummary.value.monthLabel || formatMonthLabel(selectedMonth.value)
+);
 
-const completedPercent = computed(() => {
-  if (stats.value.total === 0) return '0.0'
-  return ((stats.value.completed / stats.value.total) * 100).toFixed(1)
-})
-
-async function loadStats() {
-  const startDate = dayjs(`${selectedMonth.value}-01`).format('YYYY-MM-DD')
-  const endDate = dayjs(`${selectedMonth.value}-01`).endOf('month').format('YYYY-MM-DD')
+async function loadBillingSummary() {
   try {
-    const metrics = await MetricRepository.getGlobal(startDate, endDate)
-    const total = metrics.reduce((sum, m) => sum + m.count, 0)
-    const completed = metrics.filter((m) => m.status === 'terminated').reduce((sum, m) => sum + m.count, 0)
-    const canceled = metrics.filter((m) => m.status === 'canceled').reduce((sum, m) => sum + m.count, 0)
-    const cancelPercent = total > 0 ? ((canceled / total) * 100).toFixed(1) : '0.0'
-    stats.value = { total, completed, canceled, cancelPercent }
+    billingSummary.value = await BillingRepository.getSummary(
+      selectedMonth.value
+    );
   } catch {
-    stats.value = { total: 0, completed: 0, canceled: 0, cancelPercent: '0.0' }
+    billingSummary.value = createEmptySummary(selectedMonth.value);
   }
 }
 
 async function loadConfig() {
   try {
-    const config = await BillingRepository.getConfig()
-    lineCharges.value = config.lineCharges
-    softwareRental.value = config.softwareRental
+    const config = await BillingRepository.getConfig();
+    lineCharges.value = config.lineCharges;
+    softwareRental.value = config.softwareRental;
   } catch {
-    lineCharges.value = []
-    softwareRental.value = 0
+    lineCharges.value = [];
+    softwareRental.value = 0;
   }
 }
 
-watch(selectedMonth, loadStats)
+watch(selectedMonth, () => {
+  void loadBillingSummary();
+});
 
 onMounted(async () => {
-  await Promise.all([loadStats(), loadConfig()])
-})
+  await Promise.all([loadBillingSummary(), loadConfig()]);
+});
 
 function addExtra() {
-  extras.value.push({ description: '', amountCop: 0 })
+  extras.value.push({ description: "", amountCop: 0 });
 }
 
 function removeExtra(idx: number) {
-  extras.value.splice(idx, 1)
+  extras.value.splice(idx, 1);
 }
 
 const totalCop = computed(() => {
-  const lineTotal = lineCharges.value.reduce((sum, c) => sum + (c.amountCop || 0), 0)
-  const extrasTotal = extras.value.reduce((sum, e) => sum + (e.amountCop || 0), 0)
-  return lineTotal + (softwareRental.value || 0) + extrasTotal
-})
+  const lineTotal = lineCharges.value.reduce(
+    (sum, c) => sum + (c.amountCop || 0),
+    0
+  );
+  const extrasTotal = extras.value.reduce(
+    (sum, e) => sum + (e.amountCop || 0),
+    0
+  );
+  return lineTotal + (softwareRental.value || 0) + extrasTotal;
+});
 
 function formatCop(amount: number): string {
-  return `$${amount.toLocaleString('es-CO')} COP`
+  return `$${amount.toLocaleString("es-CO")} COP`;
 }
 
 function formatCopCompact(amount: number): string {
-  if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`
-  if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}k`
-  return `$${amount.toLocaleString('es-CO')}`
+  if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}k`;
+  return `$${amount.toLocaleString("es-CO")}`;
 }
 
 const emailPreviewHtml = computed(() => {
-  const monthName = dayjs(`${selectedMonth.value}-01`).format('MMMM YYYY').toUpperCase()
-  const { total, completed, canceled, cancelPercent } = stats.value
-  const completePercent = total > 0 ? ((completed / total) * 100).toFixed(1) : '0.0'
+  return buildBillingEmailPreviewHtml({
+    summary: billingSummary.value,
+    lineCharges: lineCharges.value,
+    softwareRental: softwareRental.value,
+    extras: extras.value,
+    totalCop: totalCop.value,
+  });
+});
 
-  const lineRows = lineCharges.value.map((c) => `
-    <tr>
-      <td style="padding:10px 16px;font-size:13px;color:#344767;border-bottom:1px solid #f0f2f5">${c.alias}</td>
-      <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;color:#344767;border-bottom:1px solid #f0f2f5">${formatCop(c.amountCop)}</td>
-    </tr>`).join('')
+function showNotification(type: "success" | "danger", message: string) {
+  notification.value = { type, message };
+  setTimeout(() => {
+    notification.value = null;
+  }, 4000);
+}
 
-  const extrasRows = extras.value.map((e) => `
-    <tr>
-      <td style="padding:10px 16px;font-size:13px;color:#344767;border-bottom:1px solid #f0f2f5">${e.description || '—'}</td>
-      <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;color:#344767;border-bottom:1px solid #f0f2f5">${formatCop(e.amountCop)}</td>
-    </tr>`).join('')
-
-  return `
-<div style="font-family:'Open Sans',Arial,sans-serif;max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10)">
-
-  <div style="background:linear-gradient(135deg,#7928CA 0%,#cb0c9f 100%);padding:32px 28px;text-align:center">
-    <p style="color:rgba(255,255,255,0.75);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px">Cuenta de cobro mensual</p>
-    <h2 style="color:#ffffff;font-size:24px;font-weight:700;margin:0">Gorda Driver</h2>
-    <p style="color:rgba(255,255,255,0.9);font-size:15px;margin:8px 0 0;font-weight:500">${monthName}</p>
-  </div>
-
-  <div style="padding:24px 28px 8px">
-    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8392AB;margin:0 0 12px">Resumen de actividad</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e9ecef">
-      <tr style="background:#f8f9fa">
-        <td style="padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8392AB">Indicador</td>
-        <td style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8392AB">Valor</td>
-      </tr>
-      <tr>
-        <td style="padding:10px 16px;font-size:13px;color:#344767;border-bottom:1px solid #f0f2f5">Total servicios</td>
-        <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;color:#344767;border-bottom:1px solid #f0f2f5">${total}</td>
-      </tr>
-      <tr>
-        <td style="padding:10px 16px;font-size:13px;color:#344767;border-bottom:1px solid #f0f2f5">Completados</td>
-        <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;border-bottom:1px solid #f0f2f5"><span style="color:#82d616">${completed}</span> <span style="color:#adb5bd;font-size:11px">(${completePercent}%)</span></td>
-      </tr>
-      <tr>
-        <td style="padding:10px 16px;font-size:13px;color:#344767">Cancelados</td>
-        <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600"><span style="color:#ea0606">${canceled}</span> <span style="color:#adb5bd;font-size:11px">(${cancelPercent}%)</span></td>
-      </tr>
-    </table>
-  </div>
-
-  <div style="padding:20px 28px 8px">
-    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8392AB;margin:0 0 12px">Detalle de cobros</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e9ecef">
-      <tr style="background:#f8f9fa">
-        <td style="padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8392AB">Concepto</td>
-        <td style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8392AB">Monto</td>
-      </tr>
-      ${lineRows}
-      <tr>
-        <td style="padding:10px 16px;font-size:13px;color:#344767;border-bottom:1px solid #f0f2f5">Software rental</td>
-        <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;color:#344767;border-bottom:1px solid #f0f2f5">${formatCop(softwareRental.value)}</td>
-      </tr>
-      ${extrasRows}
-      <tr style="background:linear-gradient(135deg,#141727,#3A416F)">
-        <td style="padding:16px;font-size:14px;font-weight:700;color:#ffffff">TOTAL</td>
-        <td style="padding:16px;text-align:right;font-size:18px;font-weight:700;color:#ffffff">${formatCop(totalCop.value)}</td>
-      </tr>
-    </table>
-  </div>
-
-  <div style="padding:20px 28px 24px;text-align:center">
-    <p style="color:#adb5bd;font-size:11px;margin:0;line-height:1.6">Este correo fue generado automáticamente por el sistema Gorda Driver.<br>No responder a este mensaje.</p>
-  </div>
-</div>`
-})
-
-function showNotification(type: 'success' | 'danger', message: string) {
-  notification.value = { type, message }
-  setTimeout(() => { notification.value = null }, 4000)
+async function persistConfig(showSuccess = true): Promise<boolean> {
+  isSaving.value = true;
+  try {
+    await BillingRepository.saveConfig({
+      lineCharges: lineCharges.value.map((c) => ({
+        wpClientId: c.wpClientId,
+        amountCop: c.amountCop,
+      })),
+      softwareRental: softwareRental.value,
+    });
+    if (showSuccess) {
+      showNotification("success", "Configuración guardada correctamente.");
+    }
+    return true;
+  } catch {
+    if (showSuccess) {
+      showNotification("danger", "Error al guardar la configuración.");
+    }
+    return false;
+  } finally {
+    isSaving.value = false;
+  }
 }
 
 async function saveConfig() {
-  isSaving.value = true
-  try {
-    await BillingRepository.saveConfig({
-      lineCharges: lineCharges.value.map((c) => ({ wpClientId: c.wpClientId, amountCop: c.amountCop })),
-      softwareRental: softwareRental.value,
-    })
-    showNotification('success', 'Configuración guardada correctamente.')
-  } catch {
-    showNotification('danger', 'Error al guardar la configuración.')
-  } finally {
-    isSaving.value = false
-  }
+  await persistConfig(true);
 }
 
 async function sendInvoice() {
   if (!recipientEmail.value.trim()) {
-    showNotification('danger', 'Debes ingresar el email del destinatario.')
-    return
+    showNotification("danger", "Debes ingresar el email del destinatario.");
+    return;
   }
-  isSending.value = true
+
+  const configSaved = await persistConfig(false);
+
+  if (!configSaved) {
+    showNotification(
+      "danger",
+      "No fue posible guardar la configuración antes de enviar."
+    );
+    return;
+  }
+
+  isSending.value = true;
   try {
     await BillingRepository.sendInvoice({
       month: selectedMonth.value,
       recipientEmail: recipientEmail.value.trim(),
       extras: extras.value,
-    })
-    showNotification('success', 'Cuenta de cobro enviada correctamente.')
+    });
+    showNotification("success", "Cuenta de cobro enviada correctamente.");
   } catch {
-    showNotification('danger', 'Error al enviar la cuenta de cobro.')
+    showNotification("danger", "Error al enviar la cuenta de cobro.");
   } finally {
-    isSending.value = false
+    isSending.value = false;
   }
+}
+
+function createEmptySummary(month: string): BillingSummaryResponse {
+  const monthDate = dayjs(`${month}-01`).locale("es");
+  const startDate = monthDate.startOf("month");
+  const endDate = monthDate.endOf("month");
+
+  return {
+    month,
+    monthLabel: formatMonthLabel(month),
+    monthText: monthDate.format("MMMM [de] YYYY"),
+    startDate: startDate.format("YYYY-MM-DD"),
+    endDate: endDate.format("YYYY-MM-DD"),
+    startDateLabel: startDate.format("D [de] MMMM [de] YYYY"),
+    endDateLabel: endDate.format("D [de] MMMM [de] YYYY"),
+    totalServices: 0,
+    totalSessions: 0,
+    totalInboundMessages: 0,
+    totalOutboundMessages: 0,
+    totalMessages: 0,
+    serviceSources: [
+      { key: "admin", label: "Panel admin", count: 0 },
+      { key: "bot", label: "Bot WhatsApp", count: 0 },
+    ],
+    whatsappLines: [],
+  };
+}
+
+function formatMonthLabel(month: string): string {
+  const value = dayjs(`${month}-01`).locale("es").format("MMMM YYYY");
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 </script>
 
@@ -499,7 +618,8 @@ async function sendInvoice() {
   --billing-focus: rgba(203, 12, 159, 0.18);
   --billing-preview-shell-bg: linear-gradient(180deg, #f6f7fb 0%, #eef1f7 100%);
   --billing-preview-shell-border: rgba(52, 71, 103, 0.08);
-  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 18px 34px rgba(52, 71, 103, 0.08);
+  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 18px 34px rgba(52, 71, 103, 0.08);
   --billing-chip-bg: rgba(131, 146, 171, 0.12);
   --billing-avatar-bg: linear-gradient(310deg, #627594, #a8b8d8);
   --billing-banner-bg: linear-gradient(310deg, #141727, #3a416f);
@@ -541,7 +661,8 @@ async function sendInvoice() {
   border: 1px solid var(--billing-border);
   border-radius: 1rem;
   background: var(--billing-input-bg);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
   cursor: default;
   margin-bottom: 0;
 }
@@ -847,12 +968,19 @@ async function sendInvoice() {
 }
 
 .billing-preview-shell::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at top right, rgba(121, 40, 202, 0.08), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(203, 12, 159, 0.06), transparent 28%);
+  background: radial-gradient(
+      circle at top right,
+      rgba(121, 40, 202, 0.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(203, 12, 159, 0.06),
+      transparent 28%
+    );
   pointer-events: none;
 }
 
@@ -909,12 +1037,25 @@ body.dark-version .billing-page {
   --billing-input-bg: #1a1d31;
   --billing-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
   --billing-focus: rgba(203, 12, 159, 0.32);
-  --billing-preview-shell-bg: linear-gradient(180deg, rgba(224, 216, 231, 0.86) 0%, rgba(202, 193, 214, 0.78) 100%);
+  --billing-preview-shell-bg: linear-gradient(
+    180deg,
+    rgba(224, 216, 231, 0.86) 0%,
+    rgba(202, 193, 214, 0.78) 100%
+  );
   --billing-preview-shell-border: rgba(203, 12, 159, 0.14);
-  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 22px 36px rgba(0, 0, 0, 0.22);
+  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 22px 36px rgba(0, 0, 0, 0.22);
   --billing-chip-bg: rgba(255, 255, 255, 0.08);
-  --billing-avatar-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
-  --billing-banner-bg: linear-gradient(160deg, rgba(26, 29, 49, 0.98) 0%, rgba(17, 19, 34, 0.98) 100%);
+  --billing-avatar-bg: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.04)
+  );
+  --billing-banner-bg: linear-gradient(
+    160deg,
+    rgba(26, 29, 49, 0.98) 0%,
+    rgba(17, 19, 34, 0.98) 100%
+  );
   --billing-banner-border: rgba(255, 255, 255, 0.08);
   --billing-banner-shadow: 0 20px 32px rgba(0, 0, 0, 0.42);
   --billing-add-button-bg: rgba(121, 40, 202, 0.16);
@@ -964,11 +1105,15 @@ body.dark-version .billing-page .billing-total-banner {
 }
 
 body.dark-version .billing-page .billing-total-banner::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(203, 12, 159, 0.12), rgba(121, 40, 202, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(203, 12, 159, 0.12),
+    rgba(121, 40, 202, 0.08)
+  );
   pointer-events: none;
 }
 
@@ -987,27 +1132,47 @@ body.dark-version .billing-page .billing-panel-icon-primary {
 }
 
 body.dark-version .billing-page .billing-stat-icon-success {
-  background: linear-gradient(160deg, rgba(27, 38, 34, 0.98), rgba(18, 27, 25, 0.98));
+  background: linear-gradient(
+    160deg,
+    rgba(27, 38, 34, 0.98),
+    rgba(18, 27, 25, 0.98)
+  );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
 }
 
 body.dark-version .billing-page .billing-stat-icon-danger {
-  background: linear-gradient(160deg, rgba(45, 28, 34, 0.98), rgba(29, 20, 24, 0.98));
+  background: linear-gradient(
+    160deg,
+    rgba(45, 28, 34, 0.98),
+    rgba(29, 20, 24, 0.98)
+  );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
 }
 
 body.dark-version .billing-page .billing-panel-icon-info {
-  background: linear-gradient(160deg, rgba(24, 33, 48, 0.98), rgba(18, 24, 38, 0.98));
+  background: linear-gradient(
+    160deg,
+    rgba(24, 33, 48, 0.98),
+    rgba(18, 24, 38, 0.98)
+  );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
 }
 
 body.dark-version .billing-page .billing-panel-icon-warning {
-  background: linear-gradient(160deg, rgba(46, 34, 25, 0.98), rgba(31, 24, 18, 0.98));
+  background: linear-gradient(
+    160deg,
+    rgba(46, 34, 25, 0.98),
+    rgba(31, 24, 18, 0.98)
+  );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
 }
 
 body.dark-version .billing-page .billing-panel-icon-secondary {
-  background: linear-gradient(160deg, rgba(36, 41, 58, 0.98), rgba(23, 28, 42, 0.98));
+  background: linear-gradient(
+    160deg,
+    rgba(36, 41, 58, 0.98),
+    rgba(23, 28, 42, 0.98)
+  );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
 }
 
@@ -1055,9 +1220,16 @@ body.dark-version .billing-page .billing-alert-danger {
 }
 
 body.dark-version .billing-page .billing-preview-shell::before {
-  background:
-    radial-gradient(circle at top right, rgba(121, 40, 202, 0.12), transparent 34%),
-    radial-gradient(circle at bottom left, rgba(203, 12, 159, 0.09), transparent 30%),
+  background: radial-gradient(
+      circle at top right,
+      rgba(121, 40, 202, 0.12),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(203, 12, 159, 0.09),
+      transparent 30%
+    ),
     linear-gradient(180deg, rgba(17, 19, 34, 0.04), rgba(17, 19, 34, 0.1));
 }
 
