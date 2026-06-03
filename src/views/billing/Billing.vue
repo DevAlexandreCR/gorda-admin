@@ -6,16 +6,17 @@
         <h5 class="mb-0 font-weight-bolder">Facturación</h5>
       </div>
       <div class="col-auto">
-        <div class="card shadow-sm border-0 billing-month-control">
-          <div class="billing-icon billing-icon--month billing-panel-icon-secondary">
+        <label class="card shadow-sm border-0 billing-month-control">
+          <div class="billing-icon billing-icon--month billing-panel-icon-secondary billing-month-icon-button">
             <em class="fas fa-calendar-days text-white"></em>
+            <input
+              type="month"
+              class="billing-month-input"
+              v-model="selectedMonth"
+            />
           </div>
-          <input
-            type="month"
-            class="border-0 bg-transparent text-sm font-weight-bold billing-month-input"
-            v-model="selectedMonth"
-          />
-        </div>
+          <span class="text-sm font-weight-bold billing-month-value">{{ selectedMonthLabel }}</span>
+        </label>
       </div>
     </div>
 
@@ -498,6 +499,7 @@ async function sendInvoice() {
   --billing-focus: rgba(203, 12, 159, 0.18);
   --billing-preview-shell-bg: linear-gradient(180deg, #f6f7fb 0%, #eef1f7 100%);
   --billing-preview-shell-border: rgba(52, 71, 103, 0.08);
+  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 18px 34px rgba(52, 71, 103, 0.08);
   --billing-chip-bg: rgba(131, 146, 171, 0.12);
   --billing-avatar-bg: linear-gradient(310deg, #627594, #a8b8d8);
   --billing-banner-bg: linear-gradient(310deg, #141727, #3a416f);
@@ -535,11 +537,13 @@ async function sendInvoice() {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--billing-border);
   border-radius: 1rem;
   background: var(--billing-input-bg);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  cursor: default;
+  margin-bottom: 0;
 }
 
 .billing-month-control:focus-within {
@@ -548,19 +552,37 @@ async function sendInvoice() {
 }
 
 .billing-month-input {
-  min-width: 130px;
-  outline: none;
-  color: inherit;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   cursor: pointer;
-  box-shadow: none;
+  border: 0;
 }
 
 .billing-month-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   cursor: pointer;
 }
 
+.billing-month-icon-button {
+  position: relative;
+  cursor: pointer;
+}
+
+.billing-month-value {
+  color: var(--billing-heading);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 .billing-icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
@@ -568,11 +590,19 @@ async function sendInvoice() {
   line-height: 1;
   overflow: hidden;
   color: #ffffff;
+  position: relative;
 }
 
 .billing-icon em {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   line-height: 1;
-  opacity: 0.95;
+  font-size: inherit;
+  opacity: 0.98;
+  transform: translateY(0);
 }
 
 .billing-icon--month,
@@ -621,6 +651,10 @@ async function sendInvoice() {
 
 .billing-stat-card__content {
   padding-left: 5rem;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .billing-stat-card hr,
@@ -636,10 +670,15 @@ async function sendInvoice() {
 
 .billing-panel__title {
   width: 100%;
+  gap: 0.25rem;
 }
 
 .billing-empty-state {
   color: var(--billing-muted);
+}
+
+.billing-panel__header .d-flex.align-items-center {
+  min-height: 32px;
 }
 
 .billing-charge-item {
@@ -800,12 +839,26 @@ async function sendInvoice() {
 }
 
 .billing-preview-shell {
+  position: relative;
   min-height: 400px;
   background: var(--billing-preview-shell-bg);
   border: 1px solid var(--billing-preview-shell-border);
+  box-shadow: var(--billing-preview-shell-shadow);
+}
+
+.billing-preview-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(121, 40, 202, 0.08), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(203, 12, 159, 0.06), transparent 28%);
+  pointer-events: none;
 }
 
 .billing-preview-content {
+  position: relative;
+  z-index: 1;
   min-height: 400px;
 }
 
@@ -856,8 +909,9 @@ body.dark-version .billing-page {
   --billing-input-bg: #1a1d31;
   --billing-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
   --billing-focus: rgba(203, 12, 159, 0.32);
-  --billing-preview-shell-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 242, 250, 0.95) 100%);
-  --billing-preview-shell-border: rgba(203, 12, 159, 0.16);
+  --billing-preview-shell-bg: linear-gradient(180deg, rgba(224, 216, 231, 0.86) 0%, rgba(202, 193, 214, 0.78) 100%);
+  --billing-preview-shell-border: rgba(203, 12, 159, 0.14);
+  --billing-preview-shell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 22px 36px rgba(0, 0, 0, 0.22);
   --billing-chip-bg: rgba(255, 255, 255, 0.08);
   --billing-avatar-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
   --billing-banner-bg: linear-gradient(160deg, rgba(26, 29, 49, 0.98) 0%, rgba(17, 19, 34, 0.98) 100%);
@@ -957,28 +1011,34 @@ body.dark-version .billing-page .billing-panel-icon-secondary {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
 }
 
+body.dark-version .billing-page .billing-stat-card__icon em,
+body.dark-version .billing-page .billing-panel-icon-primary em,
+body.dark-version .billing-page .billing-total-banner__icon em {
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
 body.dark-version .billing-page .billing-stat-icon-success em {
-  color: #79d9a5;
+  color: #b9f5cf;
 }
 
 body.dark-version .billing-page .billing-stat-icon-danger em {
-  color: #ff98ab;
+  color: #ffc0cb;
 }
 
 body.dark-version .billing-page .billing-panel-icon-info em {
-  color: #8ec5ff;
+  color: #bedcff;
 }
 
 body.dark-version .billing-page .billing-panel-icon-warning em {
-  color: #f6c177;
+  color: #ffdca8;
 }
 
 body.dark-version .billing-page .billing-panel-icon-secondary em {
-  color: #d7ddf0;
+  color: #eef2ff;
 }
 
 body.dark-version .billing-page .billing-preview-shell {
-  border-color: rgba(203, 12, 159, 0.18);
+  border-color: rgba(203, 12, 159, 0.14);
 }
 
 body.dark-version .billing-page .billing-add-button {
@@ -994,9 +1054,11 @@ body.dark-version .billing-page .billing-alert-danger {
   color: var(--billing-text);
 }
 
-body.dark-version .billing-page .billing-month-input::-webkit-calendar-picker-indicator {
-  opacity: 0.85;
-  filter: invert(0.92) brightness(1.2);
+body.dark-version .billing-page .billing-preview-shell::before {
+  background:
+    radial-gradient(circle at top right, rgba(121, 40, 202, 0.12), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(203, 12, 159, 0.09), transparent 30%),
+    linear-gradient(180deg, rgba(17, 19, 34, 0.04), rgba(17, 19, 34, 0.1));
 }
 
 .fade-enter-active,
