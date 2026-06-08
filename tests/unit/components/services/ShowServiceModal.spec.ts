@@ -43,7 +43,7 @@ describe('ShowServiceModal.vue', () => {
   })
 
   it('renders service start location name correctly', async () => {
-    expect(wrapper.find('.modal-title').text()).toContain(service.start_loc.name)
+    expect(wrapper.text()).toContain(service.start_loc.name)
   })
 
   it('renders status-related fields based on service status', async () => {

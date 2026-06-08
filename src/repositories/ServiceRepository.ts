@@ -21,6 +21,7 @@ import AuthService from '@/services/AuthService'
 import { ServiceCursor } from '@/types/ServiceCursor'
 import {LocationType} from '@/types/LocationType'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
+import * as Sentry from '@sentry/vue'
 
 type HistoryPageResponse = {
 	services: Service[]
@@ -169,7 +170,6 @@ class ServiceRepository {
 		})
 	}
 
-	/* istanbul ignore next */
 	async restart(service: ServiceInterface): Promise<void> {
 		if (!service.id) return Promise.reject(new Error('Id is necessary'))
 		if (service.driver_id) return Promise.reject(new Error('Service has a driver assigned'))
@@ -231,10 +231,18 @@ class ServiceRepository {
 		onChildRemoved(query(DBService.dbServices(), orderByChild('status'), equalTo(Service.STATUS_IN_PROGRESS)), removed)
 	}
 
-	/* istanbul ignore next */
 	async create(service: ServiceInterface, count = 1): Promise<void> {
 		if (service.client_id != null && service.client_id !== '') {
 			service.client_id = this.canonicalizeClientId(service.client_id)
+			try {
+				const response = await serverApi.get<ApiResponse<{ completedServicesCount: number }>>(
+					`/services/clients/${service.client_id}/completed-count`
+				)
+				service.client_completed_services_count = response.data.data.completedServicesCount
+			} catch (error) {
+				service.client_completed_services_count = 0
+				Sentry.captureException(error)
+			}
 		}
 		for (let time = 1; time <= count; time++) {
 			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))

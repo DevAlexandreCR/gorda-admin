@@ -144,4 +144,29 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.emitted(Service.EVENT_RELEASE)).toBeTruthy()
     expect(wrapper.emitted(Service.EVENT_TERMINATE)).toBeTruthy()
   })
+
+  it('shows ClientCompletedBadge when service has client_completed_services_count = 3', async () => {
+    service.client_completed_services_count = 3
+    options.props = {
+      services: [service],
+      table: Tables.pendings,
+      pagination: pagination
+    }
+    wrapper = mount(ServicesTable, options)
+    await nextTick()
+    expect(wrapper.find('span.badge.bg-info').exists()).toBe(true)
+    expect(wrapper.find('span.badge.bg-info').text()).toBe('3')
+  })
+
+  it('hides ClientCompletedBadge when service has client_completed_services_count = 0', async () => {
+    service.client_completed_services_count = 0
+    options.props = {
+      services: [service],
+      table: Tables.pendings,
+      pagination: pagination
+    }
+    wrapper = mount(ServicesTable, options)
+    await nextTick()
+    expect(wrapper.find('span.badge.bg-info').exists()).toBe(false)
+  })
 })

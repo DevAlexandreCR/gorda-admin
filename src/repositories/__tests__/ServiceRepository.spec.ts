@@ -1,10 +1,16 @@
 import ServiceRepository from '@/repositories/ServiceRepository'
 import { ServiceInterface } from '@/types/ServiceInterface'
+import serverApi from '@/services/gordaApi/server/ServerApi'
+import * as Sentry from '@sentry/vue'
 
 // firebase/database is already mocked globally in tests/testSetup.ts.
 // push is not in the global mock, so we retrieve the mocked module and
 // add push ourselves before each test.
 const firebaseDatabaseMock = jest.requireMock('firebase/database') as Record<string, jest.Mock>
+
+// serverApi is a singleton axios instance. jest.mock cannot intercept it after
+// ServiceRepository has been evaluated, so we use jest.spyOn on the live instance.
+let serverApiGetSpy: jest.SpyInstance
 
 let pushMock: jest.Mock
 let setMock: jest.Mock
@@ -42,10 +48,15 @@ beforeEach(() => {
 	firebaseDatabaseMock.push = pushMock
 	firebaseDatabaseMock.set = setMock
 	firebaseDatabaseMock.remove = removeMock
+
+	serverApiGetSpy = jest.spyOn(serverApi, 'get').mockResolvedValue({
+		data: { data: { completedServicesCount: 0 } },
+	} as any)
 })
 
 afterEach(() => {
 	jest.clearAllMocks()
+	serverApiGetSpy.mockRestore()
 })
 
 describe('ServiceRepository.create', () => {
@@ -72,6 +83,55 @@ describe('ServiceRepository.create', () => {
 		await ServiceRepository.create(service)
 		expect(service.phone).toBe('+573001234567')
 	})
+
+	it('hydrates client_completed_services_count from serverApi.get response', async () => {
+		serverApiGetSpy.mockResolvedValue({
+			data: { data: { completedServicesCount: 7 } },
+		} as any)
+		const service = buildService({ client_id: '+573001234567' })
+		await ServiceRepository.create(service)
+		expect(service.client_completed_services_count).toBe(7)
+	})
+
+	it('sends the canonicalized id in the serverApi.get request path', async () => {
+		serverApiGetSpy.mockResolvedValue({
+			data: { data: { completedServicesCount: 3 } },
+		} as any)
+		const service = buildService({ client_id: '+573001234567@c.us' })
+		await ServiceRepository.create(service)
+		expect(serverApiGetSpy).toHaveBeenCalledWith('/services/clients/573001234567/completed-count')
+	})
+
+	it('falls back to 0 and calls Sentry.captureException when serverApi.get rejects', async () => {
+		const thrownError = new Error('network failure')
+		serverApiGetSpy.mockRejectedValue(thrownError)
+		const sentrySpy = jest.spyOn(Sentry, 'captureException').mockImplementation(() => 'fake-event-id')
+
+		const service = buildService({ client_id: '+573001234567' })
+		await ServiceRepository.create(service)
+
+		expect(service.client_completed_services_count).toBe(0)
+		expect(sentrySpy).toHaveBeenCalledTimes(1)
+		expect(sentrySpy).toHaveBeenCalledWith(thrownError)
+	})
+
+	it('does not set client_completed_services_count and does not call serverApi.get when client_id is null', async () => {
+		const service = buildService({ client_id: null })
+		await ServiceRepository.create(service)
+
+		const payload = setMock.mock.calls[0][1] as ServiceInterface
+		expect(payload).not.toHaveProperty('client_completed_services_count')
+		expect(serverApiGetSpy).not.toHaveBeenCalled()
+	})
+
+	it('does not set client_completed_services_count and does not call serverApi.get when client_id is empty string', async () => {
+		const service = buildService({ client_id: '' })
+		await ServiceRepository.create(service)
+
+		const payload = setMock.mock.calls[0][1] as ServiceInterface
+		expect(payload).not.toHaveProperty('client_completed_services_count')
+		expect(serverApiGetSpy).not.toHaveBeenCalled()
+	})
 })
 
 describe('ServiceRepository.restart', () => {
@@ -80,8 +140,7 @@ describe('ServiceRepository.restart', () => {
 
 		await ServiceRepository.restart(source)
 
-		// push is called twice: once for the new service push, and the second arg is the new service object
-		// The first call to push is from create(newService) with the newService as second argument
+		// push is called by create() — the second argument is the new service object
 		const newServiceArg = pushMock.mock.calls[0][1] as ServiceInterface
 		expect(newServiceArg.client_id).toBe('573001234567')
 	})
@@ -93,5 +152,25 @@ describe('ServiceRepository.restart', () => {
 
 		const newServiceArg = pushMock.mock.calls[0][1] as ServiceInterface
 		expect(newServiceArg.client_id).toBeNull()
+	})
+
+	it('includes client_completed_services_count in the RTDB payload when endpoint returns N', async () => {
+		const completedCount = 5
+		serverApiGetSpy.mockResolvedValue({
+			data: { data: { completedServicesCount: completedCount } },
+		} as any)
+
+		const source = buildService({
+			id: 'existing-id',
+			client_id: '573001234567',
+			applicants: null,
+			driver_id: null,
+		})
+
+		await ServiceRepository.restart(source)
+
+		// set is called by update() inside create() — the second argument is the full service payload
+		const rtdbPayload = setMock.mock.calls[0][1] as ServiceInterface
+		expect(rtdbPayload.client_completed_services_count).toBe(completedCount)
 	})
 })

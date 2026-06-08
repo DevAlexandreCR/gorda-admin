@@ -49,7 +49,10 @@
           </td>
           <td class="py-1" v-if="showDestination">{{ service.end_loc?.name ?? 'N/A' }}</td>
           <td class="py-1">{{ service.phone }}</td>
-          <td class="py-1">{{ service.name }}</td>
+          <td class="py-1">
+            {{ service.name }}
+            <ClientCompletedBadge :count="service.client_completed_services_count" />
+          </td>
           <td class="py-1">
             <div class="d-flex align-items-center text-truncate" style="max-width: 160px">
               <span class="text-truncate" :title="service.comment ?? 'N/A'">{{ service.comment ?? 'N/A' }}</span>
@@ -218,6 +221,7 @@ import DateHelper from '@/helpers/DateHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
 import AutoComplete from '@/components/AutoComplete.vue'
+import ClientCompletedBadge from '@/components/services/ClientCompletedBadge.vue'
 import {onBeforeUnmount, onMounted, ref, Ref, watch, computed} from 'vue'
 import {Modal, Tooltip} from 'bootstrap'
 import {ServiceList} from '@/models/ServiceList'

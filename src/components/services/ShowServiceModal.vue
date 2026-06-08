@@ -83,7 +83,7 @@
                 <span class="mb-2 text-sm">{{$t('services.fields.end_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.end_loc?.name ?? 'N/A' }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ date }}</span></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${ service.status }`) }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span></span>
+                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span><ClientCompletedBadge :count="service.client_completed_services_count" /></span>
                 <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.phone }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment ?? 'N/A' }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.created_by !== null">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
@@ -127,6 +127,7 @@ import { PlaceInterface } from '@/types/PlaceInterface'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Map from '@/components/maps/Map.vue'
+import ClientCompletedBadge from '@/components/services/ClientCompletedBadge.vue'
 import { ServiceList } from '@/models/ServiceList'
 import Service from '@/models/Service'
 import DateHelper from '@/helpers/DateHelper'

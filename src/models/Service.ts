@@ -25,6 +25,7 @@ export default class Service implements ServiceInterface {
   created_at: number
   comment: string | null = null
   a_go = 0
+  client_completed_services_count: number | null = null
   created_by: string | null = null
   assigned_by: string | null = null
   canceled_by: string | null = null
