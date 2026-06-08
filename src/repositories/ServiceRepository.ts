@@ -181,7 +181,9 @@ class ServiceRepository {
 		newService.name = service.name
 		newService.comment = service.comment
 		newService.wp_client_id = service.wp_client_id
-		newService.client_id = service.client_id
+		newService.client_id = (service.client_id != null && service.client_id !== '')
+			? this.canonicalizeClientId(service.client_id)
+			: service.client_id
 		newService.amount = service.amount ?? null
 		newService.applicants = service.applicants ?? null
 		newService.metadata = service.metadata ?? null
@@ -195,6 +197,16 @@ class ServiceRepository {
 		if (Array.isArray(applicants)) return applicants.length > 0
 		if (typeof applicants === 'object') return Object.keys(applicants as Record<string, unknown>).length > 0
 		return true
+	}
+
+	private canonicalizeClientId(value: string): string {
+		const trimmed = value.trim()
+		const suffixStripped = trimmed.replace(/@(c\.us|s\.whatsapp\.net)$/i, '')
+		const plusStripped = suffixStripped.replace(/^\+/, '')
+		if (!/^\d+$/.test(plusStripped)) {
+			throw new Error(`Invalid client_id: "${value}" does not reduce to a digits-only identifier`)
+		}
+		return plusStripped
 	}
 
 	/* istanbul ignore next */
@@ -221,6 +233,9 @@ class ServiceRepository {
 
 	/* istanbul ignore next */
 	async create(service: ServiceInterface, count = 1): Promise<void> {
+		if (service.client_id != null && service.client_id !== '') {
+			service.client_id = this.canonicalizeClientId(service.client_id)
+		}
 		for (let time = 1; time <= count; time++) {
 			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))
 			service.id = res.key
