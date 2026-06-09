@@ -186,5 +186,11 @@ export default {
   },
   errors: {
     invalid_duration: 'Invalid duration min 1 minutes',
+  },
+  paginator: {
+    summary: 'Showing {from}–{to} of {total}',
+    empty: 'No drivers match the current filters',
+    go_to_page: 'Go to page',
+    per_page: 'Items per page',
   }
 }

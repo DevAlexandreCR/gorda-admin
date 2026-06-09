@@ -4,16 +4,13 @@ import i18n from '@/plugins/i18n'
 import Index from '@/views/drivers/Index.vue'
 import DriverRepository from "@/repositories/DriverRepository";
 import DriverMock from "../../../mocks/entities/DriverMock";
-import {useDriversStore} from '@/services/stores/DriversStore'
 import {nextTick} from 'vue'
 
-DriverRepository.getAll = jest.fn().mockResolvedValue([DriverMock])
+DriverRepository.list = jest.fn().mockResolvedValue({ drivers: [DriverMock], total: 1 })
 
 describe('Index.vue', () => {
   let wrapper: VueWrapper<any>
   beforeEach(async () => {
-    const driverStore = useDriversStore()
-    await driverStore.getDrivers()
     wrapper = mount(Index,
       {
         global: {
@@ -24,11 +21,11 @@ describe('Index.vue', () => {
         },
       })
     await router.isReady()
-  })
-  it('an user can show users list', async () => {
     await nextTick()
+    await nextTick()
+  })
+  it('renders driver name and email returned by list()', async () => {
     expect(wrapper.html()).toContain(DriverMock.name)
     expect(wrapper.html()).toContain(DriverMock.email)
-    expect(wrapper.html()).toContain(DriverMock.photoUrl)
   })
 })

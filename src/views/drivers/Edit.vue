@@ -350,8 +350,6 @@ import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
-import { useDashboardStore } from '@/services/stores/DashboardStore'
-
 const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
@@ -363,7 +361,6 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
-const dashboardStore = useDashboardStore()
 const soatExp: Ref<string> = ref('')
 const tecExp: Ref<string> = ref('')
 const color: Ref<string> = ref(Constants.COLORS[0].hex)
@@ -419,15 +416,7 @@ watch(tecExp, (newValue: string) => {
 })
 
 function goBack() {
-  router.push({
-    name: 'drivers.index',
-    query: {
-      search: dashboardStore.driverFilters.search || undefined,
-      enabled: dashboardStore.driverFilters.enabled !== -1 ? dashboardStore.driverFilters.enabled : undefined,
-      page: dashboardStore.driverFilters.currentPage !== 1 ? dashboardStore.driverFilters.currentPage : undefined,
-      paymentMode: dashboardStore.driverFilters.paymentMode || undefined
-    }
-  })
+  router.back()
 }
 
 

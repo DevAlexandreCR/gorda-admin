@@ -53,5 +53,33 @@ export default {
     color: 'Choose color vehicle',
     soat_exp: 'Choose Soat expiration',
     tec_exp: 'Choose Techno expiration'
+  },
+  filters: {
+    add_filter: '+ Add filter',
+    filter_status: 'Status',
+    filter_payment: 'Payment',
+    filter_inactive: 'Inactivity',
+    chip_status: 'Status: {value}',
+    chip_payment: 'Payment: {value}',
+    chip_inactive: 'Inactive > {days}d',
+    inactive_none: 'None',
+    inactive_days: '{days}d',
+    custom: 'Custom',
+    custom_placeholder: 'Days',
+    status_values: {
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+    },
+    payment_values: {
+      monthly: 'Monthly',
+      percentage: 'Percentage',
+    },
+  },
+  bulk: {
+    selected: 'selected',
+    disable_confirm: 'Disable {count} driver(s)? This action will revoke their access.',
+    enable_result: '{processed} enabled · {failed} failed',
+    disable_result: '{processed} disabled · {failed} failed',
+    send_result: '{processed} sent · {failed} failed',
   }
 }

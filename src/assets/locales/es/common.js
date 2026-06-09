@@ -186,5 +186,11 @@ export default {
   },
   errors: {
     invalid_duration: 'Duración inválida mínimo 1 minuto',
+  },
+  paginator: {
+    summary: 'Mostrando {from}–{to} de {total}',
+    empty: 'Ningún conductor coincide con los filtros actuales',
+    go_to_page: 'Ir a la página',
+    per_page: 'Elementos por página',
   }
 }

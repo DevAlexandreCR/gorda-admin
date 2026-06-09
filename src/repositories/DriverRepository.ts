@@ -18,6 +18,7 @@ import { AxiosError } from 'axios'
 import { DriverConnectedInterface } from '@/types/DriverConnectedInterface'
 import CacheStore from '@/services/stores/CacheStore'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
+import { DriverListQuery } from '@/types/DriverListQuery'
 
 class DriverRepository {
   async getDriver(id: string): Promise<DriverInterface> {
@@ -28,6 +29,14 @@ class DriverRepository {
   async getAll(): Promise<Array<DriverInterface>> {
     const response = await serverApi.get<ApiResponse<{ drivers: DriverInterface[] }>>('/drivers')
     return response.data.data.drivers ?? []
+  }
+
+  async list(query: DriverListQuery): Promise<{ drivers: DriverInterface[]; total: number }> {
+    const response = await serverApi.get<ApiResponse<{ drivers: DriverInterface[]; total: number }>>('/drivers', { params: query })
+    return {
+      drivers: response.data.data.drivers ?? [],
+      total: response.data.data.total ?? 0,
+    }
   }
 
   update(driver: DriverInterface): Promise<void> {
@@ -112,6 +121,21 @@ class DriverRepository {
 
   removeOnlineDriverListener(): void {
     off(query(DBService.dbOnlineDrivers(), orderByKey()))
+  }
+
+  async bulkEnable(driverIds: string[]): Promise<{ processed: number; failed: Array<{ id: string; reason: string }> }> {
+    const response = await serverApi.post<ApiResponse<{ processed: number; failed: Array<{ id: string; reason: string }> }>>('/drivers/bulk/enable', { driverIds })
+    return response.data.data
+  }
+
+  async bulkDisable(driverIds: string[]): Promise<{ processed: number; failed: Array<{ id: string; reason: string }> }> {
+    const response = await serverApi.post<ApiResponse<{ processed: number; failed: Array<{ id: string; reason: string }> }>>('/drivers/bulk/disable', { driverIds })
+    return response.data.data
+  }
+
+  async bulkSendMessage(payload: { driverIds: string[]; title: string; body: string; data?: Record<string, string> }): Promise<{ processed: number; failed: Array<{ id: string; reason: string }> }> {
+    const response = await serverApi.post<ApiResponse<{ processed: number; failed: Array<{ id: string; reason: string }> }>>('/drivers/bulk/send-message', payload)
+    return response.data.data
   }
 
   async create(driver: DriverInterface, password: string): Promise<string> {

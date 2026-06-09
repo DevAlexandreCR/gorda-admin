@@ -5,7 +5,8 @@
         <form @submit.prevent="sendMessage">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ driver ? $t('drivers.actions.send_message_to', { name: driver.name }) : $t('drivers.actions.send_message_to_all') }}
+            <template v-if="isBulkMode">Send message to {{ props.driverIds!.length }} drivers</template>
+            <template v-else>{{ driver ? $t('drivers.actions.send_message_to', { name: driver.name }) : $t('drivers.actions.send_message_to_all') }}</template>
           </h5>
           <button type="button" class="btn-close" @click="close"></button>
         </div>
@@ -37,8 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, watch } from 'vue'
+import { ref, computed, defineProps, defineEmits, watch } from 'vue'
 import FcmService from '@/services/FcmService'
+import DriverRepository from '@/repositories/DriverRepository'
 import { useI18n } from 'vue-i18n'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
@@ -48,12 +50,15 @@ import { FCMNotification } from '@/types/FCMNotifications'
 import DateHelper from '@/helpers/DateHelper'
 
 const props = defineProps<{
-  driver: DriverInterface | null
+  driver?: DriverInterface | null
+  driverIds?: string[]
 }>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'sent'): void
 }>()
+
+const isBulkMode = computed(() => Array.isArray(props.driverIds) && props.driverIds.length > 0)
 const error = ref<string | null>(null)
 const fcmModal = ref<Modal | null>(null)
 const { t } = useI18n()
@@ -97,7 +102,22 @@ async function sendMessage(): Promise<void> {
     duration: duration.value.toString(),
     timestamp: (DateHelper.unix() * 1000).toString()
   }
-  if (props.driver) {
+  if (isBulkMode.value) {
+    DriverRepository.bulkSendMessage({
+      driverIds: props.driverIds!,
+      title: message.value.title,
+      body: message.value.body,
+      data: { duration: duration.value.toString() },
+    }).then(() => {
+      ToastService.toast(ToastService.SUCCESS, t('drivers.actions.sent_success'))
+    }).catch((err) => {
+      ToastService.toast(ToastService.ERROR, err.message)
+      error.value = err.message
+    }).finally(() => {
+      close()
+      setLoading(false)
+    })
+  } else if (props.driver) {
     FcmService.sendToDriver(props.driver.id, message.value).then(() => {
       ToastService.toast(ToastService.SUCCESS, t('drivers.actions.sent_success'))
     }).catch((err) => {
