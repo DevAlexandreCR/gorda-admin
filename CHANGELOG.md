@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.4(2026-06-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.4...2.0.3)
+
 ### Added
 
 - Show the client completed services count badge in the services table and service detail modal.
+- Support bulk FCM messaging from the drivers view.
+
+### Changed
+
+- Redesign the driver filters bar with new status, payment mode, and inactivity filters plus paginated results.
 
 # Release Notes for 2.0.x
 
