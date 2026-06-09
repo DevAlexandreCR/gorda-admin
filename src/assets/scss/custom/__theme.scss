@@ -13,6 +13,20 @@
   --card-text: #2b2b2b;
   --muted-text: #6c757d;
 
+  /* Drivers filters */
+  --drivers-filter-surface: #ffffff;
+  --drivers-filter-surface-hover: #f8f9fa;
+  --drivers-filter-border: rgba(58, 65, 111, 0.18);
+  --drivers-filter-text: #344767;
+  --drivers-filter-muted: #8392ab;
+  --drivers-filter-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  --drivers-filter-menu-bg: #ffffff;
+  --drivers-filter-menu-shadow: 0 18px 32px rgba(15, 23, 42, 0.12);
+  --drivers-filter-active-border: rgba(251, 191, 36, 0.45);
+  --drivers-filter-active-bg: rgba(251, 191, 36, 0.12);
+  --drivers-filter-active-text: #b45309;
+  --drivers-filter-focus-ring: rgba(251, 191, 36, 0.18);
+
   /* WhatsApp preview */
   --wp-bg: #e5ddd5;
   --wp-card-bg: #ffffff;
@@ -35,6 +49,19 @@ body.dark-version {
   --card-bg: #111322;
   --card-text: rgba(255,255,255,0.85);
   --muted-text: rgba(255,255,255,0.6);
+
+  --drivers-filter-surface: #1f2638;
+  --drivers-filter-surface-hover: #283149;
+  --drivers-filter-border: rgba(148, 163, 184, 0.28);
+  --drivers-filter-text: rgba(248, 250, 252, 0.96);
+  --drivers-filter-muted: rgba(191, 203, 225, 0.76);
+  --drivers-filter-shadow: 0 14px 28px rgba(2, 6, 23, 0.28);
+  --drivers-filter-menu-bg: #171d2d;
+  --drivers-filter-menu-shadow: 0 18px 36px rgba(2, 6, 23, 0.42);
+  --drivers-filter-active-border: rgba(251, 191, 36, 0.42);
+  --drivers-filter-active-bg: rgba(251, 191, 36, 0.14);
+  --drivers-filter-active-text: rgba(253, 224, 71, 0.95);
+  --drivers-filter-focus-ring: rgba(251, 191, 36, 0.18);
 
   --wp-bg: #1f232b;
   --wp-card-bg: #2a2f3a;
