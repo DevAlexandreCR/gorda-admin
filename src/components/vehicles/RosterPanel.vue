@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import VehicleLookupCard from '@/components/vehicles/VehicleLookupCard.vue'
-import type { VehiclePayload } from '@/components/vehicles/VehicleLookupCard.vue'
+import type { VehiclePayload } from '@/types/VehiclePayload'
 import DriverVehicleRepository from '@/repositories/DriverVehicleRepository'
 import { DriverVehicleLink } from '@/types/Vehicle'
 import ToastService from '@/services/ToastService'
@@ -107,22 +107,16 @@ async function onSelectVehicle(vehicleId: string): Promise<void> {
 
 async function onVehicleSelected(payload: VehiclePayload): Promise<void> {
   try {
-    if (payload.vehicleId) {
-      await DriverVehicleRepository.link(props.driverId, { vehicleId: payload.vehicleId })
-    } else {
-      const vehicle: Record<string, unknown> = {}
-      if (payload.plate) vehicle.plate = payload.plate
-      if (payload.brand) vehicle.brand = payload.brand
-      if (payload.model) vehicle.model = payload.model
-      if (payload.color) vehicle.color = payload.color
-      if (payload.photoUrl) vehicle.photoUrl = payload.photoUrl
-      if (payload.soat_exp) vehicle.soat_exp = payload.soat_exp
-      if (payload.tec_exp) vehicle.tec_exp = payload.tec_exp
-      await DriverVehicleRepository.link(props.driverId, { vehicle })
-    }
+    await DriverVehicleRepository.link(props.driverId, { vehicleId: payload.vehicleId })
     showLookup.value = false
     await fetchLinks()
   } catch (e: unknown) {
+    const axiosErr = e as { response?: { status?: number; data?: { error?: string } } }
+    if (axiosErr?.response?.status === 409 && axiosErr.response?.data?.error === 'link_already_exists') {
+      showLookup.value = false
+      await fetchLinks()
+      return
+    }
     const err = e as Error
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), err.message)
   }

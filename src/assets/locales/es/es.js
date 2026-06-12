@@ -33,6 +33,7 @@ export default {
     forms: {
       detail: 'Detalle del Vehículo',
       edit: 'Editar Vehículo',
+      create: 'Crear Vehículo',
     },
     actions: {
       force_disconnect: 'Desconectar y Deshabilitar',
@@ -56,6 +57,7 @@ export default {
       currently_driven_by_x: 'En uso actualmente por {name}',
       different_plate: 'Usar placa diferente',
       link_this_vehicle: 'Vincular este vehículo',
+      create_vehicle: 'Crear vehículo',
     },
     validations: {
       brand_required: 'La marca es obligatoria',

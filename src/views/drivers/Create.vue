@@ -133,7 +133,7 @@ import {StrHelper} from '@/helpers/StrHelper'
 import {useSettingsStore} from "@/services/stores/SettingsStore";
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 import VehicleLookupCard from '@/components/vehicles/VehicleLookupCard.vue'
-import type { VehiclePayload } from '@/components/vehicles/VehicleLookupCard.vue'
+import type { VehiclePayload } from '@/types/VehiclePayload'
 
 const driver: Ref<Driver> = ref(new Driver)
 const password: Ref<string> = ref('')

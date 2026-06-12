@@ -33,6 +33,7 @@ export default {
     forms: {
       detail: 'Vehicle Detail',
       edit: 'Edit Vehicle',
+      create: 'Create Vehicle',
     },
     actions: {
       force_disconnect: 'Disconnect & Disable',
@@ -56,6 +57,7 @@ export default {
       currently_driven_by_x: 'Currently driven by {name}',
       different_plate: 'Use different plate',
       link_this_vehicle: 'Link this vehicle',
+      create_vehicle: 'Create vehicle',
     },
     validations: {
       brand_required: 'Brand is required',
