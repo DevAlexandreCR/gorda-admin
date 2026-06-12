@@ -19,6 +19,7 @@ import { ref } from 'vue'
 import { Modal } from 'bootstrap'
 import VehicleForm from './VehicleForm.vue'
 import VehicleRepository from '@/repositories/VehicleRepository'
+import StorageService from '@/services/StorageService'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 
@@ -29,7 +30,6 @@ interface CreateVehiclePayload {
   color: { name: string; hex: string }
   soat_exp?: string
   tec_exp?: string
-  photoUrl?: string
 }
 
 const emit = defineEmits<{
@@ -51,9 +51,19 @@ function open(plate?: string): void {
 
 defineExpose({ open })
 
-async function onFormSubmit(payload: CreateVehiclePayload): Promise<void> {
+async function onFormSubmit(payload: CreateVehiclePayload, file: File | null): Promise<void> {
   try {
     const vehicle = await VehicleRepository.create(payload)
+    if (file) {
+      try {
+        const storageRef = StorageService.getStorageReference(StorageService.vehiclePath, vehicle.id, file.name)
+        const url = await StorageService.uploadFile(storageRef, file)
+        await VehicleRepository.update(vehicle.id, { photoUrl: url })
+      } catch (uploadErr: unknown) {
+        const err = uploadErr as { message?: string }
+        await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), err.message)
+      }
+    }
     emit('created', vehicle.id)
     modalInstance?.hide()
   } catch (e: unknown) {

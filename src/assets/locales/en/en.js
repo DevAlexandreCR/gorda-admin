@@ -22,7 +22,7 @@ export default {
       brand: 'Brand',
       model: 'Model',
       color: 'Color',
-      photo_url: 'Photo URL',
+      photo: 'Photo',
       soat_exp: 'SOAT Expiry',
       tec_exp: 'Technical inspection expiry',
       enabled: 'Enabled',
@@ -45,9 +45,7 @@ export default {
       disable_confirm_body: 'This vehicle is currently in use by {name}. Disabling it will force-disconnect them. Do you want to continue?',
       disable_selectable_confirm: '{name} has this vehicle active. Do you want to remove their selection permission?',
       cannot_enable_incomplete: 'Cannot enable: missing required fields: {fields}',
-    },
-    placeholders: {
-      photo_url: 'https://...',
+      vehicle_added: 'Vehicle added successfully',
     },
     lookup: {
       found: 'Vehicle found',
@@ -58,7 +56,7 @@ export default {
       currently_driven_by_x: 'Currently driven by {name}',
       different_plate: 'Use different plate',
       link_this_vehicle: 'Link this vehicle',
-      create_vehicle: 'Create vehicle',
+      create_with_plate: 'Create vehicle with plate {plate}',
     },
     validations: {
       brand_required: 'Brand is required',

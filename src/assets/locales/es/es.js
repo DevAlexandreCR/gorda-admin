@@ -22,7 +22,7 @@ export default {
       brand: 'Marca',
       model: 'Modelo',
       color: 'Color',
-      photo_url: 'URL de Foto',
+      photo: 'Foto',
       soat_exp: 'Venc. SOAT',
       tec_exp: 'Venc. Tec-Mec',
       enabled: 'Habilitado',
@@ -45,9 +45,7 @@ export default {
       disable_confirm_body: 'El vehículo está siendo usado por {name}. Deshabilitarlo lo desconectará forzosamente. ¿Desea continuar?',
       disable_selectable_confirm: '{name} tiene este vehículo activo. ¿Desea quitar el permiso de selección?',
       cannot_enable_incomplete: 'No se puede habilitar: faltan campos obligatorios: {fields}',
-    },
-    placeholders: {
-      photo_url: 'https://...',
+      vehicle_added: 'Vehículo agregado correctamente',
     },
     lookup: {
       found: 'Vehículo encontrado',
@@ -58,7 +56,7 @@ export default {
       currently_driven_by_x: 'En uso actualmente por {name}',
       different_plate: 'Usar placa diferente',
       link_this_vehicle: 'Vincular este vehículo',
-      create_vehicle: 'Crear vehículo',
+      create_with_plate: 'Crear vehículo con placa {plate}',
     },
     validations: {
       brand_required: 'La marca es obligatoria',

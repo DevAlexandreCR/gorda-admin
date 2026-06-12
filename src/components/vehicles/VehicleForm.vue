@@ -70,13 +70,12 @@
       </div>
     </div>
     <div class="form-group">
-      <label>{{ $t('vehicles.fields.photo_url') }}</label>
+      <label>{{ $t('vehicles.fields.photo') }}</label>
       <input
         class="form-control form-control-sm"
-        type="text"
-        v-model="photoUrl"
-        :placeholder="$t('vehicles.placeholders.photo_url')"
-        autocomplete="none"
+        type="file"
+        accept="image/jpeg,image/png"
+        @change="onFileChange"
       />
     </div>
     <p v-if="formError" class="text-danger small mt-1 mb-0">{{ formError }}</p>
@@ -101,7 +100,6 @@ interface CreateVehiclePayload {
   color: { name: string; hex: string }
   soat_exp?: string
   tec_exp?: string
-  photoUrl?: string
 }
 
 const props = defineProps<{
@@ -109,7 +107,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  submit: [payload: CreateVehiclePayload]
+  submit: [payload: CreateVehiclePayload, file: File | null]
 }>()
 
 const { t } = useI18n()
@@ -121,8 +119,25 @@ const model = ref('')
 const selectedColorHex = ref<string>(Constants.COLORS[0].hex)
 const soat_exp = ref('')
 const tec_exp = ref('')
-const photoUrl = ref('')
+const selectedFile = ref<File | null>(null)
 const formError = ref('')
+
+function onFileChange(event: Event): void {
+  const file = (event.target as HTMLInputElement).files?.[0] ?? null
+  if (!file) return
+  if (!['image/jpeg', 'image/png'].includes(file.type)) {
+    formError.value = t('validations.image')
+    selectedFile.value = null
+    return
+  }
+  if (file.size / 1024 / 1024 > 1.024) {
+    formError.value = t('validations.size')
+    selectedFile.value = null
+    return
+  }
+  formError.value = ''
+  selectedFile.value = file
+}
 
 function onSubmit(): void {
   formError.value = ''
@@ -149,9 +164,8 @@ function onSubmit(): void {
     color: { name: color.name, hex: color.hex },
     soat_exp: soat_exp.value || undefined,
     tec_exp: tec_exp.value || undefined,
-    photoUrl: photoUrl.value || undefined,
   }
 
-  emit('submit', payload)
+  emit('submit', payload, selectedFile.value)
 }
 </script>

@@ -110,6 +110,7 @@ async function onVehicleSelected(payload: VehiclePayload): Promise<void> {
     await DriverVehicleRepository.link(props.driverId, { vehicleId: payload.vehicleId })
     showLookup.value = false
     await fetchLinks()
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('vehicles.messages.vehicle_added'))
   } catch (e: unknown) {
     const axiosErr = e as { response?: { status?: number; data?: { error?: string } } }
     if (axiosErr?.response?.status === 409 && axiosErr.response?.data?.error === 'link_already_exists') {
