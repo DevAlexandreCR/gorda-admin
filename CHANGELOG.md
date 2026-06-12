@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix dark theme readability and local dropdown styling for vehicle plate lookup in driver create and edit flows.
+- Fix dark theme readability and local dropdown styling for vehicle plate lookup in driver create and edit flows. [#191](https://github.com/DevAlexandreCR/gorda-admin/pull/191)
 
 ## [2.0.4(2026-06-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.4...2.0.3)
 
