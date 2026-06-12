@@ -1,9 +1,12 @@
 <template>
   <div class="vehicle-lookup-card">
-    <div class="form-group position-relative">
+    <div
+      class="form-group position-relative vehicle-lookup-card__field"
+      :class="{ 'vehicle-lookup-card__field--open': dropdownOpen }"
+    >
       <label>{{ $t('vehicles.fields.plate') }}</label>
       <input
-        class="form-control form-control-sm"
+        class="form-control form-control-sm vehicle-lookup-card__input"
         type="text"
         :value="plateInput"
         :placeholder="$t('vehicles.fields.plate')"
@@ -17,23 +20,22 @@
       <!-- Dropdown: vehicle suggestions + create option -->
       <ul
         v-if="dropdownOpen"
-        class="list-group position-absolute w-100 shadow"
-        style="z-index: 200; top: 100%; left: 0; border-top: none; border-radius: 0 0 4px 4px;"
+        class="list-group vehicle-lookup-card__menu"
       >
         <li
           v-for="(v, idx) in suggestions"
           :key="v.id"
-          class="list-group-item list-group-item-action py-2 px-3 small"
+          class="list-group-item list-group-item-action small vehicle-lookup-card__item"
           :class="{ active: idx === activeIndex }"
           @mousedown.prevent="selectSuggestion(v)"
         >
           <strong>{{ v.plate }}</strong>
-          <span class="ms-2 text-muted">{{ v.brand }} {{ v.model }}</span>
+          <span class="ms-2 vehicle-lookup-card__detail">{{ v.brand }} {{ v.model }}</span>
         </li>
 
         <!-- Create new vehicle option at bottom -->
         <li
-          class="list-group-item list-group-item-action py-2 px-3 small fw-semibold border-top"
+          class="list-group-item list-group-item-action small fw-semibold vehicle-lookup-card__item vehicle-lookup-card__item--create"
           :class="{ active: activeIndex === suggestions.length }"
           @mousedown.prevent="openCreateModal"
         >
@@ -202,3 +204,107 @@ function onVehicleCreated(vehicleId: string): void {
   emit('select', payload)
 }
 </script>
+
+<style scoped>
+.vehicle-lookup-card {
+  --vehicle-lookup-menu-bg: #ffffff;
+  --vehicle-lookup-menu-text: var(--drivers-filter-text, #344767);
+  --vehicle-lookup-menu-muted: var(--drivers-filter-muted, #8392ab);
+  --vehicle-lookup-menu-border: var(--drivers-filter-border, rgba(58, 65, 111, 0.18));
+  --vehicle-lookup-menu-divider: rgba(58, 65, 111, 0.12);
+  --vehicle-lookup-menu-shadow: var(--drivers-filter-menu-shadow, 0 18px 32px rgba(15, 23, 42, 0.12));
+  --vehicle-lookup-menu-hover-bg: #f8f9fa;
+  --vehicle-lookup-menu-active-bg: linear-gradient(310deg, rgba(121, 40, 202, 0.12), rgba(255, 0, 128, 0.12));
+  --vehicle-lookup-menu-active-border: rgba(255, 0, 128, 0.28);
+  --vehicle-lookup-menu-focus-ring: rgba(255, 0, 128, 0.16);
+}
+
+.vehicle-lookup-card__field {
+  z-index: 0;
+}
+
+.vehicle-lookup-card__field--open {
+  z-index: 2;
+}
+
+.vehicle-lookup-card__field--open .vehicle-lookup-card__input {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.vehicle-lookup-card__menu {
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--vehicle-lookup-menu-border);
+  border-top: 0;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: var(--vehicle-lookup-menu-bg) !important;
+  box-shadow: var(--vehicle-lookup-menu-shadow);
+}
+
+.vehicle-lookup-card__field:focus-within .vehicle-lookup-card__menu {
+  box-shadow: var(--vehicle-lookup-menu-shadow), 0 0 0 0.2rem var(--vehicle-lookup-menu-focus-ring);
+}
+
+.vehicle-lookup-card__item {
+  padding: 0.65rem 0.9rem;
+  color: var(--vehicle-lookup-menu-text);
+  background-color: var(--vehicle-lookup-menu-bg) !important;
+  border: 0;
+  border-top: 1px solid var(--vehicle-lookup-menu-divider);
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.vehicle-lookup-card__item:first-child {
+  border-top: 0;
+}
+
+.vehicle-lookup-card__item:hover,
+.vehicle-lookup-card__item:focus-visible {
+  color: var(--vehicle-lookup-menu-text);
+  background-color: var(--vehicle-lookup-menu-hover-bg) !important;
+}
+
+.vehicle-lookup-card__item.active {
+  color: var(--vehicle-lookup-menu-text);
+  background: var(--vehicle-lookup-menu-active-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--vehicle-lookup-menu-active-border);
+}
+
+.vehicle-lookup-card__item--create {
+  font-weight: 600;
+}
+
+.vehicle-lookup-card__detail {
+  color: var(--vehicle-lookup-menu-muted);
+}
+
+body.dark-version .vehicle-lookup-card {
+  --vehicle-lookup-menu-bg: var(--drivers-filter-menu-bg, #171d2d);
+  --vehicle-lookup-menu-text: var(--card-text);
+  --vehicle-lookup-menu-muted: var(--muted-text);
+  --vehicle-lookup-menu-border: rgba(255, 255, 255, 0.16);
+  --vehicle-lookup-menu-divider: rgba(255, 255, 255, 0.08);
+  --vehicle-lookup-menu-shadow: 0 18px 36px rgba(2, 6, 23, 0.42);
+  --vehicle-lookup-menu-hover-bg: rgba(255, 255, 255, 0.04);
+  --vehicle-lookup-menu-active-bg: linear-gradient(310deg, rgba(121, 40, 202, 0.28), rgba(255, 0, 128, 0.24));
+  --vehicle-lookup-menu-active-border: rgba(255, 0, 128, 0.34);
+  --vehicle-lookup-menu-focus-ring: rgba(255, 0, 128, 0.22);
+}
+
+body.dark-version .vehicle-lookup-card .vehicle-lookup-card__menu,
+body.dark-version .vehicle-lookup-card .vehicle-lookup-card__item.list-group-item {
+  background-color: var(--vehicle-lookup-menu-bg) !important;
+}
+
+body.dark-version .vehicle-lookup-card .vehicle-lookup-card__item.list-group-item {
+  border-color: var(--vehicle-lookup-menu-divider) !important;
+}
+</style>
