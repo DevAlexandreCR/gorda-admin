@@ -33,7 +33,7 @@
 
         <!-- Create new vehicle option at bottom -->
         <li
-          class="list-group-item list-group-item-action py-2 px-3 small text-success"
+          class="list-group-item list-group-item-action py-2 px-3 small fw-semibold border-top"
           :class="{ active: activeIndex === suggestions.length }"
           @mousedown.prevent="openCreateModal"
         >
