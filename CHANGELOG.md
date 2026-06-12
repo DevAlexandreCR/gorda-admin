@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5(2026-06-12)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.5...2.0.4)
+
+### Fixed
+
+- Fix dark theme readability and local dropdown styling for vehicle plate lookup in driver create and edit flows.
+
 ## [2.0.4(2026-06-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.4...2.0.3)
 
 ### Added
