@@ -44,6 +44,7 @@ export default {
       disable_confirm_title: 'Vehicle in use',
       disable_confirm_body: 'This vehicle is currently in use by {name}. Disabling it will force-disconnect them. Do you want to continue?',
       disable_selectable_confirm: '{name} has this vehicle active. Do you want to remove their selection permission?',
+      cannot_enable_incomplete: 'Cannot enable: missing required fields: {fields}',
     },
     placeholders: {
       photo_url: 'https://...',

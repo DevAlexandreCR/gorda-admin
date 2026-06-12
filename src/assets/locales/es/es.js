@@ -44,6 +44,7 @@ export default {
       disable_confirm_title: 'Vehículo en uso',
       disable_confirm_body: 'El vehículo está siendo usado por {name}. Deshabilitarlo lo desconectará forzosamente. ¿Desea continuar?',
       disable_selectable_confirm: '{name} tiene este vehículo activo. ¿Desea quitar el permiso de selección?',
+      cannot_enable_incomplete: 'No se puede habilitar: faltan campos obligatorios: {fields}',
     },
     placeholders: {
       photo_url: 'https://...',

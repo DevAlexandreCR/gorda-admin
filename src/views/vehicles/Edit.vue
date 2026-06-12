@@ -14,11 +14,18 @@
         <div class="row">
           <!-- Photo + enable/disable -->
           <div class="col-md-4">
-            <div class="text-center mb-3" v-if="vehicle.photoUrl">
-              <img :src="vehicle.photoUrl" class="img-fluid border-radius-lg" style="max-height: 200px;" alt="Vehicle photo" />
-            </div>
-            <div v-else class="text-center mb-3">
-              <em class="fa-solid fa-car-side fa-6x text-secondary"></em>
+            <div class="text-center mb-3 position-relative d-inline-block w-100">
+              <img v-if="vehicle.photoUrl" :src="vehicle.photoUrl" class="img-fluid border-radius-lg" style="max-height: 200px;" alt="Vehicle photo" />
+              <em v-else class="fa-solid fa-car-side fa-6x text-secondary"></em>
+              <button
+                class="btn btn-sm btn-info btn-edit-img py-1 px-2"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#image-vehicle"
+                :title="$t('common.actions.edit')"
+              >
+                <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
+              </button>
             </div>
 
             <div class="form-group">
@@ -41,12 +48,16 @@
                   role="switch"
                   id="vehicleEnabled"
                   :checked="form.enabled"
+                  :disabled="!isComplete && !form.enabled"
                   @change="onEnabledChange"
                 />
                 <label class="form-check-label" for="vehicleEnabled">
                   {{ $t(form.enabled ? 'common.fields.enabled' : 'common.fields.disabled') }}
                 </label>
               </div>
+              <small v-if="!isComplete" class="text-muted d-block mt-1">
+                {{ $t('vehicles.messages.cannot_enable_incomplete', { fields: missingFields.join(', ') }) }}
+              </small>
             </div>
           </div>
 
@@ -155,6 +166,14 @@
         </div>
       </div>
     </div>
+
+    <ImageLoader
+      :id="'image-vehicle'"
+      :resourceId="vehicle.id"
+      :path="vehiclePath"
+      :event="vehicleEvent"
+      @vehicle-image-loaded="onVehicleImageLoaded"
+    />
   </div>
 
   <div v-else class="text-center py-5">
@@ -170,6 +189,8 @@ import VehicleRepository from '@/repositories/VehicleRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import { Vehicle } from '@/types/Vehicle'
+import ImageLoader from '@/components/ImageLoader.vue'
+import StorageService from '@/services/StorageService'
 
 const route = useRoute()
 const router = useRouter()
@@ -189,6 +210,9 @@ const form = ref({
 
 const colorName = ref<string>('')
 const colorHex = ref<string>('#000000')
+
+const vehiclePath = StorageService.vehiclePath
+const vehicleEvent = 'vehicle-image-loaded'
 
 // Pending disable state when a confirmation modal is needed
 let disableModalInstance: Modal | null = null
@@ -218,14 +242,53 @@ function goBack(): void {
   router.back()
 }
 
+function onVehicleImageLoaded(url: string): void {
+  form.value.photoUrl = url
+  if (vehicle.value) {
+    vehicle.value.photoUrl = url
+  }
+}
+
 const colorObject = computed(() => ({
   name: colorName.value,
   hex: colorHex.value,
 }))
 
+const isComplete = computed<boolean>(() => {
+  return !!(
+    form.value.brand?.trim() &&
+    form.value.model?.trim() &&
+    colorName.value?.trim() &&
+    form.value.soat_exp &&
+    form.value.tec_exp
+  )
+})
+
+const missingFields = computed<string[]>(() => {
+  const fields: string[] = []
+  if (!form.value.brand?.trim()) fields.push(i18n.global.t('drivers.vehicle.brand'))
+  if (!form.value.model?.trim()) fields.push(i18n.global.t('drivers.vehicle.model'))
+  if (!colorName.value?.trim()) fields.push(i18n.global.t('drivers.placeholders.color'))
+  if (!form.value.soat_exp) fields.push(i18n.global.t('vehicles.fields.soat_exp'))
+  if (!form.value.tec_exp) fields.push(i18n.global.t('vehicles.fields.tec_exp'))
+  return fields
+})
+
 async function onEnabledChange(event: Event): Promise<void> {
   const target = event.target as HTMLInputElement
   const newEnabled = target.checked
+
+  if (newEnabled && !isComplete.value) {
+    // Block enabling — vehicle is incomplete
+    target.checked = false
+    form.value.enabled = false
+    ToastService.toast(
+      ToastService.ERROR,
+      i18n.global.t('common.messages.error'),
+      i18n.global.t('vehicles.messages.cannot_enable_incomplete', { fields: missingFields.value.join(', ') }),
+    )
+    return
+  }
 
   if (!newEnabled && vehicle.value?.currently_driven_by) {
     // Revert the toggle — user must confirm via modal
@@ -294,7 +357,29 @@ async function save(): Promise<void> {
 
     // If enabled state changed (and not a force-disconnect case already handled)
     if (form.value.enabled !== vehicle.value.enabled && !pendingDisableConfirmed) {
-      await VehicleRepository.setEnabled(vehicle.value.id, form.value.enabled)
+      if (form.value.enabled && !isComplete.value) {
+        ToastService.toast(
+          ToastService.ERROR,
+          i18n.global.t('common.messages.error'),
+          i18n.global.t('vehicles.messages.cannot_enable_incomplete', { fields: missingFields.value.join(', ') }),
+        )
+        return
+      }
+      try {
+        await VehicleRepository.setEnabled(vehicle.value.id, form.value.enabled)
+      } catch (e: unknown) {
+        const axiosErr = e as { response?: { data?: { error?: string; missing_fields?: string[] } } }
+        if (axiosErr.response?.data?.error === 'vehicle_incomplete') {
+          const serverMissing = axiosErr.response.data.missing_fields ?? missingFields.value
+          ToastService.toast(
+            ToastService.ERROR,
+            i18n.global.t('common.messages.error'),
+            i18n.global.t('vehicles.messages.cannot_enable_incomplete', { fields: serverMissing.join(', ') }),
+          )
+          return
+        }
+        throw e
+      }
     }
 
     await VehicleRepository.update(vehicle.value.id, payload)

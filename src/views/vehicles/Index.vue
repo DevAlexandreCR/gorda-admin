@@ -132,7 +132,7 @@
                 </td>
                 <td class="align-middle text-center">
                   <span class="text-secondary text-xs font-weight-bold">
-                    {{ vehicle.linked_drivers?.length ?? 0 }}
+                    {{ vehicle.linked_drivers_count ?? 0 }}
                   </span>
                 </td>
                 <td class="align-middle text-center">

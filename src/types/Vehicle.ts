@@ -15,6 +15,7 @@ export interface Vehicle {
   enabled: boolean
   created_at?: string | null
   linked_drivers?: LinkedDriverEntry[]
+  linked_drivers_count?: number
   currently_driven_by?: { id: string; name: string } | null
 }
 
