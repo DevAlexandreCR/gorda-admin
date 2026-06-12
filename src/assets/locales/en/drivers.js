@@ -52,16 +52,19 @@ export default {
     photo_vehicle: 'Choose photo vehicle',
     color: 'Choose color vehicle',
     soat_exp: 'Choose Soat expiration',
-    tec_exp: 'Choose Techno expiration'
+    tec_exp: 'Choose Techno expiration',
+    search: 'Name, email, phone, document, plate...'
   },
   filters: {
     add_filter: '+ Add filter',
     filter_status: 'Status',
     filter_payment: 'Payment',
     filter_inactive: 'Inactivity',
+    filter_needs_vehicle: 'Needs vehicle',
     chip_status: 'Status: {value}',
     chip_payment: 'Payment: {value}',
     chip_inactive: 'Inactive > {days}d',
+    chip_needs_vehicle: 'Needs vehicle',
     inactive_none: 'None',
     inactive_days: '{days}d',
     custom: 'Custom',

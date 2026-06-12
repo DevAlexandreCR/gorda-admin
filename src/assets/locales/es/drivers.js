@@ -50,16 +50,19 @@ export default {
     photo_vehicle: 'Seleccione foto del vehículo',
     color: 'Seleccione el color del vehículo',
     soat_exp: 'Seleccione vencimiento del soat',
-    tec_exp: 'Seleccione vencimiento de la tecno-mecánica'
+    tec_exp: 'Seleccione vencimiento de la tecno-mecánica',
+    search: 'Nombre, email, teléfono, documento, placa...'
   },
   filters: {
     add_filter: '+ Agregar filtro',
     filter_status: 'Estado',
     filter_payment: 'Pago',
     filter_inactive: 'Inactividad',
+    filter_needs_vehicle: 'Sin vehículo',
     chip_status: 'Estado: {value}',
     chip_payment: 'Pago: {value}',
     chip_inactive: 'Inactivo > {days}d',
+    chip_needs_vehicle: 'Sin vehículo',
     inactive_none: 'Ninguno',
     inactive_days: '{days}d',
     custom: 'Personalizado',

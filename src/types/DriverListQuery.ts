@@ -3,6 +3,7 @@ export interface DriverListQuery {
   status?: 'enabled' | 'disabled'
   paymentMode?: 'monthly' | 'percentage'
   inactiveDays?: number
+  needsVehicle?: boolean
   sort?: string
   page?: number
   perPage?: number

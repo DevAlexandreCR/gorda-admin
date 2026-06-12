@@ -41,7 +41,8 @@ class DriverRepository {
 
   update(driver: DriverInterface): Promise<void> {
     CacheStore.clear(CacheStore.ALL_DRIVERS)
-    return serverApi.put(`/drivers/${driver.id}`, driver).then(() => undefined)
+    const { vehicle: _vehicle, selected_vehicle: _sv, roster: _roster, ...driverPayload } = driver as DriverInterface & { vehicle?: unknown }
+    return serverApi.put(`/drivers/${driver.id}`, driverPayload).then(() => undefined)
   }
 
   async addBalance(driver: Driver, amount: number): Promise<void> {
@@ -138,7 +139,7 @@ class DriverRepository {
     return response.data.data
   }
 
-  async create(driver: DriverInterface, password: string): Promise<string> {
+  async create(driver: DriverInterface, password: string, vehiclePayload?: Record<string, unknown>): Promise<string> {
     const userData: UserRequestType = {
       email: driver.email,
       emailVerified: true,
@@ -153,7 +154,12 @@ class DriverRepository {
         .then(async (res) => {
           const id = res.data.data.uid
           driver.id = id
-          await serverApi.post('/drivers', driver)
+          const { vehicle: _vehicle, selected_vehicle: _sv, roster: _roster, ...driverPayload } = driver as DriverInterface & { vehicle?: Record<string, unknown> }
+          const body: Record<string, unknown> = { driver: driverPayload }
+          if (vehiclePayload) {
+            body.vehicle = vehiclePayload
+          }
+          await serverApi.post('/drivers', body)
           CacheStore.clear(CacheStore.ALL_DRIVERS)
           return resolve(id)
         })

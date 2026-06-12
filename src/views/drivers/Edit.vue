@@ -129,81 +129,8 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="card-header text-center text-capitalize">
-                <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
-              </div>
-              <img v-if="driver.vehicle.photoUrl" :src="driver.vehicle.photoUrl" class="card-img-top img-driver"
-                alt="profile_photo">
-              <div v-else class="container-fluid text-center">
-                <em class="fa-solid fa-car-side fa-10x"></em>
-              </div>
-              <button class="btn btn-sm btn-info btn-edit-img py-1 px-2" type="button" data-bs-toggle="modal"
-                data-bs-target="#image-vehicle">
-                <span class="btn-inner--icon"><em class="fas fa-pen"></em></span>
-              </button>
-              <div class="form-group">
-                <label>{{ $t('drivers.vehicle.brand') }}</label>
-                <Field name="brand" type="text" v-slot="{ field, errorMessage, meta }" v-model="driver.vehicle.brand">
-                  <input class="form-control form-control-sm" id="brand" aria-label="Brand" aria-describedby="brand-addon"
-                    v-model="field.value" :placeholder="$t('drivers.placeholders.brand')" v-bind="field" />
-                  <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                </Field>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <label>{{ $t('drivers.vehicle.model') }}</label>
-                    <Field name="model" as="select" class="form-select form-select-sm" v-model="driver.vehicle.model"
-                           v-slot="{ errorMessage, meta }">
-                      <option v-for="(year) in DateHelper.arrayYears()" :key="year" :value="year">{{ year }}</option>
-                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                    </Field>
-                  </div>
-                  <div class="col-sm-6">
-                    <label>{{ $t('drivers.vehicle.plate') }}</label>
-                    <Field name="plate" type="text" v-model="driver.vehicle.plate" v-slot="{ errorMessage, meta }">
-                      <input class="form-control form-control-sm" v-model="driver.vehicle.plate"
-                             :placeholder="$t('drivers.placeholders.plate')" id="plate" aria-label="Plate"
-                             aria-describedby="plate-addon" autocomplete="none" />
-                      <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                    </Field>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-sm-8">
-                  <label>{{ $t('drivers.placeholders.color') }}</label>
-                  <select class="form-select form-select-sm" id="color" v-model="color">
-                    <option v-for="(color, key) in Constants.COLORS" :key="key" :value="color.hex">{{ $t('common.colors.'
-                      + color.name) }}</option>
-                  </select>
-                </div>
-                <div class="form-group col-sm-4">
-                  <label>{{ $t('drivers.vehicle.color') }}</label>
-                  <Field name="color" v-model="driver.vehicle.color.hex" v-slot="{ field, errorMessage, meta }">
-                    <input class="form-control form-control-sm p-0" type="color" disabled v-model="field.value"
-                      aria-label="Color" aria-describedby="color-addon" v-bind="field" autocomplete="none" />
-                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-sm-6">
-                  <label>{{ $t('drivers.vehicle.soat_exp') }}</label>
-                  <Field name="soat_exp" type="date" v-model="soatExp" v-slot="{ field, errorMessage, meta }">
-                      <input  type="date" v-model="soatExp" class="form-control form-control-sm" v-bind="field"/>
-                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>{{ $t('drivers.vehicle.tec_exp') }}</label>
-                  <Field name="tec_exp" type="date" v-model="tecExp" v-slot="{ field, errorMessage, meta }">
-                      <input  type="date" v-model="tecExp" class="form-control form-control-sm" v-bind="field"/>
-                    <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
-                  </Field>
-                </div>
-              </div>
-              <div class="form-group">
+              <RosterPanel v-if="driver.id" :driver-id="driver.id" />
+              <div class="form-group mt-3">
                 <label>{{ $t('users.fields.device') }}</label>
                 <div class="input-group" v-if="driver.device">
                   <input type="text" class="form-control form-control-sm disabled"
@@ -226,8 +153,6 @@
         </div>
       </div>
     </Form>
-    <ImageLoader :id="'image-vehicle'" :resourceId="driver.id" :path="pathVehicle" :event="vehicleEvent"
-      @imageVehicleLoaded="uploadImgVehicle"></ImageLoader>
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
       @imageDriverLoaded="uploadImgDriver"></ImageLoader>
   </div>
@@ -336,12 +261,12 @@ import DriverRepository from '@/repositories/DriverRepository'
 import { Constants } from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
+import RosterPanel from '@/components/vehicles/RosterPanel.vue'
 import i18n from '@/plugins/i18n'
 import { onBeforeMount, ref, Ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDriversStore } from '@/services/stores/DriversStore'
-import DateHelper from '@/helpers/DateHelper'
-import { mixed, object, date, string } from 'yup'
+import { mixed, object, string } from 'yup'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
@@ -354,16 +279,11 @@ const driver: Ref<Driver> = ref(new Driver)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
 const driverEvent = 'image-driver-loaded'
-const vehicleEvent = 'image-vehicle-loaded'
 const pathDriver = StorageService.driverPath
-const pathVehicle = StorageService.vehiclePath
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
-const soatExp: Ref<string> = ref('')
-const tecExp: Ref<string> = ref('')
-const color: Ref<string> = ref(Constants.COLORS[0].hex)
 const currentUser = AuthService.getCurrentUser()
 const { setLoading } = useLoadingState()
 const newBalance = ref(0)
@@ -373,19 +293,10 @@ const schema = object().shape({
   phone: string().required().min(8),
   docType: mixed().oneOf(Constants.DOC_TYPES).required(),
   document: string().required().min(6).max(10),
-  brand: string().required().min(3),
-  plate: string().required().min(3),
-  model: string().required().min(3),
-  color: string().matches(new RegExp(/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/)).required(),
-  soat_exp: date().required(),
-  tec_exp: date().required()
 })
 
 watch(driver, (newDriver) => {
   driver.value.name = StrHelper.toCamelCase(newDriver.name ?? '')
-  driver.value.vehicle.brand = StrHelper.toCamelCase(newDriver.vehicle?.brand ?? '')
-  driver.value.vehicle.model = StrHelper.toCamelCase(newDriver.vehicle?.model ?? '')
-  driver.value.vehicle.plate = StrHelper.formatPlate(newDriver.vehicle?.plate ?? '')
   driver.value.phone = StrHelper.formatNumber(newDriver.phone ?? '')
 }, { deep: true })
 
@@ -398,23 +309,6 @@ const schemaPassword = object().shape({
 })
 
 
-watch(soatExp, (newValue: string) => {
-  if (newValue) { 
-    driver.value.vehicle.soat_exp = DateHelper.dateToUnix(newValue)
-  }
-})
-
-
-watch(color, (newColor) => {
-  driver.value.vehicle.color = Constants.COLORS.find(c => c.hex == newColor) ?? Constants.COLORS[0]
-})
-
-watch(tecExp, (newValue: string) => {
-  if (newValue) {
-    driver.value.vehicle.tec_exp = DateHelper.dateToUnix(newValue)
-  }
-})
-
 function goBack() {
   router.back()
 }
@@ -425,12 +319,6 @@ onBeforeMount(() => {
   const driverTmp = driverStore.findById(id)
   if (driverTmp) {
     driver.value = driverTmp
-    soatExp.value = driverTmp.vehicle.soat_exp 
-      ? DateHelper.unixToDate(driverTmp.vehicle.soat_exp, 'YYYY-MM-DD') 
-      : ''
-    tecExp.value = driverTmp.vehicle.tec_exp 
-      ? DateHelper.unixToDate(driverTmp.vehicle.tec_exp, 'YYYY-MM-DD')
-      : ''
   }
   setLoading(true)
   DriverRepository.getDriver(id)
@@ -453,11 +341,6 @@ onBeforeMount(() => {
 
 function uploadImgDriver(url: string): void {
   driver.value.photoUrl = url
-  updateDriver()
-}
-
-function uploadImgVehicle(url: string): void {
-  driver.value.vehicle.photoUrl = url
   updateDriver()
 }
 

@@ -4,7 +4,6 @@ import DriverRepository from '@/repositories/DriverRepository'
 import { DriverConnectedInterface } from '@/types/DriverConnectedInterface'
 import { PlaceInterface } from '@/types/PlaceInterface'
 import CacheStore from '@/services/stores/CacheStore'
-import Vehicle from '@/models/Vehicle'
 
 export const useDriversStore = defineStore('driverStore', {
   state: () => {
@@ -31,7 +30,7 @@ export const useDriversStore = defineStore('driverStore', {
         this.connectedDrivers.push({
           id: driver.id,
           key: driver.id,
-          name: driver.vehicle.plate,
+          name: driver.selected_vehicle?.plate ?? driver.active_vehicle_id ?? driver.id,
           lat: partialDriver.location.lat,
           lng: partialDriver.location.lng,
           color: color
@@ -44,7 +43,7 @@ export const useDriversStore = defineStore('driverStore', {
         this.connectedDrivers[index] = {
           id: driver.id,
           key: driver.id,
-          name: driver.vehicle.plate,
+          name: driver.selected_vehicle?.plate ?? driver.active_vehicle_id ?? driver.id,
           lat: partialDriver.location.lat,
           lng: partialDriver.location.lng
         }
@@ -65,9 +64,7 @@ export const useDriversStore = defineStore('driverStore', {
       const index = this.drivers.findIndex(d => d.id === driver.id)
       const driverTmp = new Driver()
       Object.assign(driverTmp, driver)
-      const vehicleTmp = new Vehicle()
-      Object.assign(vehicleTmp, driver.vehicle)
-      driverTmp.vehicle = vehicleTmp
+      driverTmp.selected_vehicle = driver.selected_vehicle ? { ...driver.selected_vehicle } : null
       if (index !== -1) {
         this.drivers.splice(index, 1, driverTmp)
       } else {
