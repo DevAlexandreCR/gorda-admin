@@ -191,6 +191,7 @@ import i18n from '@/plugins/i18n'
 import { Vehicle } from '@/types/Vehicle'
 import ImageLoader from '@/components/ImageLoader.vue'
 import StorageService from '@/services/StorageService'
+import DateHelper from '@/helpers/DateHelper'
 
 const route = useRoute()
 const router = useRouter()
@@ -226,8 +227,8 @@ onMounted(async () => {
       form.value.brand = vehicle.value.brand
       form.value.model = vehicle.value.model
       form.value.photoUrl = vehicle.value.photoUrl
-      form.value.soat_exp = vehicle.value.soat_exp
-      form.value.tec_exp = vehicle.value.tec_exp
+      form.value.soat_exp = DateHelper.normalizeDateInput(vehicle.value.soat_exp)
+      form.value.tec_exp = DateHelper.normalizeDateInput(vehicle.value.tec_exp)
       form.value.enabled = vehicle.value.enabled
       colorName.value = vehicle.value.color?.name ?? ''
       colorHex.value = vehicle.value.color?.hex ?? '#000000'
@@ -355,8 +356,16 @@ async function save(): Promise<void> {
       color: colorObject.value,
     }
 
+    const previousEnabled = vehicle.value.enabled
+    const updatedVehicle = await VehicleRepository.update(vehicle.value.id, payload)
+    vehicle.value = {
+      ...vehicle.value,
+      ...updatedVehicle,
+      enabled: previousEnabled,
+    }
+
     // If enabled state changed (and not a force-disconnect case already handled)
-    if (form.value.enabled !== vehicle.value.enabled && !pendingDisableConfirmed) {
+    if (form.value.enabled !== previousEnabled && !pendingDisableConfirmed) {
       if (form.value.enabled && !isComplete.value) {
         ToastService.toast(
           ToastService.ERROR,
@@ -380,9 +389,9 @@ async function save(): Promise<void> {
         }
         throw e
       }
-    }
 
-    await VehicleRepository.update(vehicle.value.id, payload)
+      vehicle.value.enabled = form.value.enabled
+    }
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
     router.push({ name: 'vehicles.detail', params: { id: vehicle.value.id } })
   } catch (e: unknown) {

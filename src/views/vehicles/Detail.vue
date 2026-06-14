@@ -69,11 +69,11 @@
                 </tr>
                 <tr>
                   <th class="text-secondary text-xs" scope="row">{{ $t('vehicles.fields.soat_exp') }}</th>
-                  <td class="text-sm">{{ vehicle.soat_exp ?? '—' }}</td>
+                  <td class="text-sm">{{ formatVehicleDate(vehicle.soat_exp) }}</td>
                 </tr>
                 <tr>
                   <th class="text-secondary text-xs" scope="row">{{ $t('vehicles.fields.tec_exp') }}</th>
-                  <td class="text-sm">{{ vehicle.tec_exp ?? '—' }}</td>
+                  <td class="text-sm">{{ formatVehicleDate(vehicle.tec_exp) }}</td>
                 </tr>
                 <tr v-if="vehicle.currently_driven_by">
                   <th class="text-secondary text-xs" scope="row">{{ $t('vehicles.fields.currently_driven_by') }}</th>
@@ -146,6 +146,7 @@ import VehicleRepository from '@/repositories/VehicleRepository'
 import DriverVehicleRepository from '@/repositories/DriverVehicleRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
+import DateHelper from '@/helpers/DateHelper'
 import { Vehicle } from '@/types/Vehicle'
 
 const route = useRoute()
@@ -197,5 +198,9 @@ async function onSelectableToggle(driverId: string, newValue: boolean): Promise<
 
 function goBack(): void {
   router.back()
+}
+
+function formatVehicleDate(value: string | null | undefined): string {
+  return DateHelper.normalizeDateInput(value) || '—'
 }
 </script>
