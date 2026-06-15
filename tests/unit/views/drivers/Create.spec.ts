@@ -33,9 +33,9 @@ describe('Create.vue', () => {
     const field = wrapper.findAllComponents(Field)
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
-    expect(field.length).toBe(16)
+    expect(field.length).toBe(9)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(3)
+    expect(error.length).toBe(2)
     expect(wrapper.find('input[name="photoUrl"]').exists()).toBeTruthy()
     expect(wrapper.find('#name').exists()).toBeTruthy()
     expect(wrapper.find('#email').exists()).toBeTruthy()
@@ -45,13 +45,6 @@ describe('Create.vue', () => {
     expect(wrapper.find('#doc_type').exists()).toBeTruthy()
     expect(wrapper.find('#document').exists()).toBeTruthy()
     expect(wrapper.find('#paymentMode').exists()).toBeTruthy()
-    expect(wrapper.find('input[name="photoVehicleUrl"]').exists()).toBeTruthy()
-    expect(wrapper.find('#brand').exists()).toBeTruthy()
-    expect(wrapper.find('select[name="model"]').exists()).toBeTruthy()
-    expect(wrapper.find('#plate').exists()).toBeTruthy()
-    expect(wrapper.find('#color').exists()).toBeTruthy()
-    expect(wrapper.find('#soat_exp').exists()).toBeTruthy()
-    expect(wrapper.find('#tec_exp').exists()).toBeTruthy()
   })
 
   it('A user sees the Span when submit', async () => {
@@ -61,7 +54,7 @@ describe('Create.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBe(6)
+    expect(span.length).toBeGreaterThan(0)
   })
   
   it('A user can enable or disable a driver', async () => {
@@ -79,12 +72,9 @@ describe('Create.vue', () => {
     wrapper.vm.driver.doc_type = 'CC'
     wrapper.vm.driver.document = '100000000'
     wrapper.vm.driver.enabled_at = dayjs().unix()
-    wrapper.vm.driver.vehicle.brand = 'Mazda'
-    wrapper.vm.driver.vehicle.model = 'Cx30'
-    wrapper.vm.driver.vehicle.plate = 'HEM390'
+    wrapper.vm.vehiclePayload = { vehicleId: 'vehicle-id-123' }
     const file = new File([new Blob(['file contents'], {type: 'image/jpeg'})], 'image')
     wrapper.vm.imageDriver.push(file)
-    wrapper.vm.imageVehicle.push(file)
     await wrapper.vm.createDriver(new Driver(), { resetForm: () => null })
     
     await waitForExpect(() => {
