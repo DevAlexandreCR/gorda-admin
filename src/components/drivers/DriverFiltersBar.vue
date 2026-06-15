@@ -1,15 +1,17 @@
 <template>
   <div class="driver-filters-bar">
-    <div class="search-control">
-      <em class="fas fa-search search-control__icon" aria-hidden="true"></em>
-      <input
-        type="text"
-        class="form-control search-control__input"
-        :placeholder="searchPlaceholder"
-        :aria-label="searchPlaceholder"
-        :value="localSearch"
-        @input="onSearchInput"
-      />
+    <div class="search-control-group">
+      <div class="search-control">
+        <em class="fas fa-search search-control__icon" aria-hidden="true"></em>
+        <input
+          type="text"
+          class="form-control search-control__input"
+          :placeholder="searchPlaceholder"
+          :aria-label="searchPlaceholder"
+          :value="localSearch"
+          @input="onSearchInput"
+        />
+      </div>
     </div>
 
     <label class="filter-control">
@@ -175,6 +177,7 @@ function onInactiveChange(event: Event): void {
 <style scoped>
 .driver-filters-bar {
   --filters-control-height: 3.15rem;
+  --filters-label-offset: 1.6rem;
   --filters-surface: var(--drivers-filter-surface);
   --filters-border: var(--drivers-filter-border);
   --filters-text: var(--drivers-filter-text);
@@ -185,12 +188,16 @@ function onInactiveChange(event: Event): void {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: flex-end;
+  align-items: flex-start;
+  padding-top: var(--filters-label-offset);
+}
+
+.search-control-group {
+  flex: 1 1 18rem;
+  max-width: 23rem;
 }
 
 .search-control {
-  flex: 1 1 18rem;
-  max-width: 23rem;
   height: var(--filters-control-height);
   display: flex;
   align-items: center;
@@ -230,20 +237,27 @@ function onInactiveChange(event: Event): void {
 .filter-control {
   flex: 0 1 12rem;
   min-width: 10rem;
-  display: grid;
-  gap: 0.35rem;
+  position: relative;
+  display: block;
 }
 
 .filter-control__label {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.55rem);
+  display: flex;
+  align-items: flex-end;
   color: var(--filters-muted);
   font-size: 0.72rem;
   font-weight: 700;
+  line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .filter-control__select,
 .filter-control__select:focus {
+  height: var(--filters-control-height);
   min-height: var(--filters-control-height);
   border: 1px solid var(--filters-border);
   border-radius: 0.9rem;
@@ -261,10 +275,14 @@ function onInactiveChange(event: Event): void {
   .search-control {
     max-width: 100%;
   }
+
+  .search-control-group {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 767.98px) {
-  .search-control,
+  .search-control-group,
   .filter-control {
     flex-basis: 100%;
     max-width: 100%;
