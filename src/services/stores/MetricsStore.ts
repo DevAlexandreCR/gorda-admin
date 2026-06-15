@@ -141,7 +141,10 @@ export const useMetricsStore = defineStore('metricsStore', {
 				
 			Array.from(metrics.entries()).forEach(([driverId, metric]) => {
 				const driver = findById(driverId)
-				if (driver) this.top5DailyMetric.set(driver.vehicle.plate, metric)
+				if (driver) {
+					const key = driver.selected_vehicle?.plate || driver.active_vehicle_id || driverId
+					this.top5DailyMetric.set(key, metric)
+				}
 			})
 			
 			if (frequency === TopFrequency.Weekly) {
