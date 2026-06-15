@@ -1,10 +1,16 @@
 import { Loader } from '@googlemaps/js-api-loader'
 import { PlaceInterface } from '@/types/PlaceInterface'
 
+interface MarkerEntry {
+  key: string
+  marker: google.maps.Marker
+  infoWindow: google.maps.InfoWindow
+}
+
 export class GoogleMaps {
   loader: Loader
   map: google.maps.Map
-  markers: Array<google.maps.Marker> = []
+  markers: Array<MarkerEntry> = []
   icon: string
   center: google.maps.LatLngLiteral
 
@@ -88,25 +94,42 @@ export class GoogleMaps {
         : `<div class="gorda-infowindow">${place.name}</div>`
     infoWindow.setContent(wrappedContent)
     infoWindow.open(this.map, marker)
-    this.markers.push(marker)
+    this.markers.push({
+      key: place.key,
+      marker,
+      infoWindow,
+    })
   }
 
   updateMarker(place: PlaceInterface): void {
-    const markerIndex = this.findMarkerIndexByTitle(place.name)
+    const markerIndex = this.findMarkerIndexByKey(place.key)
     const latlng = new google.maps.LatLng(place.lat, place.lng)
-    if (markerIndex >= 0) this.markers[markerIndex].setPosition(latlng)
+    if (markerIndex < 0) {
+      return
+    }
+
+    const markerEntry = this.markers[markerIndex]
+    const wrappedContent =
+      place.color !== undefined
+        ? `<div class="gorda-infowindow"><span class="badge bg-${place.color}">${place.name}</span></div>`
+        : `<div class="gorda-infowindow">${place.name}</div>`
+
+    markerEntry.marker.setPosition(latlng)
+    markerEntry.marker.setTitle(place.name)
+    markerEntry.infoWindow.setContent(wrappedContent)
+    markerEntry.infoWindow.open(this.map, markerEntry.marker)
   }
 
   removeMarker(place: PlaceInterface): void {
-    const markerIndex = this.findMarkerIndexByTitle(place.name)
+    const markerIndex = this.findMarkerIndexByKey(place.key)
     if (markerIndex >= 0) {
-      this.markers[markerIndex].setMap(null)
+      this.markers[markerIndex].marker.setMap(null)
       this.markers.splice(markerIndex, 1)
     }
   }
 
-  findMarkerIndexByTitle(title: string): number {
-    return this.markers.findIndex((marker) => marker.getTitle() == title)
+  findMarkerIndexByKey(key: string): number {
+    return this.markers.findIndex((markerEntry) => markerEntry.key === key)
   }
 
   /* istanbul ignore next */
@@ -122,7 +145,11 @@ export class GoogleMaps {
         this.clearMap()
         marker.setPosition(event.latLng)
         marker.setMap(this.map)
-        this.markers.push(marker)
+        this.markers.push({
+          key: `listener-marker-${Date.now()}`,
+          marker,
+          infoWindow: new google.maps.InfoWindow(),
+        })
         this.map.panTo(event.latLng)
         listener(event.latLng)
       }
@@ -150,7 +177,7 @@ export class GoogleMaps {
 
   /* istanbul ignore next */
   clearMap(): void {
-    this.markers.forEach((marker) => marker.setMap(null))
+    this.markers.forEach((markerEntry) => markerEntry.marker.setMap(null))
     this.markers = []
   }
 
@@ -160,4 +187,3 @@ export class GoogleMaps {
     this.map.setOptions({ styles: isDark ? GoogleMaps.DARK_STYLE : [] })
   }
 }
-

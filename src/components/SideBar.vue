@@ -51,6 +51,16 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link :to="{ name: 'vehicles'}" tag="a"
+                       :class="$router.currentRoute.value.path.includes('/dashboard/vehicles/') ? 'nav-link active': 'nav-link'">
+            <div
+                class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <em class="fa-solid fa-car"></em>
+            </div>
+            <span class="nav-link-text ms-1">{{ $t('routes.vehicles') }}</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <router-link :to="{ name: 'places'}" tag="a"
                        :class="$router.currentRoute.value.path.includes('/dashboard/places/') ? 'nav-link active': 'nav-link'">
             <div
