@@ -27,21 +27,13 @@ class DriverMock implements DriverInterface{
     tec_exp: 0,
     photoUrl: 'https://fakeUrl.com'
   }
-  selected_vehicle = null
-  selected_vehicle_id = null
-  roster = []
-  active_vehicle_id = null
 
   balance = 0
-
+	
 	device: DeviceType = {
 		id: '1234567890',
 		name: 'Iphone XS'
 	}
-
-  isEnabled(): boolean {
-    return !!this.enabled_at
-  }
 }
 
 export default new DriverMock()

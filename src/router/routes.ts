@@ -19,10 +19,6 @@ import Settings from '@/views/settings/SettingsApp.vue'
 import MessagesIndex from '@/views/settings/messages/Index.vue'
 import MessagesEdit from '@/views/settings/messages/Edit.vue'
 import Chat from '@/views/whatsapp/Chat/Chat.vue'
-import Vehicles from '@/views/vehicles/Vehicles.vue'
-import VehicleIndex from '@/views/vehicles/Index.vue'
-import VehicleDetail from '@/views/vehicles/Detail.vue'
-import VehicleEdit from '@/views/vehicles/Edit.vue'
 
 
 
@@ -159,29 +155,6 @@ const routes: Array<any> = [
             path: '/dashboard/settings/messages/edit',
             name: 'settings.messages',
             component: MessagesEdit
-          },
-        ]
-      },
-      {
-        path: '/dashboard/vehicles',
-        name: 'vehicles',
-        redirect: { name: 'vehicles.index' },
-        component: Vehicles,
-        children: [
-          {
-            path: '/dashboard/vehicles/',
-            name: 'vehicles.index',
-            component: VehicleIndex
-          },
-          {
-            path: '/dashboard/vehicles/:id',
-            name: 'vehicles.detail',
-            component: VehicleDetail
-          },
-          {
-            path: '/dashboard/vehicles/:id/edit',
-            name: 'vehicles.edit',
-            component: VehicleEdit
           },
         ]
       }

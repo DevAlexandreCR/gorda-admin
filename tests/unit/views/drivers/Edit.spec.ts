@@ -69,6 +69,9 @@ describe('Edit.vue', () => {
     await router.push('/dashboard/drivers/DriverID/edit')
     DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
     DriverRepository.update = jest.fn().mockResolvedValue(null)
+    const unix = dayjs().unix()
+    DriverMock.vehicle.soat_exp = unix
+    DriverMock.vehicle.tec_exp = unix
     DriverRepository.getDriver = jest.fn().mockResolvedValue(DriverMock)
     wrapper = mount(Edit, {
       attachTo: '#root',
@@ -81,14 +84,16 @@ describe('Edit.vue', () => {
     const form = wrapper.findComponent(Form)
     const error = wrapper.findAllComponents(ErrorMessage)
     const imageLoader = wrapper.findAllComponents(ImageLoader)
+    const dates = wrapper.findAll('input[type="date"]')
 		const device = wrapper.find('input[name="device.name"]')
 		const deviceButton = wrapper.find('#removeDevice')
 		expect(deviceButton.exists()).toBeTruthy()
 		expect(device.exists()).toBeTruthy()
-		expect(field.length).toBe(9)
+		expect(field.length).toBe(16)
     expect(form.exists()).toBeTruthy()
-    expect(error.length).toBe(4)
-    expect(imageLoader.length).toBe(1)
+    expect(error.length).toBe(5)
+    expect(imageLoader.length).toBe(2)
+    expect(dates.length).toBe(2)
   })
 
   it('A user sees the Span when submit', async () => {
@@ -106,7 +111,7 @@ describe('Edit.vue', () => {
     await nextTick()
     const span = wrapper.findAll('.is-invalid')    
     await nextTick()
-    expect(span.length).toBeGreaterThanOrEqual(0)
+    expect(span.length).toBe(2)
   })
   
   it('should show toast success when update driver successfully', async () => {
@@ -167,8 +172,11 @@ describe('Edit.vue', () => {
   
   it('it must exec function when child emit event', async () => {
     const imageLoader = wrapper.findAllComponents(ImageLoader)
-    await imageLoader.at(0)?.vm.$emit('imageDriverLoaded', 'updatedUrl.com')
+    await imageLoader.at(1)?.vm.$emit('image-driver-loaded', 'updatedUrl.com')
+    await wrapper.vm.$nextTick()
+    await imageLoader.at(0)?.vm.$emit('image-vehicle-loaded', 'updatedVehicleUrl.com')
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.driver.photoUrl).toMatch('updatedUrl.com')
+    expect(wrapper.vm.driver.vehicle.photoUrl).toMatch('updatedVehicleUrl.com')
   })
 })
