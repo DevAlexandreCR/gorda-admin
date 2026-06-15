@@ -53,20 +53,12 @@ describe('DriverFiltersBar.vue', () => {
     expect(chips[0].text()).toContain('7')
   })
 
-  it('renders a chip for an active needsVehicle filter', () => {
-    const wrapper = createWrapper({ filters: { needsVehicle: true } })
-    const chips = wrapper.findAll('span.badge')
-    expect(chips).toHaveLength(1)
-    // Chip should contain "vehicle" in some form (locale is es)
-    expect(chips[0].text().toLowerCase()).toContain('veh')
-  })
-
-  it('renders a chip for each active filter when all four are set', () => {
+  it('renders a chip for each active filter when all three are set', () => {
     const wrapper = createWrapper({
-      filters: { status: 'enabled', paymentMode: 'percentage', inactiveDays: 30, needsVehicle: true },
+      filters: { status: 'enabled', paymentMode: 'percentage', inactiveDays: 30 },
     })
     const chips = wrapper.findAll('span.badge')
-    expect(chips).toHaveLength(4)
+    expect(chips).toHaveLength(3)
   })
 
   // ── Chip removal ────────────────────────────────────────────────────────────
@@ -121,7 +113,7 @@ describe('DriverFiltersBar.vue', () => {
 
   it('does not show the Add filter dropdown when all filters are active', () => {
     const wrapper = createWrapper({
-      filters: { status: 'enabled', paymentMode: 'monthly', inactiveDays: 7, needsVehicle: true },
+      filters: { status: 'enabled', paymentMode: 'monthly', inactiveDays: 7 },
     })
     const dropdown = wrapper.find('.dropdown')
     // dropdown is hidden by v-if when availableFilters is empty

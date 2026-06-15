@@ -1,35 +1,8 @@
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-
-dayjs.extend(utc)
 
 export default class DateHelper {
   static unixToDate(unix: number,  format = 'YYYY-MM-DD'): string {
     return dayjs(unix * 1000).format(format)
-  }
-
-  static normalizeDateInput(value: string | number | Date | null | undefined, format = 'YYYY-MM-DD'): string {
-    if (value === null || value === undefined || value === '') {
-      return ''
-    }
-
-    if (typeof value === 'string') {
-      const trimmedValue = value.trim()
-      if (!trimmedValue) {
-        return ''
-      }
-
-      const isoDateMatch = trimmedValue.match(/^(\d{4}-\d{2}-\d{2})/)
-      if (isoDateMatch?.[1]) {
-        return dayjs.utc(isoDateMatch[1]).isValid() ? isoDateMatch[1] : ''
-      }
-
-      const parsedDate = dayjs.utc(trimmedValue)
-      return parsedDate.isValid() ? parsedDate.format(format) : ''
-    }
-
-    const parsedDate = dayjs(value)
-    return parsedDate.isValid() ? parsedDate.format(format) : ''
   }
   
   static unix(): number {

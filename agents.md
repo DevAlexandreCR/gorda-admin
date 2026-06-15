@@ -11,8 +11,8 @@ This document summarizes the current codebase so autonomous agents can execute t
 
 ## Architecture Overview
 1. **Frontend Shell** – `src/main.ts` bootstraps Vue, Pinia, router, i18n, and global styles. Reusable components live in `src/components/`, views in `src/views/`.
-2. **State & Data** – Pinia stores under `src/services/stores/` wrap repository calls, expose computed getters, and register real-time listeners (`onChildAdded`, `onSnapshot`). `VehiclesStore` (added in `extract-vehicles-table`) holds a paginated vehicle list cache for search affordances, backed by `VehicleRepository`.
-3. **Repositories** – `src/repositories/*.ts` encapsulate Firebase RTDB/Firestore queries plus Axios calls to the privileged API. Many entities (e.g., services) combine Firestore pagination with RTDB mirrors. `VehicleRepository` wraps the vehicle CRUD and lookup API (`list`, `findById`, `lookupByPlate`, `create`, `update`, `setEnabled`). `DriverVehicleRepository` wraps driver-vehicle roster management (`listForDriver`, `link`, `setSelectable`, `setSelected`).
+2. **State & Data** – Pinia stores under `src/services/stores/` wrap repository calls, expose computed getters, and register real-time listeners (`onChildAdded`, `onSnapshot`).
+3. **Repositories** – `src/repositories/*.ts` encapsulate Firebase RTDB/Firestore queries plus Axios calls to the privileged API. Many entities (e.g., services) combine Firestore pagination with RTDB mirrors.
 4. **Service Layer** – `src/services/` contains Firebase initializers (`DBService`, `FSService`, `AuthService`), Toast/Facebook helpers, WhatsApp client, and API abstractions in `gordaApi/`.
 5. **Types & Models** – `src/types/` defines DTO-style interfaces; `src/models/` adds computed helpers or class logic. Constants reside in `src/constants/` to keep enums/config centralized.
 6. **Routing & Guards** – `src/router/` includes dynamic route definitions plus guards enforcing role-based access (admin > operator) through `AuthService`.
@@ -35,12 +35,6 @@ This document summarizes the current codebase so autonomous agents can execute t
 - WhatsApp-related code is sensitive; ensure Socket.IO namespaces, QR flows, and Firestore chat syncing remain intact.
 - CacheStore and other Pinia stores assume certain lifecycle hooks (subscribe/unsubscribe). When refactoring, keep listener cleanup logic.
 - Default styling uses Bootstrap 5; avoid bespoke CSS unless necessary.
-
-## Vehicles Section (extract-vehicles-table)
-- **Routes**: `/vehicles` (index), `/vehicles/:id` (detail), `/vehicles/:id/edit` — registered in the router with admin-role guards.
-- **`VehicleLookupCard.vue`** — plate lookup component with debounce used in driver create flow. As the user types a plate, it calls `GET /vehicles/lookup?plate=` and either renders a found-vehicle card with `[Link]` / `[Different plate]` actions or expands a full creation form (brand, model, color, photo, SOAT/tec expiry) on 404.
-- **`RosterPanel.vue`** — used in `DriverEdit.vue` to show the driver's full vehicle roster. Each row has a `selectable` toggle and a "Selected vehicle" radio. The `+ Add vehicle` button opens the same `VehicleLookupCard` for inline linking without leaving the driver edit page.
-- When modifying driver create/edit forms, keep vehicle data flowing through `DriverVehicleRepository` and `VehicleRepository`; do not embed vehicle fields directly in the driver payload (legacy inline shape emits a deprecation log on the API side).
 
 ## Next Steps for Agents
 1. Confirm `.env.local` mirrors `.env.example` before running commands or tests.
