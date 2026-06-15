@@ -118,4 +118,33 @@ describe('vehicles/Edit.vue', () => {
     expect(callOrder).toEqual(['update', 'setEnabled'])
     expect(pushSpy).toHaveBeenCalledWith({ name: 'vehicles.detail', params: { id: 'vehicle-1' } })
   })
+
+  it('sends photoUrl and null date values when saving after vehicle-image-loaded with blank dates', async () => {
+    await mountView({
+      photoUrl: null,
+      soat_exp: null,
+      tec_exp: null,
+    })
+
+    wrapper.vm.onVehicleImageLoaded('https://img.example/vehicle.png')
+
+    const dateInputs = wrapper.findAll('input[type="date"]')
+    await dateInputs[0].setValue('')
+    await dateInputs[1].setValue('')
+
+    const pushSpy = jest.spyOn(router, 'push').mockResolvedValue(undefined)
+
+    await wrapper.find('.card-footer button.btn.btn-info').trigger('click')
+    await flushPromises()
+
+    expect(VehicleRepository.update).toHaveBeenCalledWith(
+      'vehicle-1',
+      expect.objectContaining({
+        photoUrl: 'https://img.example/vehicle.png',
+        soat_exp: null,
+        tec_exp: null,
+      })
+    )
+    expect(pushSpy).toHaveBeenCalledWith({ name: 'vehicles.detail', params: { id: 'vehicle-1' } })
+  })
 })

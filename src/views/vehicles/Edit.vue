@@ -250,6 +250,11 @@ function onVehicleImageLoaded(url: string): void {
   }
 }
 
+function normalizeVehicleDateForPayload(value: string | null): string | null {
+  const normalized = DateHelper.normalizeDateInput(value)
+  return normalized || null
+}
+
 const colorObject = computed(() => ({
   name: colorName.value,
   hex: colorHex.value,
@@ -350,9 +355,9 @@ async function save(): Promise<void> {
     const payload: Partial<Vehicle> = {
       brand: form.value.brand,
       model: form.value.model,
-      photoUrl: form.value.photoUrl,
-      soat_exp: form.value.soat_exp,
-      tec_exp: form.value.tec_exp,
+      photoUrl: form.value.photoUrl?.trim() || null,
+      soat_exp: normalizeVehicleDateForPayload(form.value.soat_exp),
+      tec_exp: normalizeVehicleDateForPayload(form.value.tec_exp),
       color: colorObject.value,
     }
 
