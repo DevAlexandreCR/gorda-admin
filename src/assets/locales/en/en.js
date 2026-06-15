@@ -23,6 +23,7 @@ export default {
       model: 'Model',
       color: 'Color',
       photo: 'Photo',
+      photo_url: 'Photo URL',
       soat_exp: 'SOAT Expiry',
       tec_exp: 'Technical inspection expiry',
       enabled: 'Enabled',
@@ -38,6 +39,9 @@ export default {
     actions: {
       force_disconnect: 'Disconnect & Disable',
       add_vehicle: 'Add vehicle',
+    },
+    placeholders: {
+      photo_url: 'Enter the photo URL',
     },
     messages: {
       no_linked_drivers: 'No linked drivers',

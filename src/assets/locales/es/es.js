@@ -23,6 +23,7 @@ export default {
       model: 'Modelo',
       color: 'Color',
       photo: 'Foto',
+      photo_url: 'URL de la foto',
       soat_exp: 'Venc. SOAT',
       tec_exp: 'Venc. Tec-Mec',
       enabled: 'Habilitado',
@@ -38,6 +39,9 @@ export default {
     actions: {
       force_disconnect: 'Desconectar y Deshabilitar',
       add_vehicle: 'Agregar vehículo',
+    },
+    placeholders: {
+      photo_url: 'Ingresa la URL de la foto',
     },
     messages: {
       no_linked_drivers: 'Sin conductores vinculados',

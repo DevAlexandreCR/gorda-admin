@@ -23,7 +23,12 @@
           title="Set as selected vehicle"
         />
         <span class="flex-grow-1">
-          <strong>{{ link.vehicle.plate }}</strong>
+          <router-link
+            :to="{ name: 'vehicles.detail', params: { id: link.vehicle_id } }"
+            class="fw-bold text-decoration-none"
+          >
+            {{ link.vehicle.plate }}
+          </router-link>
           <span v-if="link.vehicle.brand" class="text-muted small ms-1">{{ link.vehicle.brand }}</span>
         </span>
         <div class="form-check form-switch mb-0">
