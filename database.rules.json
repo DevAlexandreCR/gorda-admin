@@ -10,9 +10,9 @@
     },
     "online_drivers": {
       ".read": "auth.uid != null",
-      ".write": "auth.uid != null",
+      ".write": false,
       "$uid": {
-        ".validate": "newData.hasChildren(['location', 'id', 'version', 'versionCode']) && newData.child('id').val() === auth.uid && newData.child('version').isString() && newData.child('versionCode').isNumber() && newData.child('versionCode').val() >= root.child('settings').child('version_policy').child('min_driver_version_code').val() && (!newData.child('last_seen_at').exists() || newData.child('last_seen_at').isNumber()) && (!newData.child('session_id').exists() || newData.child('session_id').isString())"
+        ".validate": "newData.hasChildren(['id', 'vehicle_id', 'session_id', 'last_seen_at'])"
       }
     },
     "drivers_assigned": {

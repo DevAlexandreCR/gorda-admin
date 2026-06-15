@@ -50,26 +50,28 @@ watch(() => theme.effective, () => {
 })
 
 watch(() => [...props.places], (newPlaces, oldPlaces) => {
-  if (oldPlaces.length <= newPlaces.length) {
-    const intersections = newPlaces.filter(place => oldPlaces.indexOf(place) === -1)
-    intersections.forEach(place => {
-      const currents = oldPlaces.filter(pla => pla.key === place.key)
-      if (currents.length === 1 && mapReady) {
-        googleMap.updateMarker(currents[0])
-      } else if (mapReady) {
-        googleMap.addMarker(place)
-      }
-    })
-  } else {
-    const intersections = oldPlaces.filter(driver => newPlaces.indexOf(driver) === -1)
-    intersections.forEach(place => {
-      const currents = oldPlaces.filter(pla => pla.key === place.key)
-      currents.forEach(() => {if (mapReady) googleMap.removeMarker(place)})
-    })
+  if (!mapReady) {
+    return
   }
-  
+
+  newPlaces.forEach((place) => {
+    const current = oldPlaces.find((oldPlace) => oldPlace.key === place.key)
+    if (current) {
+      googleMap.updateMarker(place)
+      return
+    }
+
+    googleMap.addMarker(place)
+  })
+
+  oldPlaces
+    .filter((place) => !newPlaces.some((newPlace) => newPlace.key === place.key))
+    .forEach((place) => {
+      googleMap.removeMarker(place)
+    })
+
   if (newPlaces.length === 1) {
-    if (mapReady) googleMap.moveCamera(newPlaces[0])
+    googleMap.moveCamera(newPlaces[0])
   }
 })
 

@@ -30,7 +30,11 @@ export default {
     upload_vehicle: 'Cargar foto del vehículo',
     current_balance: 'Saldo actual',
     add_balance: 'Agregar saldo',
-    manage_balance: 'Administrar'
+    manage_balance: 'Administrar',
+    recharge_note: 'Nota (opcional)',
+    recharge_note_placeholder: 'ej. efectivo, transferencia...',
+    balance_hint_positive: 'Ejemplo: +5000 recarga efectivo',
+    balance_hint_negative: 'Ejemplo: −2000 ajuste error de cobro',
   },
   vehicle: {
     brand: 'Marca',
@@ -50,16 +54,19 @@ export default {
     photo_vehicle: 'Seleccione foto del vehículo',
     color: 'Seleccione el color del vehículo',
     soat_exp: 'Seleccione vencimiento del soat',
-    tec_exp: 'Seleccione vencimiento de la tecno-mecánica'
+    tec_exp: 'Seleccione vencimiento de la tecno-mecánica',
+    search: 'Nombre, email, teléfono, documento, placa...'
   },
   filters: {
     add_filter: '+ Agregar filtro',
     filter_status: 'Estado',
     filter_payment: 'Pago',
     filter_inactive: 'Inactividad',
+    filter_needs_vehicle: 'Sin vehículo',
     chip_status: 'Estado: {value}',
     chip_payment: 'Pago: {value}',
     chip_inactive: 'Inactivo > {days}d',
+    chip_needs_vehicle: 'Sin vehículo',
     inactive_none: 'Ninguno',
     inactive_days: '{days}d',
     custom: 'Personalizado',
@@ -79,5 +86,13 @@ export default {
     enable_result: '{processed} habilitados · {failed} fallidos',
     disable_result: '{processed} inhabilitados · {failed} fallidos',
     send_result: '{processed} enviados · {failed} fallidos',
-  }
+  },
+  recharges: {
+    history_title: 'Historial de saldo',
+    col_date: 'Fecha',
+    col_amount: 'Monto',
+    col_balance: 'Saldo resultante',
+    col_actor: 'Por',
+    col_note: 'Nota',
+  },
 }

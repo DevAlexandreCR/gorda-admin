@@ -12,163 +12,157 @@
       />
     </div>
 
-    <div class="dropdown filter-dropdown">
+    <!-- Active filter chips -->
+    <span
+      v-if="filters.status !== undefined"
+      class="badge bg-primary d-flex align-items-center gap-1"
+    >
+      {{ statusChipLabel(filters.status) }}
       <button
         type="button"
-        class="btn btn-sm dropdown-toggle filter-control"
-        :class="{ 'is-active': filters.status !== undefined }"
+        class="btn-close btn-close-white"
+        style="font-size: 0.6rem;"
+        :aria-label="t('common.actions.delete')"
+        @click="removeFilter('status')"
+      ></button>
+    </span>
+
+    <span
+      v-if="filters.paymentMode !== undefined"
+      class="badge bg-primary d-flex align-items-center gap-1"
+    >
+      {{ paymentChipLabel(filters.paymentMode) }}
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        style="font-size: 0.6rem;"
+        :aria-label="t('common.actions.delete')"
+        @click="removeFilter('paymentMode')"
+      ></button>
+    </span>
+
+    <span
+      v-if="filters.inactiveDays !== undefined"
+      class="badge bg-primary d-flex align-items-center gap-1"
+    >
+      {{ inactiveChipLabel(filters.inactiveDays) }}
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        style="font-size: 0.6rem;"
+        :aria-label="t('common.actions.delete')"
+        @click="removeFilter('inactiveDays')"
+      ></button>
+    </span>
+
+    <span
+      v-if="filters.needsVehicle"
+      class="badge bg-primary d-flex align-items-center gap-1"
+    >
+      {{ fallbackLabel('drivers.filters.chip_needs_vehicle', 'Needs vehicle') }}
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        style="font-size: 0.6rem;"
+        :aria-label="t('common.actions.delete')"
+        @click="removeFilter('needsVehicle')"
+      ></button>
+    </span>
+
+    <!-- + Add filter dropdown (hidden when all filters are active) -->
+    <div v-if="availableFilters.length > 0" class="dropdown filter-add-dropdown">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary dropdown-toggle filter-add-btn"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <span class="filter-control__copy">
-          <span class="filter-control__title">{{ t('drivers.filters.filter_status') }}</span>
-          <span class="filter-control__value">{{ filters.status !== undefined ? statusLabel(filters.status) : allLabel }}</span>
-        </span>
-        <span
-          v-if="filters.status !== undefined"
-          class="filter-clear"
-          role="button"
-          :aria-label="t('common.actions.delete')"
-          @click.stop="removeFilter('status')"
-        >&times;</span>
+        {{ fallbackLabel('drivers.filters.add_filter', '+ Add filter') }}
       </button>
       <ul class="dropdown-menu shadow-sm filter-menu">
-        <li>
+        <li v-for="f in availableFilters" :key="f.key">
           <button
             class="dropdown-item"
             type="button"
-            @click="removeFilter('status')"
+            @click="openPicker(f.key)"
           >
-            {{ allLabel }}
-          </button>
-        </li>
-        <li v-for="val in statusValues" :key="val">
-          <button
-            class="dropdown-item"
-            :class="{ active: filters.status === val }"
-            type="button"
-            @click="applyStatusFilter(val)"
-          >
-            {{ statusLabel(val) }}
+            {{ f.label }}
           </button>
         </li>
       </ul>
     </div>
 
-    <div class="dropdown filter-dropdown">
+    <!-- Picker panels (shown when openFilter matches) -->
+    <div v-if="openFilter === 'status'" class="filter-picker card shadow-sm p-2">
+      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_status', 'Status') }}</p>
       <button
+        v-for="val in statusValues"
+        :key="val"
+        class="dropdown-item"
         type="button"
-        class="btn btn-sm dropdown-toggle filter-control"
-        :class="{ 'is-active': filters.paymentMode !== undefined }"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
+        @click="applyStatusFilter(val)"
       >
-        <span class="filter-control__copy">
-          <span class="filter-control__title">{{ t('drivers.filters.filter_payment') }}</span>
-          <span class="filter-control__value">
-            {{ filters.paymentMode !== undefined ? paymentLabel(filters.paymentMode) : allLabel }}
-          </span>
-        </span>
-        <span
-          v-if="filters.paymentMode !== undefined"
-          class="filter-clear"
-          role="button"
-          :aria-label="t('common.actions.delete')"
-          @click.stop="removeFilter('paymentMode')"
-        >&times;</span>
+        {{ statusLabel(val) }}
       </button>
-      <ul class="dropdown-menu shadow-sm filter-menu">
-        <li>
-          <button
-            class="dropdown-item"
-            type="button"
-            @click="removeFilter('paymentMode')"
-          >
-            {{ allLabel }}
-          </button>
-        </li>
-        <li v-for="val in paymentValues" :key="val">
-          <button
-            class="dropdown-item"
-            :class="{ active: filters.paymentMode === val }"
-            type="button"
-            @click="applyPaymentFilter(val)"
-          >
-            {{ paymentLabel(val) }}
-          </button>
-        </li>
-      </ul>
+      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
+        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
+      </button>
     </div>
 
-    <div class="dropdown filter-dropdown">
+    <div v-if="openFilter === 'paymentMode'" class="filter-picker card shadow-sm p-2">
+      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}</p>
       <button
+        v-for="val in paymentValues"
+        :key="val"
+        class="dropdown-item"
         type="button"
-        class="btn btn-sm dropdown-toggle filter-control"
-        :class="{ 'is-active': filters.inactiveDays !== undefined }"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
+        @click="applyPaymentFilter(val)"
       >
-        <span class="filter-control__copy">
-          <span class="filter-control__title">{{ t('drivers.filters.filter_inactive') }}</span>
-          <span class="filter-control__value">
-            {{ filters.inactiveDays !== undefined ? inactiveLabel(filters.inactiveDays) : inactiveNoneLabel }}
-          </span>
-        </span>
-        <span
-          v-if="filters.inactiveDays !== undefined"
-          class="filter-clear"
-          role="button"
-          :aria-label="t('common.actions.delete')"
-          @click.stop="removeFilter('inactiveDays')"
-        >&times;</span>
+        {{ paymentLabel(val) }}
       </button>
-      <ul class="dropdown-menu shadow-sm filter-menu">
-        <li>
+      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
+        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
+      </button>
+    </div>
+
+    <div v-if="openFilter === 'inactiveDays'" class="filter-picker card shadow-sm p-2">
+      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}</p>
+      <button
+        v-for="days in cannedInactiveDays"
+        :key="days"
+        class="dropdown-item"
+        type="button"
+        @click="applyInactiveFilter(days)"
+      >
+        {{ inactiveLabel(days) }}
+      </button>
+      <hr class="dropdown-divider filter-menu__divider" />
+      <div class="filter-menu__section">
+        <label class="form-label filter-menu__label mb-0">{{ fallbackLabel('drivers.filters.custom', 'Custom') }}</label>
+        <div class="filter-menu__custom">
+          <input
+            type="number"
+            class="form-control form-control-sm filter-menu__input"
+            min="1"
+            inputmode="numeric"
+            v-model.number="customDays"
+            :placeholder="fallbackLabel('drivers.filters.custom_placeholder', 'Days')"
+            @keydown.enter.stop="applyCustomInactiveFilter"
+            @click.stop
+          />
           <button
-            class="dropdown-item"
+            class="btn btn-sm btn-primary filter-menu__action"
             type="button"
-            @click="removeFilter('inactiveDays')"
+            :disabled="!customDays || customDays < 1"
+            @click.stop="applyCustomInactiveFilter"
           >
-            {{ inactiveNoneLabel }}
+            {{ fallbackLabel('common.actions.add', 'Add') }}
           </button>
-        </li>
-        <li v-for="days in cannedInactiveDays" :key="days">
-          <button
-            class="dropdown-item"
-            :class="{ active: filters.inactiveDays === days }"
-            type="button"
-            @click="applyInactiveFilter(days)"
-          >
-            {{ inactiveLabel(days) }}
-          </button>
-        </li>
-        <li><hr class="dropdown-divider filter-menu__divider" /></li>
-        <li>
-          <div class="filter-menu__section">
-            <label class="form-label filter-menu__label mb-0">{{ customLabel }}</label>
-            <div class="filter-menu__custom">
-              <input
-                type="number"
-                class="form-control form-control-sm filter-menu__input"
-                min="1"
-                inputmode="numeric"
-                v-model.number="customDays"
-                :placeholder="customPlaceholder"
-                @keydown.enter.stop="applyCustomInactiveFilter"
-                @click.stop
-              />
-              <button
-                class="btn btn-sm btn-primary filter-menu__action"
-                type="button"
-                :disabled="!customDays || customDays < 1"
-                @click.stop="applyCustomInactiveFilter"
-              >
-                {{ addLabel }}
-              </button>
-            </div>
-          </div>
-        </li>
-      </ul>
+        </div>
+      </div>
+      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
+        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
+      </button>
     </div>
   </div>
 </template>
@@ -194,16 +188,37 @@ const { t } = useI18n()
 const localSearch = ref(props.search)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+// Picker state
+const openFilter = ref<keyof ActiveFilters | null>(null)
+
 const statusValues: Array<'enabled' | 'disabled'> = ['enabled', 'disabled']
 const paymentValues: Array<'monthly' | 'percentage'> = ['monthly', 'percentage']
 const cannedInactiveDays = [1, 7, 30]
-const allLabel = computed(() => fallbackLabel('common.placeholders.all', 'All'))
-const addLabel = computed(() => fallbackLabel('common.actions.add', 'Add'))
-const customLabel = computed(() => fallbackLabel('drivers.filters.custom', 'Custom'))
-const customPlaceholder = computed(() => fallbackLabel('drivers.filters.custom_placeholder', 'Days'))
-const inactiveNoneLabel = computed(() => fallbackLabel('drivers.filters.inactive_none', 'None'))
-const searchPlaceholder = computed(() => fallbackLabel('common.placeholders.search', 'Search'))
 const customDays = ref<number | null>(null)
+
+const searchPlaceholder = computed(() =>
+  fallbackLabel('drivers.placeholders.search', 'Name, email, phone, document, plate...')
+)
+
+// Available (not yet active) filters
+const allFilterDefs: { key: keyof ActiveFilters; labelKey: string; fallback: string }[] = [
+  { key: 'status', labelKey: 'drivers.filters.filter_status', fallback: 'Status' },
+  { key: 'paymentMode', labelKey: 'drivers.filters.filter_payment', fallback: 'Payment' },
+  { key: 'inactiveDays', labelKey: 'drivers.filters.filter_inactive', fallback: 'Inactivity' },
+  { key: 'needsVehicle', labelKey: 'drivers.filters.filter_needs_vehicle', fallback: 'Needs vehicle' },
+]
+
+const availableFilters = computed(() =>
+  allFilterDefs
+    .filter(f => {
+      if (f.key === 'status') return props.filters.status === undefined
+      if (f.key === 'paymentMode') return props.filters.paymentMode === undefined
+      if (f.key === 'inactiveDays') return props.filters.inactiveDays === undefined
+      if (f.key === 'needsVehicle') return !props.filters.needsVehicle
+      return true
+    })
+    .map(f => ({ key: f.key, label: fallbackLabel(f.labelKey, f.fallback) }))
+)
 
 watch(() => props.search, (val) => {
   localSearch.value = val
@@ -239,18 +254,52 @@ function inactiveLabel(days: number): string {
   return fallbackLabel('drivers.filters.inactive_days', `${days}d`, { days })
 }
 
+function statusChipLabel(value: 'enabled' | 'disabled'): string {
+  const status = statusLabel(value)
+  const key = 'drivers.filters.chip_status'
+  const translated = t(key, { value: status })
+  return translated === key ? `Estado: ${status}` : translated
+}
+
+function paymentChipLabel(value: 'monthly' | 'percentage'): string {
+  const payment = paymentLabel(value)
+  const key = 'drivers.filters.chip_payment'
+  const translated = t(key, { value: payment })
+  return translated === key ? `Pago: ${payment}` : translated
+}
+
+function inactiveChipLabel(days: number): string {
+  return fallbackLabel('drivers.filters.chip_inactive', `Inactive > ${days}d`, { days })
+}
+
+// Picker helpers
+function openPicker(key: keyof ActiveFilters): void {
+  if (key === 'needsVehicle') {
+    emit('update:filters', { ...props.filters, needsVehicle: true })
+    return
+  }
+  openFilter.value = key
+}
+
+function closePicker(): void {
+  openFilter.value = null
+}
+
 // Emit helpers
 function applyStatusFilter(value: 'enabled' | 'disabled'): void {
   emit('update:filters', { ...props.filters, status: value })
+  closePicker()
 }
 
 function applyPaymentFilter(value: 'monthly' | 'percentage'): void {
   emit('update:filters', { ...props.filters, paymentMode: value })
+  closePicker()
 }
 
 function applyInactiveFilter(days: number): void {
   emit('update:filters', { ...props.filters, inactiveDays: days })
   customDays.value = null
+  closePicker()
 }
 
 function applyCustomInactiveFilter(): void {
@@ -283,7 +332,7 @@ function removeFilter(key: keyof ActiveFilters): void {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: stretch;
+  align-items: center;
 }
 
 .search-control {
@@ -324,94 +373,33 @@ function removeFilter(key: keyof ActiveFilters): void {
   color: var(--filters-muted);
 }
 
-.filter-dropdown {
-  flex: 0 1 13.25rem;
+.filter-add-dropdown {
+  position: relative;
+}
+
+.filter-add-btn {
+  border-radius: 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.filter-picker {
+  position: absolute;
+  z-index: 1000;
   min-width: 12rem;
-  max-width: 14rem;
-  display: flex;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
 }
 
-.filter-control {
-  width: 100%;
-  height: var(--filters-control-height);
-  padding: 0.55rem 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  border: 1px solid var(--filters-border);
-  border-radius: 0.9rem;
-  background: var(--filters-surface);
-  color: var(--filters-text);
-  text-align: left;
-  box-shadow: var(--filters-shadow);
-  box-sizing: border-box;
-}
-
-.filter-control:hover,
-.filter-control:focus,
-.filter-control:active,
-.filter-control.show {
-  border-color: var(--filters-border);
-  background: var(--filters-surface-hover);
-  color: var(--filters-text);
-  box-shadow: var(--filters-shadow);
-}
-
-.filter-control.is-active {
-  border-color: var(--filters-active-border);
-  background: var(--filters-active-bg);
-}
-
-.filter-control__copy {
-  min-width: 0;
-  display: flex;
-  flex: 1;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.filter-control__title {
-  color: var(--filters-muted);
-  flex-shrink: 0;
+.filter-picker__title {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  line-height: 1.1;
   text-transform: uppercase;
-}
-
-.filter-control__value {
-  overflow: hidden;
-  color: var(--filters-text);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.filter-control.is-active .filter-control__title {
-  color: var(--filters-active-text);
-}
-
-.filter-control::after {
-  flex-shrink: 0;
-  margin-left: 0.25rem;
-}
-
-.filter-clear {
-  flex-shrink: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.8;
-}
-
-.filter-clear:hover {
-  opacity: 1;
+  color: var(--filters-muted);
+  margin-bottom: 0.35rem;
 }
 
 .filter-menu {
@@ -500,8 +488,7 @@ function removeFilter(key: keyof ActiveFilters): void {
 }
 
 @media (max-width: 767.98px) {
-  .search-control,
-  .filter-dropdown {
+  .search-control {
     flex-basis: 100%;
     max-width: 100%;
   }
