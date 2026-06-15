@@ -57,7 +57,7 @@ export default {
     color: 'Choose color vehicle',
     soat_exp: 'Choose Soat expiration',
     tec_exp: 'Choose Techno expiration',
-    search: 'Name, email, phone, document, plate...'
+    search: 'Search'
   },
   filters: {
     add_filter: '+ Add filter',

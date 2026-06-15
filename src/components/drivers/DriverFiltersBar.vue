@@ -12,158 +12,59 @@
       />
     </div>
 
-    <!-- Active filter chips -->
-    <span
-      v-if="filters.status !== undefined"
-      class="badge bg-primary d-flex align-items-center gap-1"
-    >
-      {{ statusChipLabel(filters.status) }}
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        style="font-size: 0.6rem;"
-        :aria-label="t('common.actions.delete')"
-        @click="removeFilter('status')"
-      ></button>
-    </span>
-
-    <span
-      v-if="filters.paymentMode !== undefined"
-      class="badge bg-primary d-flex align-items-center gap-1"
-    >
-      {{ paymentChipLabel(filters.paymentMode) }}
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        style="font-size: 0.6rem;"
-        :aria-label="t('common.actions.delete')"
-        @click="removeFilter('paymentMode')"
-      ></button>
-    </span>
-
-    <span
-      v-if="filters.inactiveDays !== undefined"
-      class="badge bg-primary d-flex align-items-center gap-1"
-    >
-      {{ inactiveChipLabel(filters.inactiveDays) }}
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        style="font-size: 0.6rem;"
-        :aria-label="t('common.actions.delete')"
-        @click="removeFilter('inactiveDays')"
-      ></button>
-    </span>
-
-    <span
-      v-if="filters.needsVehicle"
-      class="badge bg-primary d-flex align-items-center gap-1"
-    >
-      {{ fallbackLabel('drivers.filters.chip_needs_vehicle', 'Needs vehicle') }}
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        style="font-size: 0.6rem;"
-        :aria-label="t('common.actions.delete')"
-        @click="removeFilter('needsVehicle')"
-      ></button>
-    </span>
-
-    <!-- + Add filter dropdown (hidden when all filters are active) -->
-    <div v-if="availableFilters.length > 0" class="dropdown filter-add-dropdown">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary dropdown-toggle filter-add-btn"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
+    <label class="filter-control">
+      <span class="filter-control__label">
+        {{ fallbackLabel('drivers.filters.filter_status', 'Status') }}
+      </span>
+      <select
+        class="form-select filter-control__select filter-control__select--status"
+        name="status"
+        :aria-label="fallbackLabel('drivers.filters.filter_status', 'Status')"
+        :value="filters.status ?? ''"
+        @change="onStatusChange"
       >
-        {{ fallbackLabel('drivers.filters.add_filter', '+ Add filter') }}
-      </button>
-      <ul class="dropdown-menu shadow-sm filter-menu">
-        <li v-for="f in availableFilters" :key="f.key">
-          <button
-            class="dropdown-item"
-            type="button"
-            @click="openPicker(f.key)"
-          >
-            {{ f.label }}
-          </button>
-        </li>
-      </ul>
-    </div>
+        <option value="">{{ allLabel }}</option>
+        <option v-for="value in statusValues" :key="value" :value="value">
+          {{ statusLabel(value) }}
+        </option>
+      </select>
+    </label>
 
-    <!-- Picker panels (shown when openFilter matches) -->
-    <div v-if="openFilter === 'status'" class="filter-picker card shadow-sm p-2">
-      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_status', 'Status') }}</p>
-      <button
-        v-for="val in statusValues"
-        :key="val"
-        class="dropdown-item"
-        type="button"
-        @click="applyStatusFilter(val)"
+    <label class="filter-control">
+      <span class="filter-control__label">
+        {{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}
+      </span>
+      <select
+        class="form-select filter-control__select filter-control__select--payment"
+        name="paymentMode"
+        :aria-label="fallbackLabel('drivers.filters.filter_payment', 'Payment')"
+        :value="filters.paymentMode ?? ''"
+        @change="onPaymentChange"
       >
-        {{ statusLabel(val) }}
-      </button>
-      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
-        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
-      </button>
-    </div>
+        <option value="">{{ allLabel }}</option>
+        <option v-for="value in paymentValues" :key="value" :value="value">
+          {{ paymentLabel(value) }}
+        </option>
+      </select>
+    </label>
 
-    <div v-if="openFilter === 'paymentMode'" class="filter-picker card shadow-sm p-2">
-      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}</p>
-      <button
-        v-for="val in paymentValues"
-        :key="val"
-        class="dropdown-item"
-        type="button"
-        @click="applyPaymentFilter(val)"
+    <label class="filter-control">
+      <span class="filter-control__label">
+        {{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}
+      </span>
+      <select
+        class="form-select filter-control__select filter-control__select--inactive"
+        name="inactiveDays"
+        :aria-label="fallbackLabel('drivers.filters.filter_inactive', 'Inactivity')"
+        :value="filters.inactiveDays?.toString() ?? ''"
+        @change="onInactiveChange"
       >
-        {{ paymentLabel(val) }}
-      </button>
-      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
-        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
-      </button>
-    </div>
-
-    <div v-if="openFilter === 'inactiveDays'" class="filter-picker card shadow-sm p-2">
-      <p class="filter-picker__title">{{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}</p>
-      <button
-        v-for="days in cannedInactiveDays"
-        :key="days"
-        class="dropdown-item"
-        type="button"
-        @click="applyInactiveFilter(days)"
-      >
-        {{ inactiveLabel(days) }}
-      </button>
-      <hr class="dropdown-divider filter-menu__divider" />
-      <div class="filter-menu__section">
-        <label class="form-label filter-menu__label mb-0">{{ fallbackLabel('drivers.filters.custom', 'Custom') }}</label>
-        <div class="filter-menu__custom">
-          <input
-            type="number"
-            class="form-control form-control-sm filter-menu__input"
-            min="1"
-            inputmode="numeric"
-            v-model.number="customDays"
-            :placeholder="fallbackLabel('drivers.filters.custom_placeholder', 'Days')"
-            @keydown.enter.stop="applyCustomInactiveFilter"
-            @click.stop
-          />
-          <button
-            class="btn btn-sm btn-primary filter-menu__action"
-            type="button"
-            :disabled="!customDays || customDays < 1"
-            @click.stop="applyCustomInactiveFilter"
-          >
-            {{ fallbackLabel('common.actions.add', 'Add') }}
-          </button>
-        </div>
-      </div>
-      <button class="dropdown-item text-secondary mt-1" type="button" @click="closePicker">
-        {{ fallbackLabel('common.actions.cancel', 'Cancel') }}
-      </button>
-    </div>
+        <option value="">{{ inactiveNoneLabel }}</option>
+        <option v-for="days in inactiveOptions" :key="days" :value="days.toString()">
+          {{ inactiveLabel(days) }}
+        </option>
+      </select>
+    </label>
   </div>
 </template>
 
@@ -184,49 +85,32 @@ const emit = defineEmits<{
 }>()
 const { t } = useI18n()
 
-// Local search ref for debouncing
 const localSearch = ref(props.search)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
-
-// Picker state
-const openFilter = ref<keyof ActiveFilters | null>(null)
 
 const statusValues: Array<'enabled' | 'disabled'> = ['enabled', 'disabled']
 const paymentValues: Array<'monthly' | 'percentage'> = ['monthly', 'percentage']
 const cannedInactiveDays = [1, 7, 30]
-const customDays = ref<number | null>(null)
 
 const searchPlaceholder = computed(() =>
-  fallbackLabel('drivers.placeholders.search', 'Name, email, phone, document, plate...')
+  fallbackLabel('drivers.placeholders.search', 'Search')
 )
-
-// Available (not yet active) filters
-const allFilterDefs: { key: keyof ActiveFilters; labelKey: string; fallback: string }[] = [
-  { key: 'status', labelKey: 'drivers.filters.filter_status', fallback: 'Status' },
-  { key: 'paymentMode', labelKey: 'drivers.filters.filter_payment', fallback: 'Payment' },
-  { key: 'inactiveDays', labelKey: 'drivers.filters.filter_inactive', fallback: 'Inactivity' },
-  { key: 'needsVehicle', labelKey: 'drivers.filters.filter_needs_vehicle', fallback: 'Needs vehicle' },
-]
-
-const availableFilters = computed(() =>
-  allFilterDefs
-    .filter(f => {
-      if (f.key === 'status') return props.filters.status === undefined
-      if (f.key === 'paymentMode') return props.filters.paymentMode === undefined
-      if (f.key === 'inactiveDays') return props.filters.inactiveDays === undefined
-      if (f.key === 'needsVehicle') return !props.filters.needsVehicle
-      return true
-    })
-    .map(f => ({ key: f.key, label: fallbackLabel(f.labelKey, f.fallback) }))
+const allLabel = computed(() => fallbackLabel('common.placeholders.all', 'All'))
+const inactiveNoneLabel = computed(() =>
+  fallbackLabel('drivers.filters.inactive_none', 'None')
 )
-
-watch(() => props.search, (val) => {
-  localSearch.value = val
+const inactiveOptions = computed(() => {
+  const values = new Set(cannedInactiveDays)
+  const current = props.filters.inactiveDays
+  if (current && current > 0) {
+    values.add(current)
+  }
+  return Array.from(values).sort((a, b) => a - b)
 })
 
-watch(() => props.filters.inactiveDays, (val) => {
-  customDays.value = val && !cannedInactiveDays.includes(val) ? val : null
-}, { immediate: true })
+watch(() => props.search, (value) => {
+  localSearch.value = value
+})
 
 function onSearchInput(event: Event): void {
   const value = (event.target as HTMLInputElement).value
@@ -254,63 +138,37 @@ function inactiveLabel(days: number): string {
   return fallbackLabel('drivers.filters.inactive_days', `${days}d`, { days })
 }
 
-function statusChipLabel(value: 'enabled' | 'disabled'): string {
-  const status = statusLabel(value)
-  const key = 'drivers.filters.chip_status'
-  const translated = t(key, { value: status })
-  return translated === key ? `Estado: ${status}` : translated
-}
-
-function paymentChipLabel(value: 'monthly' | 'percentage'): string {
-  const payment = paymentLabel(value)
-  const key = 'drivers.filters.chip_payment'
-  const translated = t(key, { value: payment })
-  return translated === key ? `Pago: ${payment}` : translated
-}
-
-function inactiveChipLabel(days: number): string {
-  return fallbackLabel('drivers.filters.chip_inactive', `Inactive > ${days}d`, { days })
-}
-
-// Picker helpers
-function openPicker(key: keyof ActiveFilters): void {
-  if (key === 'needsVehicle') {
-    emit('update:filters', { ...props.filters, needsVehicle: true })
-    return
+function onStatusChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value
+  const nextFilters = { ...props.filters }
+  if (value === 'enabled' || value === 'disabled') {
+    nextFilters.status = value
+  } else {
+    delete nextFilters.status
   }
-  openFilter.value = key
+  emit('update:filters', nextFilters)
 }
 
-function closePicker(): void {
-  openFilter.value = null
+function onPaymentChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value
+  const nextFilters = { ...props.filters }
+  if (value === 'monthly' || value === 'percentage') {
+    nextFilters.paymentMode = value
+  } else {
+    delete nextFilters.paymentMode
+  }
+  emit('update:filters', nextFilters)
 }
 
-// Emit helpers
-function applyStatusFilter(value: 'enabled' | 'disabled'): void {
-  emit('update:filters', { ...props.filters, status: value })
-  closePicker()
-}
-
-function applyPaymentFilter(value: 'monthly' | 'percentage'): void {
-  emit('update:filters', { ...props.filters, paymentMode: value })
-  closePicker()
-}
-
-function applyInactiveFilter(days: number): void {
-  emit('update:filters', { ...props.filters, inactiveDays: days })
-  customDays.value = null
-  closePicker()
-}
-
-function applyCustomInactiveFilter(): void {
-  if (!customDays.value || customDays.value < 1) return
-  applyInactiveFilter(customDays.value)
-}
-
-function removeFilter(key: keyof ActiveFilters): void {
-  const updated = { ...props.filters }
-  delete updated[key]
-  emit('update:filters', updated)
+function onInactiveChange(event: Event): void {
+  const value = Number((event.target as HTMLSelectElement).value)
+  const nextFilters = { ...props.filters }
+  if (value > 0) {
+    nextFilters.inactiveDays = value
+  } else {
+    delete nextFilters.inactiveDays
+  }
+  emit('update:filters', nextFilters)
 }
 </script>
 
@@ -318,21 +176,16 @@ function removeFilter(key: keyof ActiveFilters): void {
 .driver-filters-bar {
   --filters-control-height: 3.15rem;
   --filters-surface: var(--drivers-filter-surface);
-  --filters-surface-hover: var(--drivers-filter-surface-hover);
   --filters-border: var(--drivers-filter-border);
   --filters-text: var(--drivers-filter-text);
   --filters-muted: var(--drivers-filter-muted);
   --filters-shadow: var(--drivers-filter-shadow);
-  --filters-menu-bg: var(--drivers-filter-menu-bg);
-  --filters-menu-shadow: var(--drivers-filter-menu-shadow);
   --filters-active-border: var(--drivers-filter-active-border);
-  --filters-active-bg: var(--drivers-filter-active-bg);
-  --filters-active-text: var(--drivers-filter-active-text);
   --filters-focus-ring: var(--drivers-filter-focus-ring);
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .search-control {
@@ -350,7 +203,8 @@ function removeFilter(key: keyof ActiveFilters): void {
   box-sizing: border-box;
 }
 
-.search-control:focus-within {
+.search-control:focus-within,
+.filter-control__select:focus {
   border-color: var(--filters-active-border);
   box-shadow: 0 0 0 0.2rem var(--filters-focus-ring);
 }
@@ -373,108 +227,30 @@ function removeFilter(key: keyof ActiveFilters): void {
   color: var(--filters-muted);
 }
 
-.filter-add-dropdown {
-  position: relative;
-}
-
-.filter-add-btn {
-  border-radius: 1rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.filter-picker {
-  position: absolute;
-  z-index: 1000;
-  min-width: 12rem;
-  top: 100%;
-  left: 0;
-  margin-top: 0.25rem;
-}
-
-.filter-picker__title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--filters-muted);
-  margin-bottom: 0.35rem;
-}
-
-.filter-menu {
-  width: 100%;
-  min-width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--filters-border);
-  border-radius: 1rem;
-  background: var(--filters-menu-bg);
-  box-shadow: var(--filters-menu-shadow);
-}
-
-.filter-menu .dropdown-item {
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.75rem;
-  color: var(--filters-text);
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-
-.filter-menu .dropdown-item:hover,
-.filter-menu .dropdown-item:focus {
-  background: var(--filters-surface-hover);
-  color: var(--filters-text);
-}
-
-.filter-menu .dropdown-item.active,
-.filter-menu .dropdown-item:active {
-  background: var(--filters-active-bg);
-  color: var(--filters-active-text);
-}
-
-.filter-menu__divider {
-  margin: 0.5rem 0;
-  border-color: rgba(71, 85, 105, 0.7);
-}
-
-.filter-menu__section {
-  padding: 0.35rem;
-}
-
-.filter-menu__label {
-  display: block;
-  color: var(--filters-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.filter-menu__custom {
-  margin-top: 0.5rem;
+.filter-control {
+  flex: 0 1 12rem;
+  min-width: 10rem;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
-.filter-menu__input,
-.filter-menu__input:focus {
-  min-height: 2.45rem;
-  border: 1px solid var(--filters-border);
-  border-radius: 0.8rem;
-  background: var(--filters-surface);
-  color: var(--filters-text);
-  box-shadow: none;
-}
-
-.filter-menu__input::placeholder {
+.filter-control__label {
   color: var(--filters-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.filter-menu__action {
-  min-width: 4.9rem;
-  border-radius: 0.8rem;
-  font-weight: 700;
+.filter-control__select,
+.filter-control__select:focus {
+  min-height: var(--filters-control-height);
+  border: 1px solid var(--filters-border);
+  border-radius: 0.9rem;
+  background-color: var(--filters-surface);
+  color: var(--filters-text);
+  box-shadow: var(--filters-shadow);
+  font-weight: 600;
 }
 
 @media (max-width: 1199.98px) {
@@ -488,7 +264,8 @@ function removeFilter(key: keyof ActiveFilters): void {
 }
 
 @media (max-width: 767.98px) {
-  .search-control {
+  .search-control,
+  .filter-control {
     flex-basis: 100%;
     max-width: 100%;
   }

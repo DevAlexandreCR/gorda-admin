@@ -55,7 +55,7 @@ export default {
     color: 'Seleccione el color del vehículo',
     soat_exp: 'Seleccione vencimiento del soat',
     tec_exp: 'Seleccione vencimiento de la tecno-mecánica',
-    search: 'Nombre, email, teléfono, documento, placa...'
+    search: 'Buscar'
   },
   filters: {
     add_filter: '+ Agregar filtro',

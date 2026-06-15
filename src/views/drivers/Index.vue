@@ -185,8 +185,12 @@
                 <!-- Vehicle brand + model -->
                 <td class="py-0">
                   <div class="d-flex px-2 py-1">
-                    <div>
-                      <img :src="driver.selected_vehicle?.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile" />
+                    <div v-if="selectedVehiclePhotoUrl(driver)">
+                      <img
+                        :src="selectedVehiclePhotoUrl(driver) || undefined"
+                        class="avatar avatar-sm me-3"
+                        alt="Vehicle"
+                      />
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="mb-0 text-sm">{{ driver.selected_vehicle?.brand }}</h6>
@@ -278,7 +282,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, nextTick } from 'vue'
+import { ref, computed, watchEffect, nextTick, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import DateHelper from '@/helpers/DateHelper'
 import DriverRepository from '@/repositories/DriverRepository'
@@ -332,7 +336,6 @@ function parseFilters(q: typeof route.query): ActiveFilters {
     const n = Number(q.inactiveDays)
     if (n > 0) f.inactiveDays = n
   }
-  if (q.needsVehicle === 'true') f.needsVehicle = true
   return f
 }
 
@@ -398,12 +401,34 @@ function commitUrlState(): void {
   if (filters.value.status !== undefined) q.status = filters.value.status
   if (filters.value.paymentMode !== undefined) q.paymentMode = filters.value.paymentMode
   if (filters.value.inactiveDays !== undefined) q.inactiveDays = String(filters.value.inactiveDays)
-  if (filters.value.needsVehicle) q.needsVehicle = 'true'
   if (sortParam.value !== DEFAULT_SORT) q.sort = sortParam.value
   if (page.value !== DEFAULT_PAGE) q.page = String(page.value)
   if (perPage.value !== DEFAULT_PER_PAGE) q.perPage = String(perPage.value)
 
-  router.replace({ query: q })
+  if (!hasSameQuery(q)) {
+    void router.replace({ query: q })
+  }
+}
+
+function hasSameQuery(nextQuery: Record<string, string | undefined>): boolean {
+  const currentQuery = Object.entries(route.query).reduce<Record<string, string>>((acc, [key, value]) => {
+    if (typeof value === 'string') {
+      acc[key] = value
+    }
+    return acc
+  }, {})
+  const normalizedNextQuery = Object.entries(nextQuery).reduce<Record<string, string>>((acc, [key, value]) => {
+    if (value !== undefined) {
+      acc[key] = value
+    }
+    return acc
+  }, {})
+
+  const currentKeys = Object.keys(currentQuery).sort()
+  const nextKeys = Object.keys(normalizedNextQuery).sort()
+  if (currentKeys.length !== nextKeys.length) return false
+
+  return nextKeys.every((key, index) => currentKeys[index] === key && currentQuery[key] === normalizedNextQuery[key])
 }
 
 // ── Event handlers from DriverFiltersBar ──────────────────────────────────────
@@ -463,7 +488,6 @@ watchEffect(async () => {
   const _status = filters.value.status
   const _paymentMode = filters.value.paymentMode
   const _inactiveDays = filters.value.inactiveDays
-  const _needsVehicle = filters.value.needsVehicle
   const _sort = sortParam.value
   const _page = page.value
   const _perPage = perPage.value
@@ -475,7 +499,6 @@ watchEffect(async () => {
       status: _status,
       paymentMode: _paymentMode,
       inactiveDays: _inactiveDays,
-      needsVehicle: _needsVehicle,
       sort: _sort,
       page: _page,
       perPage: _perPage,
@@ -635,4 +658,18 @@ async function bulkDisable(): Promise<void> {
 function format(unix: number): string {
   return DateHelper.unixToDate(unix, 'YYYY-MM-DD')
 }
+
+function selectedVehiclePhotoUrl(driver: DriverInterface): string | null {
+  const photoUrl = driver.selected_vehicle?.photoUrl
+  if (typeof photoUrl !== 'string') {
+    return null
+  }
+
+  const trimmed = photoUrl.trim()
+  return trimmed === '' ? null : trimmed
+}
+
+onMounted(() => {
+  commitUrlState()
+})
 </script>
