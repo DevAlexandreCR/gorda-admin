@@ -30,11 +30,7 @@ export default {
     upload_vehicle: 'Upload photo vehicle',
     current_balance: 'Current balance',
     add_balance: 'Add balance',
-    manage_balance: 'Manage',
-    recharge_note: 'Note (optional)',
-    recharge_note_placeholder: 'e.g. efectivo, transferencia...',
-    balance_hint_positive: 'Example: +5000 cash recharge',
-    balance_hint_negative: 'Example: −2000 billing error adjustment',
+    manage_balance: 'Manage'
   },
   vehicle: {
     brand: 'Brand',
@@ -56,19 +52,16 @@ export default {
     photo_vehicle: 'Choose photo vehicle',
     color: 'Choose color vehicle',
     soat_exp: 'Choose Soat expiration',
-    tec_exp: 'Choose Techno expiration',
-    search: 'Name, email, phone, document, plate...'
+    tec_exp: 'Choose Techno expiration'
   },
   filters: {
     add_filter: '+ Add filter',
     filter_status: 'Status',
     filter_payment: 'Payment',
     filter_inactive: 'Inactivity',
-    filter_needs_vehicle: 'Needs vehicle',
     chip_status: 'Status: {value}',
     chip_payment: 'Payment: {value}',
     chip_inactive: 'Inactive > {days}d',
-    chip_needs_vehicle: 'Needs vehicle',
     inactive_none: 'None',
     inactive_days: '{days}d',
     custom: 'Custom',
@@ -88,13 +81,5 @@ export default {
     enable_result: '{processed} enabled · {failed} failed',
     disable_result: '{processed} disabled · {failed} failed',
     send_result: '{processed} sent · {failed} failed',
-  },
-  recharges: {
-    history_title: 'Balance History',
-    col_date: 'Date',
-    col_amount: 'Amount',
-    col_balance: 'Resulting Balance',
-    col_actor: 'By',
-    col_note: 'Note',
-  },
+  }
 }

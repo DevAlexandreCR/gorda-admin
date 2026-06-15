@@ -30,6 +30,6 @@ module.exports = {
     }
   }],
   globals: {
-    defineProps: "readonly", defineEmits: "readonly", withDefaults: "readonly", defineExpose: "readonly"
+    defineProps: "readonly", defineEmits: "readonly", withDefaults: "readonly"
   }
 }

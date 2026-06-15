@@ -186,23 +186,17 @@
                 <td class="py-0">
                   <div class="d-flex px-2 py-1">
                     <div>
-                      <img :src="driver.selected_vehicle?.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile" />
+                      <img :src="driver.vehicle.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile" />
                     </div>
                     <div class="d-flex flex-column justify-content-center">
-                      <h6 class="mb-0 text-sm">{{ driver.selected_vehicle?.brand }}</h6>
-                      <p class="text-xs text-secondary mb-0">{{ driver.selected_vehicle?.model }}</p>
+                      <h6 class="mb-0 text-sm">{{ driver.vehicle.brand }}</h6>
+                      <p class="text-xs text-secondary mb-0">{{ driver.vehicle.model }}</p>
                     </div>
                   </div>
                 </td>
 
                 <td>
-                  <template v-if="driver.selected_vehicle">
-                    <span v-if="driver.active_vehicle_id" class="text-success me-1">&#9679;</span>
-                    <router-link :to="{ name: 'vehicles.detail', params: { id: driver.selected_vehicle_id } }">
-                      {{ driver.selected_vehicle.plate }}
-                    </router-link>
-                  </template>
-                  <span v-else class="text-muted">&#8212;</span>
+                  <p class="text-xs font-weight-bold mb-0">{{ driver.vehicle.plate }}</p>
                 </td>
 
                 <td class="align-middle text-center text-sm">
@@ -332,7 +326,6 @@ function parseFilters(q: typeof route.query): ActiveFilters {
     const n = Number(q.inactiveDays)
     if (n > 0) f.inactiveDays = n
   }
-  if (q.needsVehicle === 'true') f.needsVehicle = true
   return f
 }
 
@@ -398,7 +391,6 @@ function commitUrlState(): void {
   if (filters.value.status !== undefined) q.status = filters.value.status
   if (filters.value.paymentMode !== undefined) q.paymentMode = filters.value.paymentMode
   if (filters.value.inactiveDays !== undefined) q.inactiveDays = String(filters.value.inactiveDays)
-  if (filters.value.needsVehicle) q.needsVehicle = 'true'
   if (sortParam.value !== DEFAULT_SORT) q.sort = sortParam.value
   if (page.value !== DEFAULT_PAGE) q.page = String(page.value)
   if (perPage.value !== DEFAULT_PER_PAGE) q.perPage = String(perPage.value)
@@ -463,7 +455,6 @@ watchEffect(async () => {
   const _status = filters.value.status
   const _paymentMode = filters.value.paymentMode
   const _inactiveDays = filters.value.inactiveDays
-  const _needsVehicle = filters.value.needsVehicle
   const _sort = sortParam.value
   const _page = page.value
   const _perPage = perPage.value
@@ -475,7 +466,6 @@ watchEffect(async () => {
       status: _status,
       paymentMode: _paymentMode,
       inactiveDays: _inactiveDays,
-      needsVehicle: _needsVehicle,
       sort: _sort,
       page: _page,
       perPage: _perPage,

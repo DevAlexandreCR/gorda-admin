@@ -4,7 +4,6 @@ import {VehicleInterface} from "@/types/VehicleInterface";
 import dayjs from 'dayjs'
 import {DeviceType} from '@/types/DeviceType'
 import { DriverPaymentMode } from "@/constants/DriverPaymentMode";
-import type { Vehicle as VehicleType, DriverVehicleLink } from "@/types/Vehicle";
 
 export default class Driver implements DriverInterface {
 
@@ -21,10 +20,6 @@ export default class Driver implements DriverInterface {
   phone2: string | null = null
   photoUrl: string | null
   vehicle: VehicleInterface
-  selected_vehicle: VehicleType | null = null
-  selected_vehicle_id: string | null = null
-  roster: DriverVehicleLink[] = []
-  active_vehicle_id: string | null = null
   device: DeviceType | null = null
   balance = 0
   paymentMode: DriverPaymentMode = DriverPaymentMode.MONTHLY
