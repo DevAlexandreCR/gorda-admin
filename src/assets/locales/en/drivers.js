@@ -30,7 +30,11 @@ export default {
     upload_vehicle: 'Upload photo vehicle',
     current_balance: 'Current balance',
     add_balance: 'Add balance',
-    manage_balance: 'Manage'
+    manage_balance: 'Manage',
+    recharge_note: 'Note (optional)',
+    recharge_note_placeholder: 'e.g. efectivo, transferencia...',
+    balance_hint_positive: 'Example: +5000 cash recharge',
+    balance_hint_negative: 'Example: −2000 billing error adjustment',
   },
   vehicle: {
     brand: 'Brand',
@@ -84,5 +88,13 @@ export default {
     enable_result: '{processed} enabled · {failed} failed',
     disable_result: '{processed} disabled · {failed} failed',
     send_result: '{processed} sent · {failed} failed',
-  }
+  },
+  recharges: {
+    history_title: 'Balance History',
+    col_date: 'Date',
+    col_amount: 'Amount',
+    col_balance: 'Resulting Balance',
+    col_actor: 'By',
+    col_note: 'Note',
+  },
 }

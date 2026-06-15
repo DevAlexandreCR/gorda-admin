@@ -155,6 +155,36 @@
     </Form>
     <ImageLoader :id="'image-driver'" :resourceId="driver.id" :path="pathDriver" :event="driverEvent"
       @imageDriverLoaded="uploadImgDriver"></ImageLoader>
+    <!-- Recharge History -->
+    <div v-if="recharges.length > 0" class="card mx-auto mx-xxl-5 mt-3">
+      <div class="card-header text-center text-capitalize">
+        <h6>{{ $t('drivers.recharges.history_title') }}</h6>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>{{ $t('drivers.recharges.col_date') }}</th>
+              <th>{{ $t('drivers.recharges.col_amount') }}</th>
+              <th>{{ $t('drivers.recharges.col_balance') }}</th>
+              <th>{{ $t('drivers.recharges.col_actor') }}</th>
+              <th>{{ $t('drivers.recharges.col_note') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="r in recharges" :key="r.id">
+              <td>{{ dayjs.unix(r.created_at).format('DD/MM/YY HH:mm') }}</td>
+              <td :class="r.amount >= 0 ? 'text-success' : 'text-danger'">
+                {{ (r.amount >= 0 ? '+' : '') + r.amount }}
+              </td>
+              <td>{{ r.balanceAfter }}</td>
+              <td>{{ r.createdByName }}</td>
+              <td>{{ r.note ?? '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <!-- Modal Balance-->
   <div class="modal fade" id="balance-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -174,6 +204,12 @@
           <div class="form-group">
             <label>{{ $t('drivers.forms.add_balance') }}</label>
             <input type="number" class="form-control" v-model="newBalance" />
+            <small class="text-muted">{{ $t('drivers.forms.balance_hint_positive') }}</small>
+          </div>
+          <div class="form-group mt-2">
+            <label>{{ $t('drivers.forms.recharge_note') }}</label>
+            <input type="text" class="form-control" v-model="rechargeNote" :placeholder="$t('drivers.forms.recharge_note_placeholder')" />
+            <small class="text-muted">{{ $t('drivers.forms.balance_hint_negative') }}</small>
           </div>
         </div>
         <div class="modal-footer">
@@ -275,7 +311,10 @@ import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
+import { RechargeInterface } from '@/types/RechargeInterface'
 const driver: Ref<Driver> = ref(new Driver)
+const recharges: Ref<RechargeInterface[]> = ref([])
+const rechargesTotal = ref(0)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
 const driverEvent = 'image-driver-loaded'
@@ -287,6 +326,7 @@ const driverStore = useDriversStore()
 const currentUser = AuthService.getCurrentUser()
 const { setLoading } = useLoadingState()
 const newBalance = ref(0)
+const rechargeNote = ref('')
 const { branchSelected } = storeToRefs(useSettingsStore())
 const schema = object().shape({
   name: string().required().min(3),
@@ -313,6 +353,16 @@ function goBack() {
   router.back()
 }
 
+async function loadRecharges(): Promise<void> {
+  if (!driver.value.id) return
+  try {
+    const result = await DriverRepository.listRecharges(driver.value.id)
+    recharges.value = result.recharges
+    rechargesTotal.value = result.total
+  } catch (e) {
+    // silent fail — history is non-critical
+  }
+}
 
 onBeforeMount(() => {
   const id = route.params.id as string
@@ -327,6 +377,7 @@ onBeforeMount(() => {
       Object.assign(updatedDriver, updatedDriverData)
       driverStore.addDriver(updatedDriver)
       Object.assign(driver.value, updatedDriver)
+      await loadRecharges()
       setLoading(false)
     })
     .catch(async (e) => {
@@ -381,13 +432,17 @@ function updatePassword(): void {
 
 function addBalance(): void {
   setLoading(true)
-  DriverRepository.addBalance(driver.value, newBalance.value).then(async () => {
+  DriverRepository.createRecharge(driver.value, newBalance.value, rechargeNote.value).then(async (result) => {
+    driver.value.balance = result.driver.balance
+    newBalance.value = 0
+    rechargeNote.value = ''
+    await loadRecharges()
     setLoading(false)
     hide('balance-modal')
-   await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
     setLoading(false)
-   await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 

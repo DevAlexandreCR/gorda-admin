@@ -19,6 +19,8 @@ import { DriverConnectedInterface } from '@/types/DriverConnectedInterface'
 import CacheStore from '@/services/stores/CacheStore'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 import { DriverListQuery } from '@/types/DriverListQuery'
+import { RechargeInterface } from '@/types/RechargeInterface'
+import AuthService from '@/services/AuthService'
 
 class DriverRepository {
   async getDriver(id: string): Promise<DriverInterface> {
@@ -45,9 +47,31 @@ class DriverRepository {
     return serverApi.put(`/drivers/${driver.id}`, driverPayload).then(() => undefined)
   }
 
-  async addBalance(driver: Driver, amount: number): Promise<void> {
-    driver.balance += amount
-    await serverApi.patch(`/drivers/${driver.id}/balance`, { balance: driver.balance })
+  async createRecharge(driver: Driver, amount: number, note?: string | null): Promise<{ recharge: RechargeInterface; driver: any }> {
+    const currentUser = AuthService.currentUser
+    if (!currentUser?.id) {
+      throw new Error('Cannot recharge: actor identity could not be resolved')
+    }
+    const response = await serverApi.post<ApiResponse<{ recharge: RechargeInterface; driver: any }>>(
+      `/drivers/${driver.id}/recharges`,
+      {
+        amount,
+        created_by: { uid: currentUser.id, name: currentUser.name },
+        note: note ?? null,
+      }
+    )
+    return response.data.data
+  }
+
+  async listRecharges(driverId: string, page = 1): Promise<{ recharges: RechargeInterface[]; total: number }> {
+    const response = await serverApi.get<ApiResponse<{ recharges: RechargeInterface[]; total: number }>>(
+      `/drivers/${driverId}/recharges`,
+      { params: { page, perPage: 20 } }
+    )
+    return {
+      recharges: response.data.data.recharges ?? [],
+      total: response.data.data.total ?? 0,
+    }
   }
 
   enable(driverId: string, enabledAt: number): Promise<void> {

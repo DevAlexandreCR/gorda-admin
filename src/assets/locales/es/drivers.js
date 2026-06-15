@@ -30,7 +30,11 @@ export default {
     upload_vehicle: 'Cargar foto del vehículo',
     current_balance: 'Saldo actual',
     add_balance: 'Agregar saldo',
-    manage_balance: 'Administrar'
+    manage_balance: 'Administrar',
+    recharge_note: 'Nota (opcional)',
+    recharge_note_placeholder: 'ej. efectivo, transferencia...',
+    balance_hint_positive: 'Ejemplo: +5000 recarga efectivo',
+    balance_hint_negative: 'Ejemplo: −2000 ajuste error de cobro',
   },
   vehicle: {
     brand: 'Marca',
@@ -82,5 +86,13 @@ export default {
     enable_result: '{processed} habilitados · {failed} fallidos',
     disable_result: '{processed} inhabilitados · {failed} fallidos',
     send_result: '{processed} enviados · {failed} fallidos',
-  }
+  },
+  recharges: {
+    history_title: 'Historial de saldo',
+    col_date: 'Fecha',
+    col_amount: 'Monto',
+    col_balance: 'Saldo resultante',
+    col_actor: 'Por',
+    col_note: 'Nota',
+  },
 }
