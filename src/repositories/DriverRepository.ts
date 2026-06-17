@@ -20,6 +20,7 @@ import CacheStore from '@/services/stores/CacheStore'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 import { DriverListQuery } from '@/types/DriverListQuery'
 import { RechargeInterface } from '@/types/RechargeInterface'
+import { MonthlyPaymentInterface } from '@/types/MonthlyPaymentInterface'
 import AuthService from '@/services/AuthService'
 
 class DriverRepository {
@@ -70,6 +71,37 @@ class DriverRepository {
     )
     return {
       recharges: response.data.data.recharges ?? [],
+      total: response.data.data.total ?? 0,
+    }
+  }
+
+  async createMonthlyPayment(
+    driverId: string,
+    { period, amount, note }: { period: string; amount: number; note?: string | null }
+  ): Promise<{ payment: MonthlyPaymentInterface; driver: any }> {
+    const currentUser = AuthService.currentUser
+    if (!currentUser?.id) {
+      throw new Error('Cannot register monthly payment: actor identity could not be resolved')
+    }
+    const response = await serverApi.post<ApiResponse<{ payment: MonthlyPaymentInterface; driver: any }>>(
+      `/drivers/${driverId}/monthly-payments`,
+      {
+        period,
+        amount,
+        created_by: { uid: currentUser.id, name: currentUser.name },
+        note: note ?? null,
+      }
+    )
+    return response.data.data
+  }
+
+  async listMonthlyPayments(driverId: string, page = 1): Promise<{ rows: MonthlyPaymentInterface[]; total: number }> {
+    const response = await serverApi.get<ApiResponse<{ rows: MonthlyPaymentInterface[]; total: number }>>(
+      `/drivers/${driverId}/monthly-payments`,
+      { params: { page, perPage: 20 } }
+    )
+    return {
+      rows: response.data.data.rows ?? [],
       total: response.data.data.total ?? 0,
     }
   }

@@ -40,7 +40,7 @@ describe('SettingsApp.vue', () => {
     await nextTick()
     const tabs = wrapper.findAll('.nav-link')
     const inputs = wrapper.findAll('input')
-    expect(tabs.length).toBe(3)
+    expect(tabs.length).toBe(4)
     expect(inputs.length).toBe(5)
   })
 

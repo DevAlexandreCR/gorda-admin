@@ -37,6 +37,18 @@
           </div>
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="monthly-payment-settings-tab" data-bs-toggle="tab" data-bs-target="#monthly-payment-settings" type="button"
+          role="tab" aria-controls="monthly-payment-settings" aria-selected="false" @click="handleMonthlyPaymentSettingsTabClick">
+          <div class="d-flex align-items-center">
+            <div class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              :class="{ 'shadow': currentTab === 'monthlyPaymentSettings' }">
+              <em class="fas fa-calendar-check"></em>
+            </div>
+            <span>{{ $t('settings.monthly_payments.tab_label') }}</span>
+          </div>
+        </button>
+      </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
       <div class="tab-pane fade" role="tabpanel" id="ride-fees" aria-labelledby="ride-fees-tab">
@@ -277,6 +289,47 @@
     <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
         <SettingsMsg v-if="currentTab === 'messages'" />
       </div>
+      <div class="tab-pane fade" id="monthly-payment-settings" role="tabpanel" aria-labelledby="monthly-payment-settings-tab">
+        <div class="row mt-3" v-if="monthlyPaymentSettings">
+          <div class="col-sm-6 mx-auto">
+            <div class="card">
+              <div class="card-header">
+                <h6>{{ $t('settings.monthly_payments.panel_title') }}</h6>
+                <small class="text-muted">{{ $t('settings.monthly_payments.panel_subtitle') }}</small>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-control-label">{{ $t('settings.monthly_payments.field_suggested_amount') }}</label>
+                  <input type="number" class="form-control form-control-sm" v-model.number="monthlyPaymentSettings.suggested_amount" min="0" />
+                </div>
+                <div class="form-group mt-2">
+                  <label class="form-control-label">{{ $t('settings.monthly_payments.field_cutoff_day') }}</label>
+                  <input type="number" class="form-control form-control-sm" v-model.number="monthlyPaymentSettings.cutoff_day" min="1" max="28" />
+                  <small class="text-muted">{{ $t('settings.monthly_payments.hint_cutoff_day') }}</small>
+                </div>
+                <div class="form-group mt-2">
+                  <label class="form-control-label">{{ $t('settings.monthly_payments.field_reminder_offsets') }}</label>
+                  <input type="text" class="form-control form-control-sm" :value="monthlyPaymentSettings.reminder_offsets.join(', ')" @change="onReminderOffsetsChange" />
+                  <small class="text-muted" v-if="reminderOffsetWarning">{{ reminderOffsetWarning }}</small>
+                  <small class="text-muted" v-else>{{ $t('settings.monthly_payments.hint_reminder_offsets') }}</small>
+                </div>
+                <div class="form-group mt-2">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="auto-disable-switch" v-model="monthlyPaymentSettings.auto_disable" />
+                    <label class="form-check-label" for="auto-disable-switch">{{ $t('settings.monthly_payments.field_auto_disable') }}</label>
+                  </div>
+                  <small class="text-muted">{{ $t('settings.monthly_payments.hint_auto_disable') }}</small>
+                </div>
+                <div class="mt-4">
+                  <button type="button" class="btn btn-primary float-end" @click="saveMonthlyPaymentSettings">
+                    {{ $t('common.actions.submit') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="tap-pane fade show active" role="tabpanel" id="general_settings" aria-labelledby="settings-tab">
         <h3 class="ms-4">{{ $t('common.settings.branches') }}:</h3>
         <div class="row">
@@ -350,6 +403,8 @@
 <script setup lang="ts">
 import { ref, Ref } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
+import MonthlyPaymentSettingsRepository from '@/repositories/MonthlyPaymentSettingsRepository'
+import { MonthlyPaymentSettingsInterface } from '@/types/MonthlyPaymentSettingsInterface'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import SettingsMsg from '@/views/settings/messages/Index.vue'
 import ToastService from '@/services/ToastService'
@@ -373,6 +428,8 @@ const allFieldsDisabled: Ref<boolean> = ref(true);
 const currentTab: Ref<string> = ref('general_settings')
 let citySelected: Ref<City> = ref({} as City)
 let branch: Ref<Branch> = ref({} as Branch)
+const monthlyPaymentSettings: Ref<MonthlyPaymentSettingsInterface | null> = ref(null)
+const reminderOffsetWarning = ref('')
 
 function resetRideFeesFormState(): void {
   fieldEdited.value = ''
@@ -445,6 +502,52 @@ function removeMultiplier(index: number): void {
       setLoading(false)
       await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
     })
+  }
+}
+
+function onReminderOffsetsChange(event: Event): void {
+  const raw = (event.target as HTMLInputElement).value
+  const parsed = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n) && n > 0)
+  if (monthlyPaymentSettings.value) {
+    monthlyPaymentSettings.value.reminder_offsets = parsed
+  }
+  checkReminderOffsetWarning()
+}
+
+function checkReminderOffsetWarning(): void {
+  if (!monthlyPaymentSettings.value) return
+  const cutoff = monthlyPaymentSettings.value.cutoff_day
+  const unreachable = monthlyPaymentSettings.value.reminder_offsets.filter(o => cutoff - o < 1)
+  reminderOffsetWarning.value = unreachable.length > 0
+    ? i18n.global.t('settings.monthly_payments.warn_unreachable_offsets', { offsets: unreachable.join(', ') })
+    : ''
+}
+
+async function handleMonthlyPaymentSettingsTabClick(): Promise<void> {
+  currentTab.value = 'monthlyPaymentSettings'
+  setLoading(true)
+  try {
+    monthlyPaymentSettings.value = await MonthlyPaymentSettingsRepository.get()
+    checkReminderOffsetWarning()
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : undefined
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
+  } finally {
+    setLoading(false)
+  }
+}
+
+async function saveMonthlyPaymentSettings(): Promise<void> {
+  if (!monthlyPaymentSettings.value) return
+  setLoading(true)
+  try {
+    monthlyPaymentSettings.value = await MonthlyPaymentSettingsRepository.save(monthlyPaymentSettings.value)
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : undefined
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
+  } finally {
+    setLoading(false)
   }
 }
 

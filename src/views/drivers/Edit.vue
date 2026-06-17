@@ -127,6 +127,11 @@
                   {{ $t('drivers.forms.manage_balance') }}
                 </button>
               </div>
+              <div v-if="driver.paymentMode === DriverPaymentMode.MONTHLY" class="row mt-2">
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-target="#monthly-payment-modal" data-bs-toggle="modal">
+                  {{ $t('drivers.monthly_payments.open_modal') }}
+                </button>
+              </div>
             </div>
             <div class="col-md-6">
               <RosterPanel v-if="driver.id" :driver-id="driver.id" />
@@ -185,6 +190,34 @@
         </table>
       </div>
     </div>
+    <!-- Monthly Payment History -->
+    <div v-if="monthlyPayments.length > 0" class="card mx-auto mx-xxl-5 mt-3">
+      <div class="card-header text-center text-capitalize">
+        <h6>{{ $t('drivers.monthly_payments.history_title') }}</h6>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>{{ $t('drivers.monthly_payments.col_period') }}</th>
+              <th>{{ $t('drivers.monthly_payments.col_amount') }}</th>
+              <th>{{ $t('drivers.monthly_payments.col_actor') }}</th>
+              <th>{{ $t('drivers.monthly_payments.col_date') }}</th>
+              <th>{{ $t('drivers.monthly_payments.col_note') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="p in monthlyPayments" :key="p.id">
+              <td>{{ p.period }}</td>
+              <td>{{ p.amount }}</td>
+              <td>{{ p.createdByName }}</td>
+              <td>{{ dayjs.unix(p.created_at).format('DD/MM/YY HH:mm') }}</td>
+              <td>{{ p.note ?? '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <!-- Modal Balance-->
   <div class="modal fade" id="balance-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -217,6 +250,41 @@
             {{ $t('common.actions.close') }}
           </button>
           <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Monthly Payment -->
+  <div class="modal fade" id="monthly-payment-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ $t('drivers.monthly_payments.modal_title') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{ $t('drivers.monthly_payments.field_period') }}</label>
+            <input type="month" class="form-control" v-model="monthlyPaymentPeriod" />
+            <small class="text-muted">{{ $t('drivers.monthly_payments.hint_period') }}</small>
+          </div>
+          <div class="form-group mt-2">
+            <label>{{ $t('drivers.monthly_payments.field_amount') }}</label>
+            <input type="number" class="form-control" v-model="monthlyPaymentAmount" min="0" />
+            <small class="text-muted">{{ $t('drivers.monthly_payments.hint_amount') }}</small>
+          </div>
+          <div class="form-group mt-2">
+            <label>{{ $t('drivers.monthly_payments.field_note') }}</label>
+            <input type="text" class="form-control" v-model="monthlyPaymentNote" :placeholder="$t('drivers.monthly_payments.placeholder_note')" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.close') }}
+          </button>
+          <button @click="addMonthlyPayment" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
         </div>
       </div>
     </div>
@@ -312,9 +380,17 @@ import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { storeToRefs } from 'pinia'
 import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 import { RechargeInterface } from '@/types/RechargeInterface'
+import MonthlyPaymentSettingsRepository from '@/repositories/MonthlyPaymentSettingsRepository'
+import { MonthlyPaymentInterface } from '@/types/MonthlyPaymentInterface'
 const driver: Ref<Driver> = ref(new Driver)
 const recharges: Ref<RechargeInterface[]> = ref([])
 const rechargesTotal = ref(0)
+const monthlyPaymentPeriod = ref(dayjs().format('YYYY-MM'))
+const monthlyPaymentAmount = ref(0)
+const monthlyPaymentNote = ref('')
+const monthlyPayments: Ref<MonthlyPaymentInterface[]> = ref([])
+const monthlyPaymentsTotal = ref(0)
+const suggestedAmount = ref(0)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
 const driverEvent = 'image-driver-loaded'
@@ -364,6 +440,27 @@ async function loadRecharges(): Promise<void> {
   }
 }
 
+async function loadMonthlyPayments(): Promise<void> {
+  if (!driver.value.id) return
+  try {
+    const result = await DriverRepository.listMonthlyPayments(driver.value.id)
+    monthlyPayments.value = result.rows
+    monthlyPaymentsTotal.value = result.total
+  } catch (e) {
+    // silent fail — history is non-critical
+  }
+}
+
+async function loadSuggestedAmount(): Promise<void> {
+  try {
+    const settings = await MonthlyPaymentSettingsRepository.get()
+    suggestedAmount.value = settings.suggested_amount
+    monthlyPaymentAmount.value = settings.suggested_amount
+  } catch (e) {
+    // silent fail — keep default 0
+  }
+}
+
 onBeforeMount(() => {
   const id = route.params.id as string
   const driverTmp = driverStore.findById(id)
@@ -378,6 +475,8 @@ onBeforeMount(() => {
       driverStore.addDriver(updatedDriver)
       Object.assign(driver.value, updatedDriver)
       await loadRecharges()
+      await loadMonthlyPayments()
+      await loadSuggestedAmount()
       setLoading(false)
     })
     .catch(async (e) => {
@@ -439,6 +538,27 @@ function addBalance(): void {
     await loadRecharges()
     setLoading(false)
     hide('balance-modal')
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  }).catch(async e => {
+    setLoading(false)
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  })
+}
+
+function addMonthlyPayment(): void {
+  setLoading(true)
+  DriverRepository.createMonthlyPayment(driver.value.id, {
+    period: monthlyPaymentPeriod.value,
+    amount: monthlyPaymentAmount.value,
+    note: monthlyPaymentNote.value || null,
+  }).then(async (result) => {
+    driver.value.enabled_at = result.driver.enabled_at
+    monthlyPaymentPeriod.value = dayjs().format('YYYY-MM')
+    monthlyPaymentAmount.value = suggestedAmount.value
+    monthlyPaymentNote.value = ''
+    await loadMonthlyPayments()
+    setLoading(false)
+    hide('monthly-payment-modal')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
     setLoading(false)
