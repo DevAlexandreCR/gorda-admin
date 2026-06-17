@@ -569,6 +569,7 @@ function addMonthlyPayment(): void {
 function onEnable(event: Event): void {
   setLoading(true)
   const target = event.target as HTMLInputElement
+  const previousEnabledAt = driver.value.enabled_at
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id ?? '', driver.value.enabled_at).then(async () => {
     setLoading(false)
@@ -577,6 +578,7 @@ function onEnable(event: Event): void {
    await ToastService.toast(ToastService.SUCCESS, message)
   }).catch(async e => {
     setLoading(false)
+    driver.value.enabled_at = previousEnabledAt
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

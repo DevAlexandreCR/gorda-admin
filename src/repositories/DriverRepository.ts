@@ -108,20 +108,19 @@ class DriverRepository {
 
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.enableAuth(driverId, enabledAt == 0)
-        .then(() => {
-          serverApi.patch(`/drivers/${driverId}/enabled`, { enabled_at: enabledAt }).then(async () => {
-            if (enabledAt == 0) {
-              await remove(child(DBService.dbOnlineDrivers(), driverId)).catch((e) => {
-                reject(new Error(e.message))
-              })
-            }
-            resolve()
-            CacheStore.clear(CacheStore.ALL_DRIVERS)
-          })
+      serverApi.patch(`/drivers/${driverId}/enabled`, { enabled_at: enabledAt })
+        .then(async () => {
+          await UserRepository.enableAuth(driverId, enabledAt == 0)
+          if (enabledAt == 0) {
+            await remove(child(DBService.dbOnlineDrivers(), driverId)).catch((e) => {
+              reject(new Error(e.message))
+            })
+          }
+          resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
         .catch((e) => {
-          reject(new Error(e.message))
+          reject(new Error(e.response?.data?.message ?? e.message))
         })
     })
   }
