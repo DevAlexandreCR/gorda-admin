@@ -1,0 +1,2675 @@
+<!-- @dsCard group="Admin" viewport="1280x800" name="Gorda Admin — standalone" subtitle="Self-contained build" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gorda Admin</title>
+
+<!-- Bundler resource declarations for JS-code-referenced images -->
+<meta name="ext-resource-dependency" content="logo.png"       data-resource-id="logoImg" />
+<meta name="ext-resource-dependency" content="redblanca.jpg"  data-resource-id="avatarImg" />
+
+<!-- Splash thumbnail for bundler -->
+<template id="__bundler_thumbnail" data-bg-color="#141727">
+  <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="80" fill="#141727"/>
+    <!-- Sidebar strip -->
+    <rect x="8" y="8" width="28" height="64" rx="5" fill="#1e2436"/>
+    <rect x="13" y="14" width="18" height="5" rx="2" fill="#7928ca"/>
+    <rect x="13" y="23" width="18" height="3" rx="1.5" fill="#ffffff22"/>
+    <rect x="13" y="29" width="18" height="3" rx="1.5" fill="#ffffff11"/>
+    <rect x="13" y="35" width="18" height="3" rx="1.5" fill="#ffffff11"/>
+    <rect x="13" y="41" width="18" height="3" rx="1.5" fill="#ffffff11"/>
+    <!-- Main area -->
+    <rect x="42" y="8" width="70" height="14" rx="3" fill="#1e2436"/>
+    <rect x="42" y="26" width="70" height="18" rx="3" fill="#1e2436"/>
+    <!-- Gradient accent -->
+    <rect x="42" y="26" width="70" height="2" rx="1" fill="url(#g)"/>
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#7928ca"/>
+        <stop offset="100%" stop-color="#ff0080"/>
+      </linearGradient>
+    </defs>
+    <rect x="42" y="48" width="70" height="24" rx="3" fill="#1e2436"/>
+  </svg>
+</template>
+
+<!-- Anti-flash: set theme before paint -->
+<script>
+  (function() {
+    var saved = localStorage.getItem('gorda-theme');
+    if (saved) { document.documentElement.dataset.theme = saved; return; }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.dataset.theme = 'dark';
+    } else {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; background: var(--body-bg); }
+  #app { min-height: 100vh; }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>// Mock data for the Gorda admin UI kit — mirrors the shapes used in the Vue app.
+window.GordaData = {
+  user: { name: 'Red Blanca', role: 'Administrator' },
+
+  nav: [
+    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-gauge-high' },
+    { id: 'services', label: 'Services', icon: 'fas fa-route' },
+    { id: 'drivers', label: 'Drivers', icon: 'fa-solid fa-car-side' },
+    { id: 'vehicles', label: 'Vehicles', icon: 'fa-solid fa-car' },
+    { id: 'places', label: 'Places', icon: 'fas fa-location-dot' },
+    { id: 'whatsapp', label: 'WhatsApp', icon: 'fa-brands fa-whatsapp', status: true },
+    { id: 'metrics', label: 'Metrics', icon: 'fa-solid fa-chart-pie' },
+    { id: 'settings', label: 'Settings', icon: 'fa-solid fa-screwdriver-wrench' },
+  ],
+
+  // Services lifecycle — pending / in_progress / history(terminated|canceled)
+  pendings: [
+    { id: 1, a_go: '2 min', status: 'pending', start: 'Cra. 7 #45-12, Chapinero', end: 'Aeropuerto El Dorado', phone: '+57 301 555 0192', name: 'María Gómez', comment: 'Tiene dos maletas', origin: 'bot', applicants: 2 },
+    { id: 2, a_go: '5 min', status: 'pending', start: 'Cl. 80 #14-20', end: 'N/A', phone: '+57 312 555 8841', name: 'Andrés Patiño', comment: 'N/A', origin: 'bot', applicants: 0 },
+    { id: 3, a_go: '8 min', status: 'pending', start: 'Centro Comercial Andino', end: 'Usaquén', phone: '+57 320 555 1107', name: 'Laura Méndez', comment: 'Frente a la entrada norte', origin: 'admin', applicants: 1 },
+  ],
+  inProgress: [
+    { id: 4, a_go: '12 min', status: 'in_progress', start: 'Cl. 26 #68-35', end: 'Terminal de Transportes', phone: '+57 318 555 4420', name: 'Jorge Salazar', comment: 'N/A', driver: 'Carlos Ruiz', origin: 'bot' },
+    { id: 5, a_go: '18 min', status: 'in_progress', start: 'Parque de la 93', end: 'Zona T', phone: '+57 300 555 9963', name: 'Diana Rojas', comment: 'Pago en efectivo', driver: 'Ana López', origin: 'admin' },
+  ],
+  history: [
+    { id: 6, date: '2026-06-18 09:14', status: 'terminated', start: 'Suba Av. Boyacá', end: 'Calle 100', phone: '+57 311 555 2030', name: 'Pedro Niño', driverName: 'José Marín', origin: 'bot' },
+    { id: 7, date: '2026-06-18 08:52', status: 'canceled', start: 'Restrepo', end: 'N/A', phone: '+57 315 555 7781', name: 'Sofía Cano', driverName: '—', origin: 'bot' },
+    { id: 8, date: '2026-06-18 08:30', status: 'terminated', start: 'Cl. 53 #25-40', end: 'Galerías', phone: '+57 305 555 6610', name: 'Miguel Ángel', driverName: 'Carlos Ruiz', origin: 'admin' },
+    { id: 9, date: '2026-06-17 22:08', status: 'terminated', start: 'Modelia', end: 'Fontibón', phone: '+57 319 555 3344', name: 'Valentina Cruz', driverName: 'Ana López', origin: 'bot' },
+  ],
+
+  drivers: [
+    { id: 'd1', name: 'Carlos Ruiz', email: 'carlos.ruiz@gorda.co', phone: '+57 301 222 1180', brand: 'Chevrolet', model: 'Spark GT', plate: 'KXT-482', enabled: true, created: '2025-11-03', last: '2 min ago', balance: '$48 000', status: 'online' },
+    { id: 'd2', name: 'Ana López', email: 'ana.lopez@gorda.co', phone: '+57 312 884 0021', brand: 'Renault', model: 'Logan', plate: 'HJS-119', enabled: true, created: '2025-09-21', last: '6 min ago', balance: '$12 500', status: 'busy' },
+    { id: 'd3', name: 'José Marín', email: 'jose.marin@gorda.co', phone: '+57 320 110 7754', brand: 'Kia', model: 'Picanto', plate: 'FBD-903', enabled: true, created: '2026-01-14', last: '1 h ago', balance: '$0', status: 'offline' },
+    { id: 'd4', name: 'Lucía Torres', email: 'lucia.torres@gorda.co', phone: '+57 318 442 9087', brand: 'Hyundai', model: 'Atos', plate: 'GTR-220', enabled: false, created: '2025-07-08', last: '3 d ago', balance: '−$2 000', status: 'offline' },
+    { id: 'd5', name: 'Andrés Beltrán', email: 'andres.beltran@gorda.co', phone: '+57 300 996 3310', brand: 'Mazda', model: '2', plate: 'LMN-558', enabled: true, created: '2026-03-22', last: '14 min ago', balance: '$31 200', status: 'online' },
+  ],
+
+  stats: [
+    { label: 'Services today', value: '248', icon: 'fas fa-route', color: 'info', delta: '12%', up: true },
+    { label: 'Active drivers', value: '36', icon: 'fa-solid fa-car-side', color: 'primary', delta: '3', up: true },
+    { label: 'In progress', value: '7', icon: 'fas fa-spinner', color: 'warning', delta: '2', up: true },
+    { label: 'Avg. wait', value: '4.2m', icon: 'fas fa-clock', color: 'success', delta: '0.8m', up: false },
+  ],
+
+  confirmations: [
+    { key: 'new_service', label: 'New service created', on: true },
+    { key: 'driver_assigned', label: 'Driver assigned', on: true },
+    { key: 'driver_arrived', label: 'Driver has arrived', on: false },
+    { key: 'trip_ended', label: 'Trip completed', on: true },
+  ],
+  chatbot: [
+    { key: 'welcome', label: 'Welcome message', on: true },
+    { key: 'ask_pickup', label: 'Ask for pickup location', on: true },
+    { key: 'ask_destination', label: 'Ask for destination', on: false },
+    { key: 'assistant', label: 'AI Assistant replies', on: true },
+  ],
+};
+</script>
+
+  <script type="text/babel">
+// Gorda admin sidebar — floating rounded-xl card, Soft UI nav with icon chips.
+function Sidebar({ active, onNavigate }) {
+  const { user, nav } = window.GordaData;
+  return (
+    <aside style={{
+      position: 'absolute', top: '1rem', left: '1rem', bottom: '1rem',
+      width: 240, background: 'var(--surface-card)', borderRadius: '1rem',
+      boxShadow: 'var(--shadow-card)',
+      display: 'flex', flexDirection: 'column', padding: '1rem 0.75rem',
+      fontFamily: "'Open Sans', sans-serif",
+    }}>
+      {/* Brand */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.25rem 0.5rem 0.75rem' }}>
+        <img src={window.__resources.logoImg} alt="Gorda" style={{ width: 34, height: 34, borderRadius: '0.6rem' }} />
+        <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-heading)' }}>{user.name}</span>
+      </div>
+      <hr style={{ border: 0, borderTop: '1px solid var(--border-subtle)', margin: '0 0.25rem 0.75rem' }} />
+
+      {/* Nav */}
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto' }}>
+        {nav.map((item) => {
+          const isActive = active === item.id;
+          return (
+            <a key={item.id} href="#" onClick={(e) => { e.preventDefault(); onNavigate(item.id); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.7rem',
+                padding: '0.55rem 0.6rem', borderRadius: '0.5rem',
+                textDecoration: 'none',
+                background: isActive ? 'var(--surface-input)' : 'transparent',
+                boxShadow: isActive ? 'var(--shadow-xs)' : 'none',
+                transition: 'all 0.15s ease',
+              }}>
+              <span style={{
+                width: 32, height: 32, flex: 'none', borderRadius: '0.5rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isActive ? 'linear-gradient(310deg, #7928ca, #ff0080)' : 'var(--surface-input)',
+                boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
+                color: isActive ? '#fff' : '#cb0c9f', fontSize: '0.8rem',
+                position: 'relative',
+              }}>
+                <em className={item.icon} />
+              </span>
+              <span style={{
+                fontSize: '0.85rem',
+                fontWeight: isActive ? 700 : 600,
+                color: isActive ? 'var(--text-heading)' : 'var(--text-body)',
+                position: 'relative',
+              }}>
+                {item.id === 'whatsapp' ? (item.status ? 'Connected' : 'Disconnected') : item.label}
+                {item.id === 'whatsapp' && (
+                  <span style={{
+                    position: 'absolute', top: 2, right: -14, width: 8, height: 8,
+                    borderRadius: '50%', border: '1.5px solid var(--surface-card)',
+                    background: item.status ? '#82d616' : '#ea0606',
+                  }} />
+                )}
+              </span>
+            </a>
+          );
+        })}
+      </nav>
+
+      {/* Footer */}
+      <div style={{ marginTop: 'auto', paddingTop: '0.75rem' }}>
+        <a href="#" onClick={(e) => e.preventDefault()} style={{
+          display: 'flex', alignItems: 'center', gap: '0.7rem',
+          padding: '0.55rem 0.6rem', borderRadius: '0.5rem',
+          textDecoration: 'none', color: 'var(--text-body)',
+        }}>
+          <span style={{
+            width: 32, height: 32, flex: 'none', borderRadius: '0.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--surface-input)',
+            boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
+            color: '#ea0606', fontSize: '0.8rem',
+          }}><em className="fas fa-sign-out-alt" /></span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Log out</span>
+        </a>
+        <div style={{ textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.5rem', fontWeight: 700 }}>
+          version 2.0.5
+        </div>
+      </div>
+    </aside>
+  );
+}
+window.Sidebar = Sidebar;
+
+  </script>
+
+  <script type="text/babel">
+// Gorda admin top navbar — breadcrumb + page title, search, theme toggle, icons.
+function TopNav({ title, breadcrumb, theme, onToggleTheme }) {
+  const isDark = theme === 'dark';
+  return (
+    <nav style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '0.5rem 0', margin: '0 0 1.25rem', fontFamily: "'Open Sans', sans-serif",
+    }}>
+      <div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+          <span style={{ opacity: 0.6 }}>Pages</span>
+          <span style={{ margin: '0 0.4rem', opacity: 0.5 }}>/</span>
+          <span style={{ color: 'var(--text-heading)', fontWeight: 600 }}>{breadcrumb || title}</span>
+        </div>
+        <h6 style={{ margin: '0.15rem 0 0', fontSize: '1rem', fontWeight: 700, color: 'var(--text-heading)' }}>{title}</h6>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {/* Search */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          background: 'var(--surface-input)', border: '1px solid var(--border-color)',
+          borderRadius: '0.5rem', padding: '0.45rem 0.75rem', width: 200,
+        }}>
+          <em className="fas fa-magnifying-glass" style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }} />
+          <input
+            placeholder="Search..."
+            style={{
+              border: 'none', outline: 'none', background: 'transparent',
+              fontFamily: 'inherit', fontSize: '0.8rem',
+              color: 'var(--text-body)', width: '100%',
+            }}
+          />
+        </div>
+
+        {/* Theme toggle */}
+        <button
+          onClick={onToggleTheme}
+          title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          style={{
+            width: 36, height: 36, borderRadius: '0.5rem',
+            background: 'var(--surface-card)',
+            border: '1px solid var(--border-color)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: isDark ? '#fbcf33' : '#344767',
+            fontSize: '0.95rem', transition: 'all 0.2s ease',
+            boxShadow: '0 2px 9px -5px rgba(0,0,0,0.3)',
+            flex: 'none',
+          }}
+        >
+          <em className={isDark ? 'fas fa-sun' : 'fas fa-moon'} />
+        </button>
+
+        {/* Bell */}
+        <em className="fas fa-bell" style={{ color: 'var(--text-heading)', fontSize: '1rem', cursor: 'pointer' }} />
+
+        {/* Avatar */}
+        <img
+          src={window.__resources.avatarImg} alt="branch"
+          style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4)' }}
+        />
+      </div>
+    </nav>
+  );
+}
+window.TopNav = TopNav;
+
+  </script>
+
+  <script type="text/babel">
+// Dashboard view — KPI stat cards + a couple of summary panels.
+function DashboardView() {
+  const { StatCard, Card, StatusBadge, Avatar } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  return (
+    <div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+        {data.stats.map((s) => (
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} color={s.color} delta={s.delta} deltaUp={s.up} />
+        ))}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: '1rem' }}>
+        <Card header="Latest services">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            {data.history.slice(0, 4).map((s) => (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontFamily: "'Open Sans', sans-serif" }}>
+                <span style={{ width: 36, height: 36, borderRadius: '0.6rem', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cb0c9f' }}>
+                  <em className="fas fa-route" />
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#344767', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.start} → {s.end}</div>
+                  <div style={{ fontSize: '0.72rem', color: '#adb5bd' }}>{s.name} · {s.driverName}</div>
+                </div>
+                <StatusBadge status={s.status} />
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card header="Drivers online">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {data.drivers.filter((d) => d.status !== 'offline').map((d) => (
+              <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', fontFamily: "'Open Sans', sans-serif" }}>
+                <Avatar name={d.name} size="sm" status={d.status} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#344767' }}>{d.name}</div>
+                  <div style={{ fontSize: '0.72rem', color: '#adb5bd' }}>{d.brand} {d.model} · {d.plate}</div>
+                </div>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, color: d.status === 'online' ? '#82d616' : '#fbcf33', textTransform: 'capitalize' }}>{d.status}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+window.DashboardView = DashboardView;
+
+  </script>
+
+  <script type="text/babel">
+// Services view — always-visible create form + Pendientes / En curso / Historial tabs
+function ServicesView() {
+  const { Card, StatusBadge } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const [tab, setTab] = React.useState('pendings');
+  const [form, setForm] = React.useState({
+    countryCode: '+57', phone: '', name: '',
+    startAddress: '', endAddress: '', comment: '', qty: '1',
+  });
+  const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const handleCreate = () => {
+    setForm({ countryCode: '+57', phone: '', name: '', startAddress: '', endAddress: '', comment: '', qty: '1' });
+  };
+
+  const tabs = [
+    { id: 'pendings',   label: 'Pendientes', count: data.pendings.length },
+    { id: 'inProgress', label: 'En curso',   count: data.inProgress.length },
+    { id: 'history',    label: 'Historial',  count: data.history.length },
+  ];
+
+  /* ── shared micro-styles ── */
+  const lbl = {
+    display: 'block', fontSize: '0.6rem', fontWeight: 700,
+    letterSpacing: '0.05rem', textTransform: 'uppercase',
+    color: 'var(--text-muted)', marginBottom: '0.3rem',
+  };
+  const inp = {
+    width: '100%', background: 'var(--surface-input)',
+    border: '1px solid var(--border-color)', borderRadius: '0.45rem',
+    color: 'var(--text-heading)', padding: '0.48rem 0.7rem',
+    fontSize: '0.8rem', outline: 'none',
+    fontFamily: "'Open Sans', sans-serif",
+    transition: 'border-color 0.2s',
+  };
+  const th = {
+    textAlign: 'left', textTransform: 'uppercase', fontSize: '0.6rem',
+    fontWeight: 700, letterSpacing: '0.04rem', color: 'var(--text-secondary)',
+    padding: '0.65rem 0.9rem', borderBottom: '1px solid var(--border-subtle)',
+  };
+  const td = {
+    padding: '0.72rem 0.9rem', fontSize: '0.8rem', color: 'var(--text-body)',
+    borderBottom: '1px solid var(--border-subtle)', verticalAlign: 'middle',
+  };
+
+  const OriginBadge = ({ origin }) => (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+      fontSize: '0.7rem', fontWeight: 600,
+      color: origin === 'bot' ? '#25d366' : 'var(--text-secondary)',
+    }}>
+      <em className={origin === 'bot' ? 'fa-brands fa-whatsapp' : 'fas fa-desktop'} />
+      {origin === 'bot' ? 'WhatsApp Bot' : 'Admin'}
+    </span>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+
+      {/* ── Tabs ── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+        {tabs.map((t) => {
+          const on = tab === t.id;
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.45rem 1rem', borderRadius: '0.5rem',
+              border: on ? '1px solid var(--border-subtle)' : '1px solid transparent',
+              cursor: 'pointer',
+              fontFamily: "'Open Sans', sans-serif", fontSize: '0.8rem', fontWeight: 700,
+              background: on ? 'var(--surface-card)' : 'transparent',
+              color: on ? 'var(--text-heading)' : 'var(--text-secondary)',
+              boxShadow: on ? 'var(--shadow-sm)' : 'none',
+              transition: 'all 0.18s',
+            }}>
+              {t.label}
+              <span style={{
+                background: on ? '#cb0c9f' : 'var(--border-subtle)',
+                color: on ? '#fff' : 'var(--text-secondary)',
+                borderRadius: '50rem', fontSize: '0.62rem', fontWeight: 700,
+                padding: '0.08rem 0.42rem', minWidth: 18, textAlign: 'center',
+              }}>
+                {t.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Always-visible Create Service panel ── */}
+      <div style={{
+        background: 'var(--surface-card)',
+        borderRadius: '0.875rem',
+        boxShadow: 'var(--shadow-card)',
+        border: '1px solid var(--border-subtle)',
+        overflow: 'hidden',
+      }}>
+        {/* Panel accent bar + header */}
+        <div style={{
+          height: 3,
+          background: 'linear-gradient(90deg, #7928ca, #ff0080)',
+          borderRadius: '0.875rem 0.875rem 0 0',
+        }} />
+        <div style={{ padding: '0.9rem 1.25rem 1.1rem' }}>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
+            <span style={{
+              width: 26, height: 26, borderRadius: '0.4rem',
+              background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <em className="fas fa-plus" style={{ fontSize: '0.65rem', color: '#fff' }} />
+            </span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-heading)', letterSpacing: '0.01rem' }}>
+              Crear servicio
+            </span>
+            <span style={{
+              marginLeft: 'auto', fontSize: '0.65rem', color: 'var(--text-muted)',
+              background: 'var(--body-bg)', border: '1px solid var(--border-subtle)',
+              borderRadius: '0.35rem', padding: '0.15rem 0.5rem', fontWeight: 600,
+            }}>
+              Admin · 5731731030
+            </span>
+          </div>
+
+          {/* Fields row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '88px 148px 1fr 1fr 1fr 1fr 68px',
+            gap: '0.625rem',
+            alignItems: 'end',
+          }}>
+
+            {/* Country code */}
+            <div>
+              <label style={lbl}>Código</label>
+              <select value={form.countryCode} onChange={e => setField('countryCode', e.target.value)} style={inp}>
+                <option value="+57">+57 CO</option>
+                <option value="+1">+1  US</option>
+                <option value="+52">+52 MX</option>
+                <option value="+54">+54 AR</option>
+                <option value="+58">+58 VE</option>
+                <option value="+56">+56 CL</option>
+              </select>
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label style={lbl}>Teléfono</label>
+              <input
+                type="tel"
+                placeholder="300 000 0000"
+                value={form.phone}
+                onChange={e => setField('phone', e.target.value)}
+                style={inp}
+              />
+            </div>
+
+            {/* Name */}
+            <div>
+              <label style={lbl}>Nombre</label>
+              <input
+                type="text"
+                placeholder="Nombre del pasajero"
+                value={form.name}
+                onChange={e => setField('name', e.target.value)}
+                style={inp}
+              />
+            </div>
+
+            {/* Start address */}
+            <div>
+              <label style={lbl}>Dirección inicial</label>
+              <input
+                type="text"
+                placeholder="Punto de recogida"
+                value={form.startAddress}
+                onChange={e => setField('startAddress', e.target.value)}
+                style={inp}
+              />
+            </div>
+
+            {/* End address */}
+            <div>
+              <label style={lbl}>Dirección final</label>
+              <input
+                type="text"
+                placeholder="Destino (opcional)"
+                value={form.endAddress}
+                onChange={e => setField('endAddress', e.target.value)}
+                style={inp}
+              />
+            </div>
+
+            {/* Comment */}
+            <div>
+              <label style={lbl}>Comentario</label>
+              <input
+                type="text"
+                placeholder="Nota adicional"
+                value={form.comment}
+                onChange={e => setField('comment', e.target.value)}
+                style={inp}
+              />
+            </div>
+
+            {/* Qty */}
+            <div>
+              <label style={lbl}>Cant.</label>
+              <select value={form.qty} onChange={e => setField('qty', e.target.value)} style={{ ...inp, textAlign: 'center', cursor: 'pointer' }}>
+                {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* CREAR button row */}
+          <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              onClick={handleCreate}
+              style={{
+                background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '0.5rem',
+                padding: '0.58rem 1.75rem',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                letterSpacing: '0.06rem',
+                cursor: 'pointer',
+                fontFamily: "'Open Sans', sans-serif",
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                boxShadow: '0 4px 12px rgba(121,40,202,0.4)',
+                transition: 'opacity 0.15s, transform 0.1s',
+              }}
+              onMouseOver={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseOut={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <em className="fas fa-paper-plane" style={{ fontSize: '0.72rem' }} />
+              CREAR SERVICIO
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Services table ── */}
+      <Card padding="0">
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+          <thead>
+            <tr>
+              <th style={{ ...th, width: 44 }}>#</th>
+              <th style={th}>{tab === 'history' ? 'Fecha' : 'Hora'}</th>
+              <th style={th}>Estado</th>
+              <th style={th}>Dir. inicial</th>
+              <th style={th}>Teléfono</th>
+              <th style={th}>Nombre</th>
+              {(tab === 'inProgress' || tab === 'history') && <th style={th}>Conductor</th>}
+              {tab === 'pendings' && <th style={th}>Comentario</th>}
+              <th style={th}>Origen</th>
+              <th style={{ ...th, textAlign: 'right' }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data[tab].map((s, i) => (
+              <tr key={s.id} style={{ transition: 'background 0.15s' }}
+                onMouseOver={e => e.currentTarget.style.background = 'var(--body-bg)'}
+                onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <td style={{ ...td, textAlign: 'center', position: 'relative', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                  {i + 1}
+                  {tab === 'pendings' && s.applicants > 0 && (
+                    <span style={{
+                      position: 'absolute', top: 6, right: 4,
+                      background: '#ea0606', color: '#fff',
+                      fontSize: '0.52rem', fontWeight: 700,
+                      borderRadius: '50%', width: 14, height: 14,
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: '0 2px 6px rgba(234,6,6,0.4)',
+                    }}>{s.applicants}</span>
+                  )}
+                </td>
+                <td style={{ ...td, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+                  {tab === 'history' ? s.date : s.a_go}
+                </td>
+                <td style={td}><StatusBadge status={s.status} /></td>
+                <td style={{ ...td, maxWidth: 160 }}>
+                  <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {s.start}
+                  </span>
+                </td>
+                <td style={{ ...td, whiteSpace: 'nowrap', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                  {s.phone}
+                </td>
+                <td style={{ ...td, color: 'var(--text-heading)', fontWeight: 600 }}>{s.name}</td>
+                {tab === 'inProgress' && <td style={td}>{s.driver}</td>}
+                {tab === 'history'    && <td style={td}>{s.driverName}</td>}
+                {tab === 'pendings'   && (
+                  <td style={{ ...td, maxWidth: 140, color: 'var(--text-secondary)' }}>
+                    <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {s.comment}
+                    </span>
+                  </td>
+                )}
+                <td style={td}><OriginBadge origin={s.origin} /></td>
+                <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  {tab === 'pendings' && (
+                    <em className="fas fa-pen" style={{ color: 'var(--text-secondary)', cursor: 'pointer', marginRight: 14, transition: 'color 0.15s' }}
+                      onMouseOver={e => e.target.style.color = '#cb0c9f'}
+                      onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}
+                      title="Editar recogida"
+                    />
+                  )}
+                  <em className="fas fa-ellipsis-vertical" style={{ color: 'var(--text-secondary)', cursor: 'pointer' }} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+
+    </div>
+  );
+}
+window.ServicesView = ServicesView;
+
+  </script>
+
+  <script type="text/babel">
+// Drivers view — searchable roster table with avatars, status badges & row actions.
+function DriversView({ onEditDriver }) {
+  const { Card, Avatar, Badge, Button, Switch } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const [query, setQuery] = React.useState('');
+  const [filter, setFilter] = React.useState('all');
+  const [enabledMap, setEnabledMap] = React.useState(
+    Object.fromEntries(data.drivers.map((d) => [d.id, d.enabled]))
+  );
+
+  const rows = data.drivers.filter((d) => {
+    const matchQ = (d.name + d.email + d.plate).toLowerCase().includes(query.toLowerCase());
+    const matchF = filter === 'all' || (filter === 'enabled' ? enabledMap[d.id] : !enabledMap[d.id]);
+    return matchQ && matchF;
+  });
+
+  const th = { textAlign: 'left', textTransform: 'uppercase', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.02rem', color: '#8392ab', padding: '0.6rem 0.75rem', borderBottom: '1px solid #e9ecef' };
+  const td = { padding: '0.6rem 0.75rem', fontSize: '0.8rem', color: '#67748e', borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' };
+
+  const filters = [
+    { id: 'all', label: 'All' },
+    { id: 'enabled', label: 'Enabled' },
+    { id: 'disabled', label: 'Disabled' },
+  ];
+
+  return (
+    <Card padding="0">
+      {/* Header row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 1rem 0.75rem', flexWrap: 'wrap' }}>
+        <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#344767' }}>Drivers · {data.drivers.length}</h6>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', border: '1px solid #d2d6da', borderRadius: '0.5rem', padding: '0.4rem 0.7rem', width: 220 }}>
+          <em className="fas fa-magnifying-glass" style={{ color: '#8392ab', fontSize: '0.78rem' }} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search drivers..." style={{ border: 'none', outline: 'none', fontFamily: "'Open Sans', sans-serif", fontSize: '0.8rem', width: '100%', color: '#495057' }} />
+        </div>
+        <div style={{ display: 'flex', gap: 4 }}>
+          {filters.map((f) => (
+            <button key={f.id} onClick={() => setFilter(f.id)} style={{
+              padding: '0.35rem 0.8rem', borderRadius: '50rem', border: '1px solid', cursor: 'pointer',
+              fontFamily: "'Open Sans', sans-serif", fontSize: '0.7rem', fontWeight: 700,
+              borderColor: filter === f.id ? '#cb0c9f' : '#e9ecef',
+              background: filter === f.id ? '#fde6f7' : '#fff',
+              color: filter === f.id ? '#a30c80' : '#8392ab',
+            }}>{f.label}</button>
+          ))}
+        </div>
+        <div style={{ marginLeft: 'auto' }}>
+          <Button color="warning" variant="outline" size="sm" icon="fas fa-paper-plane">Send to all</Button>
+        </div>
+        <Button color="primary" size="sm" rounded icon="fas fa-plus" />
+      </div>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+        <thead>
+          <tr>
+            <th style={th}>Name</th>
+            <th style={th}>Phone</th>
+            <th style={th}>Vehicle</th>
+            <th style={th}>Plate</th>
+            <th style={th}>Status</th>
+            <th style={th}>Last connection</th>
+            <th style={th}>Balance</th>
+            <th style={{ ...th, textAlign: 'right' }}>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((d) => (
+            <tr key={d.id}>
+              <td style={td}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <Avatar name={d.name} size="sm" status={d.status} />
+                  <div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#344767' }}>{d.name}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#adb5bd' }}>{d.email}</div>
+                  </div>
+                </div>
+              </td>
+              <td style={{ ...td, fontWeight: 600, whiteSpace: 'nowrap' }}>{d.phone}</td>
+              <td style={td}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#344767' }}>{d.brand}</div>
+                <div style={{ fontSize: '0.7rem', color: '#adb5bd' }}>{d.model}</div>
+              </td>
+              <td style={td}>
+                <span style={{ color: '#82d616', marginRight: 4 }}>●</span>
+                <a href="#" onClick={(e) => e.preventDefault()} style={{ color: '#cb0c9f', fontWeight: 600 }}>{d.plate}</a>
+              </td>
+              <td style={td}>
+                <Badge color={enabledMap[d.id] ? 'success' : 'danger'} variant="solid">{enabledMap[d.id] ? 'Enabled' : 'Disabled'}</Badge>
+              </td>
+              <td style={{ ...td, whiteSpace: 'nowrap' }}>{d.last}</td>
+              <td style={{ ...td, fontWeight: 700, color: d.balance.includes('−') ? '#ea0606' : '#344767' }}>{d.balance}</td>
+              <td style={{ ...td, textAlign: 'right' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <Switch checked={enabledMap[d.id]} onChange={(v) => setEnabledMap((m) => ({ ...m, [d.id]: v }))} />
+                  <em className="fas fa-pencil" style={{ color: '#cb0c9f', cursor: 'pointer' }} title="Edit" onClick={() => onEditDriver && onEditDriver(d)} />
+                  <em className="fas fa-paper-plane" style={{ color: '#8392ab', cursor: 'pointer' }} title="Message" />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 1rem', fontSize: '0.75rem', color: '#8392ab' }}>
+        <span>Showing 1–{rows.length} of {data.drivers.length}</span>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <button style={pagBtn(false)}>‹</button>
+          <button style={pagBtn(true)}>1</button>
+          <button style={pagBtn(false)}>2</button>
+          <button style={pagBtn(false)}>›</button>
+        </div>
+      </div>
+    </Card>
+  );
+}
+function pagBtn(active) {
+  return {
+    width: 30, height: 30, borderRadius: '0.5rem', border: 'none', cursor: 'pointer',
+    fontFamily: "'Open Sans', sans-serif", fontSize: '0.75rem', fontWeight: 700,
+    background: active ? 'linear-gradient(310deg, #7928ca, #ff0080)' : '#fff',
+    color: active ? '#fff' : '#8392ab',
+    boxShadow: active ? '0 4px 7px -1px rgba(0,0,0,0.11)' : '0 1px 3px rgba(0,0,0,0.08)',
+  };
+}
+window.DriversView = DriversView;
+
+  </script>
+
+  <script type="text/babel">
+// Edit Driver view — Gorda DS
+// Layout: full-width profile header + two balanced columns + tabbed history + modals
+function EditDriverView({ driver, onBack }) {
+  const { Card, Avatar, Badge, Button, Input, Select, Switch } = window.GordaDesignSystem_019e24;
+
+  // ── form state ───────────────────────────────────────────────────────────
+  const [form, setForm] = React.useState({
+    name:    driver.name  || '',
+    email:   driver.email || '',
+    password:'secreto123',
+    phone:   driver.phone || '',
+    phone2:  '',
+    docType: 'CC',
+    doc:     '1097391384',
+    enabled: driver.enabled !== undefined ? driver.enabled : true,
+    payMode: 'Mensualidad',
+  });
+  const [emailLocked, setEmailLocked] = React.useState(true);
+  const [passLocked,  setPassLocked]  = React.useState(true);
+  const [vehicles, setVehicles] = React.useState([
+    { id: 1, plate: 'AAA123', model: 'Vehículo Xxx', selectable: true,  enabled: true  },
+    { id: 2, plate: 'FPK979', model: 'Mazda Cx-3',   selectable: false, enabled: false },
+  ]);
+  const [device,     setDevice]     = React.useState('Google Pixel 7');
+  const [historyTab, setHistoryTab] = React.useState('saldo');
+
+  // ── modal state ──────────────────────────────────────────────────────────
+  const [modal, setModal] = React.useState(null); // 'saldo' | 'mensualidad' | 'vehiculo'
+  const closeModal = () => setModal(null);
+
+  // Administrar saldo form
+  const [saldoForm, setSaldoForm] = React.useState({ tipo: 'agregar', monto: '', nota: '' });
+  // Registrar mensualidad form
+  const [mensForm, setMensForm] = React.useState({ periodo: '2026-07', monto: '100000', nota: '' });
+  // Agregar vehículo form
+  const [vehForm, setVehForm] = React.useState({ placa: '', marca: '', modelo: '', anio: '', tipo: 'sedan' });
+
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  // ── mock history data ─────────────────────────────────────────────────────
+  const [histSaldo, setHistSaldo] = React.useState([
+    { date: '15/06/26 03:01', amount: '-2 000',  balance: '8 000',  by: 'Super Admin', note: 'ajuste'    },
+    { date: '15/06/26 03:00', amount: '+10 000', balance: '10 000', by: 'Super Admin', note: ''          },
+    { date: '14/06/26 18:40', amount: '-500',    balance: '0',      by: 'Super Admin', note: 'descuento' },
+  ]);
+  const [histMens, setHistMens] = React.useState([
+    { period: '2026-06', amount: '100 000', by: 'Super Admin', date: '18/06/26 22:13', note: '' },
+    { period: '2026-05', amount: '100 000', by: 'Super Admin', date: '01/05/26 09:00', note: '' },
+  ]);
+  const [saldoActual, setSaldoActual] = React.useState(8000);
+
+  // ── tokens ────────────────────────────────────────────────────────────────
+  const divider  = { border: 0, borderTop: '1px solid #e9ecef', margin: '0.5rem 0' };
+  const fLabel   = { fontSize: '0.75rem', fontWeight: 700, color: '#344767', marginBottom: '0.5rem', marginLeft: '0.25rem' };
+  const lockBtn  = {
+    marginTop: '0.3rem', background: 'none', border: 'none', cursor: 'pointer',
+    fontSize: '0.7rem', fontWeight: 700, color: '#cb0c9f',
+    display: 'inline-flex', alignItems: 'center', gap: '0.3rem', paddingLeft: '0.25rem',
+  };
+  const th = {
+    textAlign: 'left', textTransform: 'uppercase', fontSize: '0.62rem',
+    fontWeight: 700, letterSpacing: '0.04em', color: '#8392ab',
+    padding: '0.6rem 1.25rem', background: '#f8f9fa',
+  };
+  const td = { padding: '0.75rem 1.25rem', fontSize: '0.8rem', color: '#67748e', borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' };
+
+  // ── tab pill ──────────────────────────────────────────────────────────────
+  function TabPill({ id, label, icon }) {
+    const active = historyTab === id;
+    return (
+      <button onClick={() => setHistoryTab(id)} style={{
+        padding: '0.35rem 0.9rem', borderRadius: '50rem', border: '1px solid',
+        cursor: 'pointer', fontFamily: "'Open Sans', sans-serif",
+        fontSize: '0.72rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+        borderColor: active ? '#cb0c9f' : '#e9ecef',
+        background:   active ? '#fde6f7' : '#fff',
+        color:        active ? '#a30c80' : '#8392ab',
+        transition: 'all 0.15s',
+      }}><em className={icon} />{label}</button>
+    );
+  }
+
+  // ── shared Modal wrapper ──────────────────────────────────────────────────
+  function Modal({ title, icon, onClose, width = 440, children, footer }) {
+    return (
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(52,71,103,0.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        backdropFilter: 'blur(2px)',
+      }} onClick={e => e.target === e.currentTarget && onClose()}>
+        <div style={{
+          background: '#fff', borderRadius: '1rem',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+          width, maxWidth: 'calc(100vw - 2rem)',
+          fontFamily: "'Open Sans', sans-serif",
+          overflow: 'hidden',
+        }}>
+          {/* Modal header */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '1.1rem 1.5rem', borderBottom: '1px solid #e9ecef',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span style={{
+                width: 32, height: 32, borderRadius: '0.5rem', flex: 'none',
+                background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: '0.78rem',
+              }}><em className={icon} /></span>
+              <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#344767' }}>{title}</h6>
+            </div>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: '#8392ab', fontSize: '1rem', lineHeight: 1,
+              width: 28, height: 28, borderRadius: '0.4rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}><em className="fas fa-xmark" /></button>
+          </div>
+          {/* Modal body */}
+          <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {children}
+          </div>
+          {/* Modal footer */}
+          {footer && (
+            <div style={{ padding: '0 1.5rem 1.25rem', display: 'flex', justifyContent: 'flex-end', gap: '0.6rem' }}>
+              {footer}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Modal: Administrar saldo ──────────────────────────────────────────────
+  function ModalSaldo() {
+    const isSuma = saldoForm.tipo === 'agregar';
+    const preview = saldoForm.monto
+      ? (isSuma ? saldoActual + parseInt(saldoForm.monto || 0) : saldoActual - parseInt(saldoForm.monto || 0))
+      : null;
+    return (
+      <Modal
+        title="Administrar saldo"
+        icon="fas fa-coins"
+        onClose={closeModal}
+        footer={<>
+          <Button color="secondary" variant="outline" size="sm" onClick={closeModal}>Cancelar</Button>
+          <Button color="primary" variant="gradient" size="sm" icon="fas fa-check"
+            disabled={!saldoForm.monto}
+            onClick={() => {
+              const delta = parseInt(saldoForm.monto);
+              const nuevo = isSuma ? saldoActual + delta : saldoActual - delta;
+              setSaldoActual(nuevo);
+              const now = new Date();
+              const pad = n => String(n).padStart(2,'0');
+              const dateStr = `${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}-${pad(now.getMonth()+1)} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+              setHistSaldo(h => [{
+                date: dateStr,
+                amount: (isSuma ? '+' : '-') + ' ' + delta.toLocaleString('es-CO'),
+                balance: nuevo.toLocaleString('es-CO'),
+                by: 'Super Admin',
+                note: saldoForm.nota,
+              }, ...h]);
+              setSaldoForm({ tipo: 'agregar', monto: '', nota: '' });
+              closeModal();
+            }}
+          >Aplicar ajuste</Button>
+        </>}
+      >
+        {/* Current balance chip */}
+        <div style={{
+          background: 'linear-gradient(310deg,#141727,#3a416f)',
+          borderRadius: '0.75rem', padding: '0.85rem 1.1rem',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div>
+            <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Saldo actual</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>
+              {saldoActual.toLocaleString('es-CO')} <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>COP</span>
+            </div>
+          </div>
+          {preview !== null && (
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Resultante</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: preview >= 0 ? '#82d616' : '#ff6690', letterSpacing: '-0.02em' }}>
+                {preview.toLocaleString('es-CO')} <span style={{ fontSize: '0.65rem', opacity: 0.6 }}>COP</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Tipo toggle */}
+        <div>
+          <div style={fLabel}>Tipo de ajuste</div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {[['agregar','fas fa-plus','Agregar','#82d616','#f0fde8'],['descontar','fas fa-minus','Descontar','#ea0606','#fdeaea']].map(([v, ic, lb, col, bg]) => (
+              <button key={v} onClick={() => setSaldoForm(f => ({ ...f, tipo: v }))} style={{
+                flex: 1, padding: '0.6rem', borderRadius: '0.6rem', cursor: 'pointer',
+                border: `2px solid ${saldoForm.tipo === v ? col : '#e9ecef'}`,
+                background: saldoForm.tipo === v ? bg : '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                fontFamily: "'Open Sans', sans-serif", fontSize: '0.78rem', fontWeight: 700,
+                color: saldoForm.tipo === v ? col : '#8392ab',
+                transition: 'all 0.15s',
+              }}>
+                <em className={ic} />{lb}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Monto */}
+        <Input
+          label="Monto (COP)"
+          value={saldoForm.monto}
+          onChange={e => setSaldoForm(f => ({ ...f, monto: e.target.value.replace(/\D/g,'') }))}
+          placeholder="Ej. 5000"
+          icon="fas fa-dollar-sign"
+          type="text"
+          inputMode="numeric"
+        />
+
+        {/* Nota */}
+        <div>
+          <div style={fLabel}>Nota (opcional)</div>
+          <div style={{
+            border: '1px solid #d2d6da', borderRadius: '0.5rem', overflow: 'hidden',
+          }}>
+            <textarea
+              value={saldoForm.nota}
+              onChange={e => setSaldoForm(f => ({ ...f, nota: e.target.value }))}
+              placeholder="Motivo del ajuste…"
+              rows={2}
+              style={{
+                width: '100%', border: 'none', outline: 'none', resize: 'none',
+                fontFamily: "'Open Sans', sans-serif", fontSize: '0.875rem', color: '#495057',
+                padding: '0.5rem 0.75rem', boxSizing: 'border-box', background: '#fff',
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+
+  // ── Modal: Registrar mensualidad ──────────────────────────────────────────
+  function ModalMensualidad() {
+    const meses = ['2026-08','2026-07','2026-06','2026-05','2026-04'];
+    return (
+      <Modal
+        title="Registrar mensualidad"
+        icon="fas fa-calendar-check"
+        onClose={closeModal}
+        footer={<>
+          <Button color="secondary" variant="outline" size="sm" onClick={closeModal}>Cancelar</Button>
+          <Button color="primary" variant="gradient" size="sm" icon="fas fa-calendar-plus"
+            disabled={!mensForm.periodo || !mensForm.monto}
+            onClick={() => {
+              const now = new Date();
+              const pad = n => String(n).padStart(2,'0');
+              const dateStr = `${pad(now.getDate())}/${String(now.getFullYear()).slice(2)}-${pad(now.getMonth()+1)} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+              setHistMens(h => [{
+                period: mensForm.periodo,
+                amount: parseInt(mensForm.monto).toLocaleString('es-CO'),
+                by: 'Super Admin',
+                date: dateStr,
+                note: mensForm.nota,
+              }, ...h]);
+              setMensForm({ periodo: '2026-07', monto: '100000', nota: '' });
+              closeModal();
+            }}
+          >Registrar</Button>
+        </>}
+      >
+        {/* Period selector pills */}
+        <div>
+          <div style={fLabel}>Período</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+            {meses.map(m => {
+              const active = mensForm.periodo === m;
+              const [yr, mo] = m.split('-');
+              const label = new Date(parseInt(yr), parseInt(mo)-1).toLocaleString('es', { month: 'short', year: '2-digit' });
+              return (
+                <button key={m} onClick={() => setMensForm(f => ({ ...f, periodo: m }))} style={{
+                  padding: '0.35rem 0.75rem', borderRadius: '50rem', border: '1px solid',
+                  cursor: 'pointer', fontFamily: "'Open Sans', sans-serif",
+                  fontSize: '0.72rem', fontWeight: 700, textTransform: 'capitalize',
+                  borderColor: active ? '#cb0c9f' : '#e9ecef',
+                  background:   active ? '#fde6f7' : '#fff',
+                  color:        active ? '#a30c80' : '#8392ab',
+                }}>
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Monto */}
+        <Input
+          label="Monto (COP)"
+          value={mensForm.monto}
+          onChange={e => setMensForm(f => ({ ...f, monto: e.target.value.replace(/\D/g,'') }))}
+          placeholder="Ej. 100000"
+          icon="fas fa-dollar-sign"
+          type="text"
+          inputMode="numeric"
+        />
+
+        {/* Info strip */}
+        <div style={{
+          background: '#f8f9fa', borderRadius: '0.6rem', padding: '0.7rem 0.9rem',
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          fontSize: '0.75rem', color: '#67748e',
+        }}>
+          <em className="fas fa-circle-info" style={{ color: '#17c1e8' }} />
+          El pago quedará registrado a nombre de <strong style={{ color: '#344767' }}>Super Admin</strong> con la fecha y hora actual.
+        </div>
+
+        {/* Nota */}
+        <div>
+          <div style={fLabel}>Nota (opcional)</div>
+          <div style={{ border: '1px solid #d2d6da', borderRadius: '0.5rem', overflow: 'hidden' }}>
+            <textarea
+              value={mensForm.nota}
+              onChange={e => setMensForm(f => ({ ...f, nota: e.target.value }))}
+              placeholder="Observaciones…"
+              rows={2}
+              style={{
+                width: '100%', border: 'none', outline: 'none', resize: 'none',
+                fontFamily: "'Open Sans', sans-serif", fontSize: '0.875rem', color: '#495057',
+                padding: '0.5rem 0.75rem', boxSizing: 'border-box', background: '#fff',
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+
+  // ── Modal: Agregar vehículo ───────────────────────────────────────────────
+  function ModalVehiculo() {
+    const tipos = ['Sedan','SUV','Camioneta','Moto','Van'];
+    return (
+      <Modal
+        title="Agregar vehículo"
+        icon="fas fa-car-side"
+        onClose={closeModal}
+        width={500}
+        footer={<>
+          <Button color="secondary" variant="outline" size="sm" onClick={closeModal}>Cancelar</Button>
+          <Button color="primary" variant="gradient" size="sm" icon="fas fa-plus"
+            disabled={!vehForm.placa || !vehForm.marca || !vehForm.modelo}
+            onClick={() => {
+              setVehicles(vs => [...vs, {
+                id: Date.now(),
+                plate: vehForm.placa.toUpperCase(),
+                model: `${vehForm.marca} ${vehForm.modelo}`,
+                selectable: false,
+                enabled: true,
+              }]);
+              setVehForm({ placa: '', marca: '', modelo: '', anio: '', tipo: 'sedan' });
+              closeModal();
+            }}
+          >Agregar vehículo</Button>
+        </>}
+      >
+        {/* Plate highlight */}
+        <div style={{
+          background: '#f8f9fa', border: '1px solid #e9ecef',
+          borderRadius: '0.75rem', padding: '1rem',
+          display: 'flex', alignItems: 'center', gap: '1rem',
+        }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: '0.6rem', flex: 'none',
+            background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontSize: '1.1rem',
+          }}><em className="fas fa-hashtag" /></div>
+          <div style={{ flex: 1 }}>
+            <Input
+              label="Placa"
+              value={vehForm.placa}
+              onChange={e => setVehForm(f => ({ ...f, placa: e.target.value.toUpperCase() }))}
+              placeholder="AAA 000"
+              icon="fas fa-hashtag"
+            />
+          </div>
+        </div>
+
+        {/* Marca + Modelo */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <Input
+            label="Marca"
+            value={vehForm.marca}
+            onChange={e => setVehForm(f => ({ ...f, marca: e.target.value }))}
+            placeholder="Ej. Chevrolet"
+            icon="fas fa-building"
+          />
+          <Input
+            label="Modelo"
+            value={vehForm.modelo}
+            onChange={e => setVehForm(f => ({ ...f, modelo: e.target.value }))}
+            placeholder="Ej. Spark GT"
+            icon="fas fa-car"
+          />
+        </div>
+
+        {/* Año + Tipo */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <Input
+            label="Año"
+            value={vehForm.anio}
+            onChange={e => setVehForm(f => ({ ...f, anio: e.target.value.replace(/\D/g,'').slice(0,4) }))}
+            placeholder="Ej. 2022"
+            icon="fas fa-calendar"
+            type="text"
+            inputMode="numeric"
+          />
+          <Select
+            label="Tipo"
+            value={vehForm.tipo}
+            onChange={e => setVehForm(f => ({ ...f, tipo: e.target.value }))}
+            options={tipos.map(t => ({ value: t.toLowerCase(), label: t }))}
+          />
+        </div>
+
+        {/* Nota info */}
+        <div style={{
+          background: '#f8f9fa', borderRadius: '0.6rem', padding: '0.7rem 0.9rem',
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          fontSize: '0.75rem', color: '#67748e',
+        }}>
+          <em className="fas fa-circle-info" style={{ color: '#17c1e8' }} />
+          El vehículo quedará asignado al conductor pero <strong style={{ color: '#344767' }}>inactivo</strong> hasta que lo habilites.
+        </div>
+      </Modal>
+    );
+  }
+
+  // ── render ────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ fontFamily: "'Open Sans', sans-serif" }}>
+
+      {/* Modals */}
+      {modal === 'saldo'        && <ModalSaldo />}
+      {modal === 'mensualidad'  && <ModalMensualidad />}
+      {modal === 'vehiculo'     && <ModalVehiculo />}
+
+      {/* ── Page header ─────────────────────────────────────────────────── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <div>
+          <div style={{ fontSize: '0.75rem', color: '#8392ab' }}>
+            <span style={{ opacity: 0.6 }}>Conductores</span>
+            <span style={{ margin: '0 0.4rem', opacity: 0.5 }}>/</span>
+            <span style={{ color: '#344767', fontWeight: 600 }}>Editar conductor</span>
+          </div>
+          <h6 style={{ margin: '0.1rem 0 0', fontSize: '1rem', fontWeight: 700, color: '#344767' }}>{driver.name}</h6>
+        </div>
+        <Button color="secondary" variant="outline" size="sm" icon="fas fa-arrow-left" onClick={onBack}>
+          Regresar
+        </Button>
+      </div>
+
+      {/* ── 1. Profile header — full width ──────────────────────────────── */}
+      <Card style={{ marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', paddingTop: '0.25rem' }}>
+            <div style={{ position: 'relative' }}>
+              <Avatar name={driver.name} size={76} rounded="lg" />
+              <button style={{
+                position: 'absolute', bottom: -5, right: -5,
+                width: 22, height: 22, borderRadius: '50%',
+                background: 'linear-gradient(310deg,#2152ff,#21d4fd)',
+                border: '2px solid #fff', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: '0.55rem', boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              }}><em className="fas fa-pencil" /></button>
+            </div>
+            <span style={{ fontSize: '0.7rem', color: '#adb5bd', fontWeight: 600, textAlign: 'center', maxWidth: 80 }}>
+              {driver.name.split(' ')[0]}
+            </span>
+          </div>
+
+          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.85rem' }}>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <Input label="Nombre completo" value={form.name} onChange={set('name')} icon="fas fa-user" />
+            </div>
+            <div style={{ gridColumn: 'span 2' }}>
+              <Input label="Correo electrónico" value={form.email} onChange={set('email')} disabled={emailLocked} icon={emailLocked ? 'fas fa-lock' : 'fas fa-envelope'} />
+              <button style={lockBtn} onClick={() => setEmailLocked(l => !l)}>
+                <em className={emailLocked ? 'fas fa-lock-open' : 'fas fa-lock'} />
+                {emailLocked ? 'Editar' : 'Bloquear'}
+              </button>
+            </div>
+            <div style={{ gridColumn: 'span 2' }}>
+              <Input label="Contraseña" value={form.password} onChange={set('password')} type={passLocked ? 'password' : 'text'} disabled={passLocked} icon={passLocked ? 'fas fa-lock' : 'fas fa-key'} />
+              <button style={lockBtn} onClick={() => setPassLocked(l => !l)}>
+                <em className={passLocked ? 'fas fa-lock-open' : 'fas fa-lock'} />
+                {passLocked ? 'Editar' : 'Bloquear'}
+              </button>
+            </div>
+            <Input label="Teléfono"   value={form.phone}   onChange={set('phone')}   icon="fas fa-phone" />
+            <Input label="Teléfono 2" value={form.phone2}  onChange={set('phone2')}  placeholder="Opcional" icon="fas fa-phone" />
+            <Select label="Tipo doc"  value={form.docType} onChange={set('docType')} options={['CC','CE','NIT','PA','RC']} />
+            <Input  label="Documento" value={form.doc}     onChange={set('doc')}     icon="fas fa-id-card" />
+          </div>
+        </div>
+
+        {/* Save actions — scoped to this card */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', paddingTop: '1.25rem', borderTop: '1px solid #e9ecef', marginTop: '0.5rem' }}>
+          <Button color="secondary" variant="outline" size="sm" onClick={onBack}>Cancelar</Button>
+          <Button color="primary" variant="gradient" size="sm" icon="fas fa-check">Guardar cambios</Button>
+        </div>
+      </Card>
+
+      {/* ── 2. Two balanced columns ──────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+
+        {/* LEFT — Vehículos + Dispositivo */}
+        <Card>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <h6 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#344767' }}>
+              <em className="fas fa-car-side" style={{ color: '#cb0c9f', marginRight: '0.5rem' }} />Vehículos asignados
+            </h6>
+            {vehicles.map((v, i) => (
+              <div key={v.id} style={{
+                display: 'flex', alignItems: 'center', gap: '0.65rem',
+                padding: '0.65rem 0.85rem', borderRadius: '0.65rem',
+                background: '#f8f9fa', border: '1px solid #e9ecef',
+              }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', flex: 'none', background: v.enabled ? '#82d616' : '#adb5bd' }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#344767' }}>{v.plate}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#adb5bd' }}>{v.model}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.1rem' }}>
+                  <Switch checked={v.selectable} onChange={val => setVehicles(vs => vs.map((x, j) => j === i ? { ...x, selectable: val } : x))} />
+                  <span style={{ fontSize: '0.58rem', color: '#adb5bd', fontWeight: 700, letterSpacing: '0.04em' }}>SELEC.</span>
+                </div>
+                <Badge color={v.enabled ? 'success' : 'secondary'} variant="solid">
+                  {v.enabled ? 'Activo' : 'Inactivo'}
+                </Badge>
+              </div>
+            ))}
+            <Button color="primary" variant="outline" size="sm" icon="fas fa-plus" fullWidth onClick={() => setModal('vehiculo')}>
+              Agregar vehículo
+            </Button>
+
+            <hr style={divider} />
+
+            <h6 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#344767' }}>
+              <em className="fas fa-mobile-screen" style={{ color: '#cb0c9f', marginRight: '0.5rem' }} />Dispositivo
+            </h6>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
+              <Input value={device} onChange={e => setDevice(e.target.value)} icon="fas fa-mobile-screen" style={{ flex: 1 }} placeholder="Sin dispositivo" />
+              <button title="Desvincular" style={{
+                width: 40, height: 40, borderRadius: '0.5rem', border: 'none',
+                cursor: 'pointer', flex: 'none',
+                background: 'linear-gradient(310deg,#d60808,#ff6690)',
+                color: '#fff', fontSize: '0.85rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)',
+              }}><em className="fas fa-trash-can" /></button>
+            </div>
+          </div>
+        </Card>
+
+        {/* RIGHT — Estado y pagos */}
+        <Card>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <h6 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#344767' }}>
+              <em className="fas fa-wallet" style={{ color: '#cb0c9f', marginRight: '0.5rem' }} />Estado y pagos
+            </h6>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', alignItems: 'end' }}>
+              <div>
+                <div style={fLabel}>Estado</div>
+                <div style={{ paddingTop: '0.3rem' }}>
+                  <Switch checked={form.enabled} onChange={v => setForm(f => ({ ...f, enabled: v }))} label={form.enabled ? 'Habilitado' : 'Deshabilitado'} />
+                </div>
+              </div>
+              <Select label="Modo de pago" value={form.payMode} onChange={set('payMode')} options={['Mensualidad','Por servicio','Prepago']} />
+            </div>
+
+            <hr style={divider} />
+
+            <div style={{
+              background: 'linear-gradient(310deg,#141727,#3a416f)',
+              borderRadius: '0.85rem', padding: '1rem 1.25rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <div>
+                <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Saldo actual</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
+                  <span style={{ fontSize: '1.8rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>
+                    {saldoActual.toLocaleString('es-CO')}
+                  </span>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>COP</span>
+                </div>
+              </div>
+              <button onClick={() => setModal('saldo')} style={{
+                padding: '0.5rem 1.1rem', borderRadius: '0.5rem', border: 'none',
+                background: 'rgba(255,255,255,0.12)', color: '#fff', cursor: 'pointer',
+                fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '-0.02em',
+                fontFamily: "'Open Sans', sans-serif",
+              }}>
+                <em className="fas fa-sliders" style={{ marginRight: '0.4rem' }} />Administrar
+              </button>
+            </div>
+
+            <Button color="primary" variant="outline" fullWidth icon="fas fa-calendar-plus" onClick={() => setModal('mensualidad')}>
+              Registrar mensualidad
+            </Button>
+          </div>
+        </Card>
+      </div>
+
+      {/* ── 3. Tabbed history ────────────────────────────────────────────── */}
+      <Card padding="0">
+        <div style={{ padding: '1rem 1.25rem 0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e9ecef' }}>
+          <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#344767' }}>Historial</h6>
+          <div style={{ display: 'flex', gap: '0.4rem' }}>
+            <TabPill id="saldo"         label="Saldo"         icon="fas fa-coins" />
+            <TabPill id="mensualidades" label="Mensualidades" icon="fas fa-calendar-check" />
+          </div>
+        </div>
+
+        {historyTab === 'saldo' && (
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+            <thead><tr>{['Fecha','Monto','Saldo resultante','Registrado por','Nota'].map(h => <th key={h} style={th}>{h}</th>)}</tr></thead>
+            <tbody>
+              {histSaldo.map((row, i) => (
+                <tr key={i}>
+                  <td style={td}><span style={{ display:'inline-flex', alignItems:'center', gap:'0.4rem' }}><em className="fas fa-clock" style={{ color:'#d2d6da', fontSize:'0.7rem' }} />{row.date}</span></td>
+                  <td style={{ ...td, fontWeight: 700, color: row.amount.startsWith('-') ? '#ea0606' : '#82d616' }}>{row.amount} COP</td>
+                  <td style={{ ...td, fontWeight: 600, color: '#344767' }}>{row.balance} COP</td>
+                  <td style={td}><div style={{ display:'inline-flex', alignItems:'center', gap:'0.45rem' }}><Avatar name={row.by} size={22} />{row.by}</div></td>
+                  <td style={td}>{row.note ? <span style={{ background:'#f3f4f6', padding:'0.15rem 0.5rem', borderRadius:'50rem', fontSize:'0.72rem', color:'#67748e' }}>{row.note}</span> : <span style={{ color:'#d2d6da' }}>—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {historyTab === 'mensualidades' && (
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+            <thead><tr>{['Período','Monto','Registrado por','Fecha de pago','Nota'].map(h => <th key={h} style={th}>{h}</th>)}</tr></thead>
+            <tbody>
+              {histMens.map((row, i) => (
+                <tr key={i}>
+                  <td style={td}><span style={{ background:'linear-gradient(310deg,#7928ca,#ff0080)', color:'#fff', padding:'0.15rem 0.55rem', borderRadius:'50rem', fontSize:'0.72rem', fontWeight:700 }}>{row.period}</span></td>
+                  <td style={{ ...td, fontWeight: 700, color: '#344767' }}>{row.amount} COP</td>
+                  <td style={td}><div style={{ display:'inline-flex', alignItems:'center', gap:'0.45rem' }}><Avatar name={row.by} size={22} />{row.by}</div></td>
+                  <td style={td}><span style={{ display:'inline-flex', alignItems:'center', gap:'0.4rem' }}><em className="fas fa-clock" style={{ color:'#d2d6da', fontSize:'0.7rem' }} />{row.date}</span></td>
+                  <td style={td}>{row.note ? <span style={{ background:'#f3f4f6', padding:'0.15rem 0.5rem', borderRadius:'50rem', fontSize:'0.72rem', color:'#67748e' }}>{row.note}</span> : <span style={{ color:'#d2d6da' }}>—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.72rem', color: '#adb5bd', borderTop: '1px solid #f3f4f6' }}>
+          {historyTab === 'saldo' ? `${histSaldo.length} movimientos` : `${histMens.length} mensualidades`}
+        </div>
+      </Card>
+
+    </div>
+  );
+}
+window.EditDriverView = EditDriverView;
+
+  </script>
+
+  <script type="text/babel">
+// Settings view — WhatsApp confirmation & chatbot message toggles.
+function SettingsView() {
+  const { Card, Switch, Button, Alert } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const [conf, setConf] = React.useState(data.confirmations);
+  const [bot, setBot] = React.useState(data.chatbot);
+  const [saved, setSaved] = React.useState(false);
+
+  const toggle = (list, setList, key) =>
+    setList(list.map((m) => (m.key === key ? { ...m, on: !m.on } : m)));
+
+  const Group = ({ title, items, onToggle }) => (
+    <Card header={title}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {items.map((m, i) => (
+          <div key={m.key} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '0.7rem 0', borderTop: i === 0 ? 'none' : '1px solid #f3f4f6',
+            fontFamily: "'Open Sans', sans-serif",
+          }}>
+            <span style={{ fontSize: '0.85rem', color: '#67748e' }}>{m.label}</span>
+            <Switch checked={m.on} onChange={() => onToggle(m.key)} />
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+
+  return (
+    <div style={{ maxWidth: 900 }}>
+      {saved && (
+        <div style={{ marginBottom: '1rem' }}>
+          <Alert color="success" onClose={() => setSaved(false)}>Settings saved successfully</Alert>
+        </div>
+      )}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <Group title="Confirmation messages" items={conf} onToggle={(k) => toggle(conf, setConf, k)} />
+        <Group title="ChatBot messages" items={bot} onToggle={(k) => toggle(bot, setBot, k)} />
+      </div>
+      <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.6rem' }}>
+        <Button color="primary" icon="fas fa-floppy-disk" onClick={() => { setSaved(true); }}>Save changes</Button>
+        <Button color="secondary" variant="outline">Cancel</Button>
+      </div>
+    </div>
+  );
+}
+window.SettingsView = SettingsView;
+
+  </script>
+
+  <script type="text/babel">
+// Login screen — gradient header card, centered form (mirrors the Vue Login.vue).
+function LoginView({ onLogin }) {
+  const { Button, Input, Alert } = window.GordaDesignSystem_019e24;
+  const [email, setEmail] = React.useState('admin@gorda.co');
+  const [pw, setPw] = React.useState('password');
+  const [err, setErr] = React.useState(false);
+
+  const submit = () => {
+    if (!email || !pw) { setErr(true); return; }
+    onLogin();
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', fontFamily: "'Open Sans', sans-serif", padding: 24 }}>
+      <div style={{ width: 380 }}>
+        {/* gradient brand header */}
+        <div style={{
+          background: 'linear-gradient(310deg, #7928ca, #ff0080)', borderRadius: '1rem',
+          padding: '2rem', textAlign: 'center', color: '#fff', marginBottom: '-2.5rem',
+          boxShadow: '0 20px 27px 0 rgba(0,0,0,0.15)', position: 'relative', zIndex: 2,
+          width: 'calc(100% - 3rem)', marginLeft: 'auto', marginRight: 'auto',
+        }}>
+          <img src={window.__resources.logoImg} alt="Gorda" style={{ width: 56, height: 56, borderRadius: '0.8rem', marginBottom: '0.5rem' }} />
+          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700 }}>Welcome back</h4>
+          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', opacity: 0.9 }}>Sign in to the Gorda admin panel</p>
+        </div>
+
+        <div style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 20px 27px 0 rgba(0,0,0,0.05)', padding: '3.5rem 2rem 2rem' }}>
+          {err && <div style={{ marginBottom: '1rem' }}><Alert color="danger" title="Invalid credentials" onClose={() => setErr(false)}>Check your email and password.</Alert></div>}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email" icon="fas fa-envelope" />
+            <Input label="Password" type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="Enter password" icon="fas fa-lock" />
+            <Button color="info" fullWidth onClick={submit} style={{ marginTop: '0.5rem' }}>Sign in</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+window.LoginView = LoginView;
+
+  </script>
+
+  <script type="text/babel">
+// WhatsApp Connection View — Gorda Design System
+// Follows Soft UI card vocabulary: floating cards, gradient icon chips, --primary magenta CTAs.
+
+/* ── small primitives ─────────────────────────────────────── */
+
+function Toggle({ checked, onChange, disabled, danger }) {
+  const track = checked
+    ? (danger ? 'var(--danger)' : 'var(--primary)')
+    : 'var(--border-color)';
+  return (
+    <button
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => !disabled && onChange(!checked)}
+      style={{
+        width: 36, height: 20, borderRadius: 50, border: 'none',
+        background: track, cursor: disabled ? 'default' : 'pointer',
+        position: 'relative', flex: 'none',
+        opacity: disabled ? 0.45 : 1,
+        transition: 'background 0.2s ease',
+        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.15)',
+      }}
+    >
+      <span style={{
+        position: 'absolute', top: 2,
+        left: checked ? 18 : 2,
+        width: 16, height: 16, borderRadius: '50%',
+        background: '#fff',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+        transition: 'left 0.2s ease',
+      }} />
+    </button>
+  );
+}
+
+function IconBtn({ icon, gradient, onClick, title }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <button
+      title={title}
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        width: 34, height: 34, borderRadius: '0.5rem', border: 'none',
+        background: hov ? gradient : 'var(--surface-input)',
+        color: hov ? '#fff' : 'var(--text-body)',
+        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '0.8rem',
+        boxShadow: hov
+          ? '0 4px 12px rgba(0,0,0,0.22)'
+          : '0 2px 9px -5px rgba(0,0,0,0.25), 0 0 1px rgba(0,0,0,0.06)',
+        transition: 'all 0.2s ease',
+        flex: 'none',
+      }}
+    >
+      <em className={icon} />
+    </button>
+  );
+}
+
+function PrimaryBtn({ children, onClick, disabled, outline }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        padding: '0.45rem 1.25rem',
+        borderRadius: '0.5rem',
+        border: outline ? '1.5px solid var(--primary)' : 'none',
+        background: outline
+          ? 'transparent'
+          : (hov ? 'linear-gradient(310deg,#7928ca,#ff0080)' : 'var(--primary)'),
+        color: outline ? 'var(--primary)' : '#fff',
+        fontFamily: 'var(--font-sans)', fontSize: '0.75rem',
+        fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
+        cursor: disabled ? 'default' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
+        boxShadow: !outline && !disabled ? 'var(--shadow-btn)' : 'none',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap',
+        flex: 'none',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ── toggle row ───────────────────────────────────────────── */
+function ToggleRow({ label, sub, checked, onChange, disabled, danger }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+      padding: '0.65rem 0',
+      borderBottom: '1px solid var(--border-subtle)',
+    }}>
+      <Toggle checked={checked} onChange={onChange} disabled={disabled} danger={danger} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-heading)',
+          lineHeight: 1.3,
+        }}>{label}</div>
+        {sub && (
+          <div style={{
+            fontSize: '0.75rem', color: 'var(--text-muted)',
+            marginTop: '0.2rem', lineHeight: 1.4,
+          }}>{sub}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── status pill ──────────────────────────────────────────── */
+function StatusPill({ connected, connecting, loading }) {
+  let label, bg, fg, dot;
+  if (loading) { label = 'Loading…'; bg = 'var(--badge-warning-bg)'; fg = 'var(--badge-warning-fg)'; dot = '#fbcf33'; }
+  else if (connecting) { label = 'Connecting'; bg = 'var(--badge-info-bg)'; fg = 'var(--badge-info-fg)'; dot = '#17c1e8'; }
+  else if (connected) { label = 'Conectado'; bg = 'var(--badge-success-bg)'; fg = 'var(--badge-success-fg)'; dot = '#82d616'; }
+  else { label = 'Desconectado'; bg = 'var(--badge-danger-bg)'; fg = 'var(--badge-danger-fg)'; dot = '#ea0606'; }
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+      background: bg, color: fg,
+      padding: '0.25rem 0.65rem', borderRadius: '50rem',
+      fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.04em',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flex: 'none' }} />
+      {label}
+    </span>
+  );
+}
+
+/* ── connection visual ────────────────────────────────────── */
+function ConnectionVisual({ connected, connecting, loading, phoneId }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      padding: '1.5rem 1rem 1rem', gap: '0.75rem',
+    }}>
+      {/* artwork */}
+      <div style={{
+        width: 110, height: 110, borderRadius: '1.5rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: connected
+          ? 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)'
+          : 'var(--surface-input)',
+        boxShadow: connected
+          ? '0 8px 26px -4px rgba(37,211,102,0.35)'
+          : 'var(--shadow-card)',
+        transition: 'all 0.3s ease',
+        flex: 'none',
+      }}>
+        {loading && (
+          <em className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2.5rem', color: '#fbcf33' }} />
+        )}
+        {connecting && !loading && (
+          <em className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2.5rem', color: '#17c1e8' }} />
+        )}
+        {connected && !connecting && !loading && (
+          <em className="fa-brands fa-whatsapp" style={{ fontSize: '3.2rem', color: '#fff' }} />
+        )}
+        {!connected && !connecting && !loading && (
+          <em className="fa-solid fa-circle-exclamation" style={{ fontSize: '2.5rem', color: 'var(--text-muted)' }} />
+        )}
+      </div>
+
+      {/* phone id */}
+      <div style={{
+        fontSize: '0.7rem', fontFamily: 'var(--font-mono)',
+        color: 'var(--text-muted)', textAlign: 'center', wordBreak: 'break-all',
+        padding: '0 0.5rem',
+      }}>
+        {phoneId}
+      </div>
+    </div>
+  );
+}
+
+/* ── single connection card ───────────────────────────────── */
+function ConnectionCard({ client, isDefault, onSetDefault }) {
+  const [connected, setConnected] = React.useState(client.connected);
+  const [connecting, setConnecting] = React.useState(false);
+  const [settings, setSettings] = React.useState({
+    wpNotifications: client.wpNotifications,
+    assistant: client.assistant,
+    chatBot: client.chatBot,
+    full: client.full,
+  });
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showRestartModal, setShowRestartModal] = React.useState(false);
+
+  function handleConnect() {
+    setConnecting(true);
+    // simulate connect
+    setTimeout(() => { setConnecting(false); setConnected(true); }, 2200);
+  }
+
+  function toggle(key) {
+    if (!connected) return;
+    setSettings(s => ({ ...s, [key]: !s[key] }));
+  }
+
+  return (
+    <div style={{
+      background: 'var(--surface-card)',
+      borderRadius: '1rem',
+      boxShadow: 'var(--shadow-card)',
+      display: 'flex', flexDirection: 'column',
+      overflow: 'hidden',
+      fontFamily: 'var(--font-sans)',
+      border: isDefault ? '2px solid var(--primary)' : '1px solid var(--border-subtle)',
+      transition: 'box-shadow 0.2s ease',
+    }}>
+
+      {/* ── card header ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        padding: '1rem 1.25rem 0.85rem',
+        borderBottom: '1px solid var(--border-subtle)',
+      }}>
+        {/* icon chip */}
+        <div style={{
+          width: 38, height: 38, borderRadius: '0.6rem', flex: 'none',
+          background: connected
+            ? 'linear-gradient(310deg,#128c7e,#25d366)'
+            : 'var(--gradient-secondary)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
+          color: '#fff', fontSize: '1rem',
+        }}>
+          <em className="fa-brands fa-whatsapp" />
+        </div>
+
+        {/* name + status */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)', lineHeight: 1.2 }}>
+            {client.alias}
+          </div>
+          <div style={{ marginTop: '0.3rem' }}>
+            <StatusPill connected={connected} connecting={connecting} />
+          </div>
+        </div>
+
+        {/* default badge */}
+        {isDefault && (
+          <span style={{
+            fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em',
+            background: 'var(--badge-primary-bg)', color: 'var(--badge-primary-fg)',
+            padding: '0.2rem 0.55rem', borderRadius: '50rem',
+          }}>DEFAULT</span>
+        )}
+
+        {/* actions */}
+        <div style={{ display: 'flex', gap: '0.4rem' }}>
+          <IconBtn icon="fas fa-rotate" gradient="linear-gradient(310deg,#2152ff,#21d4fd)" title="Reiniciar" onClick={() => setShowRestartModal(true)} />
+          <IconBtn icon="fas fa-trash" gradient="linear-gradient(310deg,#d60808,#ff6690)" title="Eliminar" onClick={() => setShowDeleteModal(true)} />
+        </div>
+      </div>
+
+      {/* ── visual ── */}
+      <ConnectionVisual connected={connected} connecting={connecting} phoneId={client.id} />
+
+      {/* ── connect button / chat link ── */}
+      <div style={{ padding: '0 1.25rem 1rem', display: 'flex', gap: '0.6rem', justifyContent: connected ? 'flex-end' : 'flex-start' }}>
+        {!connected && (
+          <PrimaryBtn onClick={handleConnect} disabled={connecting}>
+            {connecting ? 'Conectando…' : 'Conectar'}
+          </PrimaryBtn>
+        )}
+        {connected && (
+          <a href="#" onClick={e => e.preventDefault()} style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            padding: '0.4rem 0.9rem',
+            borderRadius: '0.5rem',
+            background: 'var(--badge-success-bg)', color: 'var(--badge-success-fg)',
+            fontSize: '0.75rem', fontWeight: 700,
+            textDecoration: 'none',
+            transition: 'opacity 0.15s',
+          }}>
+            <em className="fas fa-message" />
+            Chat
+          </a>
+        )}
+      </div>
+
+      {/* ── toggles ── */}
+      <div style={{ padding: '0 1.25rem', marginBottom: '0.75rem' }}>
+        <ToggleRow
+          label="Confirmaciones de WhatsApp"
+          checked={settings.wpNotifications}
+          onChange={() => toggle('wpNotifications')}
+          disabled={!connected}
+        />
+        <ToggleRow
+          label="Asistente Bot"
+          sub={!connected || settings.assistant ? null : 'Activa para que el bot atienda automáticamente'}
+          checked={settings.assistant}
+          onChange={() => toggle('assistant')}
+          disabled={!connected}
+        />
+        <ToggleRow
+          label="WhatsApp ChatBot"
+          sub={connected && !settings.chatBot ? 'Habilita el chatBot para que gestione completamente los servicios' : null}
+          checked={settings.chatBot}
+          onChange={() => toggle('chatBot')}
+          disabled={!connected}
+        />
+        <ToggleRow
+          label="Modo Saturado"
+          checked={settings.full}
+          onChange={() => toggle('full')}
+          disabled={!connected}
+          danger
+        />
+        <ToggleRow
+          label={isDefault ? 'Cliente por defecto' : 'Seleccionar como cliente por defecto'}
+          checked={isDefault}
+          onChange={() => !isDefault && onSetDefault(client.id)}
+          disabled={isDefault}
+        />
+      </div>
+
+      {/* ── modals ── */}
+      {showDeleteModal && (
+        <Modal
+          title="Eliminar conexión"
+          body={`¿Estás seguro de que deseas eliminar la conexión "${client.alias}"? Esta acción no se puede deshacer.`}
+          confirmLabel="Eliminar"
+          confirmGradient="linear-gradient(310deg,#d60808,#ff6690)"
+          onConfirm={() => setShowDeleteModal(false)}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+      {showRestartModal && (
+        <Modal
+          title="Reiniciar conexión"
+          body={`¿Deseas reiniciar la conexión "${client.alias}"? Se desconectará brevemente y volverá a conectar.`}
+          confirmLabel="Reiniciar"
+          confirmGradient="linear-gradient(310deg,#2152ff,#21d4fd)"
+          onConfirm={() => { setShowRestartModal(false); setConnected(false); setConnecting(false); }}
+          onCancel={() => setShowRestartModal(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ── modal ────────────────────────────────────────────────── */
+function Modal({ title, body, confirmLabel, confirmGradient, onConfirm, onCancel }) {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(3px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }} onClick={onCancel}>
+      <div style={{
+        background: 'var(--surface-card)', borderRadius: '1rem',
+        boxShadow: '0 24px 48px rgba(0,0,0,0.22)',
+        width: 420, maxWidth: '90vw', padding: '1.75rem',
+        fontFamily: 'var(--font-sans)',
+      }} onClick={e => e.stopPropagation()}>
+        <h5 style={{ margin: '0 0 0.75rem', fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+          {title}
+        </h5>
+        <p style={{ margin: '0 0 1.5rem', fontSize: '0.875rem', color: 'var(--text-body)', lineHeight: 1.6 }}>
+          {body}
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem' }}>
+          <button onClick={onCancel} style={{
+            padding: '0.45rem 1.1rem', borderRadius: '0.5rem',
+            border: '1px solid var(--border-color)', background: 'var(--surface-input)',
+            color: 'var(--text-body)', fontFamily: 'inherit', fontSize: '0.8rem',
+            fontWeight: 600, cursor: 'pointer',
+          }}>Cancelar</button>
+          <button onClick={onConfirm} style={{
+            padding: '0.45rem 1.1rem', borderRadius: '0.5rem',
+            border: 'none', background: confirmGradient,
+            color: '#fff', fontFamily: 'inherit', fontSize: '0.8rem',
+            fontWeight: 700, cursor: 'pointer',
+            boxShadow: 'var(--shadow-btn)',
+          }}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── add number modal ─────────────────────────────────────── */
+function AddNumberModal({ onClose }) {
+  const [alias, setAlias] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const inputStyle = {
+    width: '100%', padding: '0.55rem 0.75rem',
+    border: '1px solid var(--border-color)', borderRadius: '0.5rem',
+    background: 'var(--surface-input)', color: 'var(--text-body)',
+    fontFamily: 'var(--font-sans)', fontSize: '0.85rem', outline: 'none',
+    transition: 'border-color 0.15s',
+  };
+  const labelStyle = {
+    display: 'block', fontSize: '0.75rem', fontWeight: 700,
+    color: 'var(--text-heading)', marginBottom: '0.35rem',
+    letterSpacing: '0.04em', textTransform: 'uppercase',
+  };
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(3px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }} onClick={onClose}>
+      <div style={{
+        background: 'var(--surface-card)', borderRadius: '1rem',
+        boxShadow: '0 24px 48px rgba(0,0,0,0.22)',
+        width: 440, maxWidth: '90vw', padding: '1.75rem',
+        fontFamily: 'var(--font-sans)',
+      }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+          <h5 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+            Agregar número WhatsApp
+          </h5>
+          <button onClick={onClose} style={{
+            width: 28, height: 28, borderRadius: '0.4rem', border: 'none',
+            background: 'var(--surface-input)', color: 'var(--text-muted)',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem',
+          }}><em className="fas fa-xmark" /></button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={labelStyle}>Alias</label>
+            <input style={inputStyle} placeholder="ej. Línea principal" value={alias} onChange={e => setAlias(e.target.value)} />
+          </div>
+          <div>
+            <label style={labelStyle}>Número de teléfono</label>
+            <input style={inputStyle} placeholder="+57 300 000 0000" value={phone} onChange={e => setPhone(e.target.value)} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', marginTop: '1.5rem' }}>
+          <button onClick={onClose} style={{
+            padding: '0.45rem 1.1rem', borderRadius: '0.5rem',
+            border: '1px solid var(--border-color)', background: 'var(--surface-input)',
+            color: 'var(--text-body)', fontFamily: 'inherit', fontSize: '0.8rem',
+            fontWeight: 600, cursor: 'pointer',
+          }}>Cancelar</button>
+          <button onClick={onClose} style={{
+            padding: '0.45rem 1.25rem', borderRadius: '0.5rem', border: 'none',
+            background: 'var(--primary)', color: '#fff',
+            fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 700,
+            cursor: 'pointer', boxShadow: 'var(--shadow-btn)',
+          }}>Agregar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── sample message templates ─────────────────────────────── */
+const WA_SAMPLE_MESSAGES = [
+  {
+    id: 1, name: 'Cancelaciones', interactive: true, msgType: 'button',
+    desc: 'Cuando no se ha asignado el servicio después de cierto tiempo',
+    text: '_Que pena contigo_ 😟 por el momento no cuento con móviles disponible cerca al lugar donde debemos recogerte.\n\n*¿Deseas que siga insistiendo con tu solicitud unos minutos mas?*',
+    iText: '_Que pena contigo_ 😟 por el momento no cuento con móviles disponible cerca al lugar donde debemos recogerte.\n\n*¿Deseas que siga insistiendo con tu solicitud unos minutos mas?*',
+    btns: [{ label: 'Si, Continuar', action: 'INSIST' }, { label: 'Cancelar', action: 'CANCEL' }],
+  },
+  {
+    id: 2, name: 'Confirmación de llegada', interactive: false, msgType: 'button',
+    desc: 'Cuando el conductor llega al punto de recogida',
+    text: '🚕 Tu conductor *{{NOMBRE}}* ha llegado al punto de recogida.\nVehículo: {{COLOR}} · {{PLACA}}',
+    iText: '', btns: [],
+  },
+  {
+    id: 3, name: 'Sin móviles disponibles', interactive: true, msgType: 'button',
+    desc: 'Cuando no hay vehículos disponibles en la zona',
+    text: 'Lo sentimos, *en este momento no tenemos móviles disponibles* en tu zona.\n\n¿Deseas que sigamos buscando?',
+    iText: 'Lo sentimos, *en este momento no tenemos móviles disponibles* en tu zona.\n\n¿Deseas que sigamos buscando?',
+    btns: [{ label: 'Sí, seguir buscando', action: 'SEARCH' }, { label: 'Cancelar', action: 'CANCEL' }],
+  },
+  {
+    id: 4, name: 'Bienvenida', interactive: false, msgType: 'button',
+    desc: 'Mensaje de bienvenida al iniciar una conversación',
+    text: '👋 Hola *{{NOMBRE}}*, bienvenido/a a _Gorda Taxi_.\n¿En qué podemos ayudarte hoy?',
+    iText: '', btns: [],
+  },
+];
+
+/* ── messages list panel ──────────────────────────────────── */
+function MessagesPanel({ messages, onEdit, onNew }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+        <PrimaryBtn onClick={onNew}>
+          <em className="fas fa-plus" style={{ marginRight: '0.4rem' }} />
+          Nueva plantilla
+        </PrimaryBtn>
+      </div>
+
+      <div style={{ background: 'var(--surface-card)', borderRadius: '1rem', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
+        {/* table head */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 2.5fr 120px 80px', padding: '0.65rem 1.25rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--body-bg)' }}>
+          {['Plantilla', 'Descripción', 'Tipo', ''].map((h, i) => (
+            <div key={i} style={{ fontSize: '0.63rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{h}</div>
+          ))}
+        </div>
+
+        {messages.map((msg, i) => (
+          <div key={msg.id} style={{ display: 'grid', gridTemplateColumns: '2fr 2.5fr 120px 80px', padding: '0.9rem 1.25rem', alignItems: 'center', borderBottom: i < messages.length - 1 ? '1px solid var(--border-subtle)' : 'none', transition: 'background 0.1s' }}>
+            {/* name */}
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-heading)', marginBottom: '0.1rem' }}>{msg.name}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.02em' }}>
+                {msg.text ? (msg.text.length > 38 ? msg.text.slice(0, 38).replace(/[*_]/g, '') + '…' : msg.text.replace(/[*_]/g, '')) : '—'}
+              </div>
+            </div>
+            {/* desc */}
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', paddingRight: '1rem', lineHeight: 1.4 }}>{msg.desc}</div>
+            {/* type badge */}
+            <div>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.28rem', padding: '0.2rem 0.6rem', borderRadius: '50rem', background: msg.interactive ? 'var(--badge-success-bg)' : 'var(--badge-secondary-bg)', color: msg.interactive ? 'var(--badge-success-fg)' : 'var(--badge-secondary-fg)', fontSize: '0.67rem', fontWeight: 700 }}>
+                <em className={msg.interactive ? 'fas fa-bolt' : 'fas fa-comment'} style={{ fontSize: '0.53rem' }} />
+                {msg.interactive ? 'Interactivo' : 'Simple'}
+              </span>
+            </div>
+            {/* actions */}
+            <div style={{ display: 'flex', gap: '0.35rem', justifyContent: 'flex-end' }}>
+              <button onClick={() => onEdit(msg)} title="Editar" style={{ width: 30, height: 30, borderRadius: '0.4rem', border: 'none', background: 'var(--surface-input)', color: 'var(--text-body)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.74rem', transition: 'all 0.12s' }}>
+                <em className="fas fa-pen" />
+              </button>
+              <button title="Eliminar" style={{ width: 30, height: 30, borderRadius: '0.4rem', border: 'none', background: 'var(--badge-danger-bg)', color: 'var(--badge-danger-fg)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', transition: 'all 0.12s' }}>
+                <em className="fas fa-trash" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── main view ────────────────────────────────────────────── */
+function WhatsAppView() {
+  const [clients, setClients] = React.useState([
+    { id: '315465977324579', alias: '573173103090', connected: true, wpNotifications: true, assistant: true, chatBot: false, full: false },
+    { id: '6028353514', alias: '602', connected: false, wpNotifications: false, assistant: false, chatBot: false, full: false },
+  ]);
+  const [defaultClient, setDefaultClient] = React.useState(clients[0].id);
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [tab, setTab] = React.useState('connections');
+  const [messages, setMessages] = React.useState(WA_SAMPLE_MESSAGES);
+  const [editingMsg, setEditingMsg] = React.useState(null);
+
+  const TABS = [
+    { id: 'connections', icon: 'fas fa-wifi', label: 'Conexiones' },
+    { id: 'messages', icon: 'fas fa-comment-dots', label: 'Mensajes' },
+  ];
+
+  function handleSaveMsg(data) {
+    setMessages(ms => ms.map(m => m.id === editingMsg.id ? { ...m, ...data } : m));
+  }
+
+  function handleNewMsg() {
+    const newMsg = { id: Date.now(), name: '', text: '', desc: '', interactive: false, msgType: 'button', iText: '', btns: [] };
+    setMessages(ms => [...ms, newMsg]);
+    setEditingMsg(newMsg);
+  }
+
+  return (
+    <div style={{ fontFamily: 'var(--font-sans)' }}>
+
+      {/* ── tab bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.2rem', background: 'var(--surface-card)', padding: '0.25rem', borderRadius: '0.625rem', boxShadow: 'var(--shadow-card)' }}>
+          {TABS.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: '0.38rem 1rem', borderRadius: '0.4rem', border: 'none',
+              background: tab === t.id ? 'var(--primary)' : 'transparent',
+              color: tab === t.id ? '#fff' : 'var(--text-body)',
+              fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 600,
+              cursor: 'pointer', transition: 'all 0.15s',
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              boxShadow: tab === t.id ? 'var(--shadow-btn)' : 'none',
+            }}>
+              <em className={t.icon} style={{ fontSize: '0.74rem' }} />
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {tab === 'connections' && (
+          <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <PrimaryBtn outline onClick={() => setShowAddModal(true)}>
+              <em className="fas fa-plus" style={{ marginRight: '0.4rem' }} />
+              Agregar número
+            </PrimaryBtn>
+            <PrimaryBtn onClick={() => {}}>
+              <em className="fas fa-plus" style={{ marginRight: '0.4rem' }} />
+              Crear
+            </PrimaryBtn>
+          </div>
+        )}
+      </div>
+
+      {/* ── connections ── */}
+      {tab === 'connections' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem' }}>
+          {clients.map(client => (
+            <ConnectionCard key={client.id} client={client} isDefault={defaultClient === client.id} onSetDefault={setDefaultClient} />
+          ))}
+        </div>
+      )}
+
+      {/* ── messages ── */}
+      {tab === 'messages' && (
+        <MessagesPanel messages={messages} onEdit={setEditingMsg} onNew={handleNewMsg} />
+      )}
+
+      {showAddModal && <AddNumberModal onClose={() => setShowAddModal(false)} />}
+      {editingMsg && <EditMessageModal msg={editingMsg} onClose={() => setEditingMsg(null)} onSave={handleSaveMsg} />}
+    </div>
+  );
+}
+
+window.WhatsAppView = WhatsAppView;
+
+  </script>
+
+  <script type="text/babel">
+// EditMessageModal.jsx — Gorda Design System
+// Redesigned WhatsApp message template editor
+
+/* ── WA markup → React elements ──────────────────────────── */
+function parseWAMarkup(raw) {
+  if (!raw) return null;
+  return raw.split('\n').map((line, li, arr) => {
+    const parts = [];
+    let rest = line, k = 0;
+    while (rest.length) {
+      const bm = rest.match(/\*([^*\n]+)\*/);
+      const im = rest.match(/_([^_\n]+)_/);
+      let chosen = null, type = null;
+      if (bm && im) {
+        if (bm.index <= im.index) { chosen = bm; type = 'b'; }
+        else { chosen = im; type = 'i'; }
+      } else if (bm) { chosen = bm; type = 'b'; }
+      else if (im) { chosen = im; type = 'i'; }
+      if (chosen) {
+        if (chosen.index > 0) parts.push(<span key={k++}>{rest.slice(0, chosen.index)}</span>);
+        if (type === 'b') parts.push(<strong key={k++}>{chosen[1]}</strong>);
+        else parts.push(<span key={k++} style={{ fontStyle: 'italic' }}>{chosen[1]}</span>);
+        rest = rest.slice(chosen.index + chosen[0].length);
+      } else {
+        parts.push(<span key={k++}>{rest}</span>);
+        break;
+      }
+    }
+    return (
+      <React.Fragment key={li}>
+        {parts}
+        {li < arr.length - 1 && <br />}
+      </React.Fragment>
+    );
+  });
+}
+
+/* ── WhatsApp phone preview ───────────────────────────────── */
+function WAPhonePreview({ message, buttons }) {
+  const validBtns = (buttons || []).filter(b => b.label && b.label.trim());
+  const timeStr = new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+  return (
+    <div style={{ fontFamily: '-apple-system,"Segoe UI",Helvetica,sans-serif', borderRadius: '1.25rem', overflow: 'hidden', boxShadow: '0 10px 36px rgba(0,0,0,0.22)' }}>
+      {/* header */}
+      <div style={{ background: '#075e54', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+        <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#25d366,#128c7e)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
+          <em className="fa-brands fa-whatsapp" style={{ color: '#fff', fontSize: '1rem' }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ color: '#fff', fontSize: '0.8rem', fontWeight: 700, lineHeight: 1.2 }}>Gorda Taxi</div>
+          <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.63rem' }}>en línea</div>
+        </div>
+        <div style={{ display: 'flex', gap: '0.7rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem' }}>
+          <em className="fas fa-video" />
+          <em className="fas fa-phone" />
+          <em className="fas fa-ellipsis-vertical" />
+        </div>
+      </div>
+      {/* chat bg */}
+      <div style={{ background: '#e5ddd5', padding: '0.85rem 0.75rem', minHeight: 120 }}>
+        {message ? (
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ maxWidth: '88%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              {/* bubble */}
+              <div style={{ background: '#dcf8c6', borderRadius: '0.7rem 0 0.7rem 0.7rem', padding: '0.5rem 0.7rem 0.3rem', boxShadow: '0 1px 2px rgba(0,0,0,0.12)', fontSize: '0.79rem', color: '#1a1a1a', lineHeight: 1.55, position: 'relative' }}>
+                <div style={{ position: 'absolute', right: -7, top: 0, width: 0, height: 0, borderTop: '8px solid #dcf8c6', borderLeft: '8px solid transparent' }} />
+                {parseWAMarkup(message)}
+                <div style={{ textAlign: 'right', fontSize: '0.58rem', color: '#7a9c7a', marginTop: '0.22rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.2rem' }}>
+                  {timeStr}
+                  <em className="fas fa-check-double" style={{ fontSize: '0.55rem', color: '#4fc3f7' }} />
+                </div>
+              </div>
+              {/* buttons */}
+              {validBtns.length > 0 && (
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.22rem' }}>
+                  {validBtns.map((btn, i) => (
+                    <div key={i} style={{ background: '#fff', borderRadius: '0.45rem', padding: '0.4rem 0.7rem', textAlign: 'center', fontSize: '0.76rem', color: '#128c7e', fontWeight: 500, boxShadow: '0 1px 2px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                      <em className="fas fa-reply" style={{ fontSize: '0.58rem' }} />
+                      {btn.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '2rem 0', color: '#999', fontSize: '0.73rem' }}>
+            Escribe un mensaje para ver la vista previa
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Variable chip ────────────────────────────────────────── */
+function WAVarChip({ label, onClick }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      title={`Insertar {{${label}}}`}
+      style={{
+        padding: '0.18rem 0.5rem', borderRadius: '50rem',
+        border: `1px solid ${hov ? 'var(--primary)' : 'var(--border-color)'}`,
+        background: hov ? 'var(--badge-primary-bg)' : 'transparent',
+        color: hov ? 'var(--primary)' : 'var(--text-muted)',
+        fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.04em',
+        cursor: 'pointer', transition: 'all 0.13s',
+        fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+/* ── Toolbar + textarea combo ────────────────────────────── */
+const WA_VARS = ['PLACA', 'COLOR', 'NOMBRE', 'PQR', 'LUGAR', 'EMPRESA'];
+
+function WAEditorBlock({ value, onChange, taRef, rows, placeholder }) {
+  const [focused, setFocused] = React.useState(false);
+
+  function insertVar(v) {
+    const tag = `{{${v}}}`;
+    const el = taRef.current;
+    if (el) {
+      const s = el.selectionStart, e = el.selectionEnd;
+      const next = value.slice(0, s) + tag + value.slice(e);
+      onChange(next);
+      setTimeout(() => { el.focus(); el.setSelectionRange(s + tag.length, s + tag.length); }, 0);
+    } else {
+      onChange(value + tag);
+    }
+  }
+
+  function wrap(char) {
+    const el = taRef.current;
+    if (!el) return;
+    const s = el.selectionStart, e = el.selectionEnd;
+    const inner = value.slice(s, e) || 'texto';
+    const wrapped = `${char}${inner}${char}`;
+    const next = value.slice(0, s) + wrapped + value.slice(e);
+    onChange(next);
+    setTimeout(() => { el.focus(); el.setSelectionRange(s + wrapped.length, s + wrapped.length); }, 0);
+  }
+
+  return (
+    <div style={{
+      border: `1.5px solid ${focused ? 'var(--primary)' : 'var(--border-color)'}`,
+      borderRadius: '0.5rem', overflow: 'hidden',
+      transition: 'border-color 0.15s',
+    }}>
+      {/* toolbar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.2rem',
+        padding: '0.3rem 0.5rem', background: 'var(--surface-input)',
+        borderBottom: '1px solid var(--border-subtle)',
+      }}>
+        {/* B */}
+        <button title="Negrita (*texto*)" onClick={() => wrap('*')} style={{ width: 28, height: 28, borderRadius: '0.35rem', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia', fontWeight: 900, fontSize: '0.9rem', transition: 'all 0.12s' }}>B</button>
+        {/* I */}
+        <button title="Cursiva (_texto_)" onClick={() => wrap('_')} style={{ width: 28, height: 28, borderRadius: '0.35rem', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia', fontStyle: 'italic', fontSize: '0.9rem', transition: 'all 0.12s' }}>I</button>
+        {/* emoji */}
+        <button title="Emoji" style={{ width: 28, height: 28, borderRadius: '0.35rem', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>😀</button>
+        <div style={{ width: 1, height: 16, background: 'var(--border-subtle)', margin: '0 0.1rem' }} />
+        {WA_VARS.map(v => <WAVarChip key={v} label={v} onClick={() => insertVar(v)} />)}
+      </div>
+      {/* textarea */}
+      <textarea
+        ref={taRef}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        rows={rows || 5}
+        placeholder={placeholder || ''}
+        style={{
+          width: '100%', display: 'block', padding: '0.6rem 0.75rem',
+          border: 'none', background: 'var(--surface-input)',
+          color: 'var(--text-heading)', fontFamily: 'var(--font-sans)',
+          fontSize: '0.875rem', outline: 'none', resize: 'vertical', lineHeight: 1.65,
+        }}
+      />
+    </div>
+  );
+}
+
+/* ── EditMessageModal ─────────────────────────────────────── */
+function EditMessageModal({ msg, onClose, onSave }) {
+  const [name, setName] = React.useState(msg?.name || 'Nueva plantilla');
+  const [text, setText] = React.useState(msg?.text || '');
+  const [desc, setDesc] = React.useState(msg?.desc || '');
+  const [interactive, setInteractive] = React.useState(msg?.interactive ?? false);
+  const [msgType, setMsgType] = React.useState(msg?.msgType || 'button');
+  const [iText, setIText] = React.useState(msg?.iText || '');
+  const [btns, setBtns] = React.useState(msg?.btns || [{ label: '', action: '' }]);
+
+  const mainRef = React.useRef(null);
+  const iRef = React.useRef(null);
+
+  const IS = {
+    width: '100%', padding: '0.55rem 0.75rem',
+    border: '1.5px solid var(--border-color)', borderRadius: '0.5rem',
+    background: 'var(--surface-input)', color: 'var(--text-heading)',
+    fontFamily: 'var(--font-sans)', fontSize: '0.875rem', outline: 'none',
+    transition: 'border-color 0.15s',
+  };
+  const LS = {
+    display: 'block', fontSize: '0.7rem', fontWeight: 700,
+    color: 'var(--text-heading)', marginBottom: '0.4rem',
+    letterSpacing: '0.05em', textTransform: 'uppercase',
+  };
+  function fi(e) { e.target.style.borderColor = 'var(--primary)'; }
+  function bi(e) { e.target.style.borderColor = 'var(--border-color)'; }
+
+  return (
+    <div
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', fontFamily: 'var(--font-sans)' }}
+      onClick={onClose}
+    >
+      <div
+        style={{ background: 'var(--body-bg)', borderRadius: '1.25rem', width: '100%', maxWidth: 1080, maxHeight: 'calc(100vh - 2rem)', display: 'flex', flexDirection: 'column', boxShadow: '0 32px 80px rgba(0,0,0,0.45)', overflow: 'hidden' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* ── Header ── */}
+        <div style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-card)', flex: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', flex: 1 }}>
+            <div style={{ width: 38, height: 38, borderRadius: '0.65rem', flex: 'none', background: 'linear-gradient(310deg,#128c7e,#25d366)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(37,211,102,0.3)' }}>
+              <em className="fa-brands fa-whatsapp" style={{ color: '#fff', fontSize: '1.1rem' }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)', lineHeight: 1.2 }}>Editar Mensaje de WhatsApp</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+                Plantilla · <span style={{ color: 'var(--text-body)', fontWeight: 600 }}>{name || '—'}</span>
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: '0.4rem', border: 'none', background: 'var(--surface-input)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', flex: 'none' }}>
+            <em className="fas fa-xmark" />
+          </button>
+        </div>
+
+        {/* ── Body ── */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+          {/* Card 1: basic */}
+          <div style={{ background: 'var(--surface-card)', borderRadius: '0.875rem', boxShadow: 'var(--shadow-card)', padding: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.75rem' }}>
+              {/* left */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={LS}>Nombre</label>
+                  <input value={name} onChange={e => setName(e.target.value)} onFocus={fi} onBlur={bi} placeholder="Nombre de la plantilla" style={IS} />
+                </div>
+                <div>
+                  <label style={LS}>Mensaje</label>
+                  <WAEditorBlock value={text} onChange={setText} taRef={mainRef} rows={6} placeholder="Escribe tu mensaje… usa *negrita* o _cursiva_" />
+                </div>
+              </div>
+              {/* right */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={LS}>Vista Previa</label>
+                  <WAPhonePreview message={text} />
+                </div>
+                <div>
+                  <label style={LS}>Descripción</label>
+                  <textarea value={desc} onChange={e => setDesc(e.target.value)} onFocus={fi} onBlur={bi} rows={4} placeholder="Describe cuándo se usa esta plantilla…"
+                    style={{ ...IS, resize: 'vertical', lineHeight: 1.6 }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive toggle */}
+          <button
+            onClick={() => setInteractive(v => !v)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1.1rem', width: '100%', textAlign: 'left', background: interactive ? 'var(--badge-success-bg)' : 'var(--surface-card)', border: `1.5px solid ${interactive ? 'var(--success)' : 'var(--border-subtle)'}`, borderRadius: '0.75rem', cursor: 'pointer', fontFamily: 'var(--font-sans)', transition: 'all 0.2s' }}
+          >
+            <div style={{ width: 34, height: 34, borderRadius: '0.5rem', flex: 'none', background: interactive ? 'linear-gradient(310deg,#17ad37,#98ec2d)' : 'var(--surface-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: interactive ? '#fff' : 'var(--text-muted)', fontSize: '0.85rem', boxShadow: interactive ? '0 4px 12px rgba(130,214,22,0.3)' : 'none', transition: 'all 0.2s' }}>
+              <em className={interactive ? 'fas fa-bolt' : 'fas fa-bolt-slash'} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.83rem', fontWeight: 700, color: interactive ? 'var(--badge-success-fg)' : 'var(--text-heading)' }}>
+                {interactive ? 'Modo interactivo habilitado' : 'Modo interactivo deshabilitado'}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+                {interactive ? 'El mensaje incluye botones de respuesta rápida' : 'Activa para añadir botones de respuesta rápida'}
+              </div>
+            </div>
+            {/* pill */}
+            <div style={{ width: 40, height: 22, borderRadius: 50, flex: 'none', background: interactive ? 'var(--success)' : 'var(--border-color)', position: 'relative', transition: 'background 0.2s', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)' }}>
+              <span style={{ position: 'absolute', top: 3, left: interactive ? 20 : 3, width: 16, height: 16, borderRadius: '50%', background: '#fff', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
+            </div>
+          </button>
+
+          {/* Card 2: interactive */}
+          {interactive && (
+            <div style={{ background: 'var(--surface-card)', borderRadius: '0.875rem', boxShadow: 'var(--shadow-card)', padding: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.1rem' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '0.4rem', background: 'linear-gradient(310deg,#17ad37,#98ec2d)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.7rem' }}>
+                  <em className="fas fa-bolt" />
+                </div>
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-heading)' }}>Mensaje Interactivo</span>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.75rem' }}>
+                {/* left */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label style={LS}>Tipo de mensaje</label>
+                    <div style={{ position: 'relative' }}>
+                      <select value={msgType} onChange={e => setMsgType(e.target.value)} onFocus={fi} onBlur={bi}
+                        style={{ ...IS, appearance: 'none', paddingRight: '2.2rem', cursor: 'pointer' }}>
+                        <option value="button">Botón</option>
+                        <option value="list">Lista</option>
+                        <option value="product">Producto</option>
+                      </select>
+                      <em className="fas fa-chevron-down" style={{ position: 'absolute', right: '0.7rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-muted)', fontSize: '0.7rem' }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={LS}>Mensaje</label>
+                    <WAEditorBlock value={iText} onChange={setIText} taRef={iRef} rows={4} placeholder="Escribe el mensaje interactivo…" />
+                  </div>
+
+                  {/* button editor */}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.55rem' }}>
+                      <label style={{ ...LS, marginBottom: 0 }}>Botones de respuesta</label>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>{btns.length}/3</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 34px', gap: '0.4rem', marginBottom: '0.35rem' }}>
+                      {['Etiqueta', 'Acción / ID', ''].map((h, i) => (
+                        <div key={i} style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{h}</div>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      {btns.map((btn, i) => (
+                        <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 34px', gap: '0.4rem', alignItems: 'center' }}>
+                          <input value={btn.label} onChange={e => setBtns(bs => bs.map((b, j) => j === i ? { ...b, label: e.target.value } : b))}
+                            onFocus={fi} onBlur={bi} placeholder="Texto visible"
+                            style={{ ...IS, fontSize: '0.8rem', padding: '0.38rem 0.65rem' }} />
+                          <input value={btn.action} onChange={e => setBtns(bs => bs.map((b, j) => j === i ? { ...b, action: e.target.value } : b))}
+                            onFocus={fi} onBlur={bi} placeholder="ACCION"
+                            style={{ ...IS, fontSize: '0.78rem', padding: '0.38rem 0.65rem', fontFamily: 'var(--font-mono)', letterSpacing: '0.02em' }} />
+                          <button onClick={() => setBtns(bs => bs.filter((_, j) => j !== i))}
+                            style={{ width: 34, height: 34, borderRadius: '0.4rem', border: 'none', background: 'var(--badge-danger-bg)', color: 'var(--badge-danger-fg)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem' }}>
+                            <em className="fas fa-trash" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    {btns.length < 3 && (
+                      <button onClick={() => setBtns(bs => [...bs, { label: '', action: '' }])}
+                        style={{ marginTop: '0.55rem', padding: '0.35rem 0.8rem', border: '1.5px dashed var(--border-color)', borderRadius: '0.45rem', background: 'transparent', color: 'var(--primary)', fontFamily: 'var(--font-sans)', fontSize: '0.73rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', transition: 'all 0.14s' }}>
+                        <em className="fas fa-plus" style={{ fontSize: '0.65rem' }} />
+                        Agregar botón
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* right: preview */}
+                <div>
+                  <label style={{ ...LS, marginBottom: '0.65rem' }}>Vista Previa</label>
+                  <WAPhonePreview message={iText} buttons={btns} />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{ padding: '0.9rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-card)', flex: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+            <em className="fas fa-circle-info" style={{ fontSize: '0.7rem' }} />
+            Los cambios se aplican al guardar
+          </div>
+          <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <button onClick={onClose} style={{ padding: '0.45rem 1.1rem', borderRadius: '0.5rem', border: '1.5px solid var(--border-color)', background: 'var(--surface-input)', color: 'var(--text-body)', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+              Cerrar
+            </button>
+            <button
+              onClick={() => { onSave && onSave({ name, text, desc, interactive, iText, btns }); onClose(); }}
+              style={{ padding: '0.45rem 1.25rem', borderRadius: '0.5rem', border: 'none', background: 'var(--primary)', color: '#fff', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', boxShadow: 'var(--shadow-btn)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <em className="fas fa-paper-plane" style={{ fontSize: '0.72rem' }} />
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+window.EditMessageModal = EditMessageModal;
+
+  </script>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    const TITLES = {
+      dashboard: 'Dashboard', services: 'Services', drivers: 'Drivers',
+      vehicles: 'Vehicles', places: 'Places', whatsapp: 'WhatsApp connection',
+      metrics: 'Metrics', settings: 'Settings',
+    };
+
+    function Placeholder({ title }) {
+      return (
+        <div style={{
+          background: 'var(--surface-card)', borderRadius: '1rem',
+          boxShadow: 'var(--shadow-card)',
+          padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-body)',
+          fontFamily: "'Open Sans', sans-serif",
+        }}>
+          <em className="fas fa-screwdriver-wrench" style={{ fontSize: '2rem', color: '#cb0c9f', marginBottom: '1rem', display: 'block' }} />
+          <h5 style={{ color: 'var(--text-heading)', margin: '0 0 0.5rem' }}>{title}</h5>
+          <p style={{ margin: 0, fontSize: '0.85rem' }}>This screen is part of the live product and not recreated in this kit.</p>
+        </div>
+      );
+    }
+
+    function App() {
+      const [authed, setAuthed] = useState(false);
+      const [view, setView] = useState('services');
+      const [editingDriver, setEditingDriver] = useState(null);
+
+      const [theme, setTheme] = useState(() => {
+        return document.documentElement.dataset.theme || 'light';
+      });
+
+      useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem('gorda-theme', theme);
+      }, [theme]);
+
+      const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
+      if (!authed) return <LoginView onLogin={() => setAuthed(true)} />;
+
+      const handleNavigate = (v) => { setView(v); setEditingDriver(null); };
+
+      let content;
+      if (view === 'dashboard') content = <DashboardView />;
+      else if (view === 'services') content = <ServicesView />;
+      else if (view === 'drivers') {
+        if (editingDriver) {
+          content = <EditDriverView driver={editingDriver} onBack={() => setEditingDriver(null)} />;
+        } else {
+          content = <DriversView onEditDriver={(d) => setEditingDriver(d)} />;
+        }
+      }
+      else if (view === 'whatsapp') content = <WhatsAppView />;
+      else if (view === 'settings') content = <SettingsView />;
+      else content = <Placeholder title={TITLES[view]} />;
+
+      const navTitle = editingDriver ? 'Drivers' : TITLES[view];
+
+      return (
+        <div style={{ position: 'relative', minHeight: '100vh' }}>
+          <Sidebar active={view} onNavigate={handleNavigate} />
+          <main style={{ marginLeft: 272, padding: '1rem 1.5rem 1.5rem' }}>
+            <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} />
+            {content}
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+  </script>
+</body>
+</html>
