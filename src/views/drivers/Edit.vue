@@ -308,31 +308,63 @@
             <span class="modal-icon-chip">
               <em class="fas fa-coins"></em>
             </span>
-            <h6 class="modal-title mb-0" id="balanceModalLabel">{{ $t('drivers.forms.add_balance') }}</h6>
+            <h6 class="modal-title mb-0" id="balanceModalLabel">{{ $t('drivers.forms.manage_balance_title') }}</h6>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="form-group">
-            <label>{{ $t('drivers.forms.current_balance') }}</label>
-            <span class="form-control-plaintext">{{ StrHelper.formatBalance(driver.balance) }} {{ branchSelected?.currency_code }}</span>
+          <!-- Current balance card -->
+          <div class="rounded-3 p-3 mb-3"
+               style="background: linear-gradient(310deg,#141727,#3a416f)">
+            <div class="text-uppercase fw-bold mb-1"
+                 style="font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em">
+              {{ $t('drivers.forms.current_balance') }}
+            </div>
+            <div class="d-flex align-items-baseline gap-2">
+              <span style="font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.03em">{{ StrHelper.formatBalance(driver.balance) }}</span>
+              <span style="font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.4)">{{ branchSelected?.currency_code }}</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>{{ $t('drivers.forms.add_balance') }}</label>
-            <input type="number" class="form-control" v-model="newBalance" />
-            <small class="text-muted">{{ $t('drivers.forms.balance_hint_positive') }}</small>
+
+          <!-- Adjustment type toggle -->
+          <div class="form-group mb-3">
+            <label class="form-label">{{ $t('drivers.forms.adjustment_type') }}</label>
+            <div class="btn-group w-100" role="group">
+              <button type="button"
+                      :class="adjustmentType === 'add' ? 'btn btn-outline-success active' : 'btn btn-outline-secondary'"
+                      @click="adjustmentType = 'add'">
+                <em class="fas fa-plus me-1"></em>{{ $t('drivers.forms.adjustment_add') }}
+              </button>
+              <button type="button"
+                      :class="adjustmentType === 'subtract' ? 'btn btn-outline-secondary active' : 'btn btn-outline-secondary'"
+                      @click="adjustmentType = 'subtract'">
+                <em class="fas fa-minus me-1"></em>{{ $t('drivers.forms.adjustment_subtract') }}
+              </button>
+            </div>
           </div>
-          <div class="form-group mt-2">
-            <label>{{ $t('drivers.forms.recharge_note') }}</label>
-            <input type="text" class="form-control" v-model="rechargeNote" :placeholder="$t('drivers.forms.recharge_note_placeholder')" />
-            <small class="text-muted">{{ $t('drivers.forms.balance_hint_negative') }}</small>
+
+          <!-- Amount -->
+          <div class="form-group mb-3">
+            <label class="form-label">{{ $t('drivers.forms.amount_cop') }}</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" v-model="newBalance" min="0"
+                     :placeholder="$t('drivers.forms.amount_placeholder')" />
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div class="form-group">
+            <label class="form-label">{{ $t('drivers.forms.recharge_note') }}</label>
+            <textarea class="form-control" v-model="rechargeNote" rows="2"
+                      :placeholder="$t('drivers.forms.adjustment_note_placeholder')"></textarea>
           </div>
         </div>
         <div class="modal-footer border-0">
           <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-            {{ $t('common.actions.close') }}
+            {{ $t('common.actions.cancel') }}
           </button>
-          <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('drivers.forms.apply_adjustment') }}</button>
         </div>
       </div>
     </div>
@@ -342,7 +374,7 @@
   <div class="modal fade" id="monthly-payment-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content border-0 rounded-3">
-        <div class="modal-header border-0 pb-0">
+        <div class="modal-header border-bottom">
           <div class="d-flex align-items-center gap-2">
             <span class="modal-icon-chip">
               <em class="fas fa-calendar-check"></em>
@@ -353,25 +385,41 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label>{{ $t('drivers.monthly_payments.field_period') }}</label>
-            <input type="month" class="form-control" v-model="monthlyPaymentPeriod" />
-            <small class="text-muted">{{ $t('drivers.monthly_payments.hint_period') }}</small>
+            <label class="mb-2">{{ $t('drivers.monthly_payments.field_period') }}</label>
+            <div class="period-pill-row">
+              <button
+                v-for="opt in periodOptions"
+                :key="opt.value"
+                type="button"
+                class="history-tab-pill"
+                :class="{ active: monthlyPaymentPeriod === opt.value }"
+                @click="monthlyPaymentPeriod = opt.value"
+              >{{ opt.label }}</button>
+            </div>
           </div>
-          <div class="form-group mt-2">
+          <div class="form-group mt-3">
             <label>{{ $t('drivers.monthly_payments.field_amount') }}</label>
-            <input type="number" class="form-control" v-model="monthlyPaymentAmount" min="0" />
-            <small class="text-muted">{{ $t('drivers.monthly_payments.hint_amount') }}</small>
+            <div class="input-group mt-1">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" v-model="monthlyPaymentAmount" min="0" />
+            </div>
           </div>
-          <div class="form-group mt-2">
+          <div class="monthly-info-box mt-3 d-flex align-items-start gap-2">
+            <em class="fas fa-info-circle text-info mt-1 flex-shrink-0"></em>
+            <span>{{ $t('drivers.monthly_payments.info_registered_by', { name: currentUserName }) }}</span>
+          </div>
+          <div class="form-group mt-3">
             <label>{{ $t('drivers.monthly_payments.field_note') }}</label>
-            <input type="text" class="form-control" v-model="monthlyPaymentNote" :placeholder="$t('drivers.monthly_payments.placeholder_note')" />
+            <textarea class="form-control mt-1" rows="3" v-model="monthlyPaymentNote" :placeholder="$t('drivers.monthly_payments.placeholder_note')"></textarea>
           </div>
         </div>
         <div class="modal-footer border-0">
-          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
-            {{ $t('common.actions.close') }}
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            {{ $t('common.actions.cancel') }}
           </button>
-          <button @click="addMonthlyPayment" type="button" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+          <button @click="addMonthlyPayment" type="button" class="btn bg-gradient-primary">
+            <em class="fas fa-calendar-plus me-1"></em>{{ $t('drivers.monthly_payments.action_register') }}
+          </button>
         </div>
       </div>
     </div>
@@ -463,7 +511,7 @@ import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import RosterPanel from '@/components/vehicles/RosterPanel.vue'
 import i18n from '@/plugins/i18n'
-import { onBeforeMount, ref, Ref, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, ref, Ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import { mixed, object, string } from 'yup'
@@ -496,9 +544,19 @@ const router = useRouter()
 const { t } = useI18n()
 const driverStore = useDriversStore()
 const currentUser = AuthService.getCurrentUser()
+const currentUserName = computed(() => currentUser.name || '—')
+const periodOptions = computed(() =>
+  Array.from({ length: 5 }, (_, i) => {
+    const d = dayjs().subtract(i, 'month')
+    const raw = d.format('MMM YY')
+    const label = raw.charAt(0).toUpperCase() + raw.slice(1)
+    return { label, value: d.format('YYYY-MM') }
+  })
+)
 const { setLoading } = useLoadingState()
 const newBalance = ref(0)
 const rechargeNote = ref('')
+const adjustmentType = ref<'add' | 'subtract'>('add')
 const activeHistoryTab = ref<'saldo' | 'mensualidades'>('saldo')
 const { branchSelected } = storeToRefs(useSettingsStore())
 const schema = object().shape({
@@ -586,6 +644,17 @@ onBeforeMount(() => {
     })
 })
 
+onMounted(() => {
+  const balanceModalEl = document.getElementById('balance-modal')
+  if (balanceModalEl) {
+    balanceModalEl.addEventListener('hidden.bs.modal', () => {
+      newBalance.value = 0
+      rechargeNote.value = ''
+      adjustmentType.value = 'add'
+    })
+  }
+})
+
 function uploadImgDriver(url: string): void {
   driver.value.photoUrl = url
   updateDriver()
@@ -627,11 +696,14 @@ function updatePassword(): void {
 }
 
 function addBalance(): void {
+  if (!newBalance.value || newBalance.value <= 0) return
+  const amount = adjustmentType.value === 'subtract' ? -Math.abs(newBalance.value) : Math.abs(newBalance.value)
   setLoading(true)
-  DriverRepository.createRecharge(driver.value, newBalance.value, rechargeNote.value).then(async (result) => {
+  DriverRepository.createRecharge(driver.value, amount, rechargeNote.value).then(async (result) => {
     driver.value.balance = result.driver.balance
     newBalance.value = 0
     rechargeNote.value = ''
+    adjustmentType.value = 'add'
     await loadRecharges()
     setLoading(false)
     hide('balance-modal')
@@ -781,5 +853,26 @@ function removeDevice(): void {
   color: #fff;
   font-size: 0.78rem;
   flex: none;
+}
+
+.period-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.monthly-info-box {
+  --monthly-info-bg: rgba(23, 193, 232, 0.08);
+  --monthly-info-text: #67748e;
+  background: var(--monthly-info-bg);
+  color: var(--monthly-info-text);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+}
+
+:global(body.dark-version) .monthly-info-box {
+  --monthly-info-bg: rgba(255, 255, 255, 0.06);
+  --monthly-info-text: rgba(255, 255, 255, 0.75);
 }
 </style>
