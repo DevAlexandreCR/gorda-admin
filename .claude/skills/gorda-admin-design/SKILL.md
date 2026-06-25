@@ -36,6 +36,10 @@ the app. Don't copy its `data-theme` token names; production uses different mech
 Type: **Open Sans**. Icons: **Font Awesome 6** (`fas fa-*`) and the bundled **nucleo** set.
 Shape: rounded-xl cards, soft drop shadows, gradient-filled buttons and icon chips.
 
+For new work, prefer the centralized semantic tokens defined in `admin/src/assets/scss/custom/__theme.scss`
+(e.g. `var(--surface-card)`, `var(--text-heading)`, `var(--border-subtle)`) instead of hardcoding the
+Soft UI hex values above — the theme file is the single source of truth for both light and dark values.
+
 ## Production conventions to follow
 
 1. **Use Soft UI / Bootstrap 5 utility classes first.** Reach for the classes already in the
@@ -77,8 +81,9 @@ Shape: rounded-xl cards, soft drop shadows, gradient-filled buttons and icon chi
 ## Don't
 
 - Don't add a new UI/CSS framework or icon set, or new dependencies for styling.
-- Don't invent a global token layer or migrate existing views to the kit's `data-theme` tokens —
-  this skill is descriptive.
+- Don't adopt the kit's `data-theme` attribute mechanic, and don't bulk-migrate existing feature vars
+  (`--drivers-filter-*`, `--wp-*`, `--detail-*`, `--billing-*`) onto the palette — migrate
+  incrementally as views are edited.
 - Don't write custom CSS where a Soft UI/Bootstrap class exists.
 - Don't ship light-only styling — always provide the `body.dark-version` variant.
 - Don't add comments unless logic is non-obvious (English only, per repo rules).

@@ -144,10 +144,11 @@
               <hr class="detail-divider">
               <div class="form-group">
                 <div class="input-group" v-if="driver.device">
+                  <span class="input-group-text"><em class="fas fa-mobile-screen"></em></span>
                   <input type="text" class="form-control form-control-sm disabled"
                          disabled aria-label="Device" name="device.name"
                          aria-describedby="device-addon" v-model="driver.device.name">
-                  <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()">
+                  <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()" style="border-radius: 0 .5rem .5rem 0">
                     <em class="fa fa-solid fa-trash"></em>
                   </button>
                 </div>
@@ -200,7 +201,7 @@
                     {{ $t('drivers.forms.current_balance') }}
                   </div>
                   <div class="d-flex align-items-baseline gap-2">
-                    <span style="font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.03em">{{ driver.balance }}</span>
+                    <span style="font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.03em">{{ StrHelper.formatBalance(driver.balance) }}</span>
                     <span style="font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.4)">{{ branchSelected?.currency_code }}</span>
                   </div>
                 </div>
@@ -314,7 +315,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label>{{ $t('drivers.forms.current_balance') }}</label>
-            <span class="form-control-plaintext">{{ driver.balance + branchSelected?.currency_code }}</span>
+            <span class="form-control-plaintext">{{ StrHelper.formatBalance(driver.balance) }} {{ branchSelected?.currency_code }}</span>
           </div>
           <div class="form-group">
             <label>{{ $t('drivers.forms.add_balance') }}</label>

@@ -1,9 +1,5 @@
 <template>
   <div class="roster-panel">
-    <div class="card-header text-center text-capitalize">
-      <h6>{{ $t('drivers.forms.create_vehicle') }}</h6>
-    </div>
-
     <div v-if="links.length === 0 && !showLookup" class="text-muted small mt-2">
       {{ $t('vehicles.messages.no_linked_drivers') }}
     </div>
@@ -43,7 +39,7 @@
             {{ $t('vehicles.fields.selectable') }}
           </label>
         </div>
-        <span v-if="link.is_active" class="badge bg-success ms-1">
+        <span v-if="link.is_active" class="badge bg-success rounded-pill ms-1">
           {{ $t('common.fields.enabled') }}
         </span>
       </li>
@@ -130,3 +126,15 @@ async function onVehicleSelected(payload: VehiclePayload): Promise<void> {
 
 onMounted(fetchLinks)
 </script>
+
+<style scoped lang="scss">
+.roster-panel :deep(.form-check-input[type='radio']:checked) {
+  background-image: none;
+  background-color: #82d616;
+  border-color: #82d616;
+}
+body.dark-version .roster-panel :deep(.form-check-input[type='radio']:checked) {
+  background-color: #82d616;
+  border-color: #82d616;
+}
+</style>
