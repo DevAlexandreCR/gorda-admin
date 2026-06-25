@@ -142,10 +142,13 @@ export const useServicesStore = defineStore('servicesStore', {
     },
 		
 		filterInProgressServices(search: string): Array<ServiceList> {
+			const query = search.toLowerCase()
+			// Services without an assigned driver are intentionally excluded from search.
 			return this.inProgress.filter(service => {
-				if (service.driver)
-					return service.driver.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
-						service.phone.toLowerCase().includes(search.toLowerCase())
+				if (!service.driver) return false
+				const plate = (service.driver.vehicle?.plate ?? service.driver.selected_vehicle?.plate ?? '').toLowerCase()
+				const phone = (service.phone ?? '').toLowerCase()
+				return plate.includes(query) || phone.includes(query)
 			})
 		},
 	
