@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.6(2026-06-25)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.6...2.0.5)
+
+### Added
+
+- Add driver monthly payment management: configure monthly payment settings and record/adjust per-driver balances from the driver detail view, with a payment history section.
+- Add a balance formatting utility.
+
+### Changed
+
+- Optimize driver enable logic and remove the bulk enable action from the drivers view.
+- Exclude in-progress services without an assigned driver from the services filtering.
+- Improve dark mode theming and styling.
+
 ## [2.0.5(2026-06-12)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.5...2.0.4)
 
 ### Fixed
