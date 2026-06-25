@@ -38,6 +38,14 @@
   --wp-button-bg: #0ba543;
   --wp-button-bg-hover: #1ebd5f;
   --wp-button-text: #ffffff;
+
+  /* Driver detail view */
+  --detail-section-label: #344767;
+  --detail-divider: #e9ecef;
+  --detail-input-surface: #ffffff;
+  --detail-input-border: #d2d6da;
+  --detail-pill-active-bg: #fde6f7;
+  --detail-pill-active-text: #a30c80;
 }
 
 body.dark-version {
@@ -73,6 +81,20 @@ body.dark-version {
   --wp-button-bg: #25d366;
   --wp-button-bg-hover: #3ae084;
   --wp-button-text: #0a0a0a;
+
+  /* Driver detail view */
+  --detail-section-label: rgba(255,255,255,0.85);
+  --detail-divider: rgba(255,255,255,0.12);
+  --detail-input-surface: rgba(255,255,255,0.06);
+  --detail-input-border: rgba(255,255,255,0.3);
+  --detail-pill-active-bg: rgba(203,12,159,0.25);
+  --detail-pill-active-text: #f38cd6;
+
+  /* Card borders for dark background contrast */
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+  }
 }
 
 /* Generic dark-mode bridges for leftover utilities */

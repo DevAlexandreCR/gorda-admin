@@ -113,4 +113,14 @@ export default {
     col_date: 'Date',
     col_note: 'Note',
   },
+  detail: {
+    section_vehicles: 'Assigned vehicles',
+    section_device: 'Device',
+    section_status_payments: 'Status and payments',
+    section_history: 'History',
+    tab_saldo: 'Balance',
+    tab_mensualidades: 'Monthly payments',
+    empty_recharges: 'No balance movements',
+    empty_monthly_payments: 'No monthly payments recorded',
+  },
 }

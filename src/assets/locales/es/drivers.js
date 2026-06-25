@@ -111,4 +111,14 @@ export default {
     col_date: 'Fecha',
     col_note: 'Nota',
   },
+  detail: {
+    section_vehicles: 'Vehículos asignados',
+    section_device: 'Dispositivo',
+    section_status_payments: 'Estado y pagos',
+    section_history: 'Historial',
+    tab_saldo: 'Saldo',
+    tab_mensualidades: 'Mensualidades',
+    empty_recharges: 'Sin movimientos de saldo',
+    empty_monthly_payments: 'Sin mensualidades registradas',
+  },
 }
