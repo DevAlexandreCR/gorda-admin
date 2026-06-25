@@ -47,7 +47,9 @@ const {t} = useI18n()
 
 watchEffect(async () => {
   props.drivers.forEach(driver => {
-    if (driver.id) plates.value.push({id: driver.id, value: driver.vehicle.plate})
+    if (driver.id && driver.vehicle?.plate) {
+      plates.value.push({id: driver.id, value: driver.vehicle.plate})
+    }
   })
 })
 
