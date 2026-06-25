@@ -102,6 +102,7 @@ function searchElements(): void {
   let matches = 0
   if (term.length > 2) {
     foundElements.value = props.elements.filter(element => {
+      if (!element.value) return false
       if (element.value.toLowerCase().includes(term.toLowerCase()) && matches < 10) {
         matches++
         return element

@@ -192,8 +192,8 @@ watch(() => pagination.value.perPage, async () => {
 
 watchEffect(async () => {
   plates.value = drivers
-    .filter(driver => driver.id)
-    .map(driver => ({ id: driver.id as string, value: driver.vehicle.plate }))
+    .filter(driver => driver.id && driver.vehicle?.plate)
+    .map(driver => ({ id: driver.id as string, value: driver.vehicle!.plate }))
 })
 
 onBeforeMount(async () => {
