@@ -22,4 +22,8 @@ export class StrHelper {
 			.replace(/\s+/g, '')
 			.trim()
 	}
+
+	static formatBalance(amount: number): string {
+		return Number(amount || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 })
+	}
 }

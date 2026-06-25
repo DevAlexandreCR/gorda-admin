@@ -135,7 +135,21 @@
       color: $white !important;
     }
   }
-  
+
+  // Breadcrumbs outside the navbar: drop the light gray pill in dark mode
+  .breadcrumb {
+    background-color: transparent;
+
+    .breadcrumb-item.active {
+      color: $white;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+      color: $white;
+      opacity: 0.5;
+    }
+  }
+
 
 
     h1, .h1,

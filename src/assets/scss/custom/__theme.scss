@@ -4,12 +4,57 @@
   /* Browser-native styling hints */
   color-scheme: light;
 
+  /* Palette: surfaces */
+  --body-bg: #f3f4f6;
+  --surface-card: #ffffff;
+  --surface-input: #ffffff;
+
+  /* Palette: text */
+  --text-heading: #344767;
+  --text-body: #67748e;
+  --text-secondary: #67748e;
+  --text-muted: #8392ab;
+
+  /* Palette: borders */
+  --border-color: #d2d6da;
+  --border-subtle: #e9ecef;
+
+  /* Palette: brand */
+  --primary: #cb0c9f;
+  --success: #82d616;
+  --danger: #ea0606;
+  --gradient-primary: linear-gradient(310deg, #7928ca, #ff0080);
+
+  /* Palette: badges */
+  --badge-primary-bg: #fde6f7;
+  --badge-primary-fg: #a30c80;
+  --badge-success-bg: #eafad0;
+  --badge-success-fg: #3b6e00;
+  --badge-danger-bg: #fdeaea;
+  --badge-danger-fg: #d60808;
+  --badge-warning-bg: #fef6d8;
+  --badge-warning-fg: #8a6d00;
+  --badge-info-bg: #d7f3fb;
+  --badge-info-fg: #0e7490;
+  --badge-secondary-bg: #eef1f6;
+  --badge-secondary-fg: #5b6b85;
+
+  /* Palette: shadows */
+  --shadow-card: 0 20px 27px 0 rgba(0,0,0,.05);
+  --shadow-btn: 0 4px 7px -1px rgba(0,0,0,.11), 0 2px 4px -1px rgba(0,0,0,.07);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.07);
+  --shadow-sm: 0 .25rem .5rem rgba(0,0,0,.08);
+
+  /* Palette: type */
+  --font-sans: 'Open Sans', sans-serif;
+  --font-mono: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+
   /* Scrollbar */
   --scrollbar-track: #f0f0f0;
   --scrollbar-thumb: #c0c0c0;
 
   /* Surfaces */
-  --card-bg: #ffffff;
+  --card-bg: var(--surface-card);
   --card-text: #2b2b2b;
   --muted-text: #6c757d;
 
@@ -38,15 +83,59 @@
   --wp-button-bg: #0ba543;
   --wp-button-bg-hover: #1ebd5f;
   --wp-button-text: #ffffff;
+
+  /* Driver detail view */
+  --detail-section-label: #344767;
+  --detail-divider: #e9ecef;
+  --detail-input-surface: #ffffff;
+  --detail-input-border: #d2d6da;
+  --detail-pill-active-bg: #fde6f7;
+  --detail-pill-active-text: #a30c80;
 }
 
 body.dark-version {
   color-scheme: dark;
 
+  /* Palette: surfaces */
+  --body-bg: #0f1322;
+  --surface-card: #111322;
+  --surface-input: #1a1d31;
+
+  /* Palette: text */
+  --text-heading: #ffffff;
+  --text-body: rgba(255,255,255,.85);
+  --text-secondary: rgba(255,255,255,.70);
+  --text-muted: rgba(255,255,255,.60);
+
+  /* Palette: borders */
+  --border-color: rgba(255,255,255,.30);
+  --border-subtle: rgba(255,255,255,.12);
+
+  /* Palette: badges */
+  --badge-primary-bg: rgba(203,12,159,.18);
+  --badge-primary-fg: #f38cd6;
+  --badge-success-bg: rgba(130,214,22,.16);
+  --badge-success-fg: #c6f68d;
+  --badge-danger-bg: rgba(234,6,6,.16);
+  --badge-danger-fg: #ff8f8f;
+  --badge-warning-bg: rgba(251,207,51,.16);
+  --badge-warning-fg: #fde047;
+  --badge-info-bg: rgba(23,193,232,.16);
+  --badge-info-fg: #7dd3fc;
+  --badge-secondary-bg: rgba(131,146,171,.18);
+  --badge-secondary-fg: #c7d0de;
+
+  /* Palette: shadows */
+  --shadow-card: 0 4px 18px rgba(0,0,0,.35);
+  --shadow-btn: 0 4px 10px rgba(0,0,0,.40);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.40);
+  --shadow-sm: 0 .25rem .5rem rgba(0,0,0,.45);
+
   --scrollbar-track: #2a2d3a;
   --scrollbar-thumb: #50556a;
 
-  --card-bg: #111322;
+  /* Re-aliased in dark so the var() indirection resolves against the dark --surface-card (#111322); a :root-only alias would stay locked to the light value. */
+  --card-bg: var(--surface-card);
   --card-text: rgba(255,255,255,0.85);
   --muted-text: rgba(255,255,255,0.6);
 
@@ -73,6 +162,20 @@ body.dark-version {
   --wp-button-bg: #25d366;
   --wp-button-bg-hover: #3ae084;
   --wp-button-text: #0a0a0a;
+
+  /* Driver detail view */
+  --detail-section-label: rgba(255,255,255,0.85);
+  --detail-divider: rgba(255,255,255,0.12);
+  --detail-input-surface: rgba(255,255,255,0.06);
+  --detail-input-border: rgba(255,255,255,0.3);
+  --detail-pill-active-bg: rgba(203,12,159,0.25);
+  --detail-pill-active-text: #f38cd6;
+
+  /* Card borders for dark background contrast */
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+  }
 }
 
 /* Generic dark-mode bridges for leftover utilities */
@@ -188,6 +291,11 @@ body.dark-version {
   .gorda-infowindow { color: var(--card-text); }
 }
 
+.form-switch .form-check-input:checked {
+  background-color: #cb0c9f;
+  border-color: #cb0c9f;
+}
+
 /* Tabs (Bootstrap nav-tabs) */
 body.dark-version {
   .nav.nav-tabs {
@@ -206,5 +314,9 @@ body.dark-version {
   }
   .shadow-blur {
     box-shadow: inset 0 0 1px 1px rgba(255,255,255,0.08), 0 20px 27px 0 rgba(0,0,0,0.35) !important;
+  }
+  .form-switch .form-check-input:checked {
+    background-color: #cb0c9f;
+    border-color: #cb0c9f;
   }
 }

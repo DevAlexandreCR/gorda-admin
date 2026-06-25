@@ -55,9 +55,6 @@
         <button class="btn btn-sm btn-outline-secondary" @click="bulkSendMessage">
           {{ $t('common.actions.send_message') }}
         </button>
-        <button class="btn btn-sm btn-outline-success" @click="bulkEnable">
-          {{ $t('common.fields.enabled') }}
-        </button>
         <button class="btn btn-sm btn-outline-danger" @click="bulkDisable">
           {{ $t('common.fields.disabled') }}
         </button>
@@ -608,25 +605,6 @@ function closeBulkSendModal(): void {
   bulkModalOpen.value = false
   clearSelection()
   triggerRefetch()
-}
-
-async function bulkEnable(): Promise<void> {
-  const ids = Array.from(selectedIds.value)
-  setLoading(true)
-  try {
-    const result = await DriverRepository.bulkEnable(ids)
-    const message = i18n.global.t('drivers.bulk.enable_result', {
-      processed: result.processed,
-      failed: result.failed.length,
-    })
-    ToastService.toast(result.failed.length === 0 ? ToastService.SUCCESS : ToastService.ERROR, message)
-  } catch (e: any) {
-    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e?.message)
-  } finally {
-    setLoading(false)
-    clearSelection()
-    triggerRefetch()
-  }
 }
 
 async function bulkDisable(): Promise<void> {

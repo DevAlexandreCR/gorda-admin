@@ -20,6 +20,7 @@ import CacheStore from '@/services/stores/CacheStore'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 import { DriverListQuery } from '@/types/DriverListQuery'
 import { RechargeInterface } from '@/types/RechargeInterface'
+import { MonthlyPaymentInterface } from '@/types/MonthlyPaymentInterface'
 import AuthService from '@/services/AuthService'
 
 class DriverRepository {
@@ -74,22 +75,52 @@ class DriverRepository {
     }
   }
 
+  async createMonthlyPayment(
+    driverId: string,
+    { period, amount, note }: { period: string; amount: number; note?: string | null }
+  ): Promise<{ payment: MonthlyPaymentInterface; driver: any }> {
+    const currentUser = AuthService.currentUser
+    if (!currentUser?.id) {
+      throw new Error('Cannot register monthly payment: actor identity could not be resolved')
+    }
+    const response = await serverApi.post<ApiResponse<{ payment: MonthlyPaymentInterface; driver: any }>>(
+      `/drivers/${driverId}/monthly-payments`,
+      {
+        period,
+        amount,
+        created_by: { uid: currentUser.id, name: currentUser.name },
+        note: note ?? null,
+      }
+    )
+    return response.data.data
+  }
+
+  async listMonthlyPayments(driverId: string, page = 1): Promise<{ rows: MonthlyPaymentInterface[]; total: number }> {
+    const response = await serverApi.get<ApiResponse<{ rows: MonthlyPaymentInterface[]; total: number }>>(
+      `/drivers/${driverId}/monthly-payments`,
+      { params: { page, perPage: 20 } }
+    )
+    return {
+      rows: response.data.data.rows ?? [],
+      total: response.data.data.total ?? 0,
+    }
+  }
+
   enable(driverId: string, enabledAt: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      UserRepository.enableAuth(driverId, enabledAt == 0)
-        .then(() => {
-          serverApi.patch(`/drivers/${driverId}/enabled`, { enabled_at: enabledAt }).then(async () => {
-            if (enabledAt == 0) {
-              await remove(child(DBService.dbOnlineDrivers(), driverId)).catch((e) => {
-                reject(new Error(e.message))
-              })
-            }
-            resolve()
-            CacheStore.clear(CacheStore.ALL_DRIVERS)
-          })
+      serverApi.patch(`/drivers/${driverId}/enabled`, { enabled_at: enabledAt })
+        .then(async () => {
+          await UserRepository.enableAuth(driverId, enabledAt == 0)
+          if (enabledAt == 0) {
+            await remove(child(DBService.dbOnlineDrivers(), driverId)).catch((e) => {
+              reject(new Error(e.message))
+            })
+          }
+          resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
         })
         .catch((e) => {
-          reject(new Error(e.message))
+          reject(new Error(e.response?.data?.message ?? e.message))
         })
     })
   }
