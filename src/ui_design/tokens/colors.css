@@ -1,0 +1,184 @@
+/* ============================================================
+   GORDA · COLOR TOKENS
+   Lifted verbatim from the Soft UI Dashboard SCSS the admin
+   platform ships with (admin/src/assets/scss/.../_variables.scss).
+   Base palette + semantic aliases + signature gradients.
+   ============================================================ */
+:root {
+  /* ---- Neutral / gray ramp (Bootstrap base) ---- */
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  --white: #ffffff;
+  --black: #000000;
+
+  /* ---- Brand / theme colors ---- */
+  --primary: #cb0c9f;      /* Gorda magenta — primary action & active state */
+  --secondary: #8392ab;    /* slate */
+  --info: #17c1e8;         /* cyan */
+  --success: #82d616;      /* lime green */
+  --warning: #fbcf33;      /* amber */
+  --danger: #ea0606;       /* red */
+  --light: #e9ecef;
+  --dark: #344767;         /* deep navy — headings */
+
+  /* ---- Text colors ---- */
+  --text-heading: #344767; /* h1–h6, strong labels */
+  --text-body: #67748e;    /* default body copy */
+  --text-muted: #6c757d;   /* captions, secondary */
+  --text-secondary: #8392ab;
+
+  /* ---- Surfaces ---- */
+  --body-bg: #f8f9fa;      /* app shell background (bg-gray-100) */
+  --surface-card: #ffffff;
+  --surface-input: #ffffff;
+  --border-color: #d2d6da; /* input borders */
+  --border-subtle: #dee2e6;
+
+  /* ---- Signature Soft UI gradients (310deg) ---- */
+  --gradient-primary: linear-gradient(310deg, #7928ca, #ff0080); /* @kind color */
+  --gradient-secondary: linear-gradient(310deg, #627594, #a8b8d8); /* @kind color */
+  --gradient-info: linear-gradient(310deg, #2152ff, #21d4fd); /* @kind color */
+  --gradient-success: linear-gradient(310deg, #17ad37, #98ec2d); /* @kind color */
+  --gradient-warning: linear-gradient(310deg, #f53939, #fbcf33); /* @kind color */
+  --gradient-danger: linear-gradient(310deg, #d60808, #ff6690); /* @kind color */
+  --gradient-dark: linear-gradient(310deg, #141727, #3a416f); /* @kind color */
+  --gradient-light: linear-gradient(310deg, #ced4da, #ebeff4); /* @kind color */
+
+  /* ---- Text gradients (used for accent headings / links) ---- */
+  --text-gradient-info: linear-gradient(310deg, #2152ff, #21d4fd); /* @kind color */
+  --text-gradient-primary: linear-gradient(310deg, #7928ca, #ff0080); /* @kind color */
+
+  /* ---- Domain accents ---- */
+  --whatsapp-green: #25d366;      /* WhatsApp connected / chat bubble */
+  --whatsapp-header: #075e54;     /* WhatsApp chat header */
+  --whatsapp-chat-bg: #e5ddd5;    /* WhatsApp conversation canvas */
+  --driver-amber: #fbbf24;        /* driver filter active accent */
+  --driver-amber-text: #b45309;
+
+  /* ---- Status (service lifecycle) ---- */
+  --status-pending: #fbcf33;      /* warning */
+  --status-in-progress: #17c1e8;  /* info */
+  --status-completed: #82d616;    /* success */
+  --status-canceled: #ea0606;     /* danger */
+
+  /* ---- Badge soft-tint tokens (light default) ---- */
+  --badge-primary-bg: #fde6f7;    --badge-primary-fg: #a30c80;
+  --badge-secondary-bg: #eef1f6;  --badge-secondary-fg: #5b6b8c;
+  --badge-info-bg: #dcf6fd;       --badge-info-fg: #0a7c97;
+  --badge-success-bg: #eafad0;    --badge-success-fg: #4d8b00;
+  --badge-warning-bg: #fef6d8;    --badge-warning-fg: #9a7b00;
+  --badge-danger-bg: #fde0e0;     --badge-danger-fg: #b30505;
+  --badge-dark-bg: #e3e7ef;       --badge-dark-fg: #344767;
+  --badge-light-bg: #f4f6f9;      --badge-light-fg: #67748e;
+
+  /* ---- Disabled surface ---- */
+  --surface-disabled: #e9ecef;
+}
+
+/* ============================================================
+   DARK THEME
+   Activated by [data-theme="dark"] on <html> or <body>.
+   Also activates automatically from OS preference unless
+   the consumer pins light mode with [data-theme="light"].
+   ============================================================ */
+
+[data-theme="dark"] {
+  /* ---- Surfaces ---- */
+  --body-bg: #1a1f2e;
+  --surface-card: #252d3d;
+  --surface-input: #1e2536;
+  --surface-disabled: #1a1f2e;
+
+  /* ---- Text ---- */
+  --text-heading: #ffffff;
+  --text-body: #a8b8d8;
+  --text-muted: #7b88a8;
+  --text-secondary: #8392ab;
+
+  /* ---- Borders ---- */
+  --border-color: #344767;
+  --border-subtle: #2d3655;
+
+  /* ---- Semantic adjustments ---- */
+  --light: #252d3d;
+  --dark: #e0e7f0;
+
+  /* ---- Shadows (stronger contrast on dark) ---- */
+  --shadow-card: 0 20px 27px 0 rgba(0, 0, 0, 0.4);
+  --shadow-blur: inset 0 0 1px 1px rgba(255, 255, 255, 0.06), 0 20px 27px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.3), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.2);
+
+  /* ---- Badge soft tints (dark) ---- */
+  --badge-primary-bg: #3a0826;    --badge-primary-fg: #f296db;
+  --badge-secondary-bg: #1e263a;  --badge-secondary-fg: #8fa9cc;
+  --badge-info-bg: #0b1d40;       --badge-info-fg: #4ec9f5;
+  --badge-success-bg: #0e2b06;    --badge-success-fg: #aad94b;
+  --badge-warning-bg: #2c1f00;    --badge-warning-fg: #f7d354;
+  --badge-danger-bg: #2c0606;     --badge-danger-fg: #f56666;
+  --badge-dark-bg: #1a1f2e;       --badge-dark-fg: #a8b8d8;
+  --badge-light-bg: #252d3d;      --badge-light-fg: #8392ab;
+}
+
+/* OS-level dark preference — applies automatically.
+   Explicit [data-theme="light"] wins due to higher specificity. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-bg: #1a1f2e;
+    --surface-card: #252d3d;
+    --surface-input: #1e2536;
+    --surface-disabled: #1a1f2e;
+    --text-heading: #ffffff;
+    --text-body: #a8b8d8;
+    --text-muted: #7b88a8;
+    --text-secondary: #8392ab;
+    --border-color: #344767;
+    --border-subtle: #2d3655;
+    --light: #252d3d;
+    --dark: #e0e7f0;
+    --shadow-card: 0 20px 27px 0 rgba(0, 0, 0, 0.4);
+    --shadow-blur: inset 0 0 1px 1px rgba(255, 255, 255, 0.06), 0 20px 27px 0 rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.3), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.2);
+    --badge-primary-bg: #3a0826;    --badge-primary-fg: #f296db;
+    --badge-secondary-bg: #1e263a;  --badge-secondary-fg: #8fa9cc;
+    --badge-info-bg: #0b1d40;       --badge-info-fg: #4ec9f5;
+    --badge-success-bg: #0e2b06;    --badge-success-fg: #aad94b;
+    --badge-warning-bg: #2c1f00;    --badge-warning-fg: #f7d354;
+    --badge-danger-bg: #2c0606;     --badge-danger-fg: #f56666;
+    --badge-dark-bg: #1a1f2e;       --badge-dark-fg: #a8b8d8;
+    --badge-light-bg: #252d3d;      --badge-light-fg: #8392ab;
+  }
+}
+
+/* Explicit light-mode pin — overrides OS preference (higher specificity than :root). */
+[data-theme="light"] {
+  --body-bg: #f8f9fa;
+  --surface-card: #ffffff;
+  --surface-input: #ffffff;
+  --surface-disabled: #e9ecef;
+  --text-heading: #344767;
+  --text-body: #67748e;
+  --text-muted: #6c757d;
+  --text-secondary: #8392ab;
+  --border-color: #d2d6da;
+  --border-subtle: #dee2e6;
+  --light: #e9ecef;
+  --dark: #344767;
+  --shadow-card: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  --shadow-blur: inset 0 0 1px 1px rgba(255, 255, 255, 0.9), 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 0.25rem 0.375rem -0.0625rem rgba(20, 20, 20, 0.12), 0 0.125rem 0.25rem -0.0625rem rgba(20, 20, 20, 0.07);
+  --badge-primary-bg: #fde6f7;    --badge-primary-fg: #a30c80;
+  --badge-secondary-bg: #eef1f6;  --badge-secondary-fg: #5b6b8c;
+  --badge-info-bg: #dcf6fd;       --badge-info-fg: #0a7c97;
+  --badge-success-bg: #eafad0;    --badge-success-fg: #4d8b00;
+  --badge-warning-bg: #fef6d8;    --badge-warning-fg: #9a7b00;
+  --badge-danger-bg: #fde0e0;     --badge-danger-fg: #b30505;
+  --badge-dark-bg: #e3e7ef;       --badge-dark-fg: #344767;
+  --badge-light-bg: #f4f6f9;      --badge-light-fg: #67748e;
+}

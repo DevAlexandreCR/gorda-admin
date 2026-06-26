@@ -1,0 +1,40 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Brand · Primary" subtitle="Gorda magenta — primary actions & active state" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-card); }
+  .row { display: flex; gap: 14px; }
+  .sw { flex: 1; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xs); border: 1px solid var(--gray-200); }
+  .chip { height: 76px; display: flex; align-items: flex-end; padding: 8px 10px; }
+  .meta { padding: 8px 10px; background: var(--surface-card); }
+  .name { font-size: var(--fs-xs); font-weight: 700; color: var(--text-heading); }
+  .hex { font-size: var(--fs-xs); color: var(--text-muted); font-family: var(--font-mono); }
+  .on { color: #fff; font-size: var(--fs-xs); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw">
+      <div class="chip" style="background: var(--primary);"><span class="on">Aa</span></div>
+      <div class="meta"><div class="name">Primary</div><div class="hex">#cb0c9f</div></div>
+    </div>
+    <div class="sw">
+      <div class="chip" style="background: var(--gradient-primary);"><span class="on">Aa</span></div>
+      <div class="meta"><div class="name">Primary gradient</div><div class="hex">#7928CA → #FF0080</div></div>
+    </div>
+    <div class="sw">
+      <div class="chip" style="background: var(--dark);"><span class="on">Aa</span></div>
+      <div class="meta"><div class="name">Dark / navy</div><div class="hex">#344767</div></div>
+    </div>
+  </div>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

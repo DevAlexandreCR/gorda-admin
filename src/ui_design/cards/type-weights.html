@@ -1,0 +1,33 @@
+<!-- @dsCard group="Type" viewport="700x150" name="Weights & font" subtitle="Open Sans · 300 / 400 / 600 / 700" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-card); }
+  .row { display: flex; gap: 28px; align-items: baseline; }
+  .w { text-align: center; }
+  .big { font-size: 2.6rem; color: var(--text-heading); line-height: 1; }
+  .lbl { font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="w"><div class="big" style="font-weight:300">Aa</div><div class="lbl">Light · 300</div></div>
+    <div class="w"><div class="big" style="font-weight:400">Aa</div><div class="lbl">Regular · 400</div></div>
+    <div class="w"><div class="big" style="font-weight:600">Aa</div><div class="lbl">Semibold · 600</div></div>
+    <div class="w"><div class="big" style="font-weight:700">Aa</div><div class="lbl">Bold · 700</div></div>
+    <div class="w" style="margin-left:auto; text-align:right">
+      <div style="font-size:1.4rem; font-weight:700; color:var(--primary)">Open Sans</div>
+      <div class="lbl" style="margin-top:4px">Google Fonts · the entire platform</div>
+    </div>
+  </div>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

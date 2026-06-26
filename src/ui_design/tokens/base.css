@@ -1,0 +1,71 @@
+/* ============================================================
+   GORDA · BASE ELEMENT STYLES
+   Minimal resets that apply the tokens to bare HTML so
+   consumer pages inherit the Gorda look without extra classes.
+   ============================================================ */
+* { box-sizing: border-box; }
+
+/* Smooth theme transitions */
+body, body * {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.2s ease,
+    color 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-normal);
+  line-height: var(--lh-base);
+  color: var(--text-body);
+  background-color: var(--body-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--space-2) 0;
+  font-family: var(--font-sans);
+  color: var(--heading-color);
+  font-weight: var(--heading-weight);
+  line-height: var(--lh-tight);
+}
+h1 { font-size: var(--fs-h1); letter-spacing: 0.1rem; }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+h5 { font-size: var(--fs-h5); }
+h6 { font-size: var(--fs-h6); }
+
+p { margin: 0 0 var(--space-3) 0; line-height: var(--lh-base); }
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--ease-base);
+}
+a:hover { color: #9c0a7a; }
+
+small { font-size: var(--fs-sm); }
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+/* Accent text helpers */
+.text-gradient-primary {
+  background: var(--text-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.text-gradient-info {
+  background: var(--text-gradient-info);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -1,0 +1,29 @@
+<!-- @dsCard group="Type" viewport="700x320" name="Heading scale" subtitle="Open Sans 700 · h1–h6 with px sizes" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-card); }
+  .item { display: flex; align-items: baseline; gap: 16px; padding: 6px 0; border-bottom: 1px solid var(--gray-100); }
+  .item:last-child { border-bottom: 0; }
+  .tag { width: 92px; flex: none; font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-muted); }
+  .spec { color: var(--text-heading); line-height: 1.1; }
+</style>
+</head>
+<body>
+  <div class="item"><span class="tag">h1 · 48px</span><span class="spec" style="font-size:var(--fs-h1)">Gorda</span></div>
+  <div class="item"><span class="tag">h2 · 36px</span><span class="spec" style="font-size:var(--fs-h2)">Services</span></div>
+  <div class="item"><span class="tag">h3 · 30px</span><span class="spec" style="font-size:var(--fs-h3)">Active drivers</span></div>
+  <div class="item"><span class="tag">h4 · 24px</span><span class="spec" style="font-size:var(--fs-h4)">Pending requests</span></div>
+  <div class="item"><span class="tag">h5 · 20px</span><span class="spec" style="font-size:var(--fs-h5)">Vehicle roster</span></div>
+  <div class="item"><span class="tag">h6 · 16px</span><span class="spec" style="font-size:var(--fs-h6)">WhatsApp connection</span></div>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

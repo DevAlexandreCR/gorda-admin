@@ -1,0 +1,49 @@
+/* ============================================================
+   GORDA · TYPOGRAPHY TOKENS
+   Open Sans throughout. Scale & weights from Soft UI variables.
+   ============================================================ */
+:root {
+  /* ---- Families ---- */
+  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* ---- Weights ---- */
+  --fw-light: 300;   /* @kind font */
+  --fw-normal: 400;  /* @kind font */
+  --fw-bold: 600;    /* @kind font */
+  --fw-bolder: 700;  /* @kind font */
+
+  /* ---- Base size ---- */
+  --fs-root: 16px;        /* 1rem */
+  --fs-body: 1rem;        /* 16px */
+
+  /* ---- Display / heading scale ---- */
+  --fs-h1: 3rem;          /* 48px */
+  --fs-h2: 2.25rem;       /* 36px */
+  --fs-h3: 1.875rem;      /* 30px */
+  --fs-h4: 1.5rem;        /* 24px */
+  --fs-h5: 1.25rem;       /* 20px */
+  --fs-h6: 1rem;          /* 16px */
+  --fs-lead: 1.25rem;     /* 20px, weight 300 */
+
+  /* ---- Utility text sizes ---- */
+  --fs-lg: 1.125rem;      /* 18px */
+  --fs-sm: 0.875rem;      /* 14px */
+  --fs-xs: 0.75rem;       /* 12px — buttons, labels */
+  --fs-xxs: 0.65rem;      /* ~10px — table heads, eyebrows */
+
+  /* ---- Line heights ---- */
+  --lh-tight: 1.2;        /* @kind font */
+  --lh-base: 1.6;         /* @kind font */
+  --lh-snug: 1.375;       /* @kind font */
+
+  /* ---- Letter spacing ---- */
+  --ls-tighter: -0.05rem; /* @kind font */
+  --ls-tight: -0.025rem;  /* @kind font */
+  --ls-normal: 0;         /* @kind font */
+  --ls-wide: 0.05rem;     /* @kind font */
+
+  /* ---- Weights for headings (all 700 in Soft UI when bolder) ---- */
+  --heading-weight: 700; /* @kind font */
+  --heading-color: var(--text-heading); /* @kind color */
+}

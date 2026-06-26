@@ -1,0 +1,37 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Logo" subtitle="Gorda mark — the magenta cat, rounded-lg on light & dark" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-card); font-family: var(--font-sans); }
+  .row { display: flex; gap: 16px; }
+  .tile { flex: 1; border-radius: var(--radius-xl); display: flex; align-items: center; gap: 14px; padding: 18px 20px; box-shadow: var(--shadow-xs); }
+  .name { font-weight: 700; font-size: 1.1rem; }
+  .sub { font-size: 0.7rem; opacity: 0.7; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="tile" style="background:#fff; border:1px solid var(--gray-200)">
+      <img src="../assets/logo.png" alt="Gorda" style="width:52px;height:52px;border-radius:var(--radius-lg)">
+      <div><div class="name" style="color:var(--text-heading)">Gorda</div><div class="sub" style="color:var(--text-muted)">On light surfaces</div></div>
+    </div>
+    <div class="tile" style="background:var(--gradient-dark)">
+      <img src="../assets/logo.png" alt="Gorda" style="width:52px;height:52px;border-radius:var(--radius-lg)">
+      <div><div class="name" style="color:#fff">Gorda</div><div class="sub" style="color:#fff">On dark / navy</div></div>
+    </div>
+    <div class="tile" style="background:var(--gradient-primary)">
+      <img src="../assets/logo.png" alt="Gorda" style="width:52px;height:52px;border-radius:var(--radius-lg)">
+      <div><div class="name" style="color:#fff">Gorda</div><div class="sub" style="color:#fff">On brand gradient</div></div>
+    </div>
+  </div>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

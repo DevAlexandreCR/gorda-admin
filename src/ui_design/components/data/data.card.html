@@ -1,0 +1,50 @@
+<!-- @dsCard group="Components" viewport="700x260" name="Cards, Stats & Avatars" subtitle="Surface card, KPI stat tiles & avatars" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; padding: 24px; background: var(--body-bg); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .row { display: flex; gap: 14px; align-items: center; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { Card, StatCard, Avatar } = window.GordaDesignSystem_019e24;
+    function Demo() {
+      return (
+        <div className="grid">
+          <StatCard label="Services today" value="248" icon="fas fa-route" color="info" delta="12%" />
+          <StatCard label="Active drivers" value="36" icon="fas fa-id-card" color="primary" delta="3" />
+          <Card header="Drivers online">
+            <div className="row">
+              <Avatar name="Carlos Ruiz" status="online" />
+              <Avatar name="Ana Lopez" status="busy" />
+              <Avatar name="Jose Marin" status="offline" />
+              <Avatar name="Add" rounded="lg" />
+            </div>
+          </Card>
+          <Card header="Note">
+            <span style={{fontSize:'0.875rem',color:'var(--text-body)'}}>White surface, rounded-xl, signature soft shadow.</span>
+          </Card>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+  </script>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

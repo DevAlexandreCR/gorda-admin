@@ -1,0 +1,34 @@
+<!-- @dsCard group="Colors" viewport="700x130" name="Neutral ramp" subtitle="Gray scale — backgrounds, borders, muted text" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Theme: anti-flash init -->
+<script>(function(){var t=localStorage.getItem('gorda-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 20px; background: var(--surface-card); }
+  .row { display: flex; gap: 6px; }
+  .sw { flex: 1; text-align: center; }
+  .chip { height: 56px; border-radius: var(--radius-sm); border: 1px solid var(--gray-200); }
+  .name { font-size: 0.62rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 6px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw"><div class="chip" style="background:var(--gray-100)"></div><div class="name">100</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-200)"></div><div class="name">200</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-300)"></div><div class="name">300</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-400)"></div><div class="name">400</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-500)"></div><div class="name">500</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-600)"></div><div class="name">600</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-700)"></div><div class="name">700</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-800)"></div><div class="name">800</div></div>
+    <div class="sw"><div class="chip" style="background:var(--gray-900)"></div><div class="name">900</div></div>
+  </div>
+
+<!-- Theme toggle button -->
+<button id="__tt" title="Toggle theme" style="position:fixed;top:10px;right:10px;z-index:9999;width:28px;height:28px;border-radius:6px;border:1px solid var(--border-color);background:var(--surface-card);cursor:pointer;font-size:14px;line-height:1;padding:0;box-shadow:0 2px 9px -5px rgba(0,0,0,0.3);color:var(--text-heading);"></button>
+<script>(function(){var b=document.getElementById('__tt');function apply(t){document.documentElement.dataset.theme=t;b.textContent=t==='dark'?'☀':'☽';}apply(document.documentElement.dataset.theme||'light');b.addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('gorda-theme',n);apply(n);});window.addEventListener('storage',function(e){if(e.key==='gorda-theme')apply(e.newValue);});})()</script>
+</body>
+</html>

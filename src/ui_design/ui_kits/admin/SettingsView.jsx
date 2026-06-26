@@ -440,14 +440,24 @@ function SettTab3() {
 // MAIN · SettingsView
 // ─────────────────────────────────────────────────────────────────────────────
 function SettingsView() {
-  const [tab, setTab]     = React.useState('general');
-  const [toast, setToast] = React.useState(null);
-  const timerRef          = React.useRef(null);
+  const [tab, setTab]         = React.useState('general');
+  const [toast, setToast]     = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  const timerRef              = React.useRef(null);
 
   const showToast = msg => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setToast(msg);
     timerRef.current = setTimeout(() => setToast(null), 2800);
+  };
+
+  // Simulate a save: show loading overlay for 1.8 s then toast
+  const handleSave = msg => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      showToast(msg);
+    }, 1800);
   };
 
   const TABS = [
@@ -495,9 +505,12 @@ function SettingsView() {
         })}
       </div>
 
+      {/* Loading overlay */}
+      <LoadingModal open={loading} />
+
       {/* Content */}
-      {tab === 'general'  && <SettTab1 onSave={showToast} />}
-      {tab === 'tarifas'  && <SettTab2 onSave={showToast} />}
+      {tab === 'general'  && <SettTab1 onSave={handleSave} />}
+      {tab === 'tarifas'  && <SettTab2 onSave={handleSave} />}
       {tab === 'mensajes' && <SettTab3 />}
     </div>
   );
