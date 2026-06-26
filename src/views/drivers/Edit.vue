@@ -3,7 +3,7 @@
     <Form @submit="updateDriver" :validation-schema="schema">
 
       <!-- Page header: breadcrumb + driver name + back button -->
-      <div class="d-flex justify-content-between align-items-start mb-4 px-xxl-5">
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-start mb-4 px-xxl-5">
         <div>
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-1">
@@ -21,7 +21,7 @@
       <!-- Profile header card -->
       <div class="card mx-auto mx-xxl-5 mb-4">
         <div class="card-body">
-          <div class="d-flex gap-4 align-items-start">
+          <div class="d-flex flex-column flex-sm-row gap-4 align-items-start">
 
             <!-- Avatar with pencil overlay -->
             <div class="position-relative" style="flex: none; padding-top: 0.25rem">
@@ -230,7 +230,7 @@
 
     <!-- Historial (outside Form) -->
     <div class="card mx-auto mx-xxl-5">
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold" style="color: var(--detail-section-label)">
           {{ $t('drivers.detail.section_history') }}
         </h6>
@@ -247,52 +247,56 @@
         <!-- Saldo pane -->
         <template v-if="activeHistoryTab === 'saldo'">
           <p v-if="recharges.length === 0" class="text-muted small p-3 mb-0">{{ $t('drivers.detail.empty_recharges') }}</p>
-          <table v-else class="table table-sm mb-0">
-            <thead>
-              <tr>
-                <th>{{ $t('drivers.recharges.col_date') }}</th>
-                <th>{{ $t('drivers.recharges.col_amount') }}</th>
-                <th>{{ $t('drivers.recharges.col_balance') }}</th>
-                <th>{{ $t('drivers.recharges.col_actor') }}</th>
-                <th>{{ $t('drivers.recharges.col_note') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in recharges" :key="r.id">
-                <td>{{ dayjs.unix(r.created_at).format('DD/MM/YY HH:mm') }}</td>
-                <td :class="r.amount >= 0 ? 'text-success' : 'text-danger'">
-                  {{ (r.amount >= 0 ? '+' : '') + r.amount }}
-                </td>
-                <td>{{ r.balanceAfter }}</td>
-                <td>{{ r.createdByName }}</td>
-                <td>{{ r.note ?? '—' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else class="table-responsive">
+            <table class="table table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>{{ $t('drivers.recharges.col_date') }}</th>
+                  <th>{{ $t('drivers.recharges.col_amount') }}</th>
+                  <th>{{ $t('drivers.recharges.col_balance') }}</th>
+                  <th>{{ $t('drivers.recharges.col_actor') }}</th>
+                  <th>{{ $t('drivers.recharges.col_note') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in recharges" :key="r.id">
+                  <td>{{ dayjs.unix(r.created_at).format('DD/MM/YY HH:mm') }}</td>
+                  <td :class="r.amount >= 0 ? 'text-success' : 'text-danger'">
+                    {{ (r.amount >= 0 ? '+' : '') + r.amount }}
+                  </td>
+                  <td>{{ r.balanceAfter }}</td>
+                  <td>{{ r.createdByName }}</td>
+                  <td>{{ r.note ?? '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </template>
         <!-- Mensualidades pane -->
         <template v-else>
           <p v-if="monthlyPayments.length === 0" class="text-muted small p-3 mb-0">{{ $t('drivers.detail.empty_monthly_payments') }}</p>
-          <table v-else class="table table-sm mb-0">
-            <thead>
-              <tr>
-                <th>{{ $t('drivers.monthly_payments.col_period') }}</th>
-                <th>{{ $t('drivers.monthly_payments.col_amount') }}</th>
-                <th>{{ $t('drivers.monthly_payments.col_actor') }}</th>
-                <th>{{ $t('drivers.monthly_payments.col_date') }}</th>
-                <th>{{ $t('drivers.monthly_payments.col_note') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="p in monthlyPayments" :key="p.id">
-                <td>{{ p.period }}</td>
-                <td>{{ p.amount }}</td>
-                <td>{{ p.createdByName }}</td>
-                <td>{{ dayjs.unix(p.created_at).format('DD/MM/YY HH:mm') }}</td>
-                <td>{{ p.note ?? '—' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else class="table-responsive">
+            <table class="table table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>{{ $t('drivers.monthly_payments.col_period') }}</th>
+                  <th>{{ $t('drivers.monthly_payments.col_amount') }}</th>
+                  <th>{{ $t('drivers.monthly_payments.col_actor') }}</th>
+                  <th>{{ $t('drivers.monthly_payments.col_date') }}</th>
+                  <th>{{ $t('drivers.monthly_payments.col_note') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="p in monthlyPayments" :key="p.id">
+                  <td>{{ p.period }}</td>
+                  <td>{{ p.amount }}</td>
+                  <td>{{ p.createdByName }}</td>
+                  <td>{{ dayjs.unix(p.created_at).format('DD/MM/YY HH:mm') }}</td>
+                  <td>{{ p.note ?? '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </template>
       </div>
     </div>

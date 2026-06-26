@@ -188,6 +188,14 @@ body.dark-version {
     color: var(--card-text) !important;
   }
 
+  /* Mobile sidebar: vendor JS (soft-ui-dashboard.js toggleSidenav()) adds bg-white to
+     .sidenav on open. The vendor dark-version rule forces it white (specificity 0,3,0).
+     This rule wins with body.dark-version prefix (specificity 0,3,1). */
+  .sidenav.bg-white {
+    background-color: var(--card-bg) !important;
+    color: var(--card-text) !important;
+  }
+
   .text-body { color: var(--card-text) !important; }
   .text-muted { color: var(--muted-text) !important; }
   .text-dark { color: var(--card-text) !important; }
