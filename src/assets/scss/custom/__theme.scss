@@ -276,13 +276,6 @@ body.dark-version {
   .nav-pills .show > .nav-link { background-color: #2d3655 !important; }
   .moving-tab .nav-link.active { background: #2d3655 !important; color: var(--card-text) !important; }
 
-  /* Sidenav active item: subtle dark tile per design (surface-input + soft shadow), not a bright slate */
-  .navbar-vertical .navbar-nav > .nav-item > .nav-link.active {
-    background-color: var(--surface-input) !important;
-    color: var(--card-text) !important;
-    box-shadow: var(--shadow-xs) !important;
-  }
-
   /* Pagination */
   .pagination .page-link {
     background-color: #2d3655 !important;

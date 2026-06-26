@@ -8,17 +8,93 @@
   }
 }
 
-   
+// ─── Gorda Sidenav — new reference design ────────────────────────────────────
+// All rules are scoped under .gorda-sidenav to avoid bleeding into other navs.
 
+// Scoped token: active-row background.
+// Light: a soft primary tint so the tile is visible against the white sidebar surface
+// (--surface-input is #fff in light, which would be invisible without this tint).
+// Dark: --surface-input (#1e2536) is the intended design value — use it directly.
+.gorda-sidenav {
+  --sidenav-active-bg: rgba(203, 12, 159, 0.06);
+}
 
+body.dark-version .gorda-sidenav {
+  --sidenav-active-bg: var(--surface-input);
+}
 
+// Nav row geometry
+.gorda-sidenav .navbar-nav .nav-link {
+  padding: .55rem .6rem;
+  border-radius: .5rem;
+  transition: all .15s ease;
+  display: flex;
+  align-items: center;
+}
 
+// Inactive row: transparent background
+.gorda-sidenav .navbar-nav .nav-link:not(.active) {
+  background: transparent;
+  box-shadow: none;
+}
 
+// Active row: tinted bg, soft shadow, owns both light and dark
+.gorda-sidenav .navbar-nav .nav-link.active {
+  background-color: var(--sidenav-active-bg) !important;
+  box-shadow: var(--shadow-xs) !important;
+  border-radius: .5rem;
+}
 
+// Active row label: heading color + bold weight
+.gorda-sidenav .navbar-nav .nav-link.active .nav-link-text {
+  color: var(--text-heading) !important;
+  font-weight: 700;
+}
 
+// Inactive row label: body color + semibold weight
+.gorda-sidenav .navbar-nav .nav-link:not(.active) .nav-link-text {
+  color: var(--text-body) !important;
+  font-weight: 600;
+}
 
+// Icon chip — inactive: surface-input bg, primary glyph color, soft shadow.
+// !important required to beat vendor bg-white and _dark-version.scss color:$dark rules.
+.gorda-sidenav .nav-link .icon {
+  background: var(--surface-input) !important;
+  color: var(--primary) !important;
+  box-shadow: 0 2px 9px -5px rgba(0, 0, 0, .4), 0 0 1px rgba(0, 0, 0, .08) !important;
+  width: 32px;
+  height: 32px;
+  border-radius: .5rem !important;
+  flex: none;
+  font-size: .8rem;
+}
 
+// Icon chip — active: gradient bg, white glyph.
+// --gradient-primary is mode-invariant (pink→purple gradient reads well in both light and
+// dark), so no body.dark-version override is needed here.
+.gorda-sidenav .nav-link.active .icon {
+  background-image: var(--gradient-primary) !important;
+  background-color: transparent !important;
+  color: #fff !important;
+}
 
+// Gap between chip and label (replaces ms-1 margin on the span in the template)
+.gorda-sidenav .navbar-nav .nav-link .icon {
+  margin-right: .7rem !important;
+}
 
+// Logout item: red glyph on the chip
+.gorda-sidenav #signOut .icon,
+.gorda-sidenav a[id="signOut"] .icon {
+  color: var(--danger) !important;
+}
 
-
+// Version label: muted, small, bold, centered
+.gorda-sidenav .position-absolute.bottom-0 {
+  color: var(--text-muted);
+  font-size: .65rem;
+  font-weight: 700;
+  text-align: center;
+  padding-bottom: .5rem;
+}
