@@ -96,16 +96,22 @@
 body.dark-version {
   color-scheme: dark;
 
+  /* Override vendor Soft UI dark shell/sidenav/card colors to the design palette.
+     Note: vendor also sweeps `.dark-version > div[class*='bg-']` to #141728 — new
+     direct-child bg-* layout wrappers need their own bridge (e.g. .bg-gray-100 below). */
+  background-color: var(--body-bg) !important;
+
+  /* Dark surfaces aligned to the design reference kit (medium navy: bg/card/input) */
   /* Palette: surfaces */
-  --body-bg: #0f1322;
-  --surface-card: #111322;
-  --surface-input: #1a1d31;
+  --body-bg: #1a1f2e;
+  --surface-card: #252d3d;
+  --surface-input: #1e2536;
 
   /* Palette: text */
   --text-heading: #ffffff;
   --text-body: rgba(255,255,255,.85);
   --text-secondary: rgba(255,255,255,.70);
-  --text-muted: rgba(255,255,255,.60);
+  --text-muted: rgba(255,255,255,.70);
 
   /* Palette: borders */
   --border-color: rgba(255,255,255,.30);
@@ -131,21 +137,21 @@ body.dark-version {
   --shadow-xs: 0 1px 2px rgba(0,0,0,.40);
   --shadow-sm: 0 .25rem .5rem rgba(0,0,0,.45);
 
-  --scrollbar-track: #2a2d3a;
+  --scrollbar-track: #1e2536;
   --scrollbar-thumb: #50556a;
 
   /* Re-aliased in dark so the var() indirection resolves against the dark --surface-card (#111322); a :root-only alias would stay locked to the light value. */
   --card-bg: var(--surface-card);
   --card-text: rgba(255,255,255,0.85);
-  --muted-text: rgba(255,255,255,0.6);
+  --muted-text: rgba(255,255,255,0.70);
 
-  --drivers-filter-surface: #1f2638;
-  --drivers-filter-surface-hover: #283149;
+  --drivers-filter-surface: #252d3d;
+  --drivers-filter-surface-hover: #2d3655;
   --drivers-filter-border: rgba(148, 163, 184, 0.28);
   --drivers-filter-text: rgba(248, 250, 252, 0.96);
   --drivers-filter-muted: rgba(191, 203, 225, 0.76);
   --drivers-filter-shadow: 0 14px 28px rgba(2, 6, 23, 0.28);
-  --drivers-filter-menu-bg: #171d2d;
+  --drivers-filter-menu-bg: #1a1f2e;
   --drivers-filter-menu-shadow: 0 18px 36px rgba(2, 6, 23, 0.42);
   --drivers-filter-active-border: rgba(251, 191, 36, 0.42);
   --drivers-filter-active-bg: rgba(251, 191, 36, 0.14);
@@ -170,6 +176,18 @@ body.dark-version {
   --detail-input-border: rgba(255,255,255,0.3);
   --detail-pill-active-bg: rgba(203,12,159,0.25);
   --detail-pill-active-text: #f38cd6;
+
+  .sidenav,
+  .sidenav.bg-light {
+    background-color: var(--surface-card) !important;
+  }
+
+  .card,
+  .swal2-popup,
+  .dropdown .dropdown-menu,
+  .kanban-board {
+    background-color: var(--surface-card) !important;
+  }
 
   /* Card borders for dark background contrast */
   .card {
@@ -239,44 +257,45 @@ body.dark-version {
   /* Light buttons */
   .btn-light,
   .btn-white {
-    background-color: #2a2f3a !important;
+    background-color: #2d3655 !important;
     color: var(--card-text) !important;
     border-color: rgba(255,255,255,0.2) !important;
   }
 
   /* Remaining bg helpers often used by layout */
-  .bg-gray-100 { background-color: #141728 !important; }
-  .bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
-  .badge.bg-light { background-color: #2a2f3a !important; color: var(--card-text) !important; }
+  .bg-gray-100 { background-color: #1a1f2e !important; }
+  .bg-light { background-color: #2d3655 !important; color: var(--card-text) !important; }
+  .badge.bg-light { background-color: #2d3655 !important; color: var(--card-text) !important; }
 
   /* Pills and nav variants */
   .nav.nav-pills {
-    background-color: #1f2530 !important; /* override default white tray */
+    background-color: #1e2536 !important; /* override default white tray */
   }
   .nav-pills .nav-link { color: var(--card-text) !important; }
   .nav-pills .nav-link.active,
-  .nav-pills .show > .nav-link { background-color: #2a2f3a !important; }
-  .moving-tab .nav-link.active { background: #2a2f3a !important; color: var(--card-text) !important; }
+  .nav-pills .show > .nav-link { background-color: #2d3655 !important; }
+  .moving-tab .nav-link.active { background: #2d3655 !important; color: var(--card-text) !important; }
 
-  /* Sidenav active item (make it dark, not white) */
+  /* Sidenav active item: subtle dark tile per design (surface-input + soft shadow), not a bright slate */
   .navbar-vertical .navbar-nav > .nav-item > .nav-link.active {
-    background-color: #2a2f3a !important;
+    background-color: var(--surface-input) !important;
     color: var(--card-text) !important;
+    box-shadow: var(--shadow-xs) !important;
   }
 
   /* Pagination */
   .pagination .page-link {
-    background-color: #2a2f3a !important;
+    background-color: #2d3655 !important;
     color: var(--card-text) !important;
     border-color: rgba(255,255,255,0.15) !important;
   }
   .pagination .page-link:hover {
-    background-color: #343a4a !important;
+    background-color: #3a456b !important;
     color: var(--card-text) !important;
     border-color: rgba(255,255,255,0.25) !important;
   }
   .pagination .page-item.disabled .page-link {
-    background-color: #242a38 !important;
+    background-color: #222a40 !important;
     color: var(--muted-text) !important;
     border-color: rgba(255,255,255,0.1) !important;
   }
@@ -288,14 +307,14 @@ body.dark-version {
 
   /* Google Maps InfoWindow in dark */
   .gm-style .gm-style-iw-c {
-    background-color: #2a2f3a !important;
+    background-color: #252d3d !important;
     color: var(--card-text) !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.45) !important;
     border-radius: 12px !important;
   }
   .gm-style .gm-style-iw-d { color: var(--card-text) !important; }
   .gm-style .gm-ui-hover-effect { filter: invert(1) brightness(1.2); }
-  .gm-style .gm-style-iw-tc { background-color: #2a2f3a !important; }
+  .gm-style .gm-style-iw-tc { background-color: #252d3d !important; }
   .gorda-infowindow { color: var(--card-text); }
 }
 
@@ -308,17 +327,17 @@ body.dark-version {
 body.dark-version {
   .nav.nav-tabs {
     --bs-nav-tabs-border-color: rgba(255,255,255,0.15);
-    --bs-nav-tabs-link-hover-border-color: #343a4a #343a4a rgba(255,255,255,0.15);
+    --bs-nav-tabs-link-hover-border-color: #3a456b #3a456b rgba(255,255,255,0.15);
     --bs-nav-tabs-link-active-color: var(--card-text);
-    --bs-nav-tabs-link-active-bg: #2a2f3a;
-    --bs-nav-tabs-link-active-border-color: rgba(255,255,255,0.25) rgba(255,255,255,0.25) #2a2f3a;
+    --bs-nav-tabs-link-active-bg: #2d3655;
+    --bs-nav-tabs-link-active-border-color: rgba(255,255,255,0.25) rgba(255,255,255,0.25) #2d3655;
   }
 }
 
 /* Profile header blur card override in dark */
 body.dark-version {
   .blur {
-    background-color: rgba(17, 19, 34, 0.6) !important; /* dark translucent */
+    background-color: rgba(26, 31, 46, 0.6) !important; /* dark translucent */
   }
   .shadow-blur {
     box-shadow: inset 0 0 1px 1px rgba(255,255,255,0.08), 0 20px 27px 0 rgba(0,0,0,0.35) !important;
