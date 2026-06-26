@@ -97,7 +97,7 @@ export default {
     col_date: 'Fecha',
     col_amount: 'Monto',
     col_balance: 'Saldo resultante',
-    col_actor: 'Por',
+    col_actor: 'Registrado por',
     col_note: 'Nota',
   },
   monthly_payments: {
@@ -114,7 +114,7 @@ export default {
     history_title: 'Historial de Mensualidades',
     col_period: 'Período',
     col_amount: 'Monto',
-    col_actor: 'Por',
+    col_actor: 'Registrado por',
     col_date: 'Fecha',
     col_note: 'Nota',
   },
@@ -127,5 +127,7 @@ export default {
     tab_mensualidades: 'Mensualidades',
     empty_recharges: 'Sin movimientos de saldo',
     empty_monthly_payments: 'Sin mensualidades registradas',
+    count_movements: '{n} movimiento | {n} movimientos',
+    count_monthly: '{n} mensualidad | {n} mensualidades',
   },
 }

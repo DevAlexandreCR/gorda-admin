@@ -247,56 +247,98 @@
         <!-- Saldo pane -->
         <template v-if="activeHistoryTab === 'saldo'">
           <p v-if="recharges.length === 0" class="text-muted small p-3 mb-0">{{ $t('drivers.detail.empty_recharges') }}</p>
-          <div v-else class="table-responsive">
-            <table class="table table-sm mb-0">
-              <thead>
-                <tr>
-                  <th>{{ $t('drivers.recharges.col_date') }}</th>
-                  <th>{{ $t('drivers.recharges.col_amount') }}</th>
-                  <th>{{ $t('drivers.recharges.col_balance') }}</th>
-                  <th>{{ $t('drivers.recharges.col_actor') }}</th>
-                  <th>{{ $t('drivers.recharges.col_note') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in recharges" :key="r.id">
-                  <td>{{ dayjs.unix(r.created_at).format('DD/MM/YY HH:mm') }}</td>
-                  <td :class="r.amount >= 0 ? 'text-success' : 'text-danger'">
-                    {{ (r.amount >= 0 ? '+' : '') + r.amount }}
-                  </td>
-                  <td>{{ r.balanceAfter }}</td>
-                  <td>{{ r.createdByName }}</td>
-                  <td>{{ r.note ?? '—' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <template v-else>
+            <div class="table-responsive payhist">
+              <table class="table table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th>{{ $t('drivers.recharges.col_date') }}</th>
+                    <th>{{ $t('drivers.recharges.col_amount') }}</th>
+                    <th>{{ $t('drivers.recharges.col_balance') }}</th>
+                    <th>{{ $t('drivers.recharges.col_actor') }}</th>
+                    <th>{{ $t('drivers.recharges.col_note') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="r in recharges" :key="r.id">
+                    <td>
+                      <span class="payhist-cell-icon">
+                        <em class="fas fa-clock payhist-clock"></em>
+                        {{ dayjs.unix(r.created_at).format('DD/MM/YY HH:mm') }}
+                      </span>
+                    </td>
+                    <td :class="[r.amount >= 0 ? 'text-success' : 'text-danger', 'payhist-amount', 'fw-bold']">
+                      {{ (r.amount >= 0 ? '+' : '') + (r.amount ?? 0).toLocaleString('es-CO') + ' COP' }}
+                    </td>
+                    <td class="payhist-balance">
+                      {{ (r.balanceAfter ?? 0).toLocaleString('es-CO') + ' COP' }}
+                    </td>
+                    <td>
+                      <span class="payhist-actor">
+                        <span class="payhist-avatar">{{ initials(r.createdByName) }}</span>
+                        {{ r.createdByName }}
+                      </span>
+                    </td>
+                    <td>
+                      <span v-if="r.note" class="payhist-note-pill">{{ r.note }}</span>
+                      <span v-else class="payhist-dash">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="payhist payhist-footer">
+              {{ $t('drivers.detail.count_movements', { n: rechargesTotal }, rechargesTotal) }}
+            </div>
+          </template>
         </template>
         <!-- Mensualidades pane -->
         <template v-else>
           <p v-if="monthlyPayments.length === 0" class="text-muted small p-3 mb-0">{{ $t('drivers.detail.empty_monthly_payments') }}</p>
-          <div v-else class="table-responsive">
-            <table class="table table-sm mb-0">
-              <thead>
-                <tr>
-                  <th>{{ $t('drivers.monthly_payments.col_period') }}</th>
-                  <th>{{ $t('drivers.monthly_payments.col_amount') }}</th>
-                  <th>{{ $t('drivers.monthly_payments.col_actor') }}</th>
-                  <th>{{ $t('drivers.monthly_payments.col_date') }}</th>
-                  <th>{{ $t('drivers.monthly_payments.col_note') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="p in monthlyPayments" :key="p.id">
-                  <td>{{ p.period }}</td>
-                  <td>{{ p.amount }}</td>
-                  <td>{{ p.createdByName }}</td>
-                  <td>{{ dayjs.unix(p.created_at).format('DD/MM/YY HH:mm') }}</td>
-                  <td>{{ p.note ?? '—' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <template v-else>
+            <div class="table-responsive payhist">
+              <table class="table table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th>{{ $t('drivers.monthly_payments.col_period') }}</th>
+                    <th>{{ $t('drivers.monthly_payments.col_amount') }}</th>
+                    <th>{{ $t('drivers.monthly_payments.col_actor') }}</th>
+                    <th>{{ $t('drivers.monthly_payments.col_date') }}</th>
+                    <th>{{ $t('drivers.monthly_payments.col_note') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="p in monthlyPayments" :key="p.id">
+                    <td>
+                      <span class="payhist-period-pill">{{ p.period }}</span>
+                    </td>
+                    <td class="payhist-balance fw-bold">
+                      {{ (p.amount ?? 0).toLocaleString('es-CO') + ' COP' }}
+                    </td>
+                    <td>
+                      <span class="payhist-actor">
+                        <span class="payhist-avatar">{{ initials(p.createdByName) }}</span>
+                        {{ p.createdByName }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="payhist-cell-icon">
+                        <em class="fas fa-clock payhist-clock"></em>
+                        {{ dayjs.unix(p.created_at).format('DD/MM/YY HH:mm') }}
+                      </span>
+                    </td>
+                    <td>
+                      <span v-if="p.note" class="payhist-note-pill">{{ p.note }}</span>
+                      <span v-else class="payhist-dash">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="payhist payhist-footer">
+              {{ $t('drivers.detail.count_monthly', { n: monthlyPaymentsTotal }, monthlyPaymentsTotal) }}
+            </div>
+          </template>
         </template>
       </div>
     </div>
@@ -759,6 +801,12 @@ function onEnable(event: Event): void {
 function removeDevice(): void {
   driver.value.device = null
 }
+
+const initials = (name: string): string => {
+  const parts = (name ?? '').trim().split(/\s+/).filter(Boolean)
+  if (!parts.length) return '?'
+  return parts.slice(0, 2).map(w => w[0]).join('').toUpperCase()
+}
 </script>
 
 <style scoped lang="scss">
@@ -878,5 +926,116 @@ function removeDevice(): void {
 :global(body.dark-version) .monthly-info-box {
   --monthly-info-bg: rgba(255, 255, 255, 0.06);
   --monthly-info-text: rgba(255, 255, 255, 0.75);
+}
+
+.payhist {
+  --payhist-th-color: #8392ab;
+  --payhist-th-bg: rgba(0, 0, 0, 0.02);
+  --payhist-td-border: #f3f4f6;
+  --payhist-td-color: #67748e;
+  --payhist-clock: #d2d6da;
+  --payhist-heading: #344767;
+  --payhist-pill-bg: #f3f4f6;
+  --payhist-pill-text: #67748e;
+  --payhist-footer: #adb5bd;
+
+  th {
+    background: var(--payhist-th-bg);
+    color: var(--payhist-th-color);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.6rem 1.25rem;
+    border-bottom: none;
+  }
+
+  td {
+    color: var(--payhist-td-color);
+    border-bottom: 1px solid var(--payhist-td-border);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8rem;
+    vertical-align: middle;
+  }
+}
+
+:global(body.dark-version) .payhist {
+  --payhist-th-color: rgba(255, 255, 255, 0.55);
+  --payhist-th-bg: rgba(255, 255, 255, 0.04);
+  --payhist-td-border: rgba(255, 255, 255, 0.08);
+  --payhist-td-color: rgba(255, 255, 255, 0.7);
+  --payhist-clock: rgba(255, 255, 255, 0.3);
+  --payhist-heading: rgba(255, 255, 255, 0.9);
+  --payhist-pill-bg: rgba(255, 255, 255, 0.08);
+  --payhist-pill-text: rgba(255, 255, 255, 0.7);
+  --payhist-footer: rgba(255, 255, 255, 0.4);
+}
+
+.payhist-clock {
+  color: var(--payhist-clock);
+  font-size: 0.7rem;
+}
+
+.payhist-cell-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.payhist-actor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.payhist-amount {
+  font-weight: 700;
+}
+
+.payhist-balance {
+  color: var(--payhist-heading);
+  font-weight: 600;
+}
+
+.payhist-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(310deg, #7928ca, #ff0080);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.62rem;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payhist-note-pill {
+  background: var(--payhist-pill-bg);
+  color: var(--payhist-pill-text);
+  padding: 0.15rem 0.5rem;
+  border-radius: 50rem;
+  font-size: 0.72rem;
+}
+
+.payhist-period-pill {
+  background: linear-gradient(310deg, #7928ca, #ff0080);
+  color: #fff;
+  padding: 0.15rem 0.55rem;
+  border-radius: 50rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.payhist-dash {
+  color: var(--payhist-clock);
+}
+
+.payhist-footer {
+  color: var(--payhist-footer);
+  font-size: 0.72rem;
+  padding: 0.6rem 1.25rem;
+  border-top: 1px solid var(--payhist-td-border);
 }
 </style>
