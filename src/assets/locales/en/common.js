@@ -54,6 +54,7 @@ export default {
     deleted: 'Resource deleted successfully',
     error: 'Something went wrong!',
     waiting: 'Please wait ...',
+    waitingSub: 'This will only take a moment',
     forbidden: 'Permission denied',
     error_chatBot: 'ChatBot and WhatsApp notification can\'t be enabled at time!',
     error_assistant: 'ChatBot and Assistant can\'t be enabled at time!',

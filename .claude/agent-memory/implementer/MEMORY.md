@@ -1,0 +1,1 @@
+- [Lint check scope](project_lint_check_scope.md) — `npm run lint-check` hits ui_design/_ds_bundle.js (hundreds of React errors); scope lint to changed files only

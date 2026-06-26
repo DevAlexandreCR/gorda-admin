@@ -54,6 +54,7 @@ export default {
     deleted: 'Recurso eliminado correctamente',
     error: 'Algo salió mal!',
     waiting: 'Por favor espere...',
+    waitingSub: 'Esto solo tomará un momento',
     forbidden: 'Permiso denegado!',
     error_chatBot: 'El chatBot y las notificaciones de WhatsApp no pueden estar habilitadas al mismo tiempo!',
     error_assistant: 'El chatBot y el asistente no pueden estar habilitados al mismo tiempo!',
