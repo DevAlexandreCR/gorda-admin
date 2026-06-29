@@ -15,6 +15,7 @@ let serverApiGetSpy: jest.SpyInstance
 let pushMock: jest.Mock
 let setMock: jest.Mock
 let removeMock: jest.Mock
+let updateMock: jest.Mock
 
 function buildService(overrides: Partial<ServiceInterface> = {}): ServiceInterface {
 	return {
@@ -44,10 +45,12 @@ beforeEach(() => {
 	pushMock = jest.fn().mockResolvedValue({ key: 'new-key-123' })
 	setMock = jest.fn().mockResolvedValue(undefined)
 	removeMock = jest.fn().mockResolvedValue(null)
+	updateMock = jest.fn().mockResolvedValue(null)
 
 	firebaseDatabaseMock.push = pushMock
 	firebaseDatabaseMock.set = setMock
 	firebaseDatabaseMock.remove = removeMock
+	firebaseDatabaseMock.update = updateMock
 
 	serverApiGetSpy = jest.spyOn(serverApi, 'get').mockResolvedValue({
 		data: { data: { completedServicesCount: 0 } },
@@ -172,5 +175,52 @@ describe('ServiceRepository.restart', () => {
 		// set is called by update() inside create() — the second argument is the full service payload
 		const rtdbPayload = setMock.mock.calls[0][1] as ServiceInterface
 		expect(rtdbPayload.client_completed_services_count).toBe(completedCount)
+	})
+})
+
+describe('ServiceRepository.assign', () => {
+	it('sends driver_id, status, assigned_by, and vehicle: null in the updateDB payload', async () => {
+		await ServiceRepository.assign('service-abc', 'driver-xyz')
+
+		// updateDB (imported as `update` from firebase/database) is called first
+		expect(updateMock).toHaveBeenCalledTimes(1)
+		const updatePayload = updateMock.mock.calls[0][1] as Record<string, unknown>
+		expect(updatePayload).toMatchObject({
+			driver_id: 'driver-xyz',
+			status: 'in_progress',
+			vehicle: null,
+		})
+		// assigned_by comes from AuthService.getCurrentUser() which is set globally in testSetup.ts
+		expect(updatePayload).toHaveProperty('assigned_by')
+	})
+
+	it('also calls set on drivers_assigned after the updateDB resolves', async () => {
+		await ServiceRepository.assign('service-abc', 'driver-xyz')
+
+		expect(setMock).toHaveBeenCalledTimes(1)
+		// second argument to set() is the serviceId
+		expect(setMock.mock.calls[0][1]).toBe('service-abc')
+	})
+})
+
+describe('ServiceRepository.release', () => {
+	it('sends driver_id: null, status: pending, applicants: null, metadata: null, and vehicle: null in the updateDB payload', async () => {
+		await ServiceRepository.release('service-abc')
+
+		expect(updateMock).toHaveBeenCalledTimes(1)
+		const updatePayload = updateMock.mock.calls[0][1] as Record<string, unknown>
+		expect(updatePayload).toMatchObject({
+			driver_id: null,
+			status: 'pending',
+			applicants: null,
+			metadata: null,
+			vehicle: null,
+		})
+	})
+
+	it('does not call set after releasing', async () => {
+		await ServiceRepository.release('service-abc')
+
+		expect(setMock).not.toHaveBeenCalled()
 	})
 })

@@ -154,7 +154,8 @@ class ServiceRepository {
 		return updateDB(ref(DBService.db, 'services/'.concat(serviceId)), {
 			driver_id: driverId,
 			status: Service.STATUS_IN_PROGRESS,
-			assigned_by: AuthService.getCurrentUser()?.id ?? null
+			assigned_by: AuthService.getCurrentUser()?.id ?? null,
+			vehicle: null
 		}).then(async () => {
 			await set(ref(DBService.db, 'drivers_assigned/'.concat(driverId)), serviceId)
 		})
@@ -166,7 +167,8 @@ class ServiceRepository {
 			driver_id: null,
 			status: Service.STATUS_PENDING,
 			applicants: null,
-			metadata: null
+			metadata: null,
+			vehicle: null
 		})
 	}
 
