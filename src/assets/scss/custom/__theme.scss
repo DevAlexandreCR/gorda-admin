@@ -20,10 +20,11 @@
   --border-subtle: #e9ecef;
 
   /* Palette: brand */
-  --primary: #cb0c9f;
-  --success: #82d616;
-  --danger: #ea0606;
-  --gradient-primary: linear-gradient(310deg, #7928ca, #ff0080);
+  // SCSS interpolation — requires soft-ui-dashboard/_variables.scss compiled first (app.scss import order). Do not move above the soft-ui-dashboard import.
+  --primary: #{$primary};
+  --success: #{$success};
+  --danger: #{$danger};
+  --gradient-primary: linear-gradient(310deg, #{$primary-gradient}, #{$primary-gradient-state});
 
   /* Palette: badges */
   --badge-primary-bg: #fde6f7;
@@ -91,6 +92,62 @@
   --detail-input-border: #d2d6da;
   --detail-pill-active-bg: #fde6f7;
   --detail-pill-active-text: #a30c80;
+
+  /* Radii */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-pill: 50rem;
+  --radius-circle: 50%;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+
+  /* Motion */
+  --ease-base: all 0.2s ease-in-out;
+  --ease-soft: all 0.25s ease;
+  --ease-btn: all 0.15s ease-in;
+  --ease-bounce: all 0.2s cubic-bezier(0.34, 1.61, 0.7, 1.3);
+  --hover-lift: scale(1.02);
+  --border-width: 1px;
+
+  /* Type scale */
+  --fs-root: 16px;
+  --fs-body: 1rem;
+  --fs-h1: 3rem;
+  --fs-h2: 2.25rem;
+  --fs-h3: 1.875rem;
+  --fs-h4: 1.5rem;
+  --fs-h5: 1.25rem;
+  --fs-h6: 1rem;
+  --fs-lead: 1.25rem;
+  --fs-lg: 1.125rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.75rem;
+  --fs-xxs: 0.65rem;
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-bold: 600;
+  --fw-bolder: 700;
+  --lh-tight: 1.2;
+  --lh-base: 1.6;
+  --lh-snug: 1.375;
+  --ls-tighter: -0.05rem;
+  --ls-tight: -0.025rem;
+  --ls-normal: 0;
+  --ls-wide: 0.05rem;
+  --heading-weight: 700;
+  --heading-color: var(--text-heading);
 }
 
 body.dark-version {
@@ -194,6 +251,14 @@ body.dark-version {
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
   }
+}
+
+/* Direct body rule: makes body surface + text follow tokens in both themes.
+   $body-bg and $body-color are kept as literal SCSS values (Bootstrap color math),
+   so this rule is the token-driven body baseline instead. */
+body {
+  background-color: var(--body-bg);
+  color: var(--text-body);
 }
 
 /* Generic dark-mode bridges for leftover utilities */

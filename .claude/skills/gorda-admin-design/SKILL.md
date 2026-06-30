@@ -92,6 +92,17 @@ For new work, prefer the centralized semantic tokens defined in `admin/src/asset
 (e.g. `var(--surface-card)`, `var(--text-heading)`, `var(--border-subtle)`) instead of hardcoding the
 Soft UI hex values above — the theme file is the single source of truth for both light and dark values.
 
+**Vendor variable split — do not revert.** Eight theme-variant vars in `soft-ui-dashboard/_variables.scss`
+are intentionally set to `var(--token)` and must not be reverted to literal hex:
+`$headings-color`, `$text-muted`, `$border-color`, `$input-bg`, `$input-color`, `$input-border-color`,
+`$card-bg`, `$card-cap-bg`. Brand and color-math vars (`$primary`, `$primary-gradient`,
+`$primary-gradient-state`) stay literal hex — `var()` is invalid inside SCSS `lighten/mix/shift-color`.
+`$body-bg` and `$body-color` also stay literal (Bootstrap color math uses `to-rgb`, `color-contrast`,
+and SVG data-URI string interpolation on them); body surface and text are token-driven instead via a
+direct `body { background-color: var(--body-bg); color: var(--text-body); }` rule in `__theme.scss`.
+
+**Spacing alias.** `--space-N` corresponds to Bootstrap `$spacers[N]` — so `var(--space-3)` = `1rem` = `.p-3`.
+
 ## Production conventions to follow
 
 1. **Use Soft UI / Bootstrap 5 utility classes first.** Reach for the classes already in the
@@ -139,9 +150,12 @@ Soft UI hex values above — the theme file is the single source of truth for bo
 - Don't import or bundle anything from `ui_design/` (`styles.css`, `_ds_bundle.js`, the `.jsx`/`.css`
   token files) — it is reference render output, not app source.
 - Don't add a new UI/CSS framework or icon set, or new dependencies for styling.
-- Don't adopt the kit's `data-theme` attribute mechanic, and don't bulk-migrate existing feature vars
-  (`--drivers-filter-*`, `--wp-*`, `--detail-*`, `--billing-*`) onto the palette — migrate
-  incrementally as views are edited.
+- Don't adopt the kit's `data-theme` attribute mechanic — production dark mode is `body.dark-version` only.
+  Don't bulk-migrate existing feature vars (`--drivers-filter-*`, `--wp-*`, `--detail-*`, `--billing-*`)
+  onto the palette — migrate incrementally as views are edited.
+- Don't revert the 8 vendor theme-variant vars (`$card-bg`, `$input-bg`, `$headings-color`, etc.) from
+  `var(--token)` back to literal hex. Don't assign `var()` to brand or color-math vars (`$primary`,
+  `$primary-gradient`, `$body-bg`, `$body-color`) — they remain literal.
 - Don't write custom CSS where a Soft UI/Bootstrap class exists.
 - Don't ship light-only styling — always provide the `body.dark-version` variant.
 - Don't add comments unless logic is non-obvious (English only, per repo rules).
