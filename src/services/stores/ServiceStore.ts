@@ -1,16 +1,17 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 import ServiceRepository from '@/repositories/ServiceRepository'
-import {DataSnapshot} from 'firebase/database'
-import {Filter} from '@/types/Filter'
+import { DataSnapshot } from 'firebase/database'
+import { Filter } from '@/types/Filter'
 import DateHelper from '@/helpers/DateHelper'
-import {useLoadingState} from '@/services/stores/LoadingState'
-import {ServiceList} from '@/models/ServiceList'
-import {useDriversStore} from '@/services/stores/DriversStore'
+import { useLoadingState } from '@/services/stores/LoadingState'
+import { ServiceList } from '@/models/ServiceList'
+import { useDriversStore } from '@/services/stores/DriversStore'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
-import {Pagination} from '@/types/Pagination'
+import { Pagination } from '@/types/Pagination'
 import Service from '@/models/Service'
-import {ServiceCursor} from '@/types/ServiceCursor'
+import { ServiceCursor } from '@/types/ServiceCursor'
+import ServiceHelper from '@/helpers/ServiceHelper'
 
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
@@ -36,14 +37,14 @@ export const useServicesStore = defineStore('servicesStore', {
       filter: <Filter>{
         from: DateHelper.stringNow(),
         to: DateHelper.stringNow(),
-				clientId: null,
-				driverId: null
+        clientId: null,
+        driverId: null
       }
     }
   },
   actions: {
     attachDriver(service: ServiceList): ServiceList {
-      const {findById} = useDriversStore()
+      const { findById } = useDriversStore()
       service.driver = service.driver_id ? findById(service.driver_id) ?? null : null
       return service
     },
@@ -80,31 +81,31 @@ export const useServicesStore = defineStore('servicesStore', {
     },
 
     async getInProgressServices(): Promise<void> {
-			const {setOccupiedDriver} = useDriversStore()
-			const {removeOccupiedDriver} = useDriversStore()
+      const { setOccupiedDriver } = useDriversStore()
+      const { removeOccupiedDriver } = useDriversStore()
       const added = (snapshot: DataSnapshot): void => {
         const service = this.setServiceFromDB(snapshot)
         this.inProgress.unshift(service)
-				if (service.driver_id !== null) {
-					setOccupiedDriver(service.driver_id)
-				}
+        if (service.driver_id !== null) {
+          setOccupiedDriver(service.driver_id)
+        }
       }
 
       const removed = (snapshot: DataSnapshot): void => {
         const service = this.setServiceFromDB(snapshot)
         const index = this.inProgress.findIndex(serv => serv.id === service.id)
         this.inProgress.splice(index, 1)
-				if (service.driver_id) removeOccupiedDriver(service.driver_id)
+        if (service.driver_id) removeOccupiedDriver(service.driver_id)
       }
 
       ServiceRepository.inProgressListener(added, removed)
     },
 
     async getHistoryServices(next = true, _contain = false): Promise<void> {
-      const { setLoading } = useLoadingState();
+      const { setLoading } = useLoadingState()
       const from = DateHelper.getFromDate(this.filter.from)
-      const to = DateHelper.getToDate(this.filter.to);
-      setLoading(true);
+      const to = DateHelper.getToDate(this.filter.to)
+      setLoading(true)
 
       const options = {
         from: from,
@@ -123,7 +124,7 @@ export const useServicesStore = defineStore('servicesStore', {
           this.canceled = response.canceledCount
           this.history.splice(0)
           response.services.forEach((dbService) => {
-            const service = this.setServiceFromFS(dbService);
+            const service = this.setServiceFromFS(dbService)
             this.history.push(service)
           })
           this.currentCursor.id = this.history[0]?.id
@@ -134,37 +135,39 @@ export const useServicesStore = defineStore('servicesStore', {
             ToastService.ERROR,
             i18n.global.t('common.messages.error'),
             e.message
-          );
+          )
         })
         .finally(() => {
-          setLoading(false);
-        });
+          setLoading(false)
+        })
     },
-		
-		filterInProgressServices(search: string): Array<ServiceList> {
-			const query = search.toLowerCase()
-			// Services without an assigned driver are intentionally excluded from search.
-			return this.inProgress.filter(service => {
-				if (!service.driver) return false
-				const plate = (service.driver.vehicle?.plate ?? service.driver.selected_vehicle?.plate ?? '').toLowerCase()
-				const phone = (service.phone ?? '').toLowerCase()
-				return plate.includes(query) || phone.includes(query)
-			})
-		},
-	
-		setServiceFromFS(dbService: Service): ServiceList {
-      const service = Object.assign(new ServiceList(), dbService)
-			return this.attachDriver(service)
-		},
 
-		setServiceFromDB(snapshot?: DataSnapshot): ServiceList {
-			const service = Object.assign(new ServiceList(), snapshot?.val())
-			service.id = snapshot?.key as string
-			return this.attachDriver(service)
-		},
+    filterInProgressServices(search: string): Array<ServiceList> {
+      const query = search.toLowerCase()
+      // Services without an assigned driver are intentionally excluded from search.
+      return this.inProgress.filter(service => {
+        if (!service.driver) return false
+        const plate = ServiceHelper.vehiclePlate(service).toLowerCase()
+        const phone = (service.phone ?? '').toLowerCase()
+        return plate.includes(query) || phone.includes(query)
+      })
+    },
+
+    setServiceFromFS(dbService: Service): ServiceList {
+      const service = Object.assign(new ServiceList(), dbService)
+      service.vehicle = dbService.vehicle ?? null
+      return this.attachDriver(service)
+    },
+
+    setServiceFromDB(snapshot?: DataSnapshot): ServiceList {
+      const service = Object.assign(new ServiceList(), snapshot?.val())
+      service.id = snapshot?.key as string
+      service.vehicle = snapshot?.val()?.vehicle ?? null
+      return this.attachDriver(service)
+    },
 
     resetCursor(): void {
-      const defaultCursor = <ServiceCursor> {
+      const defaultCursor = <ServiceCursor>{
         id: '',
         created: DateHelper.endOfDayUnix()
       }

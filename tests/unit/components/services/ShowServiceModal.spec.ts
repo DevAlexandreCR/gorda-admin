@@ -5,6 +5,7 @@ import ShowServiceModal from '@/components/services/ShowServiceModal.vue'
 import ServiceMock from '../../../mocks/entities/ServiceMock'
 import { ServiceList } from '@/models/ServiceList'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
+import ServiceHelper from '@/helpers/ServiceHelper'
 
 describe('ShowServiceModal.vue', () => {
   let wrapper: VueWrapper<any>
@@ -70,8 +71,12 @@ describe('ShowServiceModal.vue', () => {
   })
 
   it('renders driver information when driver is present', async () => {
+    const serviceWithSelectedVehicle = { ...service, driver: { ...service.driver, selected_vehicle: { plate: 'PLQ767' } } }
+    await wrapper.setProps({ service: serviceWithSelectedVehicle })
+    await nextTick()
+
     expect(wrapper.text()).toContain(service.driver?.name)
-    expect(wrapper.text()).toContain(service.driver?.vehicle.plate)
+    expect(wrapper.text()).toContain(ServiceHelper.vehiclePlate(serviceWithSelectedVehicle as ServiceList))
   })
 
   it('does not render driver information when driver is not present', async () => {

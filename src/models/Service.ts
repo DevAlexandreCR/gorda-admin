@@ -30,6 +30,12 @@ export default class Service implements ServiceInterface {
   assigned_by: string | null = null
   canceled_by: string | null = null
   terminated_by: string | null = null
+  vehicle: {
+    plate: string
+    brand?: string | null
+    model?: string | null
+    color?: { name?: string; hex?: string } | null
+  } | null = null
 
   static readonly STATUS_PENDING = 'pending'
   static readonly STATUS_IN_PROGRESS = 'in_progress'

@@ -15,6 +15,7 @@ import { Pagination } from '@/types/Pagination'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
 import { WhatsappServices } from "@/constants/WhatsappServices"
+import ServiceHelper from '@/helpers/ServiceHelper'
 
 describe('ServicesTable.vue', () => {
   let wrapper: VueWrapper<any>
@@ -93,6 +94,7 @@ describe('ServicesTable.vue', () => {
 
   it('show release and terminate buttons when service is in in_progress status', async () => {
     service.status = Service.STATUS_IN_PROGRESS
+    service.driver = { ...service.driver, selected_vehicle: { plate: 'PLQ767' } } as ServiceList['driver']
     options.props = {
       services: [service],
       table: Tables.inProgress,
@@ -106,7 +108,7 @@ describe('ServicesTable.vue', () => {
     expect(wrapper.find('.fa-check').exists()).toBeTruthy()
     expect(wrapper.find('.fa-ban').exists()).toBeTruthy()
     expect(wrapper.find('.fa-car').exists()).toBeFalsy()
-    expect(wrapper.html()).toContain(DriverMock.vehicle.plate)
+    expect(wrapper.html()).toContain(ServiceHelper.vehiclePlate(service))
   })
 
   it('emmit events cancel when make click in button cancel', async () => {

@@ -76,7 +76,7 @@
                      alt="Profile">
               </div>
               <div class="d-flex flex-column justify-content-center">
-                <h6 class="my-0 text-sm">{{ service.driver.vehicle.plate }}</h6>
+                <h6 class="my-0 text-sm">{{ ServiceHelper.vehiclePlate(service) }}</h6>
                 <p class="text-xs text-secondary my-0">{{ service.driver.phone }}</p>
               </div>
             </div>
@@ -218,6 +218,7 @@
 
 <script setup lang="ts">
 import DateHelper from '@/helpers/DateHelper'
+import ServiceHelper from '@/helpers/ServiceHelper'
 import Paginator from '@/components/Paginator'
 import Service from '@/models/Service'
 import AutoComplete from '@/components/AutoComplete.vue'

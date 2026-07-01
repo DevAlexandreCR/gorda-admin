@@ -104,7 +104,7 @@
                   {{ $t('common.placeholders.route_info') }}
                 </h6>
                 <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.name }}</span></span>
-                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.vehicle.plate }}</span></span>
+                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ ServiceHelper.vehiclePlate(service) }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ time }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.distance')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ distance }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{ fee }}</span></span>
@@ -131,6 +131,7 @@ import ClientCompletedBadge from '@/components/services/ClientCompletedBadge.vue
 import { ServiceList } from '@/models/ServiceList'
 import Service from '@/models/Service'
 import DateHelper from '@/helpers/DateHelper'
+import ServiceHelper from '@/helpers/ServiceHelper'
 import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
