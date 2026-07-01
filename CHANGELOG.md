@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.7(2026-06-30)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.7...2.0.6)
+
+### Fixed
+
+- Show the vehicle bound to each service in the service list, detail modal, and in-progress plate search: resolve it from the live RTDB snapshot or the history record, falling back to the driver's currently selected vehicle, instead of the deprecated legacy driver vehicle field.
+
 ## [2.0.6(2026-06-25)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.6...2.0.5)
 
 ### Added
