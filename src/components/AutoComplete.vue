@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group mb-1">
+  <div class="form-group mb-1 autocomplete-field">
     <Field :name="props.fieldName ?? '12345'" :ref="input" v-model="searchElement"
            v-slot="{ errorMessage, meta }">
       <input :name="props.fieldName ?? '12345'" :id="idField?? 'search'" :class="classes?? 'form-control'" type="text" @input="onChange"
@@ -11,10 +11,11 @@
     </ErrorMessage>
 
     <ul v-show="foundElements.length > 0"
-        class="list-group autocomplete-list shadow-sm" :id="'list-' + props.idField + props.fieldName">
+        class="list-group autocomplete-list" :id="'list-' + props.idField + props.fieldName">
       <li v-for="(element, idx) in foundElements" :key="element.id" @click="selectElement(element)"
           class="list-group-item" :class="{ selected: idx === selectedIndex }" :id="element.id">
-        {{ element.value }}
+        <em v-if="props.icon" :class="props.icon" class="autocomplete-item__icon"></em>
+        <span class="autocomplete-item__text">{{ element.value }}</span>
       </li>
     </ul>
   </div>
@@ -35,6 +36,7 @@ interface Props {
   searchHandler?: (term: string) => Promise<Array<AutoCompleteType>>
   debounceMs?: number
   disabled?: boolean
+  icon?: string
 }
 
 const props = defineProps<Props>()

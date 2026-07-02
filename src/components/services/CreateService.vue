@@ -17,7 +17,7 @@
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
                             :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
                             v-model="service.phone" :placeholder="$t('services.placeholders.phone')" :normalizer="StrHelper.formatNumber"
-                            :debounceMs="150" :disabled="!clientsAutocompleteReady" classes="form-control form-control-sm"/>
+                            :debounceMs="150" :disabled="!clientsAutocompleteReady" classes="form-control form-control-sm" icon="fas fa-phone"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
               </Field>
@@ -41,7 +41,7 @@
               <label class="field-label">{{ $t('services.labels.start_address') }}</label>
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.start_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm"/>
+                            :placeholder="$t('services.placeholders.start_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm" icon="fas fa-location-dot"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -49,7 +49,7 @@
               <label class="field-label">{{ $t('services.labels.end_address') }}</label>
               <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.end_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm"/>
+                            :placeholder="$t('services.placeholders.end_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm" icon="fas fa-location-dot"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -370,7 +370,6 @@ async function searchPlacesAutocomplete(term: string): Promise<Array<AutoComplet
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
   padding: var(--space-4);
-  overflow: hidden;
 }
 
 .create-service-card::before {
