@@ -341,6 +341,13 @@ body.dark-version .gorda-history {
   margin-bottom: 0;
 }
 
+.gorda-history__btn-filter,
+.gorda-history__btn-clear {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
 .gorda-history__btn-filter {
   background: linear-gradient(310deg, #7928ca, #ff0080);
   color: #fff;
