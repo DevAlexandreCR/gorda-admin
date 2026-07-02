@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.8(2026-07-01)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.8...2.0.7)
+
+### Added
+
+- Show the per-service deducted value in the service detail modal, next to the fee.
+
 ## [2.0.7(2026-06-30)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.7...2.0.6)
 
 ### Fixed
