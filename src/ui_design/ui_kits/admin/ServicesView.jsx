@@ -10,6 +10,25 @@ function ServicesView() {
     startAddress: '', endAddress: '', comment: '', qty: '1',
   });
   const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  // Suggestion pools for the address / phone autocompletes — pulled from
+  // known places plus phone numbers and addresses already seen in services.
+  const addressOptions = React.useMemo(() => {
+    const set = new Set();
+    (data.places || []).forEach(p => p.name && set.add(p.name));
+    [...(data.pendings || []), ...(data.inProgress || []), ...(data.history || [])].forEach(s => {
+      if (s.start && s.start !== 'N/A') set.add(s.start);
+      if (s.end && s.end !== 'N/A') set.add(s.end);
+    });
+    return [...set];
+  }, []);
+  const phoneOptions = React.useMemo(() => {
+    const set = new Set();
+    [...(data.pendings || []), ...(data.inProgress || []), ...(data.history || [])].forEach(s => s.phone && set.add(s.phone));
+    (data.drivers || []).forEach(d => d.phone && set.add(d.phone));
+    (data.users || []).forEach(u => u.phone && set.add(u.phone));
+    return [...set];
+  }, []);
   const handleCreate = () => {
     setForm(f => ({ ...f, phone: '', name: '', startAddress: '', endAddress: '', comment: '', qty: '1' }));
   };
@@ -53,13 +72,12 @@ function ServicesView() {
   };
 
   const OriginBadge = ({ origin }) => (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-      fontSize: '0.7rem', fontWeight: 600,
+    <span title={origin === 'bot' ? 'WhatsApp Bot' : 'Admin'} style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: '1.15rem',
       color: origin === 'bot' ? '#25d366' : 'var(--text-secondary)',
     }}>
-      <em className={origin === 'bot' ? 'fa-brands fa-whatsapp' : 'fas fa-desktop'} />
-      {origin === 'bot' ? 'WhatsApp Bot' : 'Admin'}
+      <em className={origin === 'bot' ? 'fas fa-robot' : 'fas fa-desktop'} />
     </span>
   );
 
@@ -111,7 +129,7 @@ function ServicesView() {
         borderRadius: '0.875rem',
         boxShadow: 'var(--shadow-card)',
         border: '1px solid var(--border-subtle)',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}>
         {/* Panel accent bar */}
         <div style={{
@@ -145,11 +163,12 @@ function ServicesView() {
             {/* Phone */}
             <div>
               <label style={lbl}>Teléfono</label>
-              <input
+              <AutocompleteInput
                 type="tel"
                 placeholder="300 000 0000"
                 value={form.phone}
-                onChange={e => setField('phone', e.target.value)}
+                onChange={v => setField('phone', v)}
+                options={phoneOptions}
                 style={inp}
               />
             </div>
@@ -169,11 +188,11 @@ function ServicesView() {
             {/* Start address */}
             <div>
               <label style={lbl}>Dirección inicial</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 placeholder="Punto de recogida"
                 value={form.startAddress}
-                onChange={e => setField('startAddress', e.target.value)}
+                onChange={v => setField('startAddress', v)}
+                options={addressOptions}
                 style={inp}
               />
             </div>
@@ -181,11 +200,11 @@ function ServicesView() {
             {/* End address */}
             <div>
               <label style={lbl}>Dirección final</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 placeholder="Destino (opcional)"
                 value={form.endAddress}
-                onChange={e => setField('endAddress', e.target.value)}
+                onChange={v => setField('endAddress', v)}
+                options={addressOptions}
                 style={inp}
               />
             </div>
@@ -301,7 +320,7 @@ function ServicesView() {
               <th style={th}>Nombre</th>
               {(tab === 'inProgress' || tab === 'history') && <th style={th}>Conductor</th>}
               {tab === 'pendings' && <th style={th}>Comentario</th>}
-              <th style={th}>Origen</th>
+              <th style={{ ...th, textAlign: 'center' }}>Origen</th>
               <th style={{ ...th, textAlign: 'right' }}></th>
             </tr>
           </thead>
@@ -359,7 +378,7 @@ function ServicesView() {
                     </span>
                   </td>
                 )}
-                <td style={td}><OriginBadge origin={s.origin} /></td>
+                <td style={{ ...td, textAlign: 'center' }}><OriginBadge origin={s.origin} /></td>
                 <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                     {tab === 'pendings' && (

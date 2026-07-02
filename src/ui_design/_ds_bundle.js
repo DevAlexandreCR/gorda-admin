@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":3,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"8be0db4910c5","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/DriversView.jsx":"8aef334bad73","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"0a3683712357","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"a7b8be4c95a7","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"50921e559e05","ui_kits/admin/data.js":"4de11dc51307","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":3,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"8be0db4910c5","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/AutocompleteInput.jsx":"739f84e74986","ui_kits/admin/DriversView.jsx":"8aef334bad73","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/MetricsView.jsx":"bc7482667fea","ui_kits/admin/PlacesView.jsx":"5fc3c79f2418","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"e116f6f0bd0c","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"f6784eb4166b","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/UserDetailView.jsx":"e7f64e94a874","ui_kits/admin/UsersView.jsx":"67f18338def2","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"50921e559e05","ui_kits/admin/data.js":"bca7caa333e0","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -777,6 +777,114 @@ function Switch({
 }
 Object.assign(__ds_scope, { Switch });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/forms/Switch.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/AutocompleteInput.jsx
+try { (() => {
+// Gorda admin — lightweight styled autocomplete for text/tel inputs.
+// Used for phone numbers and addresses on the dashboard's create-service form.
+// Renders its own dropdown (instead of relying on native browser autofill,
+// which can't be styled and gets visually lost behind other content) with a
+// scrollable, elevated menu so more than a couple of matches are reachable.
+function AutocompleteInput({
+  value,
+  onChange,
+  options,
+  placeholder,
+  type,
+  style
+}) {
+  const [focused, setFocused] = React.useState(false);
+  const [active, setActive] = React.useState(-1);
+  const query = (value || '').trim();
+  const matches = React.useMemo(() => {
+    if (query.length < 2) return [];
+    const q = query.toLowerCase();
+    return (options || []).filter(o => o.toLowerCase().includes(q)).slice(0, 8);
+  }, [query, options]);
+  const open = focused && matches.length > 0;
+  React.useEffect(() => {
+    setActive(-1);
+  }, [query]);
+  function selectValue(v) {
+    onChange(v);
+    setFocused(false);
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: type || 'text',
+    placeholder: placeholder,
+    value: value,
+    autoComplete: "off",
+    onChange: e => onChange(e.target.value),
+    onFocus: () => setFocused(true),
+    onBlur: () => setTimeout(() => setFocused(false), 120),
+    onKeyDown: e => {
+      if (!open) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActive(a => (a + 1) % matches.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(a => a <= 0 ? matches.length - 1 : a - 1);
+      } else if (e.key === 'Enter' && active >= 0) {
+        e.preventDefault();
+        selectValue(matches[active]);
+      } else if (e.key === 'Escape') {
+        setFocused(false);
+      }
+    },
+    style: style
+  }), open && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 'calc(100% + 6px)',
+      left: 0,
+      right: 0,
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-color)',
+      borderRadius: '0.6rem',
+      boxShadow: '0 16px 36px -10px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.14)',
+      maxHeight: 224,
+      overflowY: 'auto',
+      zIndex: 60,
+      padding: '0.3rem'
+    }
+  }, matches.map((m, idx) => /*#__PURE__*/React.createElement("div", {
+    key: m + idx,
+    onMouseDown: () => selectValue(m),
+    onMouseEnter: () => setActive(idx),
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.55rem',
+      padding: '0.55rem 0.7rem',
+      borderRadius: '0.4rem',
+      cursor: 'pointer',
+      fontSize: '0.8rem',
+      fontWeight: 600,
+      color: 'var(--text-body)',
+      background: active === idx ? 'var(--surface-input)' : 'transparent'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: type === 'tel' ? 'fas fa-phone' : 'fas fa-location-dot',
+    style: {
+      fontSize: '0.68rem',
+      color: '#cb0c9f',
+      flex: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
+  }, m)))));
+}
+window.AutocompleteInput = AutocompleteInput;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/AutocompleteInput.jsx", error: String((e && e.message) || e) }); }
 
 // ui_kits/admin/DriversView.jsx
 try { (() => {
@@ -4701,6 +4809,937 @@ function MapView() {
 window.MapView = MapView;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/MapView.jsx", error: String((e && e.message) || e) }); }
 
+// ui_kits/admin/MetricsView.jsx
+try { (() => {
+// Metrics view — annual service volume, cancellation trend, top-plate leaderboard.
+// Charts are hand-built inline SVG (no external chart lib) so they inherit theme tokens 1:1.
+function MetricsView() {
+  const {
+    Card,
+    StatCard
+  } = window.GordaDesignSystem_019e24;
+  const {
+    monthly,
+    topPlates
+  } = window.GordaData.metrics;
+  const [period, setPeriod] = React.useState('diario');
+  const months = monthly.map(r => r.m);
+  const rates = monthly.map(r => Math.round(r.canceled / r.total * 1000) / 10);
+
+  // ── month-over-month KPI deltas (last complete month vs prior) ──
+  const last = monthly[monthly.length - 2]; // Jun — last full month (Jul is in progress)
+  const prev = monthly[monthly.length - 3]; // May
+  const lastRate = Math.round(last.canceled / last.total * 1000) / 10;
+  const prevRate = Math.round(prev.canceled / prev.total * 1000) / 10;
+  const lastFin = Math.round(last.completed / last.total * 1000) / 10;
+  const prevFin = Math.round(prev.completed / prev.total * 1000) / 10;
+  const totalDelta = Math.round((last.total - prev.total) / prev.total * 1000) / 10;
+  const leader = topPlates.mensual[0];
+
+  /* ── shared micro-styles ── */
+  const cardHeader = (icon, grad, title, right) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.7rem',
+      marginBottom: '1.1rem',
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 34,
+      height: 34,
+      flex: 'none',
+      borderRadius: '0.6rem',
+      background: grad,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.9rem',
+      boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: icon
+  })), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      flex: 1
+    }
+  }, title), right);
+  const Legend = ({
+    items
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '1rem',
+      flexWrap: 'wrap',
+      marginBottom: '0.9rem'
+    }
+  }, items.map(it => /*#__PURE__*/React.createElement("div", {
+    key: it.label,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 10,
+      height: 10,
+      borderRadius: it.dash ? 2 : '50%',
+      flex: 'none',
+      background: it.color
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.72rem',
+      fontWeight: 600,
+      color: 'var(--text-secondary)'
+    }
+  }, it.label))));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: '1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement(StatCard, {
+    label: "Servicios \xB7 jun",
+    value: last.total.toLocaleString('es-CO'),
+    icon: "fas fa-route",
+    color: "info",
+    delta: `${Math.abs(totalDelta)}%`,
+    deltaUp: totalDelta >= 0
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Tasa de finalizaci\xF3n",
+    value: `${lastFin}%`,
+    icon: "fas fa-circle-check",
+    color: "success",
+    delta: `${Math.abs(Math.round((lastFin - prevFin) * 10) / 10)} pp`,
+    deltaUp: lastFin >= prevFin
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Tasa de cancelaci\xF3n",
+    value: `${lastRate}%`,
+    icon: "fas fa-ban",
+    color: "danger",
+    delta: `${Math.abs(Math.round((lastRate - prevRate) * 10) / 10)} pp`,
+    deltaUp: lastRate >= prevRate
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Conductor l\xEDder \xB7 mes",
+    value: leader.plate,
+    icon: "fas fa-trophy",
+    color: "warning",
+    delta: `${leader.value} servicios`,
+    deltaUp: true
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '1.25rem',
+      alignItems: 'start'
+    }
+  }, /*#__PURE__*/React.createElement(Card, null, cardHeader('fas fa-chart-line', 'linear-gradient(310deg,#2152ff,#21d4fd)', 'Progreso de servicios anual'), /*#__PURE__*/React.createElement(Legend, {
+    items: [{
+      label: 'Total',
+      color: 'var(--text-secondary)',
+      dash: true
+    }, {
+      label: 'Completado',
+      color: 'var(--status-completed)'
+    }, {
+      label: 'Cancelado',
+      color: 'var(--status-canceled)'
+    }]
+  }), /*#__PURE__*/React.createElement(LineChart, {
+    labels: months,
+    series: [{
+      data: monthly.map(r => r.total),
+      color: 'var(--text-secondary)',
+      dashed: true
+    }, {
+      data: monthly.map(r => r.completed),
+      color: 'var(--status-completed)'
+    }, {
+      data: monthly.map(r => r.canceled),
+      color: 'var(--status-canceled)'
+    }]
+  })), /*#__PURE__*/React.createElement(Card, null, cardHeader('fas fa-chart-column', 'linear-gradient(310deg,#d60808,#ff6690)', 'Índice de cancelación'), /*#__PURE__*/React.createElement(Legend, {
+    items: [{
+      label: 'Índice de cancelación',
+      color: 'var(--status-canceled)'
+    }]
+  }), /*#__PURE__*/React.createElement(BarChart, {
+    labels: months,
+    values: rates,
+    suffix: "%",
+    color: "var(--status-canceled)",
+    niceMax: 30,
+    tickStep: 10
+  })), /*#__PURE__*/React.createElement(Card, null, cardHeader('fas fa-ranking-star', 'linear-gradient(310deg,#7928ca,#ff0080)', 'Top 5', /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 2,
+      background: 'var(--surface-input)',
+      borderRadius: '0.5rem',
+      padding: 2
+    }
+  }, [['diario', 'Día'], ['semanal', 'Sem.'], ['mensual', 'Mes']].map(([id, label]) => {
+    const on = period === id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: id,
+      onClick: () => setPeriod(id),
+      style: {
+        border: 'none',
+        borderRadius: '0.4rem',
+        cursor: 'pointer',
+        padding: '0.32rem 0.6rem',
+        fontSize: '0.68rem',
+        fontWeight: 700,
+        fontFamily: "'Open Sans', sans-serif",
+        background: on ? 'var(--surface-card)' : 'transparent',
+        color: on ? 'var(--text-heading)' : 'var(--text-secondary)',
+        boxShadow: on ? 'var(--shadow-sm)' : 'none',
+        transition: 'all 0.15s'
+      }
+    }, label);
+  }))), /*#__PURE__*/React.createElement(TopList, {
+    items: topPlates[period]
+  }))));
+}
+
+/* ───────────────────────── chart primitives ───────────────────────── */
+
+function niceCeil(n, step) {
+  return Math.max(step, Math.ceil(n / step) * step);
+}
+function smoothPath(pts) {
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x0, y0] = pts[i],
+      [x1, y1] = pts[i + 1];
+    const mx = (x0 + x1) / 2;
+    d += ` C ${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+  }
+  return d;
+}
+function LineChart({
+  labels,
+  series,
+  height = 220
+}) {
+  const W = 600,
+    H = height,
+    padL = 44,
+    padR = 8,
+    padT = 8,
+    padB = 26;
+  const innerW = W - padL - padR,
+    innerH = H - padT - padB;
+  const maxVal = niceCeil(Math.max(...series.flatMap(s => s.data)) * 1.08, 10000);
+  const step = innerW / (labels.length - 1);
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
+  const scaleY = v => padT + innerH - v / maxVal * innerH;
+  const linesData = series.map(s => s.data.map((v, i) => [padL + i * step, scaleY(v)]));
+  return /*#__PURE__*/React.createElement("svg", {
+    viewBox: `0 0 ${W} ${H}`,
+    style: {
+      width: '100%',
+      height: 'auto',
+      display: 'block',
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, ticks.map((t, i) => {
+    const y = scaleY(t);
+    return /*#__PURE__*/React.createElement("g", {
+      key: i
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: padL,
+      x2: W - padR,
+      y1: y,
+      y2: y,
+      stroke: "var(--border-subtle)",
+      strokeWidth: "1"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: padL - 8,
+      y: y + 3,
+      textAnchor: "end",
+      fontSize: "9",
+      fill: "var(--text-secondary)"
+    }, t >= 1000 ? `${Math.round(t / 1000)}k` : t));
+  }), labels.map((l, i) => /*#__PURE__*/React.createElement("text", {
+    key: l,
+    x: padL + i * step,
+    y: H - 6,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "var(--text-secondary)"
+  }, l)), linesData.map((pts, si) => /*#__PURE__*/React.createElement("g", {
+    key: si
+  }, /*#__PURE__*/React.createElement("path", {
+    d: smoothPath(pts),
+    fill: "none",
+    stroke: series[si].color,
+    strokeWidth: "2.25",
+    strokeDasharray: series[si].dashed ? '5 4' : 'none',
+    strokeLinecap: "round"
+  }), pts.map(([x, y], pi) => /*#__PURE__*/React.createElement("circle", {
+    key: pi,
+    cx: x,
+    cy: y,
+    r: "3",
+    fill: series[si].color
+  }, /*#__PURE__*/React.createElement("title", null, `${labels[pi]}: ${series[si].data[pi].toLocaleString('es-CO')}`))))));
+}
+function topRoundedRectPath(x, y, w, h, r) {
+  r = Math.min(r, w / 2, Math.max(h, 0.001));
+  return `M ${x},${y + h} L ${x},${y + r} Q ${x},${y} ${x + r},${y} L ${x + w - r},${y} Q ${x + w},${y} ${x + w},${y + r} L ${x + w},${y + h} Z`;
+}
+function BarChart({
+  labels,
+  values,
+  height = 220,
+  color = 'var(--primary)',
+  suffix = '',
+  niceMax,
+  tickStep
+}) {
+  const W = 600,
+    H = height,
+    padL = 34,
+    padR = 8,
+    padT = 8,
+    padB = 26;
+  const innerW = W - padL - padR,
+    innerH = H - padT - padB;
+  const maxVal = niceMax || niceCeil(Math.max(...values) * 1.15, 5);
+  const ts = tickStep || Math.round(maxVal / 3);
+  const ticks = [];
+  for (let t = 0; t <= maxVal; t += ts) ticks.push(t);
+  const gap = 0.42;
+  const slot = innerW / values.length;
+  const barW = slot * (1 - gap);
+  const scaleY = v => v / maxVal * innerH;
+  return /*#__PURE__*/React.createElement("svg", {
+    viewBox: `0 0 ${W} ${H}`,
+    style: {
+      width: '100%',
+      height: 'auto',
+      display: 'block',
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, ticks.map((t, i) => {
+    const y = padT + innerH - scaleY(t);
+    return /*#__PURE__*/React.createElement("g", {
+      key: i
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: padL,
+      x2: W - padR,
+      y1: y,
+      y2: y,
+      stroke: "var(--border-subtle)",
+      strokeWidth: "1"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: padL - 6,
+      y: y + 3,
+      textAnchor: "end",
+      fontSize: "9",
+      fill: "var(--text-secondary)"
+    }, t, suffix));
+  }), labels.map((l, i) => /*#__PURE__*/React.createElement("text", {
+    key: l,
+    x: padL + i * slot + slot / 2,
+    y: H - 6,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "var(--text-secondary)"
+  }, l)), values.map((v, i) => {
+    const h = scaleY(v);
+    const x = padL + i * slot + (slot - barW) / 2;
+    const y = padT + innerH - h;
+    return /*#__PURE__*/React.createElement("path", {
+      key: i,
+      d: topRoundedRectPath(x, y, barW, h, 4),
+      fill: color
+    }, /*#__PURE__*/React.createElement("title", null, `${labels[i]}: ${v}${suffix}`));
+  }));
+}
+function TopList({
+  items
+}) {
+  const max = Math.max(...items.map(it => it.value));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.85rem'
+    }
+  }, items.map((it, i) => /*#__PURE__*/React.createElement("div", {
+    key: it.plate,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.7rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 22,
+      height: 22,
+      flex: 'none',
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '0.65rem',
+      fontWeight: 700,
+      background: i === 0 ? 'linear-gradient(310deg,#7928ca,#ff0080)' : 'var(--surface-input)',
+      color: i === 0 ? '#fff' : 'var(--text-secondary)'
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 62,
+      flex: 'none',
+      fontSize: '0.78rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      letterSpacing: '0.02em'
+    }
+  }, it.plate), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 8,
+      borderRadius: '50rem',
+      background: 'var(--surface-input)',
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: `${it.value / max * 100}%`,
+      height: '100%',
+      borderRadius: '50rem',
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      opacity: 1 - i * 0.15
+    }
+  })), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 30,
+      flex: 'none',
+      textAlign: 'right',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, it.value))));
+}
+window.MetricsView = MetricsView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/MetricsView.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/PlacesView.jsx
+try { (() => {
+// Places (Lugares) view — saved points of interest on a map, with a create form
+// and a searchable/deletable list. Map is a styled placeholder (chrome only),
+// matching the treatment used on the Mapa tab.
+const PLACE_CATEGORIES = {
+  edificio: {
+    icon: 'fas fa-building',
+    color: '#8392ab'
+  },
+  foto: {
+    icon: 'fas fa-camera',
+    color: '#8b5cf6'
+  },
+  comercio: {
+    icon: 'fas fa-store',
+    color: '#fd7e14'
+  },
+  salud: {
+    icon: 'fas fa-briefcase-medical',
+    color: '#ea0606'
+  },
+  deporte: {
+    icon: 'fas fa-dumbbell',
+    color: '#fbcf33'
+  },
+  restaurante: {
+    icon: 'fas fa-utensils',
+    color: '#fd7e14'
+  },
+  seguridad: {
+    icon: 'fas fa-lock',
+    color: '#17c1e8'
+  },
+  hotel: {
+    icon: 'fas fa-bed',
+    color: '#cb0c9f'
+  },
+  finca: {
+    icon: 'fas fa-tree',
+    color: '#82d616'
+  },
+  educacion: {
+    icon: 'fas fa-graduation-cap',
+    color: '#344767'
+  },
+  otro: {
+    icon: 'fas fa-location-dot',
+    color: '#8392ab'
+  }
+};
+
+// Deterministic pseudo-position (8%–92%) derived from a string, so pins are
+// stable across renders without needing real map projection.
+function hashPos(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = h * 31 + str.charCodeAt(i) >>> 0;
+  const top = 10 + h % 8000 / 100; // 10–90
+  const left = 8 + (h >>> 8) % 8400 / 100; // 8–92
+  return [top, left];
+}
+function PlacesView() {
+  const {
+    Card,
+    Button,
+    Input
+  } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const isMobile = window.useIsMobile(1100);
+  const [places, setPlaces] = React.useState(() => data.places || []);
+  const [name, setName] = React.useState('');
+  const [lat, setLat] = React.useState('');
+  const [lng, setLng] = React.useState('');
+  const [query, setQuery] = React.useState('');
+  const [mapMode, setMapMode] = React.useState('map');
+  const [selected, setSelected] = React.useState(null);
+  const filtered = places.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+  function handleCreate() {
+    if (!name.trim() || !lat.trim() || !lng.trim()) return;
+    const p = {
+      id: 'p' + Date.now(),
+      name: name.trim(),
+      lat: parseFloat(lat),
+      lng: parseFloat(lng),
+      category: 'otro'
+    };
+    setPlaces(list => [p, ...list]);
+    setSelected(p.id);
+    setName('');
+    setLat('');
+    setLng('');
+  }
+  function handleDelete(id) {
+    setPlaces(list => list.filter(p => p.id !== id));
+    if (selected === id) setSelected(null);
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.875rem'
+    }
+  }, /*#__PURE__*/React.createElement(Card, {
+    padding: "1.1rem 1.25rem"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      gap: '0.75rem',
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.6rem',
+      marginRight: '0.25rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '0.45rem',
+      flex: 'none',
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-location-dot"
+  })), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      whiteSpace: 'nowrap'
+    }
+  }, "Nuevo lugar")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '1 1 220px',
+      minWidth: 180
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    placeholder: "Ingrese el nombre",
+    value: name,
+    onChange: e => setName(e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '1 1 140px',
+      minWidth: 120
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    placeholder: "Latitud",
+    value: lat,
+    onChange: e => setLat(e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '1 1 140px',
+      minWidth: 120
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    placeholder: "Longitud",
+    value: lng,
+    onChange: e => setLng(e.target.value)
+  })), /*#__PURE__*/React.createElement(Button, {
+    color: "primary",
+    onClick: handleCreate
+  }, "Crear"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '0.875rem',
+      flexDirection: isMobile ? 'column' : 'row',
+      height: isMobile ? 'auto' : 'calc(100vh - 260px)'
+    }
+  }, /*#__PURE__*/React.createElement(Card, {
+    padding: "0",
+    style: {
+      flex: isMobile ? 'none' : 1,
+      height: isMobile ? 420 : 'auto',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    bodyStyle: {
+      flex: 1,
+      minHeight: 0,
+      display: 'flex'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      position: 'relative',
+      minHeight: 0,
+      backgroundImage: 'repeating-linear-gradient(135deg, var(--body-bg) 0 14px, var(--surface-input) 14px 28px)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 14,
+      left: 14,
+      display: 'flex',
+      gap: '0.4rem',
+      zIndex: 2,
+      background: 'var(--surface-card)',
+      borderRadius: '0.5rem',
+      padding: '0.3rem',
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, ['map', 'satellite'].map(m => /*#__PURE__*/React.createElement("button", {
+    key: m,
+    onClick: () => setMapMode(m),
+    style: {
+      padding: '0.3rem 0.7rem',
+      borderRadius: '0.35rem',
+      border: 'none',
+      cursor: 'pointer',
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      background: mapMode === m ? 'var(--body-bg)' : 'transparent',
+      color: mapMode === m ? 'var(--text-heading)' : 'var(--text-secondary)'
+    }
+  }, m === 'map' ? 'Mapa' : 'Satélite'))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 14,
+      right: 14,
+      zIndex: 2,
+      width: 34,
+      height: 34,
+      borderRadius: '0.4rem',
+      background: 'var(--surface-card)',
+      boxShadow: 'var(--shadow-sm)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--text-secondary)',
+      fontSize: '0.8rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-expand"
+  })), filtered.map(p => {
+    const cat = PLACE_CATEGORIES[p.category] || PLACE_CATEGORIES.otro;
+    const [top, left] = hashPos(p.id + p.name);
+    const isSel = selected === p.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      onClick: () => setSelected(p.id),
+      title: p.name,
+      style: {
+        position: 'absolute',
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-50%, -100%) scale(${isSel ? 1.18 : 1})`,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.2rem',
+        cursor: 'pointer',
+        transition: 'transform 0.15s ease',
+        zIndex: isSel ? 3 : 1
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: '0.62rem',
+        fontWeight: 700,
+        color: 'var(--text-heading)',
+        background: 'var(--surface-card)',
+        padding: '0.12rem 0.45rem',
+        borderRadius: '0.3rem',
+        whiteSpace: 'nowrap',
+        boxShadow: isSel ? `0 0 0 2px ${cat.color}` : '0 2px 6px rgba(0,0,0,0.2)',
+        maxWidth: 140,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      }
+    }, p.name), /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 26,
+        height: 26,
+        borderRadius: '50% 50% 50% 0',
+        transform: 'rotate(45deg)',
+        background: cat.color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 3px 6px rgba(0,0,0,0.3)',
+        border: '2px solid var(--surface-card)'
+      }
+    }, /*#__PURE__*/React.createElement("em", {
+      className: cat.icon,
+      style: {
+        transform: 'rotate(-45deg)',
+        color: '#fff',
+        fontSize: '0.65rem'
+      }
+    })));
+  }), filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      color: 'var(--text-secondary)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-map-location-dot",
+    style: {
+      fontSize: '1.8rem',
+      opacity: 0.35,
+      display: 'block',
+      marginBottom: '0.5rem'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'monospace',
+      fontSize: '0.72rem',
+      letterSpacing: '0.03em'
+    }
+  }, "sin resultados"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      bottom: 8,
+      left: 12,
+      fontSize: '0.68rem',
+      color: 'var(--text-secondary)',
+      opacity: 0.7,
+      fontFamily: 'monospace'
+    }
+  }, "mapa \xB7 vista previa"))), /*#__PURE__*/React.createElement(Card, {
+    padding: "0",
+    style: {
+      width: isMobile ? '100%' : 320,
+      flex: 'none',
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: 0
+    },
+    bodyStyle: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: 0,
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '1rem 1rem 0.75rem',
+      flex: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: '0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Lugares"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--surface-input)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: '50rem',
+      padding: '0.1rem 0.6rem',
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, filtered.length)), /*#__PURE__*/React.createElement(Input, {
+    placeholder: "Buscar",
+    icon: "fas fa-magnifying-glass",
+    value: query,
+    onChange: e => setQuery(e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minHeight: 0,
+      overflowY: 'auto',
+      padding: '0 0.5rem 0.5rem'
+    }
+  }, filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      color: 'var(--text-secondary)',
+      padding: '2rem 1rem',
+      fontSize: '0.8rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-location-dot",
+    style: {
+      fontSize: '1.3rem',
+      opacity: 0.3,
+      display: 'block',
+      marginBottom: '0.5rem'
+    }
+  }), "Sin lugares"), filtered.map(p => {
+    const cat = PLACE_CATEGORIES[p.category] || PLACE_CATEGORIES.otro;
+    const isSel = selected === p.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      onClick: () => setSelected(p.id),
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.6rem',
+        padding: '0.55rem 0.6rem',
+        borderRadius: '0.5rem',
+        cursor: 'pointer',
+        background: isSel ? 'var(--surface-input)' : 'transparent',
+        boxShadow: isSel ? 'var(--shadow-xs)' : 'none',
+        transition: 'background 0.12s'
+      },
+      onMouseEnter: e => {
+        if (!isSel) e.currentTarget.style.background = 'var(--surface-input)';
+      },
+      onMouseLeave: e => {
+        if (!isSel) e.currentTarget.style.background = 'transparent';
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 28,
+        height: 28,
+        borderRadius: '0.5rem',
+        flex: 'none',
+        background: cat.color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        fontSize: '0.7rem'
+      }
+    }, /*#__PURE__*/React.createElement("em", {
+      className: cat.icon
+    })), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: '0.82rem',
+        fontWeight: isSel ? 700 : 600,
+        color: 'var(--text-heading)',
+        flex: 1,
+        minWidth: 0,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      }
+    }, p.name), /*#__PURE__*/React.createElement("button", {
+      title: "Eliminar",
+      onClick: e => {
+        e.stopPropagation();
+        handleDelete(p.id);
+      },
+      style: {
+        width: 26,
+        height: 26,
+        flex: 'none',
+        borderRadius: '0.4rem',
+        border: 'none',
+        background: 'transparent',
+        color: 'var(--text-secondary)',
+        cursor: 'pointer',
+        fontSize: '0.75rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.15s'
+      },
+      onMouseEnter: e => {
+        e.currentTarget.style.background = 'rgba(234,6,6,0.1)';
+        e.currentTarget.style.color = '#ea0606';
+      },
+      onMouseLeave: e => {
+        e.currentTarget.style.background = 'transparent';
+        e.currentTarget.style.color = 'var(--text-secondary)';
+      }
+    }, /*#__PURE__*/React.createElement("em", {
+      className: "fas fa-trash"
+    })));
+  })))));
+}
+window.PlacesView = PlacesView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/PlacesView.jsx", error: String((e && e.message) || e) }); }
+
 // ui_kits/admin/ServiceDetailModal.jsx
 try { (() => {
 // Service detail modal — shown from the Historial table. Read-only recap of a
@@ -5127,6 +6166,25 @@ function ServicesView() {
     ...f,
     [k]: v
   }));
+
+  // Suggestion pools for the address / phone autocompletes — pulled from
+  // known places plus phone numbers and addresses already seen in services.
+  const addressOptions = React.useMemo(() => {
+    const set = new Set();
+    (data.places || []).forEach(p => p.name && set.add(p.name));
+    [...(data.pendings || []), ...(data.inProgress || []), ...(data.history || [])].forEach(s => {
+      if (s.start && s.start !== 'N/A') set.add(s.start);
+      if (s.end && s.end !== 'N/A') set.add(s.end);
+    });
+    return [...set];
+  }, []);
+  const phoneOptions = React.useMemo(() => {
+    const set = new Set();
+    [...(data.pendings || []), ...(data.inProgress || []), ...(data.history || [])].forEach(s => s.phone && set.add(s.phone));
+    (data.drivers || []).forEach(d => d.phone && set.add(d.phone));
+    (data.users || []).forEach(u => u.phone && set.add(u.phone));
+    return [...set];
+  }, []);
   const handleCreate = () => {
     setForm(f => ({
       ...f,
@@ -5210,17 +6268,17 @@ function ServicesView() {
   const OriginBadge = ({
     origin
   }) => /*#__PURE__*/React.createElement("span", {
+    title: origin === 'bot' ? 'WhatsApp Bot' : 'Admin',
     style: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '0.3rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
+      justifyContent: 'center',
+      fontSize: '1.15rem',
       color: origin === 'bot' ? '#25d366' : 'var(--text-secondary)'
     }
   }, /*#__PURE__*/React.createElement("em", {
-    className: origin === 'bot' ? 'fa-brands fa-whatsapp' : 'fas fa-desktop'
-  }), origin === 'bot' ? 'WhatsApp Bot' : 'Admin');
+    className: origin === 'bot' ? 'fas fa-robot' : 'fas fa-desktop'
+  }));
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
@@ -5272,7 +6330,7 @@ function ServicesView() {
       borderRadius: '0.875rem',
       boxShadow: 'var(--shadow-card)',
       border: '1px solid var(--border-subtle)',
-      overflow: 'hidden'
+      overflow: 'visible'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -5314,11 +6372,12 @@ function ServicesView() {
     value: "+56"
   }, "+56 CL"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: lbl
-  }, "Tel\xE9fono"), /*#__PURE__*/React.createElement("input", {
+  }, "Tel\xE9fono"), /*#__PURE__*/React.createElement(AutocompleteInput, {
     type: "tel",
     placeholder: "300 000 0000",
     value: form.phone,
-    onChange: e => setField('phone', e.target.value),
+    onChange: v => setField('phone', v),
+    options: phoneOptions,
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: lbl
@@ -5330,19 +6389,19 @@ function ServicesView() {
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: lbl
-  }, "Direcci\xF3n inicial"), /*#__PURE__*/React.createElement("input", {
-    type: "text",
+  }, "Direcci\xF3n inicial"), /*#__PURE__*/React.createElement(AutocompleteInput, {
     placeholder: "Punto de recogida",
     value: form.startAddress,
-    onChange: e => setField('startAddress', e.target.value),
+    onChange: v => setField('startAddress', v),
+    options: addressOptions,
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: lbl
-  }, "Direcci\xF3n final"), /*#__PURE__*/React.createElement("input", {
-    type: "text",
+  }, "Direcci\xF3n final"), /*#__PURE__*/React.createElement(AutocompleteInput, {
     placeholder: "Destino (opcional)",
     value: form.endAddress,
-    onChange: e => setField('endAddress', e.target.value),
+    onChange: v => setField('endAddress', v),
+    options: addressOptions,
     style: inp
   })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     style: lbl
@@ -5539,7 +6598,10 @@ function ServicesView() {
   }, "Conductor"), tab === 'pendings' && /*#__PURE__*/React.createElement("th", {
     style: th
   }, "Comentario"), /*#__PURE__*/React.createElement("th", {
-    style: th
+    style: {
+      ...th,
+      textAlign: 'center'
+    }
   }, "Origen"), /*#__PURE__*/React.createElement("th", {
     style: {
       ...th,
@@ -5651,7 +6713,10 @@ function ServicesView() {
       whiteSpace: 'nowrap'
     }
   }, s.comment)), /*#__PURE__*/React.createElement("td", {
-    style: td
+    style: {
+      ...td,
+      textAlign: 'center'
+    }
   }, /*#__PURE__*/React.createElement(OriginBadge, {
     origin: s.origin
   })), /*#__PURE__*/React.createElement("td", {
@@ -6794,17 +7859,22 @@ window.SettingsView = SettingsView;
 try { (() => {
 // Gorda admin sidebar — floating rounded card, Soft UI nav with icon chips.
 // On mobile (isMobile=true) renders as a fixed-position drawer that slides in/out.
+// On desktop it can collapse to a slim icon-only rail; a small pill toggle stays
+// pinned to its right edge at all times so it's never lost off-screen.
 function Sidebar({
   active,
   onNavigate,
   isMobile,
   open,
-  onClose
+  onClose,
+  collapsed,
+  onToggleCollapse
 }) {
   const {
     user,
     nav
   } = window.GordaData;
+  const railCollapsed = !isMobile && collapsed;
   const posStyle = isMobile ? {
     position: 'fixed',
     top: 0,
@@ -6821,23 +7891,34 @@ function Sidebar({
     bottom: '1rem',
     borderRadius: '1rem'
   };
+  const labelStyle = {
+    opacity: railCollapsed ? 0 : 1,
+    maxWidth: railCollapsed ? 0 : 160,
+    marginLeft: railCollapsed ? 0 : undefined,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    transition: 'opacity 0.16s ease, max-width 0.28s cubic-bezier(0.4,0,0.2,1)'
+  };
   return /*#__PURE__*/React.createElement("aside", {
     style: {
       ...posStyle,
-      width: 240,
+      width: railCollapsed ? 76 : 216,
       background: 'var(--surface-card)',
       boxShadow: isMobile && open ? '0 8px 40px rgba(0,0,0,0.28)' : 'var(--shadow-card)',
       display: 'flex',
       flexDirection: 'column',
-      padding: '1rem 0.75rem',
+      padding: railCollapsed ? '1rem 0.4rem' : '1rem 0.75rem',
       fontFamily: "'Open Sans', sans-serif",
-      overflowY: 'auto'
+      overflow: 'visible',
+      transition: 'width 0.28s cubic-bezier(0.4,0,0.2,1), padding 0.28s cubic-bezier(0.4,0,0.2,1)'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
+      position: 'relative',
       display: 'flex',
       alignItems: 'center',
-      gap: '0.6rem',
+      gap: railCollapsed ? 0 : '0.6rem',
+      justifyContent: railCollapsed ? 'center' : 'flex-start',
       padding: '0.25rem 0.5rem 0.75rem'
     }
   }, /*#__PURE__*/React.createElement("img", {
@@ -6854,11 +7935,10 @@ function Sidebar({
       fontWeight: 700,
       fontSize: '0.9rem',
       color: 'var(--text-heading)',
-      flex: 1,
+      flex: railCollapsed ? 'none' : 1,
       minWidth: 0,
-      overflow: 'hidden',
       textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
+      ...labelStyle
     }
   }, user.name), isMobile && /*#__PURE__*/React.createElement("button", {
     onClick: onClose,
@@ -6878,6 +7958,36 @@ function Sidebar({
     }
   }, /*#__PURE__*/React.createElement("em", {
     className: "fas fa-xmark"
+  })), !isMobile && /*#__PURE__*/React.createElement("button", {
+    onClick: onToggleCollapse,
+    title: collapsed ? 'Mostrar menú' : 'Ocultar menú',
+    "aria-label": collapsed ? 'Mostrar menú' : 'Ocultar menú',
+    style: {
+      position: 'absolute',
+      top: '50%',
+      right: railCollapsed ? -14 : -20,
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+      borderRadius: 4,
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-color)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      color: 'var(--text-heading)',
+      fontSize: '0.5rem',
+      fontWeight: 900,
+      boxShadow: '0 1px 4px -1px rgba(0,0,0,0.45)',
+      zIndex: 5,
+      transition: 'background 0.15s ease, color 0.15s ease, right 0.28s cubic-bezier(0.4,0,0.2,1)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: collapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left',
+    style: {
+      WebkitTextStroke: '0.4px currentColor'
+    }
   }))), /*#__PURE__*/React.createElement("hr", {
     style: {
       border: 0,
@@ -6889,13 +7999,17 @@ function Sidebar({
       display: 'flex',
       flexDirection: 'column',
       gap: 2,
-      overflowY: 'auto'
+      flex: '1 1 auto',
+      minHeight: 0,
+      overflowY: 'auto',
+      overflowX: 'hidden'
     }
   }, nav.map(item => {
     const isActive = active === item.id;
     return /*#__PURE__*/React.createElement("a", {
       key: item.id,
       href: "#",
+      title: railCollapsed ? item.id === 'whatsapp' ? item.status ? 'Connected' : 'Disconnected' : item.label : undefined,
       onClick: e => {
         e.preventDefault();
         onNavigate(item.id);
@@ -6903,8 +8017,9 @@ function Sidebar({
       style: {
         display: 'flex',
         alignItems: 'center',
-        gap: '0.7rem',
-        padding: '0.55rem 0.6rem',
+        gap: railCollapsed ? 0 : '0.7rem',
+        justifyContent: railCollapsed ? 'center' : 'flex-start',
+        padding: railCollapsed ? '0.55rem 0' : '0.55rem 0.6rem',
         borderRadius: '0.5rem',
         textDecoration: 'none',
         background: isActive ? 'var(--surface-input)' : 'transparent',
@@ -6932,7 +8047,8 @@ function Sidebar({
         fontSize: '0.85rem',
         fontWeight: isActive ? 700 : 600,
         color: isActive ? 'var(--text-heading)' : 'var(--text-body)',
-        position: 'relative'
+        position: 'relative',
+        ...labelStyle
       }
     }, item.id === 'whatsapp' ? item.status ? 'Connected' : 'Disconnected' : item.label, item.id === 'whatsapp' && /*#__PURE__*/React.createElement("span", {
       style: {
@@ -6953,12 +8069,14 @@ function Sidebar({
     }
   }, /*#__PURE__*/React.createElement("a", {
     href: "#",
+    title: railCollapsed ? 'Log out' : undefined,
     onClick: e => e.preventDefault(),
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: '0.7rem',
-      padding: '0.55rem 0.6rem',
+      gap: railCollapsed ? 0 : '0.7rem',
+      justifyContent: railCollapsed ? 'center' : 'flex-start',
+      padding: railCollapsed ? '0.55rem 0' : '0.55rem 0.6rem',
       borderRadius: '0.5rem',
       textDecoration: 'none',
       color: 'var(--text-body)'
@@ -6982,7 +8100,8 @@ function Sidebar({
   })), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: '0.85rem',
-      fontWeight: 600
+      fontWeight: 600,
+      ...labelStyle
     }
   }, "Log out")), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -6990,7 +8109,9 @@ function Sidebar({
       fontSize: '0.65rem',
       color: 'var(--text-muted)',
       marginTop: '0.5rem',
-      fontWeight: 700
+      fontWeight: 700,
+      ...labelStyle,
+      maxWidth: railCollapsed ? 0 : '100%'
     }
   }, "version 2.0.5")));
 }
@@ -7132,6 +8253,498 @@ function TopNav({
 }
 window.TopNav = TopNav;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/TopNav.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/UserDetailView.jsx
+try { (() => {
+// User detail view — edit (or create) an admin/operator account.
+function UserDetailView({
+  user,
+  onBack
+}) {
+  const {
+    Card,
+    Button,
+    Input,
+    Switch
+  } = window.GordaDesignSystem_019e24;
+  const isMobile = window.useIsMobile();
+  const isNew = !user;
+  const [form, setForm] = React.useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    role: user?.role || 'Operador',
+    enabled: user?.enabled !== undefined ? user.enabled : true
+  });
+  const set = k => e => setForm(f => ({
+    ...f,
+    [k]: e.target.value
+  }));
+  const roleOption = (value, label) => {
+    const active = form.role === value;
+    return /*#__PURE__*/React.createElement("label", {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.55rem',
+        cursor: 'pointer',
+        fontFamily: "'Open Sans', sans-serif"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      onClick: () => setForm(f => ({
+        ...f,
+        role: value
+      })),
+      style: {
+        width: 20,
+        height: 20,
+        borderRadius: '0.35rem',
+        flex: 'none',
+        border: `2px solid ${active ? '#cb0c9f' : 'var(--border-color)'}`,
+        background: active ? '#cb0c9f' : 'var(--surface-input)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        fontSize: '0.62rem'
+      }
+    }, active && /*#__PURE__*/React.createElement("em", {
+      className: "fas fa-check"
+    })), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: '0.85rem',
+        fontWeight: 700,
+        color: 'var(--text-heading)'
+      }
+    }, label));
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      marginBottom: '1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement(Button, {
+    color: "secondary",
+    variant: "outline",
+    size: "sm",
+    icon: "fas fa-arrow-left",
+    onClick: onBack
+  }, "Regresar")), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: '0 0 1.25rem',
+      fontSize: '1.05rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      textAlign: isMobile ? 'left' : 'center'
+    }
+  }, isNew ? 'Crear información del usuario' : 'Editar información del usuario'), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: '2rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: isMobile ? 'none' : '0 0 260px',
+      position: 'relative'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: '100%',
+      aspectRatio: '3 / 4',
+      borderRadius: '0.85rem',
+      background: 'repeating-linear-gradient(135deg, var(--surface-input) 0px, var(--surface-input) 10px, var(--body-bg) 10px, var(--body-bg) 20px)',
+      border: '1px solid var(--border-subtle)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-image",
+    style: {
+      fontSize: '1.6rem',
+      color: 'var(--text-secondary)',
+      opacity: 0.6
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: "'SFMono-Regular', Menlo, Monaco, monospace",
+      fontSize: '0.68rem',
+      color: 'var(--text-secondary)',
+      textAlign: 'center',
+      padding: '0 1rem'
+    }
+  }, "foto de perfil")), /*#__PURE__*/React.createElement("button", {
+    title: "Cambiar foto",
+    style: {
+      position: 'absolute',
+      bottom: 12,
+      left: 12,
+      width: 34,
+      height: 34,
+      borderRadius: '50%',
+      border: 'none',
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      color: '#fff',
+      cursor: 'pointer',
+      fontSize: '0.8rem',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: '0 4px 10px rgba(0,0,0,0.25)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-pencil"
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1.1rem',
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    label: "Nombre",
+    value: form.name,
+    onChange: set('name'),
+    placeholder: "Nombre completo",
+    icon: "fas fa-user"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Input, {
+    label: "Correo electr\xF3nico",
+    value: form.email,
+    onChange: set('email'),
+    placeholder: "correo@ejemplo.com",
+    icon: "fas fa-envelope"
+  }), /*#__PURE__*/React.createElement("button", {
+    style: {
+      marginTop: '0.4rem',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      padding: 0,
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: '#cb0c9f',
+      fontFamily: 'inherit'
+    }
+  }, "\xBFRestablecer contrase\xF1a?")), /*#__PURE__*/React.createElement(Input, {
+    label: "Tel\xE9fono",
+    value: form.phone,
+    onChange: set('phone'),
+    placeholder: "+57 300 000 0000",
+    icon: "fas fa-phone"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      marginBottom: '0.55rem',
+      marginLeft: '0.25rem'
+    }
+  }, "Rol"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '1.5rem'
+    }
+  }, roleOption('Operador', 'Operador'), roleOption('Administrador', 'Administrador'))), /*#__PURE__*/React.createElement(Switch, {
+    checked: form.enabled,
+    onChange: v => setForm(f => ({
+      ...f,
+      enabled: v
+    })),
+    label: form.enabled ? 'Habilitado' : 'Inhabilitado'
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '0.6rem',
+      paddingTop: '1.25rem',
+      borderTop: '1px solid var(--border-subtle)',
+      marginTop: '1.5rem'
+    }
+  }, /*#__PURE__*/React.createElement(Button, {
+    color: "secondary",
+    variant: "outline",
+    size: "sm",
+    onClick: onBack
+  }, "Cancelar"), /*#__PURE__*/React.createElement(Button, {
+    color: "primary",
+    variant: "gradient",
+    size: "sm",
+    icon: "fas fa-check",
+    onClick: onBack
+  }, "Guardar cambios"))));
+}
+window.UserDetailView = UserDetailView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/UserDetailView.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/UsersView.jsx
+try { (() => {
+// Users view — admin/operator roster: search, role filter, status badges, row edit.
+function UsersView({
+  onEditUser
+}) {
+  const {
+    Card,
+    Avatar,
+    Badge,
+    Button
+  } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const [query, setQuery] = React.useState('');
+  const [filter, setFilter] = React.useState('all');
+  const rows = data.users.filter(u => {
+    const matchQ = (u.name + u.email + u.phone).toLowerCase().includes(query.toLowerCase());
+    const matchF = filter === 'all' || filter === 'admin' && u.role === 'Administrador' || filter === 'operator' && u.role === 'Operador';
+    return matchQ && matchF;
+  });
+  const th = {
+    textAlign: 'left',
+    textTransform: 'uppercase',
+    fontSize: '0.62rem',
+    fontWeight: 700,
+    letterSpacing: '0.02rem',
+    color: 'var(--text-secondary)',
+    padding: '0.65rem 0.9rem',
+    borderBottom: '1px solid var(--border-subtle)'
+  };
+  const td = {
+    padding: '0.65rem 0.9rem',
+    fontSize: '0.8rem',
+    color: 'var(--text-body)',
+    borderBottom: '1px solid var(--border-subtle)',
+    verticalAlign: 'middle'
+  };
+  const filters = [{
+    id: 'all',
+    label: 'Todos'
+  }, {
+    id: 'admin',
+    label: 'Administrador'
+  }, {
+    id: 'operator',
+    label: 'Operador'
+  }];
+  return /*#__PURE__*/React.createElement(Card, {
+    padding: "0"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.75rem',
+      padding: '1rem 1rem 0.75rem',
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Usuarios \xB7 ", rows.length), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      background: 'var(--surface-input)',
+      border: '1px solid var(--border-color)',
+      borderRadius: '0.5rem',
+      padding: '0.38rem 0.7rem',
+      width: 220
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-magnifying-glass",
+    style: {
+      color: 'var(--text-secondary)',
+      fontSize: '0.78rem'
+    }
+  }), /*#__PURE__*/React.createElement("input", {
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    placeholder: "Buscar usuario...",
+    style: {
+      border: 'none',
+      outline: 'none',
+      background: 'transparent',
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: '0.8rem',
+      color: 'var(--text-body)',
+      width: '100%'
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 4
+    }
+  }, filters.map(f => {
+    const active = filter === f.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: f.id,
+      onClick: () => setFilter(f.id),
+      style: {
+        padding: '0.35rem 0.85rem',
+        borderRadius: '50rem',
+        border: `1.5px solid ${active ? '#cb0c9f' : 'var(--border-subtle)'}`,
+        cursor: 'pointer',
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: '0.7rem',
+        fontWeight: 700,
+        background: active ? 'rgba(203,12,159,0.1)' : 'transparent',
+        color: active ? '#a30c80' : 'var(--text-secondary)',
+        transition: 'all 0.15s'
+      }
+    }, f.label);
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement(Button, {
+    color: "primary",
+    rounded: true,
+    icon: "fas fa-plus",
+    onClick: () => onEditUser && onEditUser(null)
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 720
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Nombre"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Tel\xE9fono"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Rol"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      ...th,
+      textAlign: 'center'
+    }
+  }, "Estado"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Creado"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      ...th,
+      textAlign: 'center'
+    }
+  }, "Editar"))), /*#__PURE__*/React.createElement("tbody", null, rows.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 6,
+    style: {
+      ...td,
+      textAlign: 'center',
+      padding: '2rem',
+      color: 'var(--text-secondary)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-users",
+    style: {
+      fontSize: '1.5rem',
+      opacity: 0.3,
+      display: 'block',
+      marginBottom: '0.5rem'
+    }
+  }), "Sin resultados")), rows.map(u => /*#__PURE__*/React.createElement("tr", {
+    key: u.id,
+    style: {
+      transition: 'background 0.12s'
+    },
+    onMouseEnter: e => e.currentTarget.style.background = 'var(--surface-input)',
+    onMouseLeave: e => e.currentTarget.style.background = 'transparent'
+  }, /*#__PURE__*/React.createElement("td", {
+    style: td
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.6rem'
+    }
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    name: u.name,
+    size: "sm"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.82rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, u.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.7rem',
+      color: 'var(--text-secondary)'
+    }
+  }, u.email)))), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      whiteSpace: 'nowrap',
+      fontWeight: 600,
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, u.phone), /*#__PURE__*/React.createElement("td", {
+    style: td
+  }, u.role), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      textAlign: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(Badge, {
+    color: u.enabled ? 'success' : 'danger',
+    variant: "solid"
+  }, u.enabled ? 'HABILITADO' : 'INHABILITADO')), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      whiteSpace: 'nowrap',
+      color: 'var(--text-secondary)'
+    }
+  }, u.created), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      textAlign: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    title: "Editar",
+    onClick: () => onEditUser && onEditUser(u),
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
+      border: 'none',
+      background: 'var(--surface-input)',
+      color: 'var(--text-secondary)',
+      cursor: 'pointer',
+      fontSize: '0.75rem',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.15s'
+    },
+    onMouseEnter: e => {
+      e.currentTarget.style.background = 'linear-gradient(310deg,#7928ca,#ff0080)';
+      e.currentTarget.style.color = '#fff';
+    },
+    onMouseLeave: e => {
+      e.currentTarget.style.background = 'var(--surface-input)';
+      e.currentTarget.style.color = 'var(--text-secondary)';
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-pencil"
+  })))))))));
+}
+window.UsersView = UsersView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/UsersView.jsx", error: String((e && e.message) || e) }); }
 
 // ui_kits/admin/VehicleDetailView.jsx
 try { (() => {
@@ -9147,6 +10760,10 @@ window.GordaData = {
     label: 'Dashboard',
     icon: 'fas fa-gauge-high'
   }, {
+    id: 'users',
+    label: 'Usuarios',
+    icon: 'fa-solid fa-users'
+  }, {
     id: 'drivers',
     label: 'Drivers',
     icon: 'fa-solid fa-car-side'
@@ -9411,6 +11028,71 @@ window.GordaData = {
   }, {
     id: 'l3',
     label: 'Soporte · 5731731040'
+  }],
+  users: [{
+    id: 'u1',
+    name: 'Admin User',
+    email: 'admin@admin.com',
+    phone: '+1000000000',
+    role: 'Administrador',
+    enabled: true,
+    created: '2026-06-28'
+  }, {
+    id: 'u2',
+    name: 'Natalia Central',
+    email: 'natalia2025@gmail.com',
+    phone: '+573113939002',
+    role: 'Operador',
+    enabled: false,
+    created: '2025-05-02'
+  }, {
+    id: 'u3',
+    name: 'Dayana Central',
+    email: 'lopezdayana923@gmail.com',
+    phone: '+57 314 8066396',
+    role: 'Operador',
+    enabled: true,
+    created: '2025-04-29'
+  }, {
+    id: 'u4',
+    name: 'Rocío Central',
+    email: 'brocco2708@gmail.com',
+    phone: '+573105073146',
+    role: 'Operador',
+    enabled: true,
+    created: '2025-04-28'
+  }, {
+    id: 'u5',
+    name: 'Camilo Central',
+    email: 'camilo2025@gmail.com',
+    phone: '+573155914008',
+    role: 'Operador',
+    enabled: true,
+    created: '2025-04-28'
+  }, {
+    id: 'u6',
+    name: 'User Desarrolladores',
+    email: 'yoalecam@hotmail.com',
+    phone: '+573113113030',
+    role: 'Administrador',
+    enabled: true,
+    created: '2025-02-16'
+  }, {
+    id: 'u7',
+    name: '511 Red Blanca Pop',
+    email: 'redblancapopayan2@gmail.com',
+    phone: '3202275367',
+    role: 'Administrador',
+    enabled: true,
+    created: '2023-01-08'
+  }, {
+    id: 'u8',
+    name: 'Super Admin',
+    email: 'devalexandrecr@gmail.com',
+    phone: '3103794656',
+    role: 'Administrador',
+    enabled: true,
+    created: '2022-07-03'
   }],
   stats: [{
     label: 'Services today',
@@ -9708,6 +11390,217 @@ window.GordaData = {
     name: 'Alexander Camilo',
     status: 'available'
   }],
+  // Places of interest pinned on the Places map (name, coords, category)
+  places: [{
+    id: 'p1',
+    name: 'Edificio Alcázar',
+    lat: 2.4489,
+    lng: -76.6063,
+    category: 'edificio'
+  }, {
+    id: 'p2',
+    name: 'Mirador El Bosque',
+    lat: 2.4512,
+    lng: -76.6021,
+    category: 'foto'
+  }, {
+    id: 'p3',
+    name: 'Chocolatería La Cascada',
+    lat: 2.4468,
+    lng: -76.6098,
+    category: 'comercio'
+  }, {
+    id: 'p4',
+    name: 'Agroinsumos El Campo',
+    lat: 2.4441,
+    lng: -76.6112,
+    category: 'comercio'
+  }, {
+    id: 'p5',
+    name: 'Galería San Nicolás',
+    lat: 2.4455,
+    lng: -76.6135,
+    category: 'foto'
+  }, {
+    id: 'p6',
+    name: 'Conjunto Los Pinos',
+    lat: 2.4498,
+    lng: -76.6145,
+    category: 'edificio'
+  }, {
+    id: 'p7',
+    name: 'Clínica Santa Victoria',
+    lat: 2.4523,
+    lng: -76.6089,
+    category: 'salud'
+  }, {
+    id: 'p8',
+    name: "Gym Vitalfit",
+    lat: 2.4479,
+    lng: -76.6072,
+    category: 'deporte'
+  }, {
+    id: 'p9',
+    name: 'Panadería Los Kioskos',
+    lat: 2.4462,
+    lng: -76.6055,
+    category: 'restaurante'
+  }, {
+    id: 'p10',
+    name: 'Comando de Policía Norte',
+    lat: 2.4531,
+    lng: -76.6118,
+    category: 'seguridad'
+  }, {
+    id: 'p11',
+    name: 'Restaurante Las Brasas',
+    lat: 2.4447,
+    lng: -76.6041,
+    category: 'restaurante'
+  }, {
+    id: 'p12',
+    name: 'Hostal El Valle',
+    lat: 2.4507,
+    lng: -76.6155,
+    category: 'hotel'
+  }, {
+    id: 'p13',
+    name: 'Carrera 3 con Calle 1',
+    lat: 2.4419,
+    lng: -76.6079,
+    category: 'otro'
+  }, {
+    id: 'p14',
+    name: 'Granero Mercatodo',
+    lat: 2.4433,
+    lng: -76.6132,
+    category: 'comercio'
+  }, {
+    id: 'p15',
+    name: 'Asadero Santiago',
+    lat: 2.4491,
+    lng: -76.6169,
+    category: 'restaurante'
+  }, {
+    id: 'p16',
+    name: 'Finca Vista Hermosa',
+    lat: 2.4552,
+    lng: -76.6098,
+    category: 'finca'
+  }, {
+    id: 'p17',
+    name: 'Urbanización Los Álamos',
+    lat: 2.4405,
+    lng: -76.6165,
+    category: 'edificio'
+  }, {
+    id: 'p18',
+    name: 'Rincón del Río',
+    lat: 2.4467,
+    lng: -76.6188,
+    category: 'foto'
+  }, {
+    id: 'p19',
+    name: 'Supertiendas El Ahorro',
+    lat: 2.4485,
+    lng: -76.6202,
+    category: 'comercio'
+  }, {
+    id: 'p20',
+    name: 'Colegio San Camilo',
+    lat: 2.4517,
+    lng: -76.6045,
+    category: 'educacion'
+  }],
+  // Métricas view — monthly service volume, cancellation trend, top plates leaderboard
+  metrics: {
+    monthly: [{
+      m: 'Ene',
+      total: 29500,
+      completed: 22200,
+      canceled: 7300
+    }, {
+      m: 'Feb',
+      total: 28100,
+      completed: 21300,
+      canceled: 6800
+    }, {
+      m: 'Mar',
+      total: 32400,
+      completed: 23700,
+      canceled: 8700
+    }, {
+      m: 'Abr',
+      total: 29800,
+      completed: 22900,
+      canceled: 6900
+    }, {
+      m: 'May',
+      total: 31200,
+      completed: 24100,
+      canceled: 7100
+    }, {
+      m: 'Jun',
+      total: 30500,
+      completed: 23600,
+      canceled: 6900
+    }, {
+      m: 'Jul',
+      total: 2100,
+      completed: 1700,
+      canceled: 400
+    }],
+    topPlates: {
+      diario: [{
+        plate: 'FPK979',
+        value: 18
+      }, {
+        plate: 'IUA794',
+        value: 14
+      }, {
+        plate: 'DCA350',
+        value: 11
+      }, {
+        plate: 'LCI875',
+        value: 9
+      }, {
+        plate: 'CPO991',
+        value: 7
+      }],
+      semanal: [{
+        plate: 'FPK979',
+        value: 92
+      }, {
+        plate: 'LCI875',
+        value: 81
+      }, {
+        plate: 'IUA794',
+        value: 77
+      }, {
+        plate: 'CPO991',
+        value: 69
+      }, {
+        plate: 'DCA350',
+        value: 58
+      }],
+      mensual: [{
+        plate: 'FPK979',
+        value: 340
+      }, {
+        plate: 'IUA794',
+        value: 305
+      }, {
+        plate: 'LCI875',
+        value: 298
+      }, {
+        plate: 'DCA350',
+        value: 276
+      }, {
+        plate: 'CPO991',
+        value: 240
+      }]
+    }
+  },
   confirmations: [{
     key: 'new_service',
     label: 'New service created',

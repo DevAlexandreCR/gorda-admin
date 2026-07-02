@@ -41,12 +41,17 @@
   <script type="text/babel" src="ServiceDetailModal.jsx"></script>
   <script type="text/babel" src="HistoryView.jsx"></script>
   <script type="text/babel" src="MapView.jsx"></script>
+  <script type="text/babel" src="PlacesView.jsx"></script>
+  <script type="text/babel" src="AutocompleteInput.jsx"></script>
   <script type="text/babel" src="ServicesView.jsx"></script>
+  <script type="text/babel" src="UsersView.jsx"></script>
+  <script type="text/babel" src="UserDetailView.jsx"></script>
   <script type="text/babel" src="DriversView.jsx"></script>
   <script type="text/babel" src="EditDriverView.jsx"></script>
   <script type="text/babel" src="SettingsView.jsx"></script>
   <script type="text/babel" src="VehiclesView.jsx"></script>
   <script type="text/babel" src="VehicleDetailView.jsx"></script>
+  <script type="text/babel" src="MetricsView.jsx"></script>
   <script type="text/babel" src="WhatsAppView.jsx"></script>
   <script type="text/babel" src="EditMessageModal.jsx"></script>
   <script type="text/babel" src="LoadingModal.jsx"></script>
@@ -56,7 +61,7 @@
     const { useState, useEffect } = React;
 
     const TITLES = {
-      dashboard: 'Dashboard', drivers: 'Drivers',
+      dashboard: 'Dashboard', users: 'Usuarios', drivers: 'Drivers',
       vehicles: 'Vehículos', places: 'Places', whatsapp: 'WhatsApp connection',
       metrics: 'Metrics', settings: 'Settings',
     };
@@ -81,6 +86,7 @@
       const [view, setView] = useState('dashboard');
       const [editingDriver, setEditingDriver] = useState(null);
       const [viewingVehicle, setViewingVehicle] = useState(null);
+      const [editingUser, setEditingUser] = useState(undefined); // undefined = list, null = new, object = edit
 
       // Theme state — initialized from what the anti-flash script already set
       const [theme, setTheme] = useState(() => {
@@ -95,14 +101,30 @@
 
       const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
       const [sidebarOpen, setSidebarOpen] = useState(false);
+      const [collapsed, setCollapsed] = useState(() => localStorage.getItem('gorda-sidebar-collapsed') === '1');
       const isMobile = window.useIsMobile(900);
+
+      useEffect(() => {
+        localStorage.setItem('gorda-sidebar-collapsed', collapsed ? '1' : '0');
+      }, [collapsed]);
+
+      // Avoid a stuck-open mobile drawer/backdrop if the viewport crosses the
+      // breakpoint while the drawer is open.
+      useEffect(() => { if (!isMobile) setSidebarOpen(false); }, [isMobile]);
 
       if (!authed) return <LoginView onLogin={() => setAuthed(true)} />;
 
-      const handleNavigate = (v) => { setView(v); setEditingDriver(null); setViewingVehicle(null); if (isMobile) setSidebarOpen(false); };
+      const handleNavigate = (v) => { setView(v); setEditingDriver(null); setViewingVehicle(null); setEditingUser(undefined); if (isMobile) setSidebarOpen(false); };
 
       let content;
       if (view === 'dashboard') content = <ServicesView />;
+      else if (view === 'users') {
+        if (editingUser !== undefined) {
+          content = <UserDetailView user={editingUser} onBack={() => setEditingUser(undefined)} />;
+        } else {
+          content = <UsersView onEditUser={(u) => setEditingUser(u)} />;
+        }
+      }
       else if (view === 'drivers') {
         if (editingDriver) {
           content = <EditDriverView driver={editingDriver} onBack={() => setEditingDriver(null)} />;
@@ -117,11 +139,13 @@
           content = <VehiclesView onViewVehicle={(v) => setViewingVehicle(v)} />;
         }
       }
+      else if (view === 'places') content = <PlacesView />;
       else if (view === 'whatsapp') content = <WhatsAppView />;
       else if (view === 'settings') content = <SettingsView />;
+      else if (view === 'metrics') content = <MetricsView />;
       else content = <Placeholder title={TITLES[view]} />;
 
-      const navTitle = editingDriver ? 'Drivers' : viewingVehicle ? 'Vehículos' : (TITLES[view] || view);
+      const navTitle = editingDriver ? 'Drivers' : viewingVehicle ? 'Vehículos' : (editingUser !== undefined ? 'Usuarios' : (TITLES[view] || view));
 
       return (
         <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -131,9 +155,15 @@
               background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(2px)',
             }} />
           )}
-          <Sidebar active={view} onNavigate={handleNavigate} isMobile={isMobile} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <Sidebar
+            active={view} onNavigate={handleNavigate}
+            isMobile={isMobile} open={sidebarOpen} onClose={() => setSidebarOpen(false)}
+            collapsed={collapsed} onToggleCollapse={() => setCollapsed(c => !c)}
+          />
           <main style={{
-            marginLeft: isMobile ? 0 : 272, padding: isMobile ? '0.75rem' : '1rem 1.5rem 0', transition: 'margin-left 0.25s ease', minWidth: 0,
+            marginLeft: isMobile ? 0 : (collapsed ? 108 : 248),
+            padding: isMobile ? '0.75rem' : '1rem 1.5rem 0',
+            transition: 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)', minWidth: 0,
             height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
           }}>
             <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} isMobile={isMobile} onToggleSidebar={() => setSidebarOpen(o => !o)} />

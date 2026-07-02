@@ -26,7 +26,8 @@ This document summarizes the current codebase so autonomous agents can execute t
 - Install deps (`npm install`), copy `.env.example` → `.env.local`, and update Firebase/API URLs.
 - Local Docker dev: from `dock/`, run `docker compose up -d --build admin functions emulators api` and open `http://localhost:5005`; `admin` runs `npm run watch` and Firebase Hosting Emulator serves `dist`.
 - Standalone frontend dev without Docker: `npm run serve`.
-- Quality gates: `npm run lint`, `npm run test:unit`, `npm run build` for production bundles in `dist/`.
+- Quality gates: `npm run lint`, `npm run test:unit`, and `npm run build:dev` to validate the bundle with local env (`.env.local`, localhost/emulator URLs). This produces a real production-style bundle in `dist/`, so it catches the same compile/type errors as `build`.
+- Use `npm run build` (mode `production`, `.env.production` → redblanca prod URLs) only for actual releases — never as the local validation step, since it would leave `dist/` pointing at production.
 - Firebase deploys rely on `firebase.json`, `firebase.config.js`, and `storage.rules`/`database.rules.json`.
 
 ## Agent Guidance & Risks
