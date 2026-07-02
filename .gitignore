@@ -36,3 +36,5 @@ pubsub-debug.log
 /coverage/
 ./.firebase
 /docs/
+.claude/agent-memory/
+**/.claude/agent-memory/
