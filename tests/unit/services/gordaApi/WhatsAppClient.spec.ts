@@ -57,4 +57,20 @@ describe('WhatsAppClient.ts', () => {
       expect(client.isConnected()).toBeTruthy()
     })
   })
+
+  test('must emit get-state event without registering a duplicate listener when requestState is called', async () => {
+    const [serverSocket] = Array.from(socket.sockets.sockets.values())
+    const onGetState = jest.fn()
+    serverSocket.on(WhatsApp.EVENT_GET_STATE, onGetState)
+    const socketOnSpy = jest.spyOn((client as any).socket, 'on')
+
+    client.requestState()
+
+    await waitForExpect(() => {
+      expect(onGetState).toHaveBeenCalled()
+    })
+    expect(socketOnSpy).not.toHaveBeenCalledWith(WhatsApp.EVENT_GET_STATE, expect.anything())
+
+    socketOnSpy.mockRestore()
+  })
 })

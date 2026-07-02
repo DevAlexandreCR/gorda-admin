@@ -11,6 +11,7 @@ import { WpClient } from "@/types/WpClient"
 import SettingsRepository from "@/repositories/SettingsRepository"
 import Swal from "sweetalert2"
 import { WhatsappServices } from "@/constants/WhatsappServices"
+import WhatsAppClient from "@/services/gordaApi/WhatsAppClient"
 
 describe('Connection.vue', () => {
   let wrapper: VueWrapper<any>
@@ -95,6 +96,24 @@ describe('Connection.vue', () => {
       expect(wrapper.vm.connecting).toBeFalsy()
       expect(wrapper.vm.qr).toBe('fake-qr')
     })
+  })
+
+  test('requestState is called on mount to re-query the real connection state', async () => {
+    const spy = jest.spyOn(WhatsAppClient.prototype, 'requestState')
+    const freshWrapper = shallowMount(Connection,
+      {
+        attachTo: '#root',
+        props: {
+          client: client
+        },
+        global: {
+          plugins: [router, i18n]
+        }
+      })
+    await nextTick()
+    expect(spy).toBeCalled()
+    spy.mockRestore()
+    freshWrapper.unmount()
   })
 
   test('an user can delete a wp-client', async () => {

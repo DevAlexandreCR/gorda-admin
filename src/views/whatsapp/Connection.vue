@@ -206,6 +206,7 @@ onMounted(() => {
   observer = new ClientObserver(onUpdate)
   wpClient.attach(observer)
   connected.value = wpClient.isConnected()
+  wpClient.requestState()
 })
 </script>
 

@@ -66,7 +66,7 @@ import ToastService from "@/services/ToastService";
 import FacebookService from "@/services/FacebookService";
 
 const {clients} = storeToRefs(useWpClientsStore())
-const {createClient} = useWpClientsStore()
+const {createClient, getWpClients} = useWpClientsStore()
 const {t} = useI18n()
 const useApi = ref<boolean>(false)
 const WHATSAPP_CONFIG_ID = process.env.VUE_APP_WHATSAPP_CONFIG_ID || ''
@@ -94,6 +94,8 @@ const schema = yup.object().shape({
 onMounted(() => {
   FacebookService.loadSDK()
     .catch(error => console.error('Failed to load Facebook SDK:', error))
+  getWpClients()
+    .catch(error => console.error('Failed to load WhatsApp clients:', error))
 })
 
 function launchWhatsAppSignup() {

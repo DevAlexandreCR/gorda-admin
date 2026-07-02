@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" :class="{ 'services-tabs--map': currentTap === 'mapTab' }">
     <ul class="nav nav-tabs service-tabs" id="myTab">
       <li class="nav-item">
         <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
@@ -191,6 +191,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container-fluid.services-tabs--map {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.services-tabs--map .tab-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.services-tabs--map #mapTab.tab-pane.active {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .service-tabs {
   border-bottom: none;
   gap: 0.5rem;
