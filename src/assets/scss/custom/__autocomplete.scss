@@ -6,7 +6,10 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  right: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: 380px;
   z-index: 60;
   margin: 0;
   padding: 0.3rem;
@@ -21,7 +24,7 @@
 
   .list-group-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.55rem;
     padding: 0.55rem 0.7rem;
     border: none;
@@ -41,13 +44,13 @@
 
   .autocomplete-item__icon {
     flex: none;
+    margin-top: 0.15rem;
     font-size: 0.68rem;
     color: #cb0c9f;
   }
 
   .autocomplete-item__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
