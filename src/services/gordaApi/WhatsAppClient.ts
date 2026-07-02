@@ -130,6 +130,13 @@ export default class WhatsAppClient implements WPSubject {
     })
   }
   
+  requestState(): void {
+    // Socket.IO buffers emits while disconnected and a reconnect already re-queries state via EVENT_CLIENT, so skip queuing a redundant request here.
+    if (this.socket.connected) {
+      this.socket.emit(WhatsApp.EVENT_GET_STATE)
+    }
+  }
+
   destroy(): void {
     this.socket.emit(WhatsApp.EVENT_DESTROY)
   }

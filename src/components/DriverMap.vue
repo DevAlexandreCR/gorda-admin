@@ -96,6 +96,8 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 body.dark-version .gorda-map {
@@ -186,12 +188,18 @@ body.dark-version .gorda-map {
   border: 1px solid var(--map-border);
   background: var(--map-surface);
   overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
   height: 70vh;
 }
 
 @media (max-width: 767.98px) {
   .gorda-map__search {
     width: 100%;
+  }
+
+  .gorda-map__surface {
+    height: 60vh;
   }
 }
 </style>

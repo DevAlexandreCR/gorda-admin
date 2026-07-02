@@ -20,6 +20,7 @@ interface Props {
   icon?: string
   addListener?: boolean
   route?: string
+  coloredVehicleMarkers?: boolean
 }
 
 const props = defineProps<Props>()
@@ -28,7 +29,7 @@ let icon: string
 
 onMounted(async () => {
   icon = props.icon?? process.env.VUE_APP_LOCATION_IMAGE_URL as string
-  googleMap = new GoogleMaps(icon, branchSelected?.city.location.lat, branchSelected?.city.location.lng)
+  googleMap = new GoogleMaps(icon, branchSelected?.city.location.lat, branchSelected?.city.location.lng, props.coloredVehicleMarkers ?? false)
   await googleMap.initMap('map').then(() => {
     mapReady = true
     // Apply theme after map is ready

@@ -381,6 +381,38 @@ body.dark-version {
   border-color: #cb0c9f;
 }
 
+/* Fleet map: render the plate as a bare pill, hide Google's InfoWindow chrome */
+.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) .gm-style-iw-d {
+  overflow: visible !important;
+  padding: 0 !important;
+}
+/* hide the tail and the close button only for the vehicle pill */
+.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) + .gm-style-iw-tc { display: none !important; }
+.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) button.gm-ui-hover-effect,
+.gm-style .gm-style-iw:has(.gorda-infowindow--vehicle) button.gm-ui-hover-effect { display: none !important; }
+
+.gorda-plate-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  padding: 0.14rem 0.45rem;
+  border-radius: 0.35rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+.gorda-plate-pill--free { background: #82d616; }
+.gorda-plate-pill--busy { background: #ea0606; }
+
 /* Tabs (Bootstrap nav-tabs) */
 body.dark-version {
   .nav.nav-tabs {
