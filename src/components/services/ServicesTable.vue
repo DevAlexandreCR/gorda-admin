@@ -91,7 +91,7 @@
               </button>
             </div>
           </td>
-          <td class="py-1 text-center" v-if="props.table === Tables.history">
+          <td class="py-1 text-center">
             <em
               class="fa-solid"
               :class="[originIcon(service), originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted']"
@@ -99,15 +99,6 @@
               data-bs-placement="top"
               :title="originTitle(service)"
             ></em>
-          </td>
-          <td class="py-1" v-else>
-            <span
-              class="d-inline-flex align-items-center gap-1"
-              :class="originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted'"
-            >
-              <em class="fa-solid" :class="originIcon(service)"></em>
-              <span class="text-xs">{{ originTitle(service) }}</span>
-            </span>
           </td>
           <td class="py-1" v-if="showDriverColumn && service.driver">
             <div class="d-flex px-2 py-0">

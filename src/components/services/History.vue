@@ -49,8 +49,8 @@
             </div>
             <div class="col-md-4">
               <div class="d-flex">
-                <button class="btn btn-sm gorda-history__btn-filter me-2" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
-                <button class="btn btn-sm gorda-history__btn-clear me-2" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
+                <button class="btn gorda-history__btn-filter me-2" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
+                <button class="btn gorda-history__btn-clear me-2" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
               </div>
             </div>
           </div>
@@ -341,10 +341,20 @@ body.dark-version .gorda-history {
   margin-bottom: 0;
 }
 
+.gorda-history #collapse-filter :deep(.form-control) {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--surface-input);
+  padding: 0.6rem 0.9rem;
+}
+
+.gorda-history #collapse-filter :deep(.form-control:focus) {
+  box-shadow: 0 0 0 2px rgba(203, 12, 159, .15);
+}
+
 .gorda-history__btn-filter,
 .gorda-history__btn-clear {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding: 0.6rem 1.25rem;
   line-height: 1.4;
 }
 
