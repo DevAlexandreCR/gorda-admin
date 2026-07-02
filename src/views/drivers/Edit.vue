@@ -148,7 +148,8 @@
                   <input type="text" class="form-control form-control-sm disabled"
                          disabled aria-label="Device" name="device.name"
                          aria-describedby="device-addon" v-model="driver.device.name">
-                  <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()" style="border-radius: 0 .5rem .5rem 0">
+                  <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()"
+                          :disabled="removingDevice" style="border-radius: 0 .5rem .5rem 0">
                     <em class="fa fa-solid fa-trash"></em>
                   </button>
                 </div>
@@ -183,7 +184,8 @@
                 </div>
                 <div class="col-6">
                   <label class="form-label small fw-bold">{{ $t('drivers.fields.payment_mode') }}</label>
-                  <Field name="paymentMode" class="form-select form-select-sm" id="paymentMode" as="select" v-model="driver.paymentMode">
+                  <Field name="paymentMode" class="form-select form-select-sm" id="paymentMode" as="select"
+                         v-model="driver.paymentMode" @change="onChangePaymentMode" :disabled="savingPaymentMode">
                     <option selected :value="DriverPaymentMode.MONTHLY">{{ $t('common.placeholders.' + DriverPaymentMode.MONTHLY) }}</option>
                     <option :value="DriverPaymentMode.PERCENTAGE">{{ $t('common.placeholders.' + DriverPaymentMode.PERCENTAGE) }}</option>
                   </Field>
@@ -583,6 +585,9 @@ const monthlyPaymentsTotal = ref(0)
 const suggestedAmount = ref(0)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
+const removingDevice = ref(false)
+const savingPaymentMode = ref(false)
+const lastPaymentMode: Ref<DriverPaymentMode | undefined> = ref(undefined)
 const driverEvent = 'image-driver-loaded'
 const pathDriver = StorageService.driverPath
 const route = useRoute()
@@ -675,6 +680,7 @@ onBeforeMount(() => {
       Object.assign(updatedDriver, updatedDriverData)
       driverStore.addDriver(updatedDriver)
       Object.assign(driver.value, updatedDriver)
+      lastPaymentMode.value = driver.value.paymentMode
       await loadRecharges()
       await loadMonthlyPayments()
       await loadSuggestedAmount()
@@ -798,8 +804,39 @@ function onEnable(event: Event): void {
   })
 }
 
-function removeDevice(): void {
-  driver.value.device = null
+async function removeDevice(): Promise<void> {
+  if (removingDevice.value) return
+  const previousDevice = driver.value.device
+  removingDevice.value = true
+  setLoading(true)
+  try {
+    await DriverRepository.updateDevice(driver.value.id, null)
+    driver.value.device = null
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  } catch (e: any) {
+    driver.value.device = previousDevice
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  } finally {
+    removingDevice.value = false
+    setLoading(false)
+  }
+}
+
+async function onChangePaymentMode(): Promise<void> {
+  const previousPaymentMode = lastPaymentMode.value
+  savingPaymentMode.value = true
+  setLoading(true)
+  try {
+    await DriverRepository.updatePaymentMode(driver.value.id, driver.value.paymentMode)
+    lastPaymentMode.value = driver.value.paymentMode
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
+  } catch (e: any) {
+    driver.value.paymentMode = previousPaymentMode ?? driver.value.paymentMode
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  } finally {
+    savingPaymentMode.value = false
+    setLoading(false)
+  }
 }
 
 const initials = (name: string): string => {

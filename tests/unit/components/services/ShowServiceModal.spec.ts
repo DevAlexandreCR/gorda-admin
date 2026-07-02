@@ -100,7 +100,28 @@ describe('ShowServiceModal.vue', () => {
     await nextTick()
     expect(wrapper.text()).toContain('5000COP')
   })
-  
+
+  it('computes deducted using deducted_value when present', async () => {
+    const serviceWithDeductedValue = { ...service, deducted_value: 2000, metadata: { discount: 9999 } }
+    await wrapper.setProps({ service: serviceWithDeductedValue })
+    await nextTick()
+    expect(wrapper.text()).toContain('2000COP')
+  })
+
+  it('falls back to metadata.discount when deducted_value is absent', async () => {
+    const serviceWithDiscountMetadata = { ...service, deducted_value: null, metadata: { discount: 1500 } }
+    await wrapper.setProps({ service: serviceWithDiscountMetadata })
+    await nextTick()
+    expect(wrapper.text()).toContain('1500COP')
+  })
+
+  it('shows 0 with currency when neither deducted_value nor metadata.discount is set', async () => {
+    const serviceWithoutDeduction = { ...service, deducted_value: null, metadata: {} }
+    await wrapper.setProps({ service: serviceWithoutDeduction })
+    await nextTick()
+    expect(wrapper.text()).toContain('0COP')
+  })
+
   it('computes createdBy correctly based on service created_by', async () => {
     const serviceWithCreatedBy = { ...service, created_by: true }
     await wrapper.setProps({ service: serviceWithCreatedBy })

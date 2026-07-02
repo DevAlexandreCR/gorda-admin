@@ -22,6 +22,8 @@ import { DriverListQuery } from '@/types/DriverListQuery'
 import { RechargeInterface } from '@/types/RechargeInterface'
 import { MonthlyPaymentInterface } from '@/types/MonthlyPaymentInterface'
 import AuthService from '@/services/AuthService'
+import { DeviceType } from '@/types/DeviceType'
+import { DriverPaymentMode } from '@/constants/DriverPaymentMode'
 
 class DriverRepository {
   async getDriver(id: string): Promise<DriverInterface> {
@@ -155,6 +157,32 @@ class DriverRepository {
         })
         .catch((e) => {
           reject(new Error(e.message))
+        })
+    })
+  }
+
+  updateDevice(driverId: string, device: DeviceType | null): Promise<void> {
+    return new Promise((resolve, reject) => {
+      serverApi.patch(`/drivers/${driverId}/device`, { device })
+        .then(() => {
+          resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
+        })
+        .catch((e) => {
+          reject(new Error(e.response?.data?.message ?? e.message))
+        })
+    })
+  }
+
+  updatePaymentMode(driverId: string, paymentMode: DriverPaymentMode): Promise<void> {
+    return new Promise((resolve, reject) => {
+      serverApi.patch(`/drivers/${driverId}/payment-mode`, { paymentMode })
+        .then(() => {
+          resolve()
+          CacheStore.clear(CacheStore.ALL_DRIVERS)
+        })
+        .catch((e) => {
+          reject(new Error(e.response?.data?.message ?? e.message))
         })
     })
   }

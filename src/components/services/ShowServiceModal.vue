@@ -108,6 +108,7 @@
                 <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ time }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.distance')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ distance }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{ fee }}</span></span>
+                <span class="mb-2 text-sm">{{$t('services.fields.deducted')}} <span class="text-dark font-weight-bold ms-sm-2">{{ deducted }}</span></span>
                 <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ multiplier }}</span></span>
                 <span class="mb-2 text-sm" v-if="service.assigned_by !== null">{{$t('common.fields.assigned_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ assignedBy }}</span></span>
               </div>
@@ -257,6 +258,11 @@ const time = computed(() => {
 const fee = computed(() => {
   if (props.service.metadata?.trip_fee === undefined) return '0' + branchSelected?.currency_code
   return props.service.metadata?.trip_fee + branchSelected?.currency_code
+})
+
+const deducted = computed(() => {
+  const value = props.service.deducted_value ?? props.service.metadata?.discount ?? 0
+  return value + branchSelected?.currency_code
 })
 
 const multiplier = computed(() => {

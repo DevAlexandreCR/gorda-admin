@@ -6,4 +6,5 @@ export type Metadata = {
     trip_fee: number
     trip_distance: number
     trip_multiplier: number
+    discount?: number
 }

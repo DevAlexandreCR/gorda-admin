@@ -22,6 +22,7 @@ export interface ServiceInterface {
   canceled_by: string | null
   terminated_by: string | null
   client_completed_services_count?: number | null
+  deducted_value?: number | null
   vehicle?: {
     plate: string
     brand?: string | null

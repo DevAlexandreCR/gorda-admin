@@ -19,6 +19,7 @@ export default {
     comment: 'Comentario',
     time: 'Tiempo',
     fee: 'Valor',
+    deducted: 'Descontado',
     fee_multiplier: 'Multiplicador de tarifa',
     distance: 'Distancia',
     WpMessages: 'Mensajes',

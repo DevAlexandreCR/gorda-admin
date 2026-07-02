@@ -10,14 +10,23 @@
         :key="link.vehicle_id"
         class="list-group-item d-flex align-items-center gap-2 px-0 py-1"
       >
-        <input
-          type="radio"
-          :name="`selected-vehicle-${driverId}`"
-          :checked="link.is_selected"
-          @change="onSelectVehicle(link.vehicle_id)"
-          class="form-check-input mt-0"
-          title="Set as selected vehicle"
-        />
+        <span class="d-flex align-items-center">
+          <input
+            type="radio"
+            :name="`selected-vehicle-${driverId}`"
+            :checked="link.is_selected"
+            :disabled="savingSelected.has(link.vehicle_id)"
+            @change="onSelectVehicle(link.vehicle_id)"
+            class="form-check-input mt-0"
+            title="Set as selected vehicle"
+          />
+          <span
+            v-if="savingSelected.has(link.vehicle_id)"
+            class="spinner-border spinner-border-sm text-secondary ms-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </span>
         <span class="flex-grow-1">
           <router-link
             :to="{ name: 'vehicles.detail', params: { id: link.vehicle_id } }"
@@ -27,17 +36,24 @@
           </router-link>
           <span v-if="link.vehicle.brand" class="text-muted small ms-1">{{ link.vehicle.brand }}</span>
         </span>
-        <div class="form-check form-switch mb-0">
+        <div class="form-check form-switch mb-0 d-flex align-items-center">
           <input
             class="form-check-input"
             type="checkbox"
             :id="`selectable-${link.vehicle_id}`"
             :checked="link.selectable"
+            :disabled="savingSelectable.has(link.vehicle_id)"
             @change="onToggleSelectable(link.vehicle_id, !link.selectable)"
           />
           <label class="form-check-label small" :for="`selectable-${link.vehicle_id}`">
             {{ $t('vehicles.fields.selectable') }}
           </label>
+          <span
+            v-if="savingSelectable.has(link.vehicle_id)"
+            class="spinner-border spinner-border-sm text-secondary ms-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
         </div>
         <span v-if="link.is_active" class="badge bg-success rounded-pill ms-1">
           {{ $t('common.fields.enabled') }}
@@ -76,6 +92,8 @@ const props = defineProps<{
 
 const links = ref<DriverVehicleLink[]>([])
 const showLookup = ref(false)
+const savingSelectable = ref<Set<string>>(new Set())
+const savingSelected = ref<Set<string>>(new Set())
 
 async function fetchLinks(): Promise<void> {
   try {
@@ -87,22 +105,36 @@ async function fetchLinks(): Promise<void> {
 }
 
 async function onToggleSelectable(vehicleId: string, selectable: boolean): Promise<void> {
+  if (savingSelectable.value.has(vehicleId)) return
+  savingSelectable.value.add(vehicleId)
   try {
     await DriverVehicleRepository.setSelectable(props.driverId, vehicleId, selectable)
     await fetchLinks()
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   } catch (e: unknown) {
     const err = e as Error
+    // Switch is bound one-way (:checked), so the browser already flipped it on click;
+    // re-fetch to force the visual back to the persisted state.
+    await fetchLinks()
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), err.message)
+  } finally {
+    savingSelectable.value.delete(vehicleId)
   }
 }
 
 async function onSelectVehicle(vehicleId: string): Promise<void> {
+  if (savingSelected.value.has(vehicleId)) return
+  savingSelected.value.add(vehicleId)
   try {
     await DriverVehicleRepository.setSelected(props.driverId, vehicleId)
     await fetchLinks()
+    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   } catch (e: unknown) {
     const err = e as Error
+    await fetchLinks()
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), err.message)
+  } finally {
+    savingSelected.value.delete(vehicleId)
   }
 }
 

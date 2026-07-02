@@ -21,6 +21,7 @@ export default {
     comment: 'Comment',
     time: 'Time',
     fee: 'Fee',
+    deducted: 'Deducted',
     fee_multiplier: 'Fee Multiplier',
     distance: 'Distance',
     origin: 'Origin',
