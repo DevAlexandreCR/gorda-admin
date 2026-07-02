@@ -2,20 +2,23 @@
 function ServicesView() {
   const { Card, StatusBadge } = window.GordaDesignSystem_019e24;
   const data = window.GordaData;
+  const isMobile = window.useIsMobile();
   const [tab, setTab] = React.useState('pendings');
+  const [driverSearch, setDriverSearch] = React.useState('');
   const [form, setForm] = React.useState({
-    countryCode: '+57', phone: '', name: '',
+    line: data.adminLines[0].id, countryCode: '+57', phone: '', name: '',
     startAddress: '', endAddress: '', comment: '', qty: '1',
   });
   const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const handleCreate = () => {
-    setForm({ countryCode: '+57', phone: '', name: '', startAddress: '', endAddress: '', comment: '', qty: '1' });
+    setForm(f => ({ ...f, phone: '', name: '', startAddress: '', endAddress: '', comment: '', qty: '1' }));
   };
 
   const tabs = [
     { id: 'pendings',   label: 'Pendientes', count: data.pendings.length },
     { id: 'inProgress', label: 'En curso',   count: data.inProgress.length },
-    { id: 'history',    label: 'Historial',  count: data.history.length },
+    { id: 'history',    label: 'Historial' },
+    { id: 'map',        label: 'Mapa' },
   ];
 
   /* ── shared micro-styles ── */
@@ -40,6 +43,13 @@ function ServicesView() {
   const td = {
     padding: '0.72rem 0.9rem', fontSize: '0.8rem', color: 'var(--text-body)',
     borderBottom: '1px solid var(--border-subtle)', verticalAlign: 'middle',
+  };
+  const iconBtn = {
+    width: 28, height: 28, borderRadius: '0.4rem', border: 'none',
+    background: 'transparent', color: 'var(--text-secondary)',
+    cursor: 'pointer', fontSize: '0.85rem',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.15s',
   };
 
   const OriginBadge = ({ origin }) => (
@@ -73,20 +83,29 @@ function ServicesView() {
               transition: 'all 0.18s',
             }}>
               {t.label}
-              <span style={{
-                background: on ? '#cb0c9f' : 'var(--border-subtle)',
-                color: on ? '#fff' : 'var(--text-secondary)',
-                borderRadius: '50rem', fontSize: '0.62rem', fontWeight: 700,
-                padding: '0.08rem 0.42rem', minWidth: 18, textAlign: 'center',
-              }}>
-                {t.count}
-              </span>
+              {t.count != null && (
+                <span style={{
+                  background: on ? '#cb0c9f' : 'var(--border-subtle)',
+                  color: on ? '#fff' : 'var(--text-secondary)',
+                  borderRadius: '50rem', fontSize: '0.62rem', fontWeight: 700,
+                  padding: '0.08rem 0.42rem', minWidth: 18, textAlign: 'center',
+                }}>
+                  {t.count}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* ── Always-visible Create Service panel ── */}
+      {/* ── History and Map tabs get their own dedicated layouts ── */}
+      {tab === 'history' && <HistoryView />}
+      {tab === 'map' && <MapView />}
+      {(tab === 'pendings' || tab === 'inProgress') && (
+      <React.Fragment>
+
+      {/* ── Create Service panel — Pendientes only ── */}
+      {tab === 'pendings' && (
       <div style={{
         background: 'var(--surface-card)',
         borderRadius: '0.875rem',
@@ -94,7 +113,7 @@ function ServicesView() {
         border: '1px solid var(--border-subtle)',
         overflow: 'hidden',
       }}>
-        {/* Panel accent bar + header */}
+        {/* Panel accent bar */}
         <div style={{
           height: 3,
           background: 'linear-gradient(90deg, #7928ca, #ff0080)',
@@ -102,38 +121,18 @@ function ServicesView() {
         }} />
         <div style={{ padding: '0.9rem 1.25rem 1.1rem' }}>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.875rem' }}>
-            <span style={{
-              width: 26, height: 26, borderRadius: '0.4rem',
-              background: 'linear-gradient(310deg,#7928ca,#ff0080)',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}>
-              <em className="fas fa-plus" style={{ fontSize: '0.65rem', color: '#fff' }} />
-            </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-heading)', letterSpacing: '0.01rem' }}>
-              Crear servicio
-            </span>
-            <span style={{
-              marginLeft: 'auto', fontSize: '0.65rem', color: 'var(--text-muted)',
-              background: 'var(--body-bg)', border: '1px solid var(--border-subtle)',
-              borderRadius: '0.35rem', padding: '0.15rem 0.5rem', fontWeight: 600,
-            }}>
-              Admin · 5731731030
-            </span>
-          </div>
-
-          {/* Fields row */}
+          {/* Fields row — the fields that change per service */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '88px 148px 1fr 1fr 1fr 1fr 68px',
+            gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : '74px 118px 1fr 1.3fr 1.3fr 1.2fr 64px',
             gap: '0.625rem',
             alignItems: 'end',
           }}>
 
-            {/* Country code */}
+            {/* Country code — sits next to phone, they're one unit */}
             <div>
               <label style={lbl}>Código</label>
-              <select value={form.countryCode} onChange={e => setField('countryCode', e.target.value)} style={inp}>
+              <select value={form.countryCode} onChange={e => setField('countryCode', e.target.value)} style={{ ...inp, cursor: 'pointer' }}>
                 <option value="+57">+57 CO</option>
                 <option value="+1">+1  US</option>
                 <option value="+52">+52 MX</option>
@@ -212,8 +211,15 @@ function ServicesView() {
             </div>
           </div>
 
-          {/* CREAR button row */}
-          <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'flex-end' }}>
+          {/* Line (rarely changes between services) + submit */}
+          <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'end', gap: '0.625rem' }}>
+            <div style={{ width: 192 }}>
+              <label style={lbl}>Línea</label>
+              <select value={form.line} onChange={e => setField('line', e.target.value)} style={{ ...inp, cursor: 'pointer' }}>
+                {data.adminLines.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+              </select>
+            </div>
+            <div style={{ marginLeft: 'auto' }}>
             <button
               onClick={handleCreate}
               style={{
@@ -239,13 +245,52 @@ function ServicesView() {
               <em className="fas fa-paper-plane" style={{ fontSize: '0.72rem' }} />
               CREAR SERVICIO
             </button>
+            </div>
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Services table ── */}
       <Card padding="0">
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+        {/* Table header — title + count, search only on En curso */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem',
+          padding: '1rem 1.25rem', borderBottom: '1px solid var(--border-subtle)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+            <span style={{
+              width: 32, height: 32, borderRadius: '0.5rem', flex: 'none',
+              background: tab === 'pendings' ? 'linear-gradient(310deg,#f53939,#fbcf33)' : 'linear-gradient(310deg,#2152ff,#21d4fd)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.8rem',
+            }}>
+              <em className={tab === 'pendings' ? 'fas fa-clock' : 'fas fa-spinner'} />
+            </span>
+            <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+              {tab === 'pendings' ? 'Servicios pendientes' : 'Servicios en curso'}
+            </h6>
+            <span style={{
+              background: 'var(--surface-input)', border: '1px solid var(--border-subtle)',
+              borderRadius: '50rem', padding: '0.1rem 0.6rem', fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-secondary)',
+            }}>{tab === 'pendings' ? data.pendings.length : data.inProgress.length}</span>
+          </div>
+          {tab === 'inProgress' && (
+            <div style={{ width: isMobile ? '100%' : 280 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--surface-input)', border: '1px solid var(--border-color)', borderRadius: '0.5rem', padding: '0.48rem 0.75rem' }}>
+                <em className="fas fa-magnifying-glass" style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }} />
+                <input
+                  type="text"
+                  placeholder="Buscar conductor o pasajero"
+                  value={driverSearch}
+                  onChange={(e) => setDriverSearch(e.target.value)}
+                  style={{ border: 'none', outline: 'none', background: 'transparent', fontFamily: 'inherit', fontSize: '0.8rem', color: 'var(--text-body)', width: '100%' }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif", minWidth: 640 }}>
           <thead>
             <tr>
               <th style={{ ...th, width: 44 }}>#</th>
@@ -261,7 +306,10 @@ function ServicesView() {
             </tr>
           </thead>
           <tbody>
-            {data[tab].map((s, i) => (
+            {(tab === 'inProgress'
+              ? data.inProgress.filter((s) => !driverSearch || (s.name + ' ' + s.phone + ' ' + s.driver).toLowerCase().includes(driverSearch.toLowerCase()))
+              : data[tab]
+            ).map((s, i) => (
               <tr key={s.id} style={{ transition: 'background 0.15s' }}
                 onMouseOver={e => e.currentTarget.style.background = 'var(--body-bg)'}
                 onMouseOut={e => e.currentTarget.style.background = 'transparent'}
@@ -269,11 +317,11 @@ function ServicesView() {
                 <td style={{ ...td, textAlign: 'center', position: 'relative', fontWeight: 700, color: 'var(--text-secondary)' }}>
                   {i + 1}
                   {tab === 'pendings' && s.applicants > 0 && (
-                    <span style={{
-                      position: 'absolute', top: 6, right: 4,
+                    <span title={`${s.applicants} conductor(es) postulado(s)`} style={{
+                      position: 'absolute', top: 4, right: 0,
                       background: '#ea0606', color: '#fff',
                       fontSize: '0.52rem', fontWeight: 700,
-                      borderRadius: '50%', width: 14, height: 14,
+                      borderRadius: '50%', width: 15, height: 15,
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       boxShadow: '0 2px 6px rgba(234,6,6,0.4)',
                     }}>{s.applicants}</span>
@@ -291,7 +339,17 @@ function ServicesView() {
                 <td style={{ ...td, whiteSpace: 'nowrap', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
                   {s.phone}
                 </td>
-                <td style={{ ...td, color: 'var(--text-heading)', fontWeight: 600 }}>{s.name}</td>
+                <td style={{ ...td, color: 'var(--text-heading)', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{
+                      width: 24, height: 24, borderRadius: '50%', flex: 'none',
+                      background: 'linear-gradient(310deg,#7928ca,#ff0080)', color: '#fff',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '0.6rem', fontWeight: 700,
+                    }}>{s.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>
+                    {s.name}
+                  </div>
+                </td>
                 {tab === 'inProgress' && <td style={td}>{s.driver}</td>}
                 {tab === 'history'    && <td style={td}>{s.driverName}</td>}
                 {tab === 'pendings'   && (
@@ -303,20 +361,32 @@ function ServicesView() {
                 )}
                 <td style={td}><OriginBadge origin={s.origin} /></td>
                 <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
-                  {tab === 'pendings' && (
-                    <em className="fas fa-pen" style={{ color: 'var(--text-secondary)', cursor: 'pointer', marginRight: 14, transition: 'color 0.15s' }}
-                      onMouseOver={e => e.target.style.color = '#cb0c9f'}
-                      onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}
-                      title="Editar recogida"
-                    />
-                  )}
-                  <em className="fas fa-ellipsis-vertical" style={{ color: 'var(--text-secondary)', cursor: 'pointer' }} />
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                    {tab === 'pendings' && (
+                      <button title="Editar recogida" style={iconBtn}
+                        onMouseOver={e => { e.currentTarget.style.color = '#cb0c9f'; e.currentTarget.style.background = 'var(--body-bg)'; }}
+                        onMouseOut={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <em className="fas fa-pen" />
+                      </button>
+                    )}
+                    <button title="Más opciones" style={iconBtn}
+                      onMouseOver={e => { e.currentTarget.style.color = '#cb0c9f'; e.currentTarget.style.background = 'var(--body-bg)'; }}
+                      onMouseOut={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <em className="fas fa-ellipsis-vertical" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
       </Card>
+
+      </React.Fragment>
+      )}
 
     </div>
   );

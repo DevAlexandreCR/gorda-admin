@@ -49,7 +49,8 @@ function DriversView({ onEditDriver }) {
         <Button color="primary" size="sm" rounded icon="fas fa-plus" />
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+      <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif", minWidth: 700 }}>
         <thead>
           <tr>
             <th style={th}>Name</th>
@@ -99,6 +100,7 @@ function DriversView({ onEditDriver }) {
           ))}
         </tbody>
       </table>
+      </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 1rem', fontSize: '0.75rem', color: '#8392ab' }}>
         <span>Showing 1–{rows.length} of {data.drivers.length}</span>

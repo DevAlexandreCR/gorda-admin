@@ -4,7 +4,6 @@ window.GordaData = {
 
   nav: [
     { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-gauge-high' },
-    { id: 'services', label: 'Services', icon: 'fas fa-route' },
     { id: 'drivers', label: 'Drivers', icon: 'fa-solid fa-car-side' },
     { id: 'vehicles', label: 'Vehicles', icon: 'fa-solid fa-car' },
     { id: 'places', label: 'Places', icon: 'fas fa-location-dot' },
@@ -24,10 +23,34 @@ window.GordaData = {
     { id: 5, a_go: '18 min', status: 'in_progress', start: 'Parque de la 93', end: 'Zona T', phone: '+57 300 555 9963', name: 'Diana Rojas', comment: 'Pago en efectivo', driver: 'Ana López', origin: 'admin' },
   ],
   history: [
-    { id: 6, date: '2026-06-18 09:14', status: 'terminated', start: 'Suba Av. Boyacá', end: 'Calle 100', phone: '+57 311 555 2030', name: 'Pedro Niño', driverName: 'José Marín', origin: 'bot' },
-    { id: 7, date: '2026-06-18 08:52', status: 'canceled', start: 'Restrepo', end: 'N/A', phone: '+57 315 555 7781', name: 'Sofía Cano', driverName: '—', origin: 'bot' },
-    { id: 8, date: '2026-06-18 08:30', status: 'terminated', start: 'Cl. 53 #25-40', end: 'Galerías', phone: '+57 305 555 6610', name: 'Miguel Ángel', driverName: 'Carlos Ruiz', origin: 'admin' },
-    { id: 9, date: '2026-06-17 22:08', status: 'terminated', start: 'Modelia', end: 'Fontibón', phone: '+57 319 555 3344', name: 'Valentina Cruz', driverName: 'Ana López', origin: 'bot' },
+    {
+      id: 6, date: '2026-06-18 09:14', status: 'terminated', start: 'Suba Av. Boyacá', end: 'Calle 100',
+      phone: '+57 311 555 2030', name: 'Pedro Niño', comment: 'N/A', driverName: 'José Marín', origin: 'bot',
+      originLabel: 'WhatsApp Bot', plate: 'FBD-903', time: '6min', distance: '5.2km', value: '9200COP',
+      discounted: '920COP', multiplier: '1.0', assignedBy: 'Super Admin', createdBy: 'WhatsApp Bot',
+      timeline: { hora: '09:14:02', llegada: '09:20:58', inicio: '09:21:26', fin: '09:27:05' },
+    },
+    {
+      id: 7, date: '2026-06-18 08:52', status: 'canceled', start: 'Restrepo', end: 'N/A',
+      phone: '+57 315 555 7781', name: 'Sofía Cano', comment: 'Cliente canceló el servicio', driverName: '—', origin: 'bot',
+      originLabel: 'WhatsApp Bot', plate: 'N/A', time: 'N/A', distance: 'N/A', value: '0COP',
+      discounted: '0COP', multiplier: '—', assignedBy: '—', createdBy: 'WhatsApp Bot',
+      timeline: { hora: '08:52:00', llegada: null, inicio: null, fin: null },
+    },
+    {
+      id: 8, date: '2026-06-18 08:30', status: 'terminated', start: 'Cl. 53 #25-40', end: 'Galerías',
+      phone: '+57 305 555 6610', name: 'Miguel Ángel', comment: 'N/A', driverName: 'Carlos Ruiz', origin: 'admin',
+      originLabel: 'Panel admin · Super Admin', plate: 'KXT-482', time: '4min', distance: '3.1km', value: '7400COP',
+      discounted: '740COP', multiplier: '1.1', assignedBy: 'Super Admin', createdBy: 'Panel admin · Super Admin',
+      timeline: { hora: '08:30:14', llegada: '08:34:40', inicio: '08:35:02', fin: '08:39:11' },
+    },
+    {
+      id: 9, date: '2026-06-17 22:08', status: 'terminated', start: 'Modelia', end: 'Fontibón',
+      phone: '+57 319 555 3344', name: 'Valentina Cruz', comment: 'Pago en efectivo', driverName: 'Ana López', origin: 'bot',
+      originLabel: 'WhatsApp Bot', plate: 'HJS-119', time: '9min', distance: '6.4km', value: '11500COP',
+      discounted: '1150COP', multiplier: '1.2', assignedBy: 'Super Admin', createdBy: 'WhatsApp Bot',
+      timeline: { hora: '22:08:20', llegada: '22:16:47', inicio: '22:17:15', fin: '22:26:32' },
+    },
   ],
 
   drivers: [
@@ -36,6 +59,13 @@ window.GordaData = {
     { id: 'd3', name: 'José Marín', email: 'jose.marin@gorda.co', phone: '+57 320 110 7754', brand: 'Kia', model: 'Picanto', plate: 'FBD-903', enabled: true, created: '2026-01-14', last: '1 h ago', balance: '$0', status: 'offline' },
     { id: 'd4', name: 'Lucía Torres', email: 'lucia.torres@gorda.co', phone: '+57 318 442 9087', brand: 'Hyundai', model: 'Atos', plate: 'GTR-220', enabled: false, created: '2025-07-08', last: '3 d ago', balance: '−$2 000', status: 'offline' },
     { id: 'd5', name: 'Andrés Beltrán', email: 'andres.beltran@gorda.co', phone: '+57 300 996 3310', brand: 'Mazda', model: '2', plate: 'LMN-558', enabled: true, created: '2026-03-22', last: '14 min ago', balance: '$31 200', status: 'online' },
+  ],
+
+  // WhatsApp/admin lines a service can be created from
+  adminLines: [
+    { id: 'l1', label: 'Admin · 5731731030' },
+    { id: 'l2', label: 'Admin · 5731731031' },
+    { id: 'l3', label: 'Soporte · 5731731040' },
   ],
 
   stats: [
@@ -56,6 +86,26 @@ window.GordaData = {
     { id: 'v8',  plate: 'AUT591J', brand: 'Chevrolet', model: 'Spartak Go',   year: 2007, color: { name: 'gray',   hex: '#808080' }, enabled: true,  linkedDrivers: [{ id: 'd3', name: 'José Marín',        selectable: true  }], created: '2026-06-15', soat: '2026-03-08', tec: '2026-06-01', photoUrl: null },
     { id: 'v9',  plate: 'BCR220',  brand: 'Renault',   model: 'Logan',        year: 2018, color: { name: 'white',  hex: '#FFFFFF' }, enabled: true,  linkedDrivers: [{ id: 'd5', name: 'Andrés Beltrán',    selectable: false }], created: '2026-06-14', soat: '2026-10-11', tec: '2026-07-25', photoUrl: null },
     { id: 'v10', plate: 'BDS441',  brand: 'Mazda',     model: 'Cx-3',         year: 2022, color: { name: 'red',    hex: '#EF233C' }, enabled: false, linkedDrivers: [{ id: 'd4', name: 'Lucía Torres',      selectable: false }], created: '2026-06-14', soat: '2023-12-31', tec: '2023-10-15', photoUrl: null },
+  ],
+
+  // Drivers currently online, shown on the Mapa tab
+  mapDrivers: [
+    { plate: 'COL253', name: 'Carlos Ruiz',      status: 'available' },
+    { plate: 'CUM576', name: 'Ana López',        status: 'available' },
+    { plate: 'DLR271', name: 'José Marín',       status: 'busy' },
+    { plate: 'UGT137', name: 'Lucía Torres',     status: 'available' },
+    { plate: 'RHM992', name: 'Andrés Beltrán',   status: 'busy' },
+    { plate: 'KFL342', name: 'Camilo Restrepo',  status: 'available' },
+    { plate: 'KDR542', name: 'Diana Rojas',      status: 'available' },
+    { plate: 'JZW617', name: 'Jorge Salazar',    status: 'in_service' },
+    { plate: 'KIS454', name: 'Laura Méndez',     status: 'available' },
+    { plate: 'CP0991', name: 'Miguel Ángel',     status: 'in_service' },
+    { plate: 'VAQ346', name: 'Sofía Cano',       status: 'available' },
+    { plate: 'DCA350', name: 'Pedro Niño',       status: 'in_service' },
+    { plate: 'KDS717', name: 'Valentina Cruz',   status: 'busy' },
+    { plate: 'KPX617', name: 'Andrés Patiño',    status: 'available' },
+    { plate: 'KXV590A', name: 'María Gómez',     status: 'available' },
+    { plate: 'JBN173', name: 'Alexander Camilo', status: 'available' },
   ],
 
   confirmations: [

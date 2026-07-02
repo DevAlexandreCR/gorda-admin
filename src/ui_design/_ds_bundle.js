@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":3,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"8be0db4910c5","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/DashboardView.jsx":"af3b2f158f53","ui_kits/admin/DriversView.jsx":"773cb5eda2a2","ui_kits/admin/EditDriverView.jsx":"651449ad619c","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/ServicesView.jsx":"9ce5e8e625a3","ui_kits/admin/SettingsView.jsx":"42d8b2af414b","ui_kits/admin/Sidebar.jsx":"a497fdbc14c5","ui_kits/admin/TopNav.jsx":"b16ad3d73367","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"857185679c3a","ui_kits/admin/data.js":"c649a38fa95f"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":3,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"8be0db4910c5","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/DriversView.jsx":"8aef334bad73","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"0a3683712357","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"a7b8be4c95a7","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"50921e559e05","ui_kits/admin/data.js":"4de11dc51307","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -778,135 +778,6 @@ function Switch({
 Object.assign(__ds_scope, { Switch });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/forms/Switch.jsx", error: String((e && e.message) || e) }); }
 
-// ui_kits/admin/DashboardView.jsx
-try { (() => {
-// Dashboard view — KPI stat cards + a couple of summary panels.
-function DashboardView() {
-  const {
-    StatCard,
-    Card,
-    StatusBadge,
-    Avatar
-  } = window.GordaDesignSystem_019e24;
-  const data = window.GordaData;
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: '1rem',
-      marginBottom: '1rem'
-    }
-  }, data.stats.map(s => /*#__PURE__*/React.createElement(StatCard, {
-    key: s.label,
-    label: s.label,
-    value: s.value,
-    icon: s.icon,
-    color: s.color,
-    delta: s.delta,
-    deltaUp: s.up
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1.6fr 1fr',
-      gap: '1rem'
-    }
-  }, /*#__PURE__*/React.createElement(Card, {
-    header: "Latest services"
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.85rem'
-    }
-  }, data.history.slice(0, 4).map(s => /*#__PURE__*/React.createElement("div", {
-    key: s.id,
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.75rem',
-      fontFamily: "'Open Sans', sans-serif"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      width: 36,
-      height: 36,
-      borderRadius: '0.6rem',
-      background: '#f8f9fa',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: '#cb0c9f'
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-route"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      minWidth: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.8rem',
-      fontWeight: 700,
-      color: '#344767',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    }
-  }, s.start, " \u2192 ", s.end), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.72rem',
-      color: '#adb5bd'
-    }
-  }, s.name, " \xB7 ", s.driverName)), /*#__PURE__*/React.createElement(StatusBadge, {
-    status: s.status
-  }))))), /*#__PURE__*/React.createElement(Card, {
-    header: "Drivers online"
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.75rem'
-    }
-  }, data.drivers.filter(d => d.status !== 'offline').map(d => /*#__PURE__*/React.createElement("div", {
-    key: d.id,
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.7rem',
-      fontFamily: "'Open Sans', sans-serif"
-    }
-  }, /*#__PURE__*/React.createElement(Avatar, {
-    name: d.name,
-    size: "sm",
-    status: d.status
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.8rem',
-      fontWeight: 700,
-      color: '#344767'
-    }
-  }, d.name), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.72rem',
-      color: '#adb5bd'
-    }
-  }, d.brand, " ", d.model, " \xB7 ", d.plate)), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: '0.7rem',
-      fontWeight: 700,
-      color: d.status === 'online' ? '#82d616' : '#fbcf33',
-      textTransform: 'capitalize'
-    }
-  }, d.status)))))));
-}
-window.DashboardView = DashboardView;
-})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/DashboardView.jsx", error: String((e && e.message) || e) }); }
-
 // ui_kits/admin/DriversView.jsx
 try { (() => {
 // Drivers view — searchable roster table with avatars, status badges & row actions.
@@ -1036,11 +907,16 @@ function DriversView({
     size: "sm",
     rounded: true,
     icon: "fas fa-plus"
-  })), /*#__PURE__*/React.createElement("table", {
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
     style: {
       width: '100%',
       borderCollapse: 'collapse',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 700
     }
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
     style: th
@@ -1167,7 +1043,7 @@ function DriversView({
       cursor: 'pointer'
     },
     title: "Message"
-  }))))))), /*#__PURE__*/React.createElement("div", {
+  })))))))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
@@ -1226,6 +1102,7 @@ function EditDriverView({
     Select,
     Switch
   } = window.GordaDesignSystem_019e24;
+  const isMobile = window.useIsMobile();
 
   // ── form state ───────────────────────────────────────────────────────────
   const [form, setForm] = React.useState({
@@ -2164,7 +2041,8 @@ function EditDriverView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      gap: '2rem',
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: isMobile ? '1rem' : '2rem',
       alignItems: 'flex-start'
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -2215,7 +2093,7 @@ function EditDriverView({
     style: {
       flex: 1,
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr 1fr 1fr',
+      gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 1fr',
       gap: '0.85rem'
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -2301,7 +2179,7 @@ function EditDriverView({
   }, "Guardar cambios"))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
       gap: '1.25rem',
       marginBottom: '1.25rem'
     }
@@ -2777,11 +2655,16 @@ function EditDriverView({
     id: "mensualidades",
     label: "Mensualidades",
     icon: "fas fa-calendar-check"
-  }))), historyTab === 'saldo' && /*#__PURE__*/React.createElement("table", {
+  }))), historyTab === 'saldo' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
     style: {
       width: '100%',
       borderCollapse: 'collapse',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 520
     }
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ['Fecha', 'Monto', 'Saldo resultante', 'Registrado por', 'Nota'].map(h => /*#__PURE__*/React.createElement("th", {
     key: h,
@@ -2839,11 +2722,16 @@ function EditDriverView({
     style: {
       color: '#d2d6da'
     }
-  }, "\u2014")))))), historyTab === 'mensualidades' && /*#__PURE__*/React.createElement("table", {
+  }, "\u2014"))))))), historyTab === 'mensualidades' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
     style: {
       width: '100%',
       borderCollapse: 'collapse',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 520
     }
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ['Período', 'Monto', 'Registrado por', 'Fecha de pago', 'Nota'].map(h => /*#__PURE__*/React.createElement("th", {
     key: h,
@@ -2906,7 +2794,7 @@ function EditDriverView({
     style: {
       color: '#d2d6da'
     }
-  }, "\u2014")))))), /*#__PURE__*/React.createElement("div", {
+  }, "\u2014"))))))), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: '0.6rem 1.25rem',
       fontSize: '0.72rem',
@@ -3892,6 +3780,430 @@ function EditMessageModal({
 window.EditMessageModal = EditMessageModal;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/EditMessageModal.jsx", error: String((e && e.message) || e) }); }
 
+// ui_kits/admin/HistoryView.jsx
+try { (() => {
+// Historial tab — filters, summary stats and the completed/canceled services
+// table. No create-service form here (that only applies to Pendientes).
+function HistoryView() {
+  const {
+    Card,
+    StatCard,
+    Input,
+    Select
+  } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const isMobile = window.useIsMobile();
+  const [filtersOpen, setFiltersOpen] = React.useState(true);
+  const [filters, setFilters] = React.useState({
+    plate: '',
+    client: '',
+    from: '2026-07-01',
+    to: '2026-07-01'
+  });
+  const [applied, setApplied] = React.useState({
+    plate: '',
+    client: '',
+    from: '',
+    to: ''
+  });
+  const [perPage, setPerPage] = React.useState('20');
+  const [page, setPage] = React.useState(1);
+  const [selected, setSelected] = React.useState(null);
+  const setField = (k, v) => setFilters(f => ({
+    ...f,
+    [k]: v
+  }));
+  const rows = data.history.filter(s => {
+    if (applied.plate && !s.plate.toLowerCase().includes(applied.plate.toLowerCase())) return false;
+    if (applied.client && !s.phone.replace(/\s/g, '').includes(applied.client.replace(/\s/g, ''))) return false;
+    return true;
+  });
+  const total = rows.length;
+  const completed = rows.filter(s => s.status === 'terminated').length;
+  const canceled = rows.filter(s => s.status === 'canceled').length;
+  const pct = n => total ? Math.round(n / total * 100) : 0;
+  const th = {
+    textAlign: 'left',
+    textTransform: 'uppercase',
+    fontSize: '0.62rem',
+    fontWeight: 700,
+    letterSpacing: '0.04rem',
+    color: 'var(--text-secondary)',
+    padding: '0.65rem 0.9rem',
+    borderBottom: '1px solid var(--border-subtle)'
+  };
+  const td = {
+    padding: '0.72rem 0.9rem',
+    fontSize: '0.8rem',
+    color: 'var(--text-body)',
+    borderBottom: '1px solid var(--border-subtle)',
+    verticalAlign: 'middle'
+  };
+  const StatusChip = ({
+    status
+  }) => {
+    const {
+      StatusBadge
+    } = window.GordaDesignSystem_019e24;
+    const label = status === 'canceled' ? 'Cancelado' : 'Completado';
+    return /*#__PURE__*/React.createElement(StatusBadge, {
+      status: status,
+      label: label
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.875rem'
+    }
+  }, /*#__PURE__*/React.createElement(Card, {
+    padding: "0"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '1rem 1.25rem',
+      borderBottom: filtersOpen ? '1px solid var(--border-subtle)' : 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.6rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '0.45rem',
+      flex: 'none',
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-filter"
+  })), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Filtros")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setFiltersOpen(o => !o),
+    title: filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros',
+    style: {
+      width: 34,
+      height: 34,
+      borderRadius: '0.5rem',
+      border: '1px solid var(--border-color)',
+      background: 'var(--surface-input)',
+      color: 'var(--text-secondary)',
+      cursor: 'pointer',
+      fontSize: '0.85rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: filtersOpen ? 'fas fa-chevron-up' : 'fas fa-bars'
+  }))), filtersOpen && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '1.1rem 1.25rem 1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 0.8fr 0.8fr auto auto',
+      gap: '0.75rem',
+      alignItems: 'end'
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    label: "Placa conductor",
+    placeholder: "Placa conductor",
+    value: filters.plate,
+    onChange: e => setField('plate', e.target.value)
+  }), /*#__PURE__*/React.createElement(Input, {
+    label: "N\xFAmero del cliente",
+    placeholder: "N\xFAmero del cliente",
+    value: filters.client,
+    onChange: e => setField('client', e.target.value)
+  }), /*#__PURE__*/React.createElement(Input, {
+    label: "Desde",
+    type: "date",
+    value: filters.from,
+    onChange: e => setField('from', e.target.value)
+  }), /*#__PURE__*/React.createElement(Input, {
+    label: "Hasta",
+    type: "date",
+    value: filters.to,
+    onChange: e => setField('to', e.target.value)
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setApplied(filters);
+      setPage(1);
+    },
+    style: {
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '0.5rem',
+      padding: '0.6rem 1.4rem',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      letterSpacing: '0.05rem',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+      fontFamily: "'Open Sans', sans-serif",
+      boxShadow: '0 4px 12px rgba(121,40,202,0.35)'
+    }
+  }, "Filtrar"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      const c = {
+        plate: '',
+        client: '',
+        from: '',
+        to: ''
+      };
+      setFilters(c);
+      setApplied(c);
+      setPage(1);
+    },
+    style: {
+      background: 'var(--surface-input)',
+      color: 'var(--text-heading)',
+      border: '1px solid var(--border-color)',
+      borderRadius: '0.5rem',
+      padding: '0.6rem 1.3rem',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      letterSpacing: '0.05rem',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, "Limpiar filtros")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+      gap: '0.875rem'
+    }
+  }, /*#__PURE__*/React.createElement(StatCard, {
+    label: "Total",
+    value: total,
+    delta: "Servicios",
+    deltaUp: true,
+    icon: "fas fa-arrow-up-short-wide",
+    color: "dark"
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Completado",
+    value: completed,
+    delta: `${pct(completed)}%`,
+    deltaUp: true,
+    icon: "fas fa-thumbs-up",
+    color: "primary"
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Cancelado",
+    value: canceled,
+    delta: `${pct(canceled)}%`,
+    deltaUp: true,
+    icon: "fas fa-thumbs-down",
+    color: "danger"
+  })), /*#__PURE__*/React.createElement(Card, {
+    padding: "0"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 760
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      ...th,
+      width: 44
+    }
+  }, "#"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Fecha"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Estado"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Dir. inicial"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Tel\xE9fono"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Nombre"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Comentario"), /*#__PURE__*/React.createElement("th", {
+    style: th
+  }, "Conductor"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      ...th,
+      textAlign: 'right'
+    }
+  }))), /*#__PURE__*/React.createElement("tbody", null, rows.map((s, i) => /*#__PURE__*/React.createElement("tr", {
+    key: s.id,
+    onClick: () => setSelected(s),
+    style: {
+      cursor: 'pointer',
+      transition: 'background 0.15s'
+    },
+    onMouseOver: e => e.currentTarget.style.background = 'var(--body-bg)',
+    onMouseOut: e => e.currentTarget.style.background = 'transparent'
+  }, /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      textAlign: 'center',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      whiteSpace: 'nowrap',
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, s.date), /*#__PURE__*/React.createElement("td", {
+    style: td
+  }, /*#__PURE__*/React.createElement(StatusChip, {
+    status: s.status
+  })), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      maxWidth: 160
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
+  }, s.start)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      whiteSpace: 'nowrap',
+      fontWeight: 600,
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, s.phone), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      color: 'var(--text-heading)',
+      fontWeight: 600
+    }
+  }, s.name), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      maxWidth: 140,
+      color: 'var(--text-secondary)'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
+  }, s.comment)), /*#__PURE__*/React.createElement("td", {
+    style: td
+  }, s.driverName), /*#__PURE__*/React.createElement("td", {
+    style: {
+      ...td,
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-chevron-right",
+    style: {
+      color: 'var(--text-secondary)',
+      fontSize: '0.75rem'
+    }
+  })))), rows.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 9,
+    style: {
+      ...td,
+      textAlign: 'center',
+      padding: '2.5rem',
+      color: 'var(--text-secondary)'
+    }
+  }, "Sin resultados para los filtros aplicados."))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '0.75rem',
+      padding: '0.9rem 1.1rem',
+      borderTop: '1px solid var(--border-subtle)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.6rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.78rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Elementos por p\xE1gina"), /*#__PURE__*/React.createElement(Select, {
+    value: perPage,
+    onChange: e => setPerPage(e.target.value),
+    options: ['10', '20', '50'],
+    style: {
+      width: 84
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    style: pagerBtn,
+    disabled: true
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-chevron-left"
+  })), /*#__PURE__*/React.createElement("button", {
+    style: {
+      ...pagerBtn,
+      background: '#cb0c9f',
+      color: '#fff',
+      border: 'none'
+    }
+  }, "1"), /*#__PURE__*/React.createElement("button", {
+    style: pagerBtn,
+    disabled: true
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-chevron-right"
+  }))))), /*#__PURE__*/React.createElement(ServiceDetailModal, {
+    service: selected,
+    onClose: () => setSelected(null)
+  }));
+}
+const pagerBtn = {
+  width: 32,
+  height: 32,
+  borderRadius: '50%',
+  border: '1px solid var(--border-color)',
+  background: 'var(--surface-input)',
+  color: 'var(--text-secondary)',
+  cursor: 'pointer',
+  fontSize: '0.75rem'
+};
+window.HistoryView = HistoryView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/HistoryView.jsx", error: String((e && e.message) || e) }); }
+
 // ui_kits/admin/LoadingModal.jsx
 try { (() => {
 // ─── LoadingModal · Gorda Admin ──────────────────────────────────────────────
@@ -4172,6 +4484,623 @@ function LoginView({
 window.LoginView = LoginView;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/LoginView.jsx", error: String((e && e.message) || e) }); }
 
+// ui_kits/admin/MapView.jsx
+try { (() => {
+// Mapa tab — connected drivers panel + live map placeholder.
+// Real integration renders an actual map here; this kit shows the chrome only.
+function MapView() {
+  const {
+    Card,
+    Input
+  } = window.GordaDesignSystem_019e24;
+  const data = window.GordaData;
+  const isMobile = window.useIsMobile();
+  const [search, setSearch] = React.useState('');
+  const STATUS = {
+    available: {
+      color: '#82d616',
+      label: 'Disponible'
+    },
+    busy: {
+      color: '#82d616',
+      label: 'Disponible'
+    },
+    in_service: {
+      color: '#ea0606',
+      label: 'En servicio'
+    }
+  };
+  const drivers = data.mapDrivers.filter(d => !search || d.plate.toLowerCase().includes(search.toLowerCase()) || d.name.toLowerCase().includes(search.toLowerCase()));
+
+  // Fixed positions so the placeholder pins look intentional, not random per render.
+  const pinPositions = [[8, 18], [24, 8], [40, 30], [58, 14], [74, 26], [90, 10], [14, 55], [32, 68], [50, 50], [66, 62], [82, 72], [12, 84]];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.875rem',
+      height: 'calc(100vh - 200px)'
+    }
+  }, /*#__PURE__*/React.createElement(Card, {
+    padding: "0",
+    style: {
+      flex: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '0.75rem',
+      padding: '1.1rem 1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.7rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '0.45rem',
+      flex: 'none',
+      background: 'linear-gradient(310deg,#17ad37,#98ec2d)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-car-side"
+  })), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Conductores Conectados"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--surface-input)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: '50rem',
+      padding: '0.1rem 0.6rem',
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, data.mapDrivers.length)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: isMobile ? '100%' : 260
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    placeholder: "Buscar por placa o nombre",
+    icon: "fas fa-magnifying-glass",
+    value: search,
+    onChange: e => setSearch(e.target.value)
+  })))), /*#__PURE__*/React.createElement(Card, {
+    padding: "0",
+    style: {
+      overflow: 'hidden',
+      flex: '1',
+      minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    bodyStyle: {
+      flex: 1,
+      minHeight: 0,
+      display: 'flex'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      position: 'relative',
+      minHeight: 0,
+      backgroundImage: 'repeating-linear-gradient(135deg, var(--body-bg) 0 14px, var(--surface-input) 14px 28px)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 14,
+      left: 14,
+      display: 'flex',
+      gap: '0.4rem',
+      background: 'var(--surface-card)',
+      borderRadius: '0.5rem',
+      padding: '0.3rem',
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      padding: '0.3rem 0.7rem',
+      borderRadius: '0.35rem',
+      background: 'var(--body-bg)',
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "Mapa"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      padding: '0.3rem 0.7rem',
+      borderRadius: '0.35rem',
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, "Sat\xE9lite")), drivers.slice(0, pinPositions.length).map((d, i) => {
+    const s = STATUS[d.status];
+    const [top, left] = pinPositions[i];
+    return /*#__PURE__*/React.createElement("div", {
+      key: d.plate,
+      title: `${d.plate} · ${s.label}`,
+      style: {
+        position: 'absolute',
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: 'translate(-50%, -100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.2rem'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: '0.62rem',
+        fontWeight: 700,
+        color: '#fff',
+        background: s.color,
+        padding: '0.12rem 0.4rem',
+        borderRadius: '0.3rem',
+        whiteSpace: 'nowrap',
+        fontVariantNumeric: 'tabular-nums',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.25)'
+      }
+    }, d.plate), /*#__PURE__*/React.createElement("em", {
+      className: "fas fa-car",
+      style: {
+        color: s.color,
+        fontSize: '1rem',
+        filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.25))'
+      }
+    }));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      color: 'var(--text-secondary)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-map-location-dot",
+    style: {
+      fontSize: '1.8rem',
+      opacity: 0.35,
+      display: 'block',
+      marginBottom: '0.5rem'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'monospace',
+      fontSize: '0.72rem',
+      letterSpacing: '0.03em'
+    }
+  }, "mapa en vivo \xB7 flota conectada"))))));
+}
+window.MapView = MapView;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/MapView.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/ServiceDetailModal.jsx
+try { (() => {
+// Service detail modal — shown from the Historial table. Read-only recap of a
+// completed/canceled service: route map placeholder, timeline, and the two
+// info panels (service data / route+driver data). All fields required by the
+// product are preserved — this only restyles the presentation.
+function ServiceDetailModal({
+  service,
+  onClose
+}) {
+  const {
+    StatusBadge
+  } = window.GordaDesignSystem_019e24;
+  if (!service) return null;
+  const isCanceled = service.status === 'canceled';
+  const statusLabel = isCanceled ? 'Cancelado' : 'Completado';
+
+  // Turn "HH:MM:SS" pairs into a human duration like "14m:56s"; "—" when either side is missing.
+  function gap(a, b) {
+    if (!a || !b) return '—';
+    const toSec = t => t.split(':').reduce((acc, v) => acc * 60 + Number(v), 0);
+    let d = toSec(b) - toSec(a);
+    if (d < 0) d += 24 * 3600;
+    const m = Math.floor(d / 60),
+      s = d % 60;
+    return m > 0 ? `${m}m:${s}s` : `${s}s`;
+  }
+  const stops = [{
+    label: 'Hora',
+    time: service.timeline.hora
+  }, {
+    label: 'Llegada',
+    time: service.timeline.llegada
+  }, {
+    label: 'Inicio del viaje',
+    time: service.timeline.inicio
+  }, {
+    label: 'Fin del viaje',
+    time: service.timeline.fin
+  }];
+  const svcInfo = [{
+    k: 'Origen',
+    v: service.originLabel,
+    icon: 'fas fa-briefcase'
+  }, {
+    k: 'Dir inicial',
+    v: service.start
+  }, {
+    k: 'Dir final',
+    v: service.end || 'N/A'
+  }, {
+    k: 'Hora',
+    v: service.timeline.hora
+  }, {
+    k: 'Estado',
+    v: statusLabel
+  }, {
+    k: 'Nombre',
+    v: service.name
+  }, {
+    k: 'Teléfono',
+    v: service.phone
+  }, {
+    k: 'Comentario',
+    v: service.comment || 'N/A'
+  }];
+  const routeInfo = [{
+    k: 'Nombre Conductor',
+    v: service.driverName
+  }, {
+    k: 'Placa',
+    v: service.plate
+  }, {
+    k: 'Tiempo',
+    v: service.time
+  }, {
+    k: 'Distancia',
+    v: service.distance
+  }, {
+    k: 'Valor',
+    v: service.value
+  }, {
+    k: 'Descontado',
+    v: service.discounted
+  }, {
+    k: 'Multiplicador de tarifa',
+    v: service.multiplier
+  }, {
+    k: 'assigned by',
+    v: service.assignedBy
+  }, {
+    k: 'created by',
+    v: service.createdBy
+  }];
+  const row = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '1rem',
+    padding: '0.5rem 0',
+    borderBottom: '1px solid var(--border-subtle)',
+    fontSize: '0.82rem'
+  };
+  const rowKey = {
+    color: 'var(--text-secondary)'
+  };
+  const rowVal = {
+    color: 'var(--text-heading)',
+    fontWeight: 600,
+    textAlign: 'right'
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    onClick: onClose,
+    style: {
+      position: 'fixed',
+      inset: 0,
+      zIndex: 1000,
+      background: 'rgba(8,11,20,0.6)',
+      backdropFilter: 'blur(3px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: e => e.stopPropagation(),
+    style: {
+      width: '100%',
+      maxWidth: 980,
+      maxHeight: '92vh',
+      overflowY: 'auto',
+      background: 'var(--surface-card)',
+      borderRadius: '1rem',
+      boxShadow: 'var(--shadow-card)',
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.9rem',
+      padding: '1.1rem 1.4rem',
+      borderBottom: '1px solid var(--border-subtle)',
+      position: 'sticky',
+      top: 0,
+      background: 'var(--surface-card)',
+      zIndex: 2
+    }
+  }, /*#__PURE__*/React.createElement(StatusBadge, {
+    status: service.status,
+    label: statusLabel
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      fontSize: '0.95rem'
+    }
+  }, service.start, " ", /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-arrow-right",
+    style: {
+      fontSize: '0.7rem',
+      color: 'var(--text-secondary)',
+      margin: '0 0.3rem'
+    }
+  }), " ", service.end && service.end !== 'N/A' ? service.end : 'Sin destino'), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: 'auto',
+      fontSize: '0.8rem',
+      color: 'var(--text-secondary)',
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, service.date), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    "aria-label": "Cerrar",
+    style: {
+      width: 32,
+      height: 32,
+      borderRadius: '0.5rem',
+      border: 'none',
+      flex: 'none',
+      background: 'var(--surface-input)',
+      color: 'var(--text-secondary)',
+      cursor: 'pointer',
+      fontSize: '0.9rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-xmark"
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '1.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 260,
+      borderRadius: '0.75rem',
+      overflow: 'hidden',
+      position: 'relative',
+      border: '1px solid var(--border-subtle)',
+      backgroundImage: 'repeating-linear-gradient(135deg, var(--body-bg) 0 12px, var(--surface-input) 12px 24px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      color: 'var(--text-secondary)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-route",
+    style: {
+      fontSize: '1.6rem',
+      opacity: 0.4,
+      display: 'block',
+      marginBottom: '0.5rem'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'monospace',
+      fontSize: '0.72rem',
+      letterSpacing: '0.03em'
+    }
+  }, "mapa de ruta \xB7 ", service.start, " \u2192 ", service.end && service.end !== 'N/A' ? service.end : 'sin destino'))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '1.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '1.1rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-timeline",
+    style: {
+      color: '#cb0c9f'
+    }
+  }), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.9rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, "L\xEDnea de tiempo")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center'
+    }
+  }, stops.map((s, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: s.label
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      flex: 'none',
+      minWidth: 90
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 12,
+      height: 12,
+      borderRadius: '50%',
+      flex: 'none',
+      background: s.time ? '#82d616' : 'var(--border-color)',
+      boxShadow: s.time ? '0 0 0 4px rgba(130,214,22,0.18)' : 'none'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '0.6rem',
+      fontSize: '0.78rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)',
+      textAlign: 'center'
+    }
+  }, s.label), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      color: 'var(--text-secondary)',
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, s.time || '—')), i < stops.length - 1 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 1,
+      background: 'var(--border-subtle)',
+      position: 'relative',
+      margin: '0 0.25rem -1.9rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: 'absolute',
+      top: -18,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      fontSize: '0.68rem',
+      fontStyle: 'italic',
+      color: 'var(--text-secondary)',
+      whiteSpace: 'nowrap'
+    }
+  }, gap(stops[i].time, stops[i + 1].time))))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '2rem',
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      border: '1px solid var(--border-subtle)',
+      borderRadius: '0.75rem',
+      padding: '1rem 1.15rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '0.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-circle-info",
+    style: {
+      color: '#17c1e8'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase',
+      color: 'var(--text-secondary)'
+    }
+  }, "Informaci\xF3n del servicio")), svcInfo.map(f => /*#__PURE__*/React.createElement("div", {
+    key: f.k,
+    style: row
+  }, /*#__PURE__*/React.createElement("span", {
+    style: rowKey
+  }, f.k), /*#__PURE__*/React.createElement("span", {
+    style: rowVal
+  }, f.v)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      border: '1px solid var(--border-subtle)',
+      borderRadius: '0.75rem',
+      padding: '1rem 1.15rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      marginBottom: '0.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-route",
+    style: {
+      color: '#cb0c9f'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase',
+      color: 'var(--text-secondary)'
+    }
+  }, "Informaci\xF3n de la ruta y conductor")), routeInfo.map(f => /*#__PURE__*/React.createElement("div", {
+    key: f.k,
+    style: row
+  }, /*#__PURE__*/React.createElement("span", {
+    style: rowKey
+  }, f.k), /*#__PURE__*/React.createElement("span", {
+    style: rowVal
+  }, f.v))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      marginTop: '1.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      padding: '0.6rem 1.6rem',
+      borderRadius: '0.5rem',
+      border: 'none',
+      background: 'var(--border-subtle)',
+      color: 'var(--text-heading)',
+      fontFamily: "'Open Sans', sans-serif",
+      fontWeight: 700,
+      fontSize: '0.78rem',
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase',
+      cursor: 'pointer'
+    }
+  }, "Cerrar")))));
+}
+window.ServiceDetailModal = ServiceDetailModal;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/ServiceDetailModal.jsx", error: String((e && e.message) || e) }); }
+
 // ui_kits/admin/ServicesView.jsx
 try { (() => {
 // Services view — always-visible create form + Pendientes / En curso / Historial tabs
@@ -4181,8 +5110,11 @@ function ServicesView() {
     StatusBadge
   } = window.GordaDesignSystem_019e24;
   const data = window.GordaData;
+  const isMobile = window.useIsMobile();
   const [tab, setTab] = React.useState('pendings');
+  const [driverSearch, setDriverSearch] = React.useState('');
   const [form, setForm] = React.useState({
+    line: data.adminLines[0].id,
     countryCode: '+57',
     phone: '',
     name: '',
@@ -4196,15 +5128,15 @@ function ServicesView() {
     [k]: v
   }));
   const handleCreate = () => {
-    setForm({
-      countryCode: '+57',
+    setForm(f => ({
+      ...f,
       phone: '',
       name: '',
       startAddress: '',
       endAddress: '',
       comment: '',
       qty: '1'
-    });
+    }));
   };
   const tabs = [{
     id: 'pendings',
@@ -4216,8 +5148,10 @@ function ServicesView() {
     count: data.inProgress.length
   }, {
     id: 'history',
-    label: 'Historial',
-    count: data.history.length
+    label: 'Historial'
+  }, {
+    id: 'map',
+    label: 'Mapa'
   }];
 
   /* ── shared micro-styles ── */
@@ -4258,6 +5192,20 @@ function ServicesView() {
     color: 'var(--text-body)',
     borderBottom: '1px solid var(--border-subtle)',
     verticalAlign: 'middle'
+  };
+  const iconBtn = {
+    width: 28,
+    height: 28,
+    borderRadius: '0.4rem',
+    border: 'none',
+    background: 'transparent',
+    color: 'var(--text-secondary)',
+    cursor: 'pointer',
+    fontSize: '0.85rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.15s'
   };
   const OriginBadge = ({
     origin
@@ -4306,7 +5254,7 @@ function ServicesView() {
         boxShadow: on ? 'var(--shadow-sm)' : 'none',
         transition: 'all 0.18s'
       }
-    }, t.label, /*#__PURE__*/React.createElement("span", {
+    }, t.label, t.count != null && /*#__PURE__*/React.createElement("span", {
       style: {
         background: on ? '#cb0c9f' : 'var(--border-subtle)',
         color: on ? '#fff' : 'var(--text-secondary)',
@@ -4318,7 +5266,7 @@ function ServicesView() {
         textAlign: 'center'
       }
     }, t.count));
-  })), /*#__PURE__*/React.createElement("div", {
+  })), tab === 'history' && /*#__PURE__*/React.createElement(HistoryView, null), tab === 'map' && /*#__PURE__*/React.createElement(MapView, null), (tab === 'pendings' || tab === 'inProgress') && /*#__PURE__*/React.createElement(React.Fragment, null, tab === 'pendings' && /*#__PURE__*/React.createElement("div", {
     style: {
       background: 'var(--surface-card)',
       borderRadius: '0.875rem',
@@ -4338,50 +5286,8 @@ function ServicesView() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      marginBottom: '0.875rem'
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      width: 26,
-      height: 26,
-      borderRadius: '0.4rem',
-      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-plus",
-    style: {
-      fontSize: '0.65rem',
-      color: '#fff'
-    }
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: '0.75rem',
-      fontWeight: 700,
-      color: 'var(--text-heading)',
-      letterSpacing: '0.01rem'
-    }
-  }, "Crear servicio"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      marginLeft: 'auto',
-      fontSize: '0.65rem',
-      color: 'var(--text-muted)',
-      background: 'var(--body-bg)',
-      border: '1px solid var(--border-subtle)',
-      borderRadius: '0.35rem',
-      padding: '0.15rem 0.5rem',
-      fontWeight: 600
-    }
-  }, "Admin \xB7 5731731030")), /*#__PURE__*/React.createElement("div", {
-    style: {
       display: 'grid',
-      gridTemplateColumns: '88px 148px 1fr 1fr 1fr 1fr 68px',
+      gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : '74px 118px 1fr 1.3fr 1.3fr 1.2fr 64px',
       gap: '0.625rem',
       alignItems: 'end'
     }
@@ -4390,7 +5296,10 @@ function ServicesView() {
   }, "C\xF3digo"), /*#__PURE__*/React.createElement("select", {
     value: form.countryCode,
     onChange: e => setField('countryCode', e.target.value),
-    style: inp
+    style: {
+      ...inp,
+      cursor: 'pointer'
+    }
   }, /*#__PURE__*/React.createElement("option", {
     value: "+57"
   }, "+57 CO"), /*#__PURE__*/React.createElement("option", {
@@ -4460,7 +5369,28 @@ function ServicesView() {
     style: {
       marginTop: '0.75rem',
       display: 'flex',
-      justifyContent: 'flex-end'
+      alignItems: 'end',
+      gap: '0.625rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 192
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: lbl
+  }, "L\xEDnea"), /*#__PURE__*/React.createElement("select", {
+    value: form.line,
+    onChange: e => setField('line', e.target.value),
+    style: {
+      ...inp,
+      cursor: 'pointer'
+    }
+  }, data.adminLines.map(l => /*#__PURE__*/React.createElement("option", {
+    key: l.id,
+    value: l.id
+  }, l.label)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: 'auto'
     }
   }, /*#__PURE__*/React.createElement("button", {
     onClick: handleCreate,
@@ -4494,13 +5424,100 @@ function ServicesView() {
     style: {
       fontSize: '0.72rem'
     }
-  }), "CREAR SERVICIO")))), /*#__PURE__*/React.createElement(Card, {
+  }), "CREAR SERVICIO"))))), /*#__PURE__*/React.createElement(Card, {
     padding: "0"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '0.75rem',
+      padding: '1rem 1.25rem',
+      borderBottom: '1px solid var(--border-subtle)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.7rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 32,
+      height: 32,
+      borderRadius: '0.5rem',
+      flex: 'none',
+      background: tab === 'pendings' ? 'linear-gradient(310deg,#f53939,#fbcf33)' : 'linear-gradient(310deg,#2152ff,#21d4fd)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.8rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: tab === 'pendings' ? 'fas fa-clock' : 'fas fa-spinner'
+  })), /*#__PURE__*/React.createElement("h6", {
+    style: {
+      margin: 0,
+      fontSize: '0.95rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, tab === 'pendings' ? 'Servicios pendientes' : 'Servicios en curso'), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--surface-input)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: '50rem',
+      padding: '0.1rem 0.6rem',
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, tab === 'pendings' ? data.pendings.length : data.inProgress.length)), tab === 'inProgress' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: isMobile ? '100%' : 280
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      background: 'var(--surface-input)',
+      border: '1px solid var(--border-color)',
+      borderRadius: '0.5rem',
+      padding: '0.48rem 0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-magnifying-glass",
+    style: {
+      color: 'var(--text-secondary)',
+      fontSize: '0.8rem'
+    }
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    placeholder: "Buscar conductor o pasajero",
+    value: driverSearch,
+    onChange: e => setDriverSearch(e.target.value),
+    style: {
+      border: 'none',
+      outline: 'none',
+      background: 'transparent',
+      fontFamily: 'inherit',
+      fontSize: '0.8rem',
+      color: 'var(--text-body)',
+      width: '100%'
+    }
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
   }, /*#__PURE__*/React.createElement("table", {
     style: {
       width: '100%',
       borderCollapse: 'collapse',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      minWidth: 640
     }
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
     style: {
@@ -4528,7 +5545,7 @@ function ServicesView() {
       ...th,
       textAlign: 'right'
     }
-  }))), /*#__PURE__*/React.createElement("tbody", null, data[tab].map((s, i) => /*#__PURE__*/React.createElement("tr", {
+  }))), /*#__PURE__*/React.createElement("tbody", null, (tab === 'inProgress' ? data.inProgress.filter(s => !driverSearch || (s.name + ' ' + s.phone + ' ' + s.driver).toLowerCase().includes(driverSearch.toLowerCase())) : data[tab]).map((s, i) => /*#__PURE__*/React.createElement("tr", {
     key: s.id,
     style: {
       transition: 'background 0.15s'
@@ -4544,17 +5561,18 @@ function ServicesView() {
       color: 'var(--text-secondary)'
     }
   }, i + 1, tab === 'pendings' && s.applicants > 0 && /*#__PURE__*/React.createElement("span", {
+    title: `${s.applicants} conductor(es) postulado(s)`,
     style: {
       position: 'absolute',
-      top: 6,
-      right: 4,
+      top: 4,
+      right: 0,
       background: '#ea0606',
       color: '#fff',
       fontSize: '0.52rem',
       fontWeight: 700,
       borderRadius: '50%',
-      width: 14,
-      height: 14,
+      width: 15,
+      height: 15,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -4595,7 +5613,27 @@ function ServicesView() {
       color: 'var(--text-heading)',
       fontWeight: 600
     }
-  }, s.name), tab === 'inProgress' && /*#__PURE__*/React.createElement("td", {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 24,
+      height: 24,
+      borderRadius: '50%',
+      flex: 'none',
+      background: 'linear-gradient(310deg,#7928ca,#ff0080)',
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '0.6rem',
+      fontWeight: 700
+    }
+  }, s.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()), s.name)), tab === 'inProgress' && /*#__PURE__*/React.createElement("td", {
     style: td
   }, s.driver), tab === 'history' && /*#__PURE__*/React.createElement("td", {
     style: td
@@ -4622,24 +5660,39 @@ function ServicesView() {
       textAlign: 'right',
       whiteSpace: 'nowrap'
     }
-  }, tab === 'pendings' && /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-pen",
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
-      color: 'var(--text-secondary)',
-      cursor: 'pointer',
-      marginRight: 14,
-      transition: 'color 0.15s'
-    },
-    onMouseOver: e => e.target.style.color = '#cb0c9f',
-    onMouseOut: e => e.target.style.color = 'var(--text-secondary)',
-    title: "Editar recogida"
-  }), /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-ellipsis-vertical",
-    style: {
-      color: 'var(--text-secondary)',
-      cursor: 'pointer'
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.35rem'
     }
-  }))))))));
+  }, tab === 'pendings' && /*#__PURE__*/React.createElement("button", {
+    title: "Editar recogida",
+    style: iconBtn,
+    onMouseOver: e => {
+      e.currentTarget.style.color = '#cb0c9f';
+      e.currentTarget.style.background = 'var(--body-bg)';
+    },
+    onMouseOut: e => {
+      e.currentTarget.style.color = 'var(--text-secondary)';
+      e.currentTarget.style.background = 'transparent';
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-pen"
+  })), /*#__PURE__*/React.createElement("button", {
+    title: "M\xE1s opciones",
+    style: iconBtn,
+    onMouseOver: e => {
+      e.currentTarget.style.color = '#cb0c9f';
+      e.currentTarget.style.background = 'var(--body-bg)';
+    },
+    onMouseOut: e => {
+      e.currentTarget.style.color = 'var(--text-secondary)';
+      e.currentTarget.style.background = 'transparent';
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-ellipsis-vertical"
+  }))))))))))));
 }
 window.ServicesView = ServicesView;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/ServicesView.jsx", error: String((e && e.message) || e) }); }
@@ -5088,6 +6141,7 @@ function SettTab1() {
 function SettTab2({
   onSave
 }) {
+  const isMobile = window.useIsMobile();
   const [base, setBase] = React.useState({
     precioKm: '800',
     precioMin: '190',
@@ -5183,7 +6237,7 @@ function SettTab2({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
       gap: '1.25rem'
     }
   }, /*#__PURE__*/React.createElement(SCard, {
@@ -5497,10 +6551,15 @@ function SettTab3() {
     noPad: true
   }, /*#__PURE__*/React.createElement("div", {
     style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
       display: 'flex',
       padding: '0.85rem 1.25rem 0.7rem',
       borderBottom: '2px solid var(--border-subtle)',
-      gap: 8
+      gap: 8,
+      minWidth: 560
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -5624,7 +6683,7 @@ function SettTab3() {
     style: sBtn('#17c1e8')
   }, /*#__PURE__*/React.createElement("em", {
     className: "fas fa-pencil"
-  }))))))));
+  })))))))));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5733,29 +6792,46 @@ window.SettingsView = SettingsView;
 
 // ui_kits/admin/Sidebar.jsx
 try { (() => {
-// Gorda admin sidebar — floating rounded-xl card, Soft UI nav with icon chips.
+// Gorda admin sidebar — floating rounded card, Soft UI nav with icon chips.
+// On mobile (isMobile=true) renders as a fixed-position drawer that slides in/out.
 function Sidebar({
   active,
-  onNavigate
+  onNavigate,
+  isMobile,
+  open,
+  onClose
 }) {
   const {
     user,
     nav
   } = window.GordaData;
+  const posStyle = isMobile ? {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    zIndex: 200,
+    borderRadius: '0 1rem 1rem 0',
+    transform: open ? 'translateX(0)' : 'translateX(-260px)',
+    transition: 'transform 0.25s ease'
+  } : {
+    position: 'fixed',
+    top: '1rem',
+    left: '1rem',
+    bottom: '1rem',
+    borderRadius: '1rem'
+  };
   return /*#__PURE__*/React.createElement("aside", {
     style: {
-      position: 'absolute',
-      top: '1rem',
-      left: '1rem',
-      bottom: '1rem',
+      ...posStyle,
       width: 240,
       background: 'var(--surface-card)',
-      borderRadius: '1rem',
-      boxShadow: 'var(--shadow-card)',
+      boxShadow: isMobile && open ? '0 8px 40px rgba(0,0,0,0.28)' : 'var(--shadow-card)',
       display: 'flex',
       flexDirection: 'column',
       padding: '1rem 0.75rem',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      overflowY: 'auto'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -5770,15 +6846,39 @@ function Sidebar({
     style: {
       width: 34,
       height: 34,
-      borderRadius: '0.6rem'
+      borderRadius: '0.6rem',
+      flex: 'none'
     }
   }), /*#__PURE__*/React.createElement("span", {
     style: {
       fontWeight: 700,
       fontSize: '0.9rem',
-      color: 'var(--text-heading)'
+      color: 'var(--text-heading)',
+      flex: 1,
+      minWidth: 0,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
     }
-  }, user.name)), /*#__PURE__*/React.createElement("hr", {
+  }, user.name), isMobile && /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: 'var(--text-muted)',
+      fontSize: '1rem',
+      width: 28,
+      height: 28,
+      flex: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: '0.4rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-xmark"
+  }))), /*#__PURE__*/React.createElement("hr", {
     style: {
       border: 0,
       borderTop: '1px solid var(--border-subtle)',
@@ -5823,8 +6923,7 @@ function Sidebar({
         background: isActive ? 'linear-gradient(310deg, #7928ca, #ff0080)' : 'var(--surface-input)',
         boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
         color: isActive ? '#fff' : '#cb0c9f',
-        fontSize: '0.8rem',
-        position: 'relative'
+        fontSize: '0.8rem'
       }
     }, /*#__PURE__*/React.createElement("em", {
       className: item.icon
@@ -5900,12 +6999,15 @@ window.Sidebar = Sidebar;
 
 // ui_kits/admin/TopNav.jsx
 try { (() => {
-// Gorda admin top navbar — breadcrumb + page title, search, theme toggle, icons.
+// Gorda admin top navbar — breadcrumb + title, search, theme toggle, icons.
+// On mobile: shows hamburger button, hides search and bell.
 function TopNav({
   title,
   breadcrumb,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  isMobile,
+  onToggleSidebar
 }) {
   const isDark = theme === 'dark';
   return /*#__PURE__*/React.createElement("nav", {
@@ -5915,12 +7017,46 @@ function TopNav({
       justifyContent: 'space-between',
       padding: '0.5rem 0',
       margin: '0 0 1.25rem',
-      fontFamily: "'Open Sans', sans-serif"
+      fontFamily: "'Open Sans', sans-serif",
+      gap: '0.75rem'
     }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.6rem',
+      minWidth: 0
+    }
+  }, isMobile && /*#__PURE__*/React.createElement("button", {
+    onClick: onToggleSidebar,
+    style: {
+      width: 36,
+      height: 36,
+      flex: 'none',
+      borderRadius: '0.5rem',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-color)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      color: 'var(--text-heading)',
+      fontSize: '1rem',
+      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.3)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-bars"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '0.75rem',
-      color: 'var(--text-secondary)'
+      color: 'var(--text-secondary)',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -5941,48 +7077,25 @@ function TopNav({
       margin: '0.15rem 0 0',
       fontSize: '1rem',
       fontWeight: 700,
-      color: 'var(--text-heading)'
+      color: 'var(--text-heading)',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
     }
-  }, title)), /*#__PURE__*/React.createElement("div", {
+  }, title))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: '0.75rem'
+      gap: '0.6rem',
+      flex: 'none'
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      background: 'var(--surface-input)',
-      border: '1px solid var(--border-color)',
-      borderRadius: '0.5rem',
-      padding: '0.45rem 0.75rem',
-      width: 200
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-magnifying-glass",
-    style: {
-      color: 'var(--text-secondary)',
-      fontSize: '0.8rem'
-    }
-  }), /*#__PURE__*/React.createElement("input", {
-    placeholder: "Search...",
-    style: {
-      border: 'none',
-      outline: 'none',
-      background: 'transparent',
-      fontFamily: 'inherit',
-      fontSize: '0.8rem',
-      color: 'var(--text-body)',
-      width: '100%'
-    }
-  })), /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("button", {
     onClick: onToggleTheme,
     title: isDark ? 'Switch to light mode' : 'Switch to dark mode',
     style: {
       width: 36,
       height: 36,
+      flex: 'none',
       borderRadius: '0.5rem',
       background: 'var(--surface-card)',
       border: '1px solid var(--border-color)',
@@ -5993,12 +7106,11 @@ function TopNav({
       color: isDark ? '#fbcf33' : '#344767',
       fontSize: '0.95rem',
       transition: 'all 0.2s ease',
-      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.3)',
-      flex: 'none'
+      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.3)'
     }
   }, /*#__PURE__*/React.createElement("em", {
     className: isDark ? 'fas fa-sun' : 'fas fa-moon'
-  })), /*#__PURE__*/React.createElement("em", {
+  })), !isMobile && /*#__PURE__*/React.createElement("em", {
     className: "fas fa-bell",
     style: {
       color: 'var(--text-heading)',
@@ -6011,6 +7123,7 @@ function TopNav({
     style: {
       width: 34,
       height: 34,
+      flex: 'none',
       borderRadius: '50%',
       objectFit: 'cover',
       boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4)'
@@ -7764,11 +8877,16 @@ function MessagesPanel({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
       display: 'grid',
       gridTemplateColumns: '2fr 2.5fr 120px 80px',
       padding: '0.65rem 1.25rem',
       borderBottom: '1px solid var(--border-subtle)',
-      background: 'var(--body-bg)'
+      background: 'var(--body-bg)',
+      minWidth: 460
     }
   }, ['Plantilla', 'Descripción', 'Tipo', ''].map((h, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
@@ -7870,7 +8988,7 @@ function MessagesPanel({
     }
   }, /*#__PURE__*/React.createElement("em", {
     className: "fas fa-trash"
-  })))))));
+  }))))))));
 }
 
 /* ── main view ────────────────────────────────────────────── */
@@ -8029,10 +9147,6 @@ window.GordaData = {
     label: 'Dashboard',
     icon: 'fas fa-gauge-high'
   }, {
-    id: 'services',
-    label: 'Services',
-    icon: 'fas fa-route'
-  }, {
     id: 'drivers',
     label: 'Drivers',
     icon: 'fa-solid fa-car-side'
@@ -8124,8 +9238,24 @@ window.GordaData = {
     end: 'Calle 100',
     phone: '+57 311 555 2030',
     name: 'Pedro Niño',
+    comment: 'N/A',
     driverName: 'José Marín',
-    origin: 'bot'
+    origin: 'bot',
+    originLabel: 'WhatsApp Bot',
+    plate: 'FBD-903',
+    time: '6min',
+    distance: '5.2km',
+    value: '9200COP',
+    discounted: '920COP',
+    multiplier: '1.0',
+    assignedBy: 'Super Admin',
+    createdBy: 'WhatsApp Bot',
+    timeline: {
+      hora: '09:14:02',
+      llegada: '09:20:58',
+      inicio: '09:21:26',
+      fin: '09:27:05'
+    }
   }, {
     id: 7,
     date: '2026-06-18 08:52',
@@ -8134,8 +9264,24 @@ window.GordaData = {
     end: 'N/A',
     phone: '+57 315 555 7781',
     name: 'Sofía Cano',
+    comment: 'Cliente canceló el servicio',
     driverName: '—',
-    origin: 'bot'
+    origin: 'bot',
+    originLabel: 'WhatsApp Bot',
+    plate: 'N/A',
+    time: 'N/A',
+    distance: 'N/A',
+    value: '0COP',
+    discounted: '0COP',
+    multiplier: '—',
+    assignedBy: '—',
+    createdBy: 'WhatsApp Bot',
+    timeline: {
+      hora: '08:52:00',
+      llegada: null,
+      inicio: null,
+      fin: null
+    }
   }, {
     id: 8,
     date: '2026-06-18 08:30',
@@ -8144,8 +9290,24 @@ window.GordaData = {
     end: 'Galerías',
     phone: '+57 305 555 6610',
     name: 'Miguel Ángel',
+    comment: 'N/A',
     driverName: 'Carlos Ruiz',
-    origin: 'admin'
+    origin: 'admin',
+    originLabel: 'Panel admin · Super Admin',
+    plate: 'KXT-482',
+    time: '4min',
+    distance: '3.1km',
+    value: '7400COP',
+    discounted: '740COP',
+    multiplier: '1.1',
+    assignedBy: 'Super Admin',
+    createdBy: 'Panel admin · Super Admin',
+    timeline: {
+      hora: '08:30:14',
+      llegada: '08:34:40',
+      inicio: '08:35:02',
+      fin: '08:39:11'
+    }
   }, {
     id: 9,
     date: '2026-06-17 22:08',
@@ -8154,8 +9316,24 @@ window.GordaData = {
     end: 'Fontibón',
     phone: '+57 319 555 3344',
     name: 'Valentina Cruz',
+    comment: 'Pago en efectivo',
     driverName: 'Ana López',
-    origin: 'bot'
+    origin: 'bot',
+    originLabel: 'WhatsApp Bot',
+    plate: 'HJS-119',
+    time: '9min',
+    distance: '6.4km',
+    value: '11500COP',
+    discounted: '1150COP',
+    multiplier: '1.2',
+    assignedBy: 'Super Admin',
+    createdBy: 'WhatsApp Bot',
+    timeline: {
+      hora: '22:08:20',
+      llegada: '22:16:47',
+      inicio: '22:17:15',
+      fin: '22:26:32'
+    }
   }],
   drivers: [{
     id: 'd1',
@@ -8222,6 +9400,17 @@ window.GordaData = {
     last: '14 min ago',
     balance: '$31 200',
     status: 'online'
+  }],
+  // WhatsApp/admin lines a service can be created from
+  adminLines: [{
+    id: 'l1',
+    label: 'Admin · 5731731030'
+  }, {
+    id: 'l2',
+    label: 'Admin · 5731731031'
+  }, {
+    id: 'l3',
+    label: 'Soporte · 5731731040'
   }],
   stats: [{
     label: 'Services today',
@@ -8453,6 +9642,72 @@ window.GordaData = {
     tec: '2023-10-15',
     photoUrl: null
   }],
+  // Drivers currently online, shown on the Mapa tab
+  mapDrivers: [{
+    plate: 'COL253',
+    name: 'Carlos Ruiz',
+    status: 'available'
+  }, {
+    plate: 'CUM576',
+    name: 'Ana López',
+    status: 'available'
+  }, {
+    plate: 'DLR271',
+    name: 'José Marín',
+    status: 'busy'
+  }, {
+    plate: 'UGT137',
+    name: 'Lucía Torres',
+    status: 'available'
+  }, {
+    plate: 'RHM992',
+    name: 'Andrés Beltrán',
+    status: 'busy'
+  }, {
+    plate: 'KFL342',
+    name: 'Camilo Restrepo',
+    status: 'available'
+  }, {
+    plate: 'KDR542',
+    name: 'Diana Rojas',
+    status: 'available'
+  }, {
+    plate: 'JZW617',
+    name: 'Jorge Salazar',
+    status: 'in_service'
+  }, {
+    plate: 'KIS454',
+    name: 'Laura Méndez',
+    status: 'available'
+  }, {
+    plate: 'CP0991',
+    name: 'Miguel Ángel',
+    status: 'in_service'
+  }, {
+    plate: 'VAQ346',
+    name: 'Sofía Cano',
+    status: 'available'
+  }, {
+    plate: 'DCA350',
+    name: 'Pedro Niño',
+    status: 'in_service'
+  }, {
+    plate: 'KDS717',
+    name: 'Valentina Cruz',
+    status: 'busy'
+  }, {
+    plate: 'KPX617',
+    name: 'Andrés Patiño',
+    status: 'available'
+  }, {
+    plate: 'KXV590A',
+    name: 'María Gómez',
+    status: 'available'
+  }, {
+    plate: 'JBN173',
+    name: 'Alexander Camilo',
+    status: 'available'
+  }],
   confirmations: [{
     key: 'new_service',
     label: 'New service created',
@@ -8489,6 +9744,35 @@ window.GordaData = {
   }]
 };
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/data.js", error: String((e && e.message) || e) }); }
+
+// ui_kits/admin/utils.js
+try { (() => {
+// Responsive utility — defines window.useIsMobile(bp?)
+// Load after React but before any component that calls it.
+(function () {
+  /**
+   * useIsMobile(bp = 900)
+   * Returns true when window.innerWidth < bp; re-evaluates on resize.
+   * Call inside a React component (same rules as any hook).
+   */
+  window.useIsMobile = function useIsMobile(bp) {
+    if (bp === undefined) bp = 900;
+    var pair = React.useState(window.innerWidth < bp);
+    var isMobile = pair[0];
+    var setMob = pair[1];
+    React.useEffect(function () {
+      function onResize() {
+        setMob(window.innerWidth < bp);
+      }
+      window.addEventListener('resize', onResize);
+      return function () {
+        window.removeEventListener('resize', onResize);
+      };
+    }, []);
+    return isMobile;
+  };
+})();
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/admin/utils.js", error: String((e && e.message) || e) }); }
 
 __ds_ns.Avatar = __ds_scope.Avatar;
 

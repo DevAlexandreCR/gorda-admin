@@ -207,6 +207,7 @@ function SettTab1() {
 // TAB 2 · Tarifas
 // ─────────────────────────────────────────────────────────────────────────────
 function SettTab2({ onSave }) {
+  const isMobile = window.useIsMobile();
   const [base, setBase] = React.useState({
     precioKm: '800', precioMin: '190',
     tarifaBase: '2400', adicionales: '500',
@@ -246,7 +247,7 @@ function SettTab2({ onSave }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Row 1: two cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1.25rem' }}>
         <SCard title="Tarifas Base">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
             <EField label="Precio por Kilómetro"       value={base.precioKm}                onChange={updBase('precioKm')} />
@@ -380,8 +381,9 @@ function SettTab3() {
 
   return (
     <SCard title="Tabla de Mensajes WhatsApp" noPad>
+      <div style={{ overflowX: 'auto' }}>
       {/* Column headers */}
-      <div style={{ display: 'flex', padding: '0.85rem 1.25rem 0.7rem', borderBottom: '2px solid var(--border-subtle)', gap: 8 }}>
+      <div style={{ display: 'flex', padding: '0.85rem 1.25rem 0.7rem', borderBottom: '2px solid var(--border-subtle)', gap: 8, minWidth: 560 }}>
         <div style={{ width: C.nom }}>{th('Nombre')}</div>
         <div style={{ width: C.com }}>{th('Comentario')}</div>
         <div style={{ width: C.msg }}>{th('Mensajes')}</div>
@@ -432,6 +434,7 @@ function SettTab3() {
           ))}
         </div>
       ))}
+      </div>
     </SCard>
   );
 }

@@ -27,9 +27,10 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="../../_ds_bundle.js"></script>
 <script src="data.js"></script>
+<script src="utils.js"></script>
 <style>
-  html, body { margin: 0; height: 100%; background: var(--body-bg); }
-  #app { min-height: 100vh; }
+  html, body { margin: 0; height: 100%; background: var(--body-bg); overflow: hidden; }
+  #app { height: 100vh; }
 </style>
 </head>
 <body>
@@ -37,7 +38,9 @@
 
   <script type="text/babel" src="Sidebar.jsx"></script>
   <script type="text/babel" src="TopNav.jsx"></script>
-  <script type="text/babel" src="DashboardView.jsx"></script>
+  <script type="text/babel" src="ServiceDetailModal.jsx"></script>
+  <script type="text/babel" src="HistoryView.jsx"></script>
+  <script type="text/babel" src="MapView.jsx"></script>
   <script type="text/babel" src="ServicesView.jsx"></script>
   <script type="text/babel" src="DriversView.jsx"></script>
   <script type="text/babel" src="EditDriverView.jsx"></script>
@@ -53,7 +56,7 @@
     const { useState, useEffect } = React;
 
     const TITLES = {
-      dashboard: 'Dashboard', services: 'Services', drivers: 'Drivers',
+      dashboard: 'Dashboard', drivers: 'Drivers',
       vehicles: 'Vehículos', places: 'Places', whatsapp: 'WhatsApp connection',
       metrics: 'Metrics', settings: 'Settings',
     };
@@ -75,7 +78,7 @@
 
     function App() {
       const [authed, setAuthed] = useState(false);
-      const [view, setView] = useState('services');
+      const [view, setView] = useState('dashboard');
       const [editingDriver, setEditingDriver] = useState(null);
       const [viewingVehicle, setViewingVehicle] = useState(null);
 
@@ -91,14 +94,15 @@
       }, [theme]);
 
       const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+      const [sidebarOpen, setSidebarOpen] = useState(false);
+      const isMobile = window.useIsMobile(900);
 
       if (!authed) return <LoginView onLogin={() => setAuthed(true)} />;
 
-      const handleNavigate = (v) => { setView(v); setEditingDriver(null); setViewingVehicle(null); };
+      const handleNavigate = (v) => { setView(v); setEditingDriver(null); setViewingVehicle(null); if (isMobile) setSidebarOpen(false); };
 
       let content;
-      if (view === 'dashboard') content = <DashboardView />;
-      else if (view === 'services') content = <ServicesView />;
+      if (view === 'dashboard') content = <ServicesView />;
       else if (view === 'drivers') {
         if (editingDriver) {
           content = <EditDriverView driver={editingDriver} onBack={() => setEditingDriver(null)} />;
@@ -120,11 +124,22 @@
       const navTitle = editingDriver ? 'Drivers' : viewingVehicle ? 'Vehículos' : (TITLES[view] || view);
 
       return (
-        <div style={{ position: 'relative', minHeight: '100vh' }}>
-          <Sidebar active={view} onNavigate={handleNavigate} />
-          <main style={{ marginLeft: 272, padding: '1rem 1.5rem 1.5rem' }}>
-            <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} />
-            {content}
+        <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+          {isMobile && sidebarOpen && (
+            <div onClick={() => setSidebarOpen(false)} style={{
+              position: 'fixed', inset: 0, zIndex: 199,
+              background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(2px)',
+            }} />
+          )}
+          <Sidebar active={view} onNavigate={handleNavigate} isMobile={isMobile} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <main style={{
+            marginLeft: isMobile ? 0 : 272, padding: isMobile ? '0.75rem' : '1rem 1.5rem 0', transition: 'margin-left 0.25s ease', minWidth: 0,
+            height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          }}>
+            <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} isMobile={isMobile} onToggleSidebar={() => setSidebarOpen(o => !o)} />
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', paddingBottom: isMobile ? '0.75rem' : '1.5rem' }}>
+              {content}
+            </div>
           </main>
         </div>
       );

@@ -500,8 +500,9 @@ function MessagesPanel({ messages, onEdit, onNew }) {
       </div>
 
       <div style={{ background: 'var(--surface-card)', borderRadius: '1rem', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
         {/* table head */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 2.5fr 120px 80px', padding: '0.65rem 1.25rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--body-bg)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 2.5fr 120px 80px', padding: '0.65rem 1.25rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--body-bg)', minWidth: 460 }}>
           {['Plantilla', 'Descripción', 'Tipo', ''].map((h, i) => (
             <div key={i} style={{ fontSize: '0.63rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{h}</div>
           ))}
@@ -536,6 +537,7 @@ function MessagesPanel({ messages, onEdit, onNew }) {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

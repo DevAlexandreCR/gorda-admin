@@ -2,6 +2,7 @@
 // Layout: full-width profile header + two balanced columns + tabbed history + modals
 function EditDriverView({ driver, onBack }) {
   const { Card, Avatar, Badge, Button, Input, Select, Switch } = window.GordaDesignSystem_019e24;
+  const isMobile = window.useIsMobile();
 
   // ── form state ───────────────────────────────────────────────────────────
   const [form, setForm] = React.useState({
@@ -544,7 +545,7 @@ function EditDriverView({ driver, onBack }) {
 
       {/* ── 1. Profile header — full width ──────────────────────────────── */}
       <Card style={{ marginBottom: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '1rem' : '2rem', alignItems: 'flex-start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', paddingTop: '0.25rem' }}>
             <div style={{ position: 'relative' }}>
               <Avatar name={driver.name} size={76} rounded="lg" />
@@ -562,7 +563,7 @@ function EditDriverView({ driver, onBack }) {
             </span>
           </div>
 
-          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.85rem' }}>
+          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap: '0.85rem' }}>
             <div style={{ gridColumn: '1 / -1' }}>
               <Input label="Nombre completo" value={form.name} onChange={set('name')} icon="fas fa-user" />
             </div>
@@ -595,7 +596,7 @@ function EditDriverView({ driver, onBack }) {
       </Card>
 
       {/* ── 2. Two balanced columns ──────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
 
         {/* LEFT — Vehículos + Dispositivo */}
         <Card>
@@ -850,7 +851,7 @@ function EditDriverView({ driver, onBack }) {
         </div>
 
         {historyTab === 'saldo' && (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+          <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif", minWidth: 520 }}>
             <thead><tr>{['Fecha','Monto','Saldo resultante','Registrado por','Nota'].map(h => <th key={h} style={th}>{h}</th>)}</tr></thead>
             <tbody>
               {histSaldo.map((row, i) => (
@@ -863,11 +864,11 @@ function EditDriverView({ driver, onBack }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
 
         {historyTab === 'mensualidades' && (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
+          <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif", minWidth: 520 }}>
             <thead><tr>{['Período','Monto','Registrado por','Fecha de pago','Nota'].map(h => <th key={h} style={th}>{h}</th>)}</tr></thead>
             <tbody>
               {histMens.map((row, i) => (
@@ -880,7 +881,7 @@ function EditDriverView({ driver, onBack }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
 
         <div style={{ padding: '0.6rem 1.25rem', fontSize: '0.72rem', color: '#adb5bd', borderTop: '1px solid #f3f4f6' }}>
