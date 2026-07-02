@@ -2,11 +2,13 @@
   <div>
     <Suspense>
       <template #default>
-        <div v-if="coreLoaded">
+        <div v-if="coreLoaded" class="dashboard-shell">
           <SideBar></SideBar>
-          <main class="main-content mt-1 border-radius-lg " id="main">
+          <main class="main-content border-radius-lg " id="main">
             <NavBar/>
-            <router-view class="mt-4 ms-2"></router-view>
+            <div class="content-scroll">
+              <router-view></router-view>
+            </div>
           </main>
         </div>
       </template>
@@ -90,3 +92,25 @@ onMounted(async () => {
 })
 
 </script>
+<style scoped>
+.dashboard-shell {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 1.5rem;
+  padding-left: 0.25rem;
+}
+</style>

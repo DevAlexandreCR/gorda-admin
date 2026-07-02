@@ -2,7 +2,7 @@
   <aside class="gorda-sidenav sidenav navbar navbar-vertical bg-light navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y" id="sidenav-main">
    <div class="sidenav-header">
      <router-link class="navbar-brand m-0" tag="a" :to="{name: 'profile'}">
-       <img :src="logoUrl" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
+       <img :src="user.photoUrl || photoUrl" class="navbar-brand-img d-inline-block align-top border-radius-lg " alt="main_logo">
        <span class="ms-1 font-weight-bold">{{ user.name }}</span>
      </router-link>
     </div>
@@ -137,7 +137,7 @@ let connectionState: Ref<boolean> = ref(false)
 let socket: WhatsAppClient
 let observer: ClientObserver
 const storage = useStorage()
-const {logoUrl} = storeToRefs(storage)
+const {photoUrl} = storeToRefs(storage)
 const {getDefault} = useWpClientsStore()
 
 function signOut(): void {
@@ -152,6 +152,9 @@ onMounted(async () => {
   user.value = AuthService.getCurrentUser()
   isAdmin.value = user.value.isAdmin()
   isSuperAdmin.value = user.value.isSuperAdmin()
+  if (!user.value.photoUrl) {
+    await storage.getDefaultPhotoUrl()
+  }
   if (getDefault()) {
     socket = WhatsAppClient.getInstance(getDefault())
     observer = new ClientObserver(onUpdate)

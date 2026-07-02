@@ -118,6 +118,9 @@ export default {
   forms: {
     select_img: 'Choose image from files'
   },
+  breadcrumb: {
+    root: 'Páginas'
+  },
   filters: {
     title: 'Filtros',
     from: 'Desde',

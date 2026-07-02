@@ -61,6 +61,8 @@ export default {
   },
   history: 'History',
   total: 'Total',
+  pending_title: 'Pending services',
+  in_progress_title: 'Services in progress',
   title: 'Service | Services',
   messages: {
     new_client: 'Client does nor exists, therefor has been created a new one',

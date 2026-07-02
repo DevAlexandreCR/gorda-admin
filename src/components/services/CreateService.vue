@@ -6,7 +6,7 @@
           <div class="col-12 col-md-2 col-xl-1 px-1">
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.code') }}</label>
-              <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
+              <select name="countryCode" class="form-select form-select-sm pe-0" id="color" v-model="countryCode">
                 <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode">{{ cCode.dialCode + ' ' + cCode.code }}</option>
               </select>
             </div>
@@ -17,7 +17,7 @@
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
                             :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
                             v-model="service.phone" :placeholder="$t('services.placeholders.phone')" :normalizer="StrHelper.formatNumber"
-                            :debounceMs="150" :disabled="!clientsAutocompleteReady"/>
+                            :debounceMs="150" :disabled="!clientsAutocompleteReady" classes="form-control form-control-sm"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
               </Field>
@@ -27,7 +27,7 @@
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.name') }}</label>
               <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="service.name">
-                <input class="form-control" v-model="field.value" :placeholder="$t('services.placeholders.name')"
+                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('services.placeholders.name')"
                        v-bind="field" autocomplete="off"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
               </Field>
@@ -41,7 +41,7 @@
               <label class="field-label">{{ $t('services.labels.start_address') }}</label>
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.start_address')" :disabled="!placesAutocompleteReady"/>
+                            :placeholder="$t('services.placeholders.start_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
@@ -49,14 +49,14 @@
               <label class="field-label">{{ $t('services.labels.end_address') }}</label>
               <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.end_address')" :disabled="!placesAutocompleteReady"/>
+                            :placeholder="$t('services.placeholders.end_address')" :disabled="!placesAutocompleteReady" classes="form-control form-control-sm"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.comment') }}</label>
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
-                <input class="form-control" v-model="field.value" :placeholder="$t('services.placeholders.comment')"
+                <input class="form-control form-control-sm" v-model="field.value" :placeholder="$t('services.placeholders.comment')"
                        v-bind="field" autocomplete="none"/>
                 <span class="is-invalid" v-if="errorMessage">{{ errorMessage }}</span>
               </Field>
@@ -68,7 +68,7 @@
           <div class="col-12 col-md-2 col-xl-1 px-1">
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.count') }}</label>
-              <select name="count" class="form-select pe-0" id="color" v-model="count">
+              <select name="count" class="form-select form-select-sm pe-0" id="color" v-model="count">
                 <option v-for="(count) in [1, 2, 3, 4, 5]" :key="count" :value="count">{{ count }}</option>
               </select>
             </div>
@@ -78,7 +78,7 @@
           <div class="col-12 col-md-4 col-xl-3 px-1">
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.line') }}</label>
-              <Field name="wp_client_id" class="form-select pe-0" v-model="service.wp_client_id" as="select">
+              <Field name="wp_client_id" class="form-select form-select-sm pe-0" v-model="service.wp_client_id" as="select">
                 <option v-for="client in wpClients" :key="client.id" :value="client.id"
                         :selected="client.id == defaultClient">{{ client.alias }}</option>
               </Field>

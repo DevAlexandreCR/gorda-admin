@@ -8,13 +8,18 @@ import settings from "@/assets/locales/en/settings";
 
 export default {
   routes: {
+    main: 'Dashboard',
     dashboard: 'Dashboard',
     users: 'Users',
     drivers: 'Drivers',
     vehicles: 'Vehicles',
     places: 'Places',
     metrics: 'Metrics',
-    settings: 'Settings'
+    settings: 'Settings',
+    wpClients: 'WhatsApp',
+    whatsapp: 'WhatsApp',
+    billing: 'Billing',
+    profile: 'Profile'
   },
   vehicles: {
     fields: {

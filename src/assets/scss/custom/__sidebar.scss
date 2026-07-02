@@ -8,6 +8,16 @@
   }
 }
 
+// Trim the gap between the fixed sidebar's right edge and the main content.
+// The sidebar ends at 1rem (ms-3) + 15.625rem (open width) = 16.625rem; margin-left must
+// exceed that to avoid overlap. Vendor default is open-width + 1.5rem (17.125rem, ~0.5rem
+// clearance); reduce clearance to 0.25rem → open-width + 1.25rem (16.875rem), halving the gap.
+@include media-breakpoint-up(xl) {
+  .sidenav.fixed-start ~ .main-content {
+    margin-left: $navbar-vertical-open-width + 1.25;
+  }
+}
+
 // ─── Gorda Sidenav — new reference design ────────────────────────────────────
 // All rules are scoped under .gorda-sidenav to avoid bleeding into other navs.
 

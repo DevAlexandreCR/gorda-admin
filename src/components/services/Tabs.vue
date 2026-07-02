@@ -45,13 +45,17 @@
         <services-table :table="Tables.pendings" :services="pendings" @cancelService="cancel" @restartService="restart" :pagination="paginationPendings"></services-table>
       </div>
       <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-        <div class="form-group me-2 col-sm-4">
-          <input class="form-control form-control-sm me-2" type="search" v-model="searchService" name="search"
-                 :placeholder="$t('common.placeholders.search')" autocomplete="off"/>
-        </div>
         <services-table :table="Tables.inProgress" :services="filteredInProgress" @cancelService="cancel"
                         @endService="end"
-                        @releaseService="release" :pagination="paginationInProgress"></services-table>
+                        @releaseService="release" :pagination="paginationInProgress">
+          <template #actions>
+            <div class="gorda-inprogress-search">
+              <em class="fas fa-magnifying-glass"></em>
+              <input type="search" v-model="searchService" name="search"
+                     :placeholder="$t('common.placeholders.search')" autocomplete="off"/>
+            </div>
+          </template>
+        </services-table>
       </div>
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
         <History v-if="currentTap === 'history'"></History>
@@ -228,5 +232,30 @@ onMounted(() => {
 .service-tabs .nav-link.active .tab-count {
   background-color: var(--primary);
   color: #ffffff;
+}
+
+.gorda-inprogress-search {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: .5rem;
+  padding: .4rem .75rem;
+  min-width: 240px;
+}
+
+.gorda-inprogress-search em {
+  color: var(--text-secondary);
+  font-size: .8rem;
+}
+
+.gorda-inprogress-search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: .8rem;
+  color: var(--text-body);
+  width: 100%;
 }
 </style>

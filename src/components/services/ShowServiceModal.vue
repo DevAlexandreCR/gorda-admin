@@ -4,13 +4,15 @@
       <div class="modal-content">
         <div class="modal-header">
           <div class="d-flex align-items-center flex-grow-1 gap-2">
-            <span :class="`badge bg-gradient-${statusBadgeClass}`">{{ $t(`services.statuses.${service.status}`) }}</span>
+            <span :class="['gorda-status-badge', `gorda-status-badge--${statusBadgeClass}`]">{{ $t(`services.statuses.${service.status}`) }}</span>
             <span class="text-sm fw-semibold">
               {{ service.start_loc.name }} → {{ service.end_loc?.name ?? $t('common.placeholders.no_destination') }}
             </span>
             <span class="ms-auto text-sm text-muted">{{ DateHelper.unixToDate(service.created_at, 'YYYY-MM-DD HH:mm') }}</span>
           </div>
-          <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="gorda-icon-btn ms-2" data-bs-dismiss="modal" aria-label="Close">
+            <em class="fa-solid fa-xmark"></em>
+          </button>
         </div>
         <div class="modal-body">
           <div style="height: 300px">
@@ -69,48 +71,104 @@
             <div class="col-6">
               <div class="service-info-card">
                 <h6 class="service-info-card__title">
-                  <em class="fa-solid fa-circle-info me-2"></em>
+                  <em class="fa-solid fa-circle-info me-2 service-info-card__icon--info"></em>
                   {{ $t('common.placeholders.service_info') }}
                 </h6>
-                <span class="mb-2 text-sm">
-                  <em :class="`fa-solid ${originIcon} me-1`"></em>
-                  {{ $t('services.fields.origin') }}
-                  <span class="text-dark ms-sm-2 font-weight-bold">
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">
+                    <em :class="`fa-solid ${originIcon} me-1`"></em>
+                    {{ $t('services.fields.origin') }}
+                  </span>
+                  <span class="gorda-info-row__value">
                     {{ origin.label }}<template v-if="origin.sublabel"> · {{ origin.sublabel }}</template>
                   </span>
-                </span>
-                <span class="mb-2 text-sm">{{$t('services.fields.start_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.start_loc.name }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.end_address')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.end_loc?.name ?? 'N/A' }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.hour')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ date }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.status')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ $t(`services.statuses.${ service.status }`) }}</span></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.name')}} <span class="text-dark font-weight-bold ms-sm-2">{{ service.name }}</span><ClientCompletedBadge :count="service.client_completed_services_count" /></span>
-                <span class="mb-2 text-sm">{{$t('common.fields.phone')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.phone }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.comment')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.comment ?? 'N/A' }}</span></span>
-                <span class="mb-2 text-sm" v-if="service.created_by !== null">{{$t('common.fields.created_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ createdBy }}</span></span>
-                <span class="mb-2 text-sm" v-if="service.terminated_by !== null">{{$t('common.fields.terminated_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ terminatedBy }}</span></span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.start_address')}}</span>
+                  <span class="gorda-info-row__value">{{ service.start_loc.name }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.end_address')}}</span>
+                  <span class="gorda-info-row__value">{{ service.end_loc?.name ?? 'N/A' }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.hour')}}</span>
+                  <span class="gorda-info-row__value">{{ date }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('common.fields.status')}}</span>
+                  <span class="gorda-info-row__value">{{ $t(`services.statuses.${ service.status }`) }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('common.fields.name')}}</span>
+                  <span class="gorda-info-row__value">{{ service.name }}<ClientCompletedBadge :count="service.client_completed_services_count" /></span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('common.fields.phone')}}</span>
+                  <span class="gorda-info-row__value">{{ service.phone }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.comment')}}</span>
+                  <span class="gorda-info-row__value">{{ service.comment ?? 'N/A' }}</span>
+                </div>
+                <div class="gorda-info-row" v-if="service.created_by !== null">
+                  <span class="gorda-info-row__key">{{$t('common.fields.created_by')}}</span>
+                  <span class="gorda-info-row__value">{{ createdBy }}</span>
+                </div>
+                <div class="gorda-info-row" v-if="service.terminated_by !== null">
+                  <span class="gorda-info-row__key">{{$t('common.fields.terminated_by')}}</span>
+                  <span class="gorda-info-row__value">{{ terminatedBy }}</span>
+                </div>
                 <div v-if="service.status === 'canceled'" class="mt-3">
                   <h6 class="service-info-card__title">
                     <em class="fa-solid fa-ban me-2 text-danger"></em>
                     {{ $t('common.placeholders.canceled_by_section') }}
                   </h6>
-                  <span class="mb-2 text-sm">{{$t('common.fields.canceled_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ canceledBy }}</span></span>
+                  <div class="gorda-info-row">
+                    <span class="gorda-info-row__key">{{$t('common.fields.canceled_by')}}</span>
+                    <span class="gorda-info-row__value">{{ canceledBy }}</span>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="col-6">
               <div class="service-info-card" v-if="service.driver">
                 <h6 class="service-info-card__title">
-                  <em class="fa-solid fa-route me-2"></em>
+                  <em class="fa-solid fa-route me-2 service-info-card__icon--route"></em>
                   {{ $t('common.placeholders.route_info') }}
                 </h6>
-                <span class="mb-2 text-sm">{{$t('services.fields.driver_name')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ service.driver.name }}</span></span>
-                <span class="mb-2 text-sm">{{$t('drivers.fields.plate')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ ServiceHelper.vehiclePlate(service) }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.time')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ time }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.distance')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ distance }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.fee')}} <span class="text-dark font-weight-bold ms-sm-2">{{ fee }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.deducted')}} <span class="text-dark font-weight-bold ms-sm-2">{{ deducted }}</span></span>
-                <span class="mb-2 text-sm">{{$t('services.fields.fee_multiplier')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ multiplier }}</span></span>
-                <span class="mb-2 text-sm" v-if="service.assigned_by !== null">{{$t('common.fields.assigned_by')}}<span class="text-dark ms-sm-2 font-weight-bold">{{ assignedBy }}</span></span>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.driver_name')}}</span>
+                  <span class="gorda-info-row__value">{{ service.driver.name }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('drivers.fields.plate')}}</span>
+                  <span class="gorda-info-row__value">{{ ServiceHelper.vehiclePlate(service) }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.time')}}</span>
+                  <span class="gorda-info-row__value">{{ time }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.distance')}}</span>
+                  <span class="gorda-info-row__value">{{ distance }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.fee')}}</span>
+                  <span class="gorda-info-row__value">{{ fee }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.deducted')}}</span>
+                  <span class="gorda-info-row__value">{{ deducted }}</span>
+                </div>
+                <div class="gorda-info-row">
+                  <span class="gorda-info-row__key">{{$t('services.fields.fee_multiplier')}}</span>
+                  <span class="gorda-info-row__value">{{ multiplier }}</span>
+                </div>
+                <div class="gorda-info-row" v-if="service.assigned_by !== null">
+                  <span class="gorda-info-row__key">{{$t('common.fields.assigned_by')}}</span>
+                  <span class="gorda-info-row__value">{{ assignedBy }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -223,6 +281,7 @@ const statusBadgeClass = computed(() => {
     case Service.STATUS_TERMINATED: return 'success'
     case Service.STATUS_CANCELED: return 'danger'
     case Service.STATUS_IN_PROGRESS: return 'info'
+    case Service.STATUS_PENDING: return 'warning'
     default: return 'secondary'
   }
 })
@@ -287,11 +346,74 @@ const date = computed(() => {
 </script>
 
 <style scoped>
+.gorda-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 50rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.gorda-status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.gorda-status-badge--success {
+  background: var(--badge-success-bg);
+  color: var(--badge-success-fg);
+}
+
+.gorda-status-badge--danger {
+  background: var(--badge-danger-bg);
+  color: var(--badge-danger-fg);
+}
+
+.gorda-status-badge--info {
+  background: var(--badge-info-bg);
+  color: var(--badge-info-fg);
+}
+
+.gorda-status-badge--warning {
+  background: var(--badge-warning-bg);
+  color: var(--badge-warning-fg);
+}
+
+.gorda-status-badge--secondary {
+  background: var(--badge-secondary-bg);
+  color: var(--badge-secondary-fg);
+}
+
+.gorda-icon-btn {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--surface-input);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 .service-info-card {
-  background: var(--card-bg, #ffffff);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 1rem 1.15rem;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -301,10 +423,43 @@ const date = computed(() => {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--muted-text, #6c757d);
+  color: var(--text-secondary);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
+}
+
+.service-info-card__icon--info {
+  color: #17c1e8;
+}
+
+.service-info-card__icon--route {
+  color: #cb0c9f;
+}
+
+.gorda-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+}
+
+.gorda-info-row:last-child {
+  border-bottom: none;
+}
+
+.gorda-info-row__key {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.gorda-info-row__value {
+  color: var(--text-heading);
+  font-weight: 600;
+  text-align: right;
 }
 
 .service-timeline {
@@ -327,18 +482,20 @@ const date = computed(() => {
 }
 
 .tl-dot--active {
-  background: var(--bs-success, #2dce89);
-  border: 2px solid var(--bs-success, #2dce89);
+  background: #82d616;
+  border: 2px solid #82d616;
+  box-shadow: 0 0 0 4px rgba(130, 214, 22, 0.18);
 }
 
 .tl-dot--inactive {
   background: transparent;
-  border: 2px solid var(--muted-text, #adb5bd);
+  border: 2px solid var(--border-color);
 }
 
 .tl-dot--danger {
-  background: var(--bs-danger, #f5365c);
-  border: 2px solid var(--bs-danger, #f5365c);
+  background: var(--danger, #f5365c);
+  border: 2px solid var(--danger, #f5365c);
+  box-shadow: none;
 }
 
 .tl-segment {
@@ -357,22 +514,22 @@ const date = computed(() => {
   right: 0;
   top: 0;
   height: 2px;
-  background: var(--muted-text, #adb5bd);
+  background: var(--border-color);
   opacity: 0.4;
 }
 
 .tl-segment--danger::before {
-  background: var(--bs-danger, #f5365c);
+  background: var(--danger, #f5365c);
   opacity: 0.7;
 }
 
 .tl-duration {
   position: relative;
   z-index: 1;
-  background: var(--card-bg, #fff);
+  background: var(--surface-card);
   padding: 0 5px;
   font-size: 0.65rem;
-  color: var(--muted-text, #8898aa);
+  color: var(--text-secondary);
   font-style: italic;
   white-space: nowrap;
 }

@@ -30,6 +30,7 @@ function buildService(overrides: Partial<ServiceInterface> = {}): ServiceInterfa
 		amount: null,
 		metadata: null,
 		wp_client_id: 'wpClient',
+		origin: null,
 		driver_id: null,
 		client_id: null,
 		created_at: 1000000,

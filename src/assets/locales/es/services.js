@@ -61,6 +61,8 @@ export default {
   },
   history: 'Historial',
   total: 'Total',
+  pending_title: 'Servicios pendientes',
+  in_progress_title: 'Servicios en curso',
   title: 'Servicio | Servicios',
   messages: {
     new_client: 'El cliente no existe, por lo que se ha creado uno nuevo',

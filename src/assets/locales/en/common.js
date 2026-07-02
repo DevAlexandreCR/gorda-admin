@@ -125,6 +125,9 @@ export default {
   forms: {
     select_img: 'Choose image from files'
   },
+  breadcrumb: {
+    root: 'Pages'
+  },
   chatBot: {
     connected: 'Connected',
     disconnected: 'Disconnected',

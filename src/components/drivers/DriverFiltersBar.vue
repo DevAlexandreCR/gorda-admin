@@ -5,7 +5,7 @@
         <em class="fas fa-search search-control__icon" aria-hidden="true"></em>
         <input
           type="text"
-          class="form-control search-control__input"
+          class="form-control form-control-sm search-control__input"
           :placeholder="searchPlaceholder"
           :aria-label="searchPlaceholder"
           :value="localSearch"
@@ -19,7 +19,7 @@
         {{ fallbackLabel('drivers.filters.filter_status', 'Status') }}
       </span>
       <select
-        class="form-select filter-control__select filter-control__select--status"
+        class="form-select form-select-sm filter-control__select filter-control__select--status"
         name="status"
         :aria-label="fallbackLabel('drivers.filters.filter_status', 'Status')"
         :value="filters.status ?? ''"
@@ -37,7 +37,7 @@
         {{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}
       </span>
       <select
-        class="form-select filter-control__select filter-control__select--payment"
+        class="form-select form-select-sm filter-control__select filter-control__select--payment"
         name="paymentMode"
         :aria-label="fallbackLabel('drivers.filters.filter_payment', 'Payment')"
         :value="filters.paymentMode ?? ''"
@@ -55,7 +55,7 @@
         {{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}
       </span>
       <select
-        class="form-select filter-control__select filter-control__select--inactive"
+        class="form-select form-select-sm filter-control__select filter-control__select--inactive"
         name="inactiveDays"
         :aria-label="fallbackLabel('drivers.filters.filter_inactive', 'Inactivity')"
         :value="filters.inactiveDays?.toString() ?? ''"

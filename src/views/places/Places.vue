@@ -42,7 +42,7 @@
         <h5>{{$t('routes.places')}}</h5>
         <div class="form-group">
           <Field name="lat" type="search" v-slot="{ field, errorMessage, meta }" v-model="searchPlace">
-            <input class="form-control" type="search" v-model="field.value" :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
+            <input class="form-control form-control-sm" type="search" v-model="field.value" :placeholder="$t('common.placeholders.search')" v-bind="field" autocomplete="off"/>
             <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
           </Field>
         </div>

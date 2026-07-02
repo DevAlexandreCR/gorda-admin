@@ -1,5 +1,15 @@
 <template>
   <div class="card px-2 py-1">
+    <div v-if="props.table !== Tables.history" class="gorda-table-header">
+      <div class="d-flex align-items-center gap-2">
+        <span class="gorda-table-header-icon" :style="{ background: headerConfig.gradient }">
+          <em class="fas" :class="headerConfig.icon"></em>
+        </span>
+        <h6 class="gorda-table-header-title mb-0">{{ headerConfig.title }}</h6>
+        <span class="gorda-table-header-count">{{ props.services.length }}</span>
+      </div>
+      <slot name="actions" />
+    </div>
     <div class="table-responsive">
       <table class="table table-sm table-borderless align-items-center mb-0">
         <caption hidden></caption>
@@ -31,7 +41,11 @@
             </span>
           </td>
           <td class="py-1 col-1">{{ props.table === Tables.history ? format(service.created_at) : DateHelper.aGo(service.a_go) }}</td>
-          <td class="py-1">{{ $t('services.statuses.' + service.status) }}</td>
+          <td class="py-1">
+            <span class="gorda-status-badge" :class="'gorda-status-badge--' + statusBadgeVariant(service)">
+              {{ $t('services.statuses.' + service.status) }}
+            </span>
+          </td>
           <td class="py-1">
             <div class="d-flex align-items-center">
               <span class="text-truncate" style="max-width: 180px" :title="service.start_loc?.name">{{ service.start_loc?.name }}</span>
@@ -51,8 +65,15 @@
           <td class="py-1" v-if="showDestination">{{ service.end_loc?.name ?? 'N/A' }}</td>
           <td class="py-1">{{ service.phone }}</td>
           <td class="py-1">
-            {{ service.name }}
-            <ClientCompletedBadge :count="service.client_completed_services_count" />
+            <div v-if="props.table !== Tables.history" class="d-flex align-items-center gap-2">
+              <span class="gorda-name-avatar">{{ initials(service.name) }}</span>
+              <span>{{ service.name }}</span>
+              <ClientCompletedBadge :count="service.client_completed_services_count" />
+            </div>
+            <template v-else>
+              {{ service.name }}
+              <ClientCompletedBadge :count="service.client_completed_services_count" />
+            </template>
           </td>
           <td class="py-1">
             <div class="d-flex align-items-center text-truncate" style="max-width: 160px">
@@ -70,7 +91,7 @@
               </button>
             </div>
           </td>
-          <td class="py-1 text-center">
+          <td class="py-1 text-center" v-if="props.table === Tables.history">
             <em
               class="fa-solid"
               :class="[originIcon(service), originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted']"
@@ -78,6 +99,15 @@
               data-bs-placement="top"
               :title="originTitle(service)"
             ></em>
+          </td>
+          <td class="py-1" v-else>
+            <span
+              class="d-inline-flex align-items-center gap-1"
+              :class="originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted'"
+            >
+              <em class="fa-solid" :class="originIcon(service)"></em>
+              <span class="text-xs">{{ originTitle(service) }}</span>
+            </span>
           </td>
           <td class="py-1" v-if="showDriverColumn && service.driver">
             <div class="d-flex px-2 py-0">
@@ -289,6 +319,20 @@ const isUpdatingComment = ref(false)
 const { t } = useI18n()
 const currentStartAddress = computed(() => editingService.value?.start_loc?.name ?? 'N/A')
 const currentComment = computed(() => editingCommentService.value?.comment ?? 'N/A')
+const headerConfig = computed(() => {
+  if (props.table === Tables.pendings) {
+    return {
+      gradient: 'linear-gradient(310deg,#f53939,#fbcf33)',
+      icon: 'fa-clock',
+      title: t('services.pending_title')
+    }
+  }
+  return {
+    gradient: 'linear-gradient(310deg,#2152ff,#21d4fd)',
+    icon: 'fa-spinner',
+    title: t('services.in_progress_title')
+  }
+})
 
 watch(props.services, (newServices) => {
   paginatedServices.value = Array.from(newServices)
@@ -371,6 +415,23 @@ function originIcon(service: ServiceList): string {
 
 function originTitle(service: ServiceList): string {
   return t('services.origin.' + originKind(service))
+}
+
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .filter(word => word.length > 0)
+    .slice(0, 2)
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+}
+
+function statusBadgeVariant(service: ServiceList): 'success' | 'danger' | 'info' | 'warning' {
+  if (service.status === Service.STATUS_TERMINATED) return 'success'
+  if (service.status === Service.STATUS_CANCELED) return 'danger'
+  if (service.status === Service.STATUS_IN_PROGRESS) return 'info'
+  return 'warning'
 }
 
 function getPaginatedData(data: []): void {
@@ -505,3 +566,102 @@ function hideTooltip(event?: Event): void {
   instance.hide()
 }
 </script>
+
+<style scoped>
+tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+tbody tr:hover {
+  background-color: var(--body-bg);
+}
+
+.gorda-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+  padding: .85rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.gorda-table-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: .5rem;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: .8rem;
+}
+
+.gorda-table-header-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.gorda-table-header-count {
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 50rem;
+  padding: .1rem .6rem;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.gorda-name-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(310deg,#7928ca,#ff0080);
+  color: #ffffff;
+  font-size: .6rem;
+  font-weight: 700;
+}
+
+.gorda-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .6rem;
+  border-radius: 50rem;
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.gorda-status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.gorda-status-badge--success {
+  background: var(--badge-success-bg);
+  color: var(--badge-success-fg);
+}
+.gorda-status-badge--danger {
+  background: var(--badge-danger-bg);
+  color: var(--badge-danger-fg);
+}
+.gorda-status-badge--info {
+  background: var(--badge-info-bg);
+  color: var(--badge-info-fg);
+}
+.gorda-status-badge--warning {
+  background: var(--badge-warning-bg);
+  color: var(--badge-warning-fg);
+}
+</style>
