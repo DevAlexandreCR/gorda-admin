@@ -250,6 +250,7 @@ class ServiceRepository {
 			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))
 			service.id = res.key
 			service.created_by = AuthService.getCurrentUser()?.id ?? null
+			service.origin = Service.ORIGIN_ADMIN
 			await this.update(service).catch(e => Promise.reject(e))
 		}
 		await Promise.resolve()

@@ -1,1 +1,2 @@
 - [Lint check scope](project_lint_check_scope.md) — `npm run lint-check` hits ui_design/_ds_bundle.js (hundreds of React errors); scope lint to changed files only
+- [Container OOM during build/jest](project_admin_container_oom.md) — admin container can exit 137 after PASS; use vue-tsc --noEmit, read jest PASS/FAIL not just exit code

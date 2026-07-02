@@ -355,6 +355,8 @@ function hasApplicants(service: ServiceList): boolean {
 }
 
 function originKind(service: ServiceList): 'admin' | 'bot' | 'unknown' {
+  if (service.origin === 'admin') return 'admin'
+  if (service.origin === 'bot') return 'bot'
   if (service.created_by) return 'admin'
   if (service.wp_client_id) return 'bot'
   return 'unknown'

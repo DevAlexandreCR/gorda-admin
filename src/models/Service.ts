@@ -28,6 +28,7 @@ export default class Service implements ServiceInterface {
   client_completed_services_count: number | null = null
   deducted_value: number | null = null
   created_by: string | null = null
+  origin: string | null = null
   assigned_by: string | null = null
   canceled_by: string | null = null
   terminated_by: string | null = null
@@ -42,6 +43,8 @@ export default class Service implements ServiceInterface {
   static readonly STATUS_IN_PROGRESS = 'in_progress'
   static readonly STATUS_TERMINATED = 'terminated'
   static readonly STATUS_CANCELED = 'canceled'
+  static readonly ORIGIN_ADMIN = 'admin'
+  static readonly ORIGIN_BOT = 'bot'
   static readonly EVENT_CANCEL = 'cancel-service'
   static readonly EVENT_TERMINATE = 'end-service'
   static readonly EVENT_SHOW = 'show-service'

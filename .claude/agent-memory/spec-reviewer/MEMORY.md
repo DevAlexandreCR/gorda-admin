@@ -1,0 +1,2 @@
+- [Service origin field plan](project_service_origin_field.md) — wp_client_id is set by admin too; created_by precedence is the real signal, not wp_client_id presence
+- [Gorda multi-service layout](project_gorda_multiservice_layout.md) — services entity data flow across admin/api/functions/SQL, key file locations

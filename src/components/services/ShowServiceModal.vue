@@ -196,10 +196,16 @@ const loadUserData = async () => {
 }
 
 const origin = computed(() => {
-  if (props.service.created_by) {
+  const explicit = props.service.origin
+  const kind = explicit === 'admin' ? 'admin'
+    : explicit === 'bot' ? 'bot'
+    : props.service.created_by ? 'admin'
+    : props.service.wp_client_id ? 'bot'
+    : 'unknown'
+  if (kind === 'admin') {
     return { kind: 'admin' as const, label: t('services.origin.admin'), sublabel: createdBy.value || null }
   }
-  if (props.service.wp_client_id) {
+  if (kind === 'bot') {
     const alias = wpClientsStore.getWpClient(props.service.wp_client_id)?.alias ?? null
     return { kind: 'bot' as const, label: t('services.origin.bot'), sublabel: alias }
   }
