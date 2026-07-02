@@ -12,6 +12,7 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
         <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center" style="width: 1%; white-space: nowrap;">{{ $t('services.fields.origin') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverColumn">{{ $t('services.fields.driver') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverNameColumn">{{ $t('services.fields.driver_name') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showActionColumn"></th>
@@ -68,6 +69,15 @@
                 <em class="fas fa-pen"></em>
               </button>
             </div>
+          </td>
+          <td class="py-1 text-center">
+            <em
+              class="fa-solid"
+              :class="[originIcon(service), originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted']"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              :title="originTitle(service)"
+            ></em>
           </td>
           <td class="py-1" v-if="showDriverColumn && service.driver">
             <div class="d-flex px-2 py-0">
@@ -342,6 +352,23 @@ function applicantsCount(service: ServiceList): number {
 
 function hasApplicants(service: ServiceList): boolean {
   return applicantsCount(service) > 0
+}
+
+function originKind(service: ServiceList): 'admin' | 'bot' | 'unknown' {
+  if (service.created_by) return 'admin'
+  if (service.wp_client_id) return 'bot'
+  return 'unknown'
+}
+
+function originIcon(service: ServiceList): string {
+  const kind = originKind(service)
+  if (kind === 'bot') return 'fa-robot'
+  if (kind === 'admin') return 'fa-desktop'
+  return 'fa-question'
+}
+
+function originTitle(service: ServiceList): string {
+  return t('services.origin.' + originKind(service))
 }
 
 function getPaginatedData(data: []): void {

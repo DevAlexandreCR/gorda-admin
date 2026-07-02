@@ -37,12 +37,27 @@ export default {
     bot: 'WhatsApp Bot',
     unknown: 'Unidentified',
   },
+  labels: {
+    code: 'Code',
+    phone: 'Phone',
+    name: 'Name',
+    start_address: 'Pickup address',
+    end_address: 'Drop-off address',
+    comment: 'Comment',
+    count: 'Qty.',
+    line: 'Line',
+  },
   edit_start_address: 'Edit pickup address',
   current_start_address: 'Current pickup address',
   edit_comment: 'Edit comment',
   current_comment: 'Current comment',
   placeholders: {
-    end_address_optional: 'Enter destination address (optional)'
+    end_address_optional: 'Enter destination address (optional)',
+    phone: '300 000 0000',
+    name: 'Passenger name',
+    start_address: 'Pickup point',
+    end_address: 'Destination (optional)',
+    comment: 'Additional note'
   },
   history: 'History',
   total: 'Total',

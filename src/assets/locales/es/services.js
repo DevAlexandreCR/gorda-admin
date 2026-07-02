@@ -37,12 +37,27 @@ export default {
     bot: 'Bot WhatsApp',
     unknown: 'Sin identificar',
   },
+  labels: {
+    code: 'Código',
+    phone: 'Teléfono',
+    name: 'Nombre',
+    start_address: 'Dirección inicial',
+    end_address: 'Dirección final',
+    comment: 'Comentario',
+    count: 'Cant.',
+    line: 'Línea',
+  },
   edit_start_address: 'Editar dirección inicial',
   current_start_address: 'Dirección inicial actual',
   edit_comment: 'Editar comentario',
   current_comment: 'Comentario actual',
   placeholders: {
-    end_address_optional: 'Ingresa dirección de destino (opcional)'
+    end_address_optional: 'Ingresa dirección de destino (opcional)',
+    phone: '300 000 0000',
+    name: 'Nombre del pasajero',
+    start_address: 'Punto de recogida',
+    end_address: 'Destino (opcional)',
+    comment: 'Nota adicional'
   },
   history: 'Historial',
   total: 'Total',

@@ -1,19 +1,12 @@
 <template>
   <div class="container-fluid">
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs service-tabs" id="myTab">
       <li class="nav-item">
         <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
                 role="tab" aria-controls="pending" @click="currentTap = 'pending'" aria-selected="true">
           <div class="d-flex align-items-center">
-            <div
-                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                :class="{ 'shadow': currentTap === 'pending' }">
-              <em class="fa-regular fa-clock"></em>
-            </div>
-            <span class="d-none d-sm-inline">{{ $t('services.statuses.pending') }}</span>
-            <div class="p-1">
-              <span class="badge badge-circle bg-danger" v-show="pendings.length > 0">{{ pendings.length }}</span>
-            </div>
+            <span>{{ $t('services.statuses.pending') }}</span>
+            <span class="badge badge-circle tab-count" v-show="pendings.length > 0">{{ pendings.length }}</span>
           </div>
         </a>
       </li>
@@ -21,15 +14,8 @@
         <a class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button"
                 role="tab" aria-controls="progress" @click="currentTap = 'progress'" aria-selected="false">
           <div class="d-flex align-items-center">
-            <div
-                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                :class="{ 'shadow': currentTap === 'progress' }">
-              <em class="fa-solid fa-spinner"></em>
-            </div>
-            <span class="d-none d-sm-inline">{{ $t('services.statuses.in_progress') }}</span>
-            <div class="p-1">
-              <span class="badge badge-circle bg-success" v-show="inProgress.length > 0">{{ inProgress.length }}</span>
-            </div>
+            <span>{{ $t('services.statuses.in_progress') }}</span>
+            <span class="badge badge-circle tab-count" v-show="inProgress.length > 0">{{ inProgress.length }}</span>
           </div>
         </a>
       </li>
@@ -39,12 +25,7 @@
                 role="tab"
                 aria-controls="history" aria-selected="false">
           <div class="d-flex align-items-center">
-            <div
-                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                :class="{ 'shadow': currentTap === 'history' }">
-              <em class="fa-regular fa-folder-open"></em>
-            </div>
-            <span class="d-none d-sm-inline">{{ $t('services.history') }}</span>
+            <span>{{ $t('services.history') }}</span>
           </div>
         </a>
       </li>
@@ -53,12 +34,7 @@
                 data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">
           <div class="d-flex align-items-center">
-            <div
-                class="icon icon-shape icon-sm border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                :class="{ 'shadow': currentTap === 'mapTab' }">
-              <em class="fa-solid fa-map-location-dot"></em>
-            </div>
-            <span class="d-none d-sm-inline">{{ $t('common.placeholders.map') }}</span>
+            <span>{{ $t('common.placeholders.map') }}</span>
           </div>
         </a>
       </li>
@@ -209,3 +185,48 @@ onMounted(() => {
   })
 })
 </script>
+
+<style scoped>
+.service-tabs {
+  border-bottom: none;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.service-tabs .nav-link {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  box-shadow: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.service-tabs .nav-link:hover {
+  color: var(--primary);
+  border: none;
+}
+
+.service-tabs .nav-link.active {
+  background-color: var(--surface-card);
+  color: var(--primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.service-tabs .tab-count {
+  margin-left: 0.5rem;
+  border-radius: var(--radius-pill);
+  background-color: rgba(131, 146, 171, .18);
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.service-tabs .nav-link.active .tab-count {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+</style>

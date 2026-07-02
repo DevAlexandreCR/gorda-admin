@@ -1,21 +1,11 @@
 <template>
   <div class="my-2">
-    <div class="row">
+    <div class="create-service-card">
       <Form @submit="onSubmit" :validation-schema="schema" autocomplete="off" @keydown.enter="submitFromEnter">
-        <div class="row">
-          <div class="col-12 col-md col-xl-1 px-1">
+        <div class="row gy-2">
+          <div class="col-12 col-md-2 col-xl-1 px-1">
             <div class="form-group">
-              <Field name="wp_client_id" class="form-select pe-0" v-model="service.wp_client_id" as="select">
-                <option v-for="client in wpClients" :key="client.id" :value="client.id"
-                        :selected="client.id == defaultClient">{{ client.alias }}</option>
-              </Field>
-              <ErrorMessage name="wp_client_id" v-slot="{ message }">
-                <span class="is-invalid">{{ message }}</span>
-              </ErrorMessage>
-            </div>
-          </div>
-          <div class="col-12 col-md col-xl-1 px-1">
-            <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.code') }}</label>
               <select name="countryCode" class="form-select pe-0" id="color" v-model="countryCode">
                 <option v-for="(cCode, key) in countryCodes" :key="key" :value="cCode">{{ cCode.dialCode + ' ' + cCode.code }}</option>
               </select>
@@ -23,9 +13,10 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.phone') }}</label>
               <AutoComplete :fieldName="'phone'" :idField="service.id" @selected="onClientSelected" @on-change="checkPhoneNoExists"
                             :elements="clientsPhone" :search-handler="searchClientsAutocomplete"
-                            v-model="service.phone" :placeholder="$t('common.placeholders.phone')" :normalizer="StrHelper.formatNumber"
+                            v-model="service.phone" :placeholder="$t('services.placeholders.phone')" :normalizer="StrHelper.formatNumber"
                             :debounceMs="150" :disabled="!clientsAutocompleteReady"/>
               <Field name="client_id" type="hidden" v-slot="{ field }" v-model="service.client_id">
                 <input type="hidden" name="client_id" v-bind="field">
@@ -34,8 +25,9 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.name') }}</label>
               <Field name="name" type="text" v-slot="{ field, errorMessage, meta }" v-model="service.name">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.name')"
+                <input class="form-control" v-model="field.value" :placeholder="$t('services.placeholders.name')"
                        v-bind="field" autocomplete="off"/>
                 <span class="is-invalid" v-if="errorMessage || !meta.dirty">{{ errorMessage }}</span>
               </Field>
@@ -46,22 +38,25 @@
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.start_address') }}</label>
               <AutoComplete :idField="service.id + 1" :fieldName="'start_address'" @selected="locSelected" @on-change="onStartAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('common.placeholders.address')" :disabled="!placesAutocompleteReady"/>
+                            :placeholder="$t('services.placeholders.start_address')" :disabled="!placesAutocompleteReady"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.end_address') }}</label>
               <AutoComplete :idField="service.id + 2" :fieldName="'end_address'" @selected="endLocSelected" @on-change="onEndAddressChange" :elements="placesAutocomplete"
                             :search-handler="searchPlacesAutocomplete"
-                            :placeholder="$t('services.placeholders.end_address_optional')" :disabled="!placesAutocompleteReady"/>
+                            :placeholder="$t('services.placeholders.end_address')" :disabled="!placesAutocompleteReady"/>
             </div>
           </div>
           <div class="col-12 col-md px-1">
             <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.comment') }}</label>
               <Field name="comment" type="text" v-slot="{ field, errorMessage }" v-model="service.comment">
-                <input class="form-control" v-model="field.value" :placeholder="$t('common.placeholders.comment')"
+                <input class="form-control" v-model="field.value" :placeholder="$t('services.placeholders.comment')"
                        v-bind="field" autocomplete="none"/>
                 <span class="is-invalid" v-if="errorMessage">{{ errorMessage }}</span>
               </Field>
@@ -70,19 +65,32 @@
               </ErrorMessage>
             </div>
           </div>
-          <div class="col-12 col-md px-1">
-            <div class="row row-cols-2">
-              <div class="col">
-                <div class="form-group">
-                  <select name="countryCode" class="form-select pe-0" id="color" v-model="count">
-                    <option v-for="(count) in [1, 2, 3, 4, 5]" :key="count" :value="count">{{ count }}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col px-1">
-                <button class="btn btn-primary d-inline-flex" type="submit">{{ $t('common.actions.create') }}</button>
-              </div>
+          <div class="col-12 col-md-2 col-xl-1 px-1">
+            <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.count') }}</label>
+              <select name="count" class="form-select pe-0" id="color" v-model="count">
+                <option v-for="(count) in [1, 2, 3, 4, 5]" :key="count" :value="count">{{ count }}</option>
+              </select>
             </div>
+          </div>
+        </div>
+        <div class="row gy-2 align-items-end">
+          <div class="col-12 col-md-4 col-xl-3 px-1">
+            <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.line') }}</label>
+              <Field name="wp_client_id" class="form-select pe-0" v-model="service.wp_client_id" as="select">
+                <option v-for="client in wpClients" :key="client.id" :value="client.id"
+                        :selected="client.id == defaultClient">{{ client.alias }}</option>
+              </Field>
+              <ErrorMessage name="wp_client_id" v-slot="{ message }">
+                <span class="is-invalid">{{ message }}</span>
+              </ErrorMessage>
+            </div>
+          </div>
+          <div class="col px-1 d-flex justify-content-end">
+            <button class="btn btn-primary d-inline-flex align-items-center submit-btn" type="submit">
+              <em class="fa-solid fa-paper-plane me-2"></em>{{ $t('common.actions.create') }} {{ $t('services.title', 1) }}
+            </button>
           </div>
         </div>
       </Form>
@@ -354,3 +362,55 @@ async function searchPlacesAutocomplete(term: string): Promise<Array<AutoComplet
   return mapped
 }
 </script>
+
+<style scoped>
+.create-service-card {
+  position: relative;
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.create-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+}
+
+.field-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  margin-left: 0.15rem;
+}
+
+.create-service-card :deep(.form-control),
+.create-service-card :deep(.form-select) {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--surface-input);
+  padding: 0.6rem 0.9rem;
+}
+
+.create-service-card :deep(.form-control:focus),
+.create-service-card :deep(.form-select:focus) {
+  box-shadow: 0 0 0 2px rgba(203, 12, 159, .15);
+}
+
+.submit-btn {
+  text-transform: uppercase;
+  background-image: var(--gradient-primary);
+}
+</style>
