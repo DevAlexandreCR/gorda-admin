@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.9(2026-07-02)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.9...2.0.8)
+
+### Fixed
+
+- Close the sidenav on mobile when tapping outside of it or tapping a nav link inside it.
+- Improve the autocomplete dropdown: support an optional leading icon per item and refine the list item styling.
+
 ## [2.0.8(2026-07-01)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.8...2.0.7)
 
 ### Added
