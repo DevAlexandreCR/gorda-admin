@@ -7,6 +7,7 @@
       aria-live="polite"
       aria-busy="true"
       :aria-label="$t('common.messages.waiting')"
+      :style="{ background: backdropBg }"
       style="position: fixed; inset: 0; z-index: 2000; /* intentionally above Bootstrap modal stack (1055) */ backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center;"
     >
       <div
@@ -49,7 +50,14 @@
 </template>
 
 <script setup lang="ts">
+import {computed} from 'vue'
+import {storeToRefs} from 'pinia'
+import {useThemeStore} from '@/services/stores/ThemeStore'
+
 defineProps<{ isLoading: boolean }>()
+
+const {isDark} = storeToRefs(useThemeStore())
+const backdropBg = computed(() => (isDark.value ? 'rgba(8, 11, 20, .92)' : 'rgba(233, 236, 239, .66)'))
 </script>
 
 <style lang="scss" scoped>
@@ -90,10 +98,6 @@ defineProps<{ isLoading: boolean }>()
   animation: gordaLmFadeOut .2s ease both;
 }
 
-.gorda-lm-backdrop {
-  background: rgba(233, 236, 239, .66);
-}
-
 .gorda-lm-card {
   animation: gordaLmIn .28s cubic-bezier(.2,.7,.3,1) both;
 }
@@ -108,10 +112,6 @@ defineProps<{ isLoading: boolean }>()
 
 .gorda-lm-seg {
   animation: gordaLmBar 1.25s cubic-bezier(.5,0,.3,1) infinite;
-}
-
-:global(body.dark-version) .gorda-lm-backdrop {
-  background: rgba(8, 11, 20, .62);
 }
 
 @media (prefers-reduced-motion: reduce) {
