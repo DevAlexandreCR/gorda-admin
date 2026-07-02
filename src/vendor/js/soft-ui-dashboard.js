@@ -347,21 +347,44 @@ if (iconSidenav) {
   iconSidenav.addEventListener("click", toggleSidenav);
 }
 
+function closeSidenav() {
+  body.classList.remove(className);
+  setTimeout(function() {
+    sidenav.classList.remove('bg-white');
+  }, 100);
+  sidenav.classList.remove('bg-transparent');
+  sidenav.classList.remove('sidenav-closed')
+}
+
 function toggleSidenav() {
   if (body && body.classList.contains(className)) {
-    body.classList.remove(className);
-    setTimeout(function() {
-      sidenav.classList.remove('bg-white');
-    }, 100);
-    sidenav.classList.remove('bg-transparent');
-    sidenav.classList.remove('sidenav-closed')
-
+    closeSidenav();
   } else {
     body.classList.add(className);
     sidenav.classList.add('bg-white');
     sidenav.classList.remove('bg-transparent');
     sidenav.classList.add('sidenav-closed')
   }
+}
+
+// Close sidenav on mobile when tapping outside of it or tapping a nav link inside it
+if (iconNavbarSidenav && sidenav) {
+  document.addEventListener("click", function(event) {
+    if (!body || !body.classList.contains(className)) return;
+    // Mobile/off-canvas mode is the state where the small hamburger icon is visible
+    if (getComputedStyle(iconNavbarSidenav).display === 'none') return;
+    // Ignore the click that opened the sidenav so it doesn't immediately re-close
+    if (iconNavbarSidenav.contains(event.target) || (iconNavbarSidenavLg && iconNavbarSidenavLg.contains(event.target))) return;
+
+    if (!sidenav.contains(event.target)) {
+      closeSidenav();
+      return;
+    }
+
+    if (event.target.closest && event.target.closest('.nav-link')) {
+      closeSidenav();
+    }
+  });
 }
 
 // Resize navbar color depends on configurator active type of sidenav
