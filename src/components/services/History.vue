@@ -337,8 +337,12 @@ body.dark-version .gorda-history {
   margin-bottom: 0.25rem;
 }
 
-.gorda-history #collapse-filter .form-group {
-  margin-bottom: 0;
+.gorda-history #collapse-filter {
+  padding-top: 0.5rem;
+}
+
+.gorda-history #collapse-filter :deep(.form-group) {
+  margin-bottom: 0 !important;
 }
 
 .gorda-history #collapse-filter :deep(.form-control) {
@@ -356,6 +360,7 @@ body.dark-version .gorda-history {
 .gorda-history__btn-clear {
   padding: 0.6rem 1.25rem;
   line-height: 1.4;
+  margin-bottom: 0;
 }
 
 .gorda-history__btn-filter {
