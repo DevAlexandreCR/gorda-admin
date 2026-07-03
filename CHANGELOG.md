@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.10(2026-07-03)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.10...2.0.9)
+
+### Added
+
+- Add the ability to void an erroneously registered driver monthly payment from the driver detail view, with a reason prompt. Voided payments remain visible in the payment history, shown struck-through with a badge stating the reason, actor, and date.
+
 ## [2.0.9(2026-07-02)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.9...2.0.8)
 
 ### Fixed
