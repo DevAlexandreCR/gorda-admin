@@ -7,4 +7,9 @@ export interface MonthlyPaymentInterface {
   createdByName: string
   note: string | null
   created_at: number
+  status: string
+  voidedAt: number | null
+  voidedByUid: string | null
+  voidedByName: string | null
+  voidReason: string | null
 }

@@ -97,6 +97,21 @@ class DriverRepository {
     return response.data.data
   }
 
+  async voidMonthlyPayment(driverId: string, paymentId: string, reason: string): Promise<{ payment: MonthlyPaymentInterface }> {
+    const currentUser = AuthService.currentUser
+    if (!currentUser?.id) {
+      throw new Error('Cannot void monthly payment: actor identity could not be resolved')
+    }
+    const response = await serverApi.post<ApiResponse<{ payment: MonthlyPaymentInterface }>>(
+      `/drivers/${driverId}/monthly-payments/${paymentId}/void`,
+      {
+        reason,
+        created_by: { uid: currentUser.id, name: currentUser.name },
+      }
+    )
+    return response.data.data
+  }
+
   async listMonthlyPayments(driverId: string, page = 1): Promise<{ rows: MonthlyPaymentInterface[]; total: number }> {
     const response = await serverApi.get<ApiResponse<{ rows: MonthlyPaymentInterface[]; total: number }>>(
       `/drivers/${driverId}/monthly-payments`,
