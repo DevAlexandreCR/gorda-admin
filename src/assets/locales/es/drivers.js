@@ -66,6 +66,8 @@ export default {
     add_filter: '+ Agregar filtro',
     filter_status: 'Estado',
     filter_payment: 'Pago',
+    filter_payment_status: 'Estado de pago',
+    filter_period: 'Periodo',
     filter_inactive: 'Inactividad',
     filter_needs_vehicle: 'Sin vehículo',
     chip_status: 'Estado: {value}',
@@ -84,6 +86,11 @@ export default {
       monthly: 'Mensualidad',
       percentage: 'Porcentaje',
     },
+    payment_status_values: {
+      paid: 'Pagado',
+      pending: 'Pendiente',
+    },
+    payment_status_percentage_hint: 'No aplica para conductores por porcentaje',
   },
   bulk: {
     selected: 'seleccionados',

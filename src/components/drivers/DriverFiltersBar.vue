@@ -52,6 +52,43 @@
 
     <label class="filter-control">
       <span class="filter-control__label">
+        {{ fallbackLabel('drivers.filters.filter_payment_status', 'Payment status') }}
+      </span>
+      <select
+        class="form-select form-select-sm filter-control__select filter-control__select--payment-status"
+        name="paymentStatus"
+        :aria-label="fallbackLabel('drivers.filters.filter_payment_status', 'Payment status')"
+        :value="filters.paymentStatus ?? ''"
+        :disabled="paymentStatusDisabled"
+        :title="paymentStatusDisabled ? paymentStatusHint : undefined"
+        @change="onPaymentStatusChange"
+      >
+        <option value="">{{ allLabel }}</option>
+        <option v-for="value in paymentStatusValues" :key="value" :value="value">
+          {{ paymentStatusLabel(value) }}
+        </option>
+      </select>
+    </label>
+
+    <label v-if="filters.paymentStatus" class="filter-control">
+      <span class="filter-control__label">
+        {{ fallbackLabel('drivers.filters.filter_period', 'Period') }}
+      </span>
+      <select
+        class="form-select form-select-sm filter-control__select filter-control__select--period"
+        name="period"
+        :aria-label="fallbackLabel('drivers.filters.filter_period', 'Period')"
+        :value="filters.period ?? defaultPeriod"
+        @change="onPeriodChange"
+      >
+        <option v-for="value in periodOptions" :key="value" :value="value">
+          {{ periodLabel(value) }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-control">
+      <span class="filter-control__label">
         {{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}
       </span>
       <select
@@ -74,6 +111,16 @@
 import { computed, ref, watch } from 'vue'
 import type { ActiveFilters } from '@/types/ActiveFilters'
 import { useI18n } from 'vue-i18n'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/es'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+const BOGOTA_TIMEZONE = 'America/Bogota'
+const PERIOD_HISTORY_MONTHS = 12
 
 interface Props {
   filters: ActiveFilters
@@ -85,13 +132,14 @@ const emit = defineEmits<{
   'update:filters': [filters: ActiveFilters]
   'update:search': [search: string]
 }>()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const localSearch = ref(props.search)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 const statusValues: Array<'enabled' | 'disabled'> = ['enabled', 'disabled']
 const paymentValues: Array<'monthly' | 'percentage'> = ['monthly', 'percentage']
+const paymentStatusValues: Array<'paid' | 'pending'> = ['paid', 'pending']
 const cannedInactiveDays = [1, 7, 30]
 
 const searchPlaceholder = computed(() =>
@@ -108,6 +156,34 @@ const inactiveOptions = computed(() => {
     values.add(current)
   }
   return Array.from(values).sort((a, b) => a - b)
+})
+
+const paymentStatusDisabled = computed(() => props.filters.paymentMode === 'percentage')
+const paymentStatusHint = computed(() =>
+  fallbackLabel(
+    'drivers.filters.payment_status_percentage_hint',
+    'Not applicable for percentage-paid drivers'
+  )
+)
+
+function currentBogotaPeriod(): string {
+  return dayjs().tz(BOGOTA_TIMEZONE).format('YYYY-MM')
+}
+
+const defaultPeriod = computed(() => currentBogotaPeriod())
+
+const periodOptions = computed(() => {
+  const current = dayjs().tz(BOGOTA_TIMEZONE)
+  const periods: string[] = []
+  for (let i = 0; i < PERIOD_HISTORY_MONTHS; i++) {
+    periods.push(current.subtract(i, 'month').format('YYYY-MM'))
+  }
+  const selected = props.filters.period
+  if (selected && !periods.includes(selected)) {
+    periods.push(selected)
+    periods.sort((a, b) => (a > b ? -1 : 1))
+  }
+  return periods
 })
 
 watch(() => props.search, (value) => {
@@ -140,6 +216,16 @@ function inactiveLabel(days: number): string {
   return fallbackLabel('drivers.filters.inactive_days', `${days}d`, { days })
 }
 
+function paymentStatusLabel(value: 'paid' | 'pending'): string {
+  return fallbackLabel(`drivers.filters.payment_status_values.${value}`, value)
+}
+
+function periodLabel(period: string): string {
+  const dayjsLocale = locale.value === 'es' ? 'es' : 'en'
+  const value = dayjs(`${period}-01`).locale(dayjsLocale).format('MMMM YYYY')
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
 function onStatusChange(event: Event): void {
   const value = (event.target as HTMLSelectElement).value
   const nextFilters = { ...props.filters }
@@ -158,6 +244,36 @@ function onPaymentChange(event: Event): void {
     nextFilters.paymentMode = value
   } else {
     delete nextFilters.paymentMode
+  }
+  if (nextFilters.paymentMode === 'percentage') {
+    delete nextFilters.paymentStatus
+    delete nextFilters.period
+  }
+  emit('update:filters', nextFilters)
+}
+
+function onPaymentStatusChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value
+  const nextFilters = { ...props.filters }
+  if (value === 'paid' || value === 'pending') {
+    nextFilters.paymentStatus = value
+    if (!nextFilters.period) {
+      nextFilters.period = currentBogotaPeriod()
+    }
+  } else {
+    delete nextFilters.paymentStatus
+    delete nextFilters.period
+  }
+  emit('update:filters', nextFilters)
+}
+
+function onPeriodChange(event: Event): void {
+  const value = (event.target as HTMLSelectElement).value
+  const nextFilters = { ...props.filters }
+  if (value) {
+    nextFilters.period = value
+  } else {
+    delete nextFilters.period
   }
   emit('update:filters', nextFilters)
 }

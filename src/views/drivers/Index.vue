@@ -289,6 +289,8 @@ import ToastService from '@/services/ToastService'
 import { useLoadingState } from '@/services/stores/LoadingState'
 import i18n from '@/plugins/i18n'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { Modal } from 'bootstrap'
 import { DriverInterface } from '@/types/DriverInterface'
 import type { ActiveFilters } from '@/types/ActiveFilters'
@@ -296,8 +298,12 @@ import DriverFiltersBar from '@/components/drivers/DriverFiltersBar.vue'
 import PagePaginator from '@/components/PagePaginator.vue'
 import SendFcmModal from '@/views/drivers/SendFCMModal.vue'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+const BOGOTA_TIMEZONE = 'America/Bogota'
 const DEFAULT_SORT = 'name'
 const DEFAULT_PAGE = 1
 const DEFAULT_PER_PAGE = 30
@@ -325,10 +331,17 @@ function parseSort(raw: string | undefined): { field: string; dir: 'asc' | 'desc
   return { field: raw, dir: 'asc' }
 }
 
+const PERIOD_FORMAT = /^\d{4}-(0[1-9]|1[0-2])$/
+
 function parseFilters(q: typeof route.query): ActiveFilters {
   const f: ActiveFilters = {}
   if (q.status === 'enabled' || q.status === 'disabled') f.status = q.status
   if (q.paymentMode === 'monthly' || q.paymentMode === 'percentage') f.paymentMode = q.paymentMode
+  if (q.paymentStatus === 'paid' || q.paymentStatus === 'pending') {
+    f.paymentStatus = q.paymentStatus
+    const period = typeof q.period === 'string' ? q.period : ''
+    f.period = PERIOD_FORMAT.test(period) ? period : dayjs().tz(BOGOTA_TIMEZONE).format('YYYY-MM')
+  }
   if (q.inactiveDays) {
     const n = Number(q.inactiveDays)
     if (n > 0) f.inactiveDays = n
@@ -397,6 +410,10 @@ function commitUrlState(): void {
   if (committedSearch.value !== '') q.search = committedSearch.value
   if (filters.value.status !== undefined) q.status = filters.value.status
   if (filters.value.paymentMode !== undefined) q.paymentMode = filters.value.paymentMode
+  if (filters.value.paymentStatus !== undefined) {
+    q.paymentStatus = filters.value.paymentStatus
+    if (filters.value.period !== undefined) q.period = filters.value.period
+  }
   if (filters.value.inactiveDays !== undefined) q.inactiveDays = String(filters.value.inactiveDays)
   if (sortParam.value !== DEFAULT_SORT) q.sort = sortParam.value
   if (page.value !== DEFAULT_PAGE) q.page = String(page.value)
@@ -484,6 +501,8 @@ watchEffect(async () => {
   const _search = committedSearch.value
   const _status = filters.value.status
   const _paymentMode = filters.value.paymentMode
+  const _paymentStatus = filters.value.paymentStatus
+  const _period = filters.value.period
   const _inactiveDays = filters.value.inactiveDays
   const _sort = sortParam.value
   const _page = page.value
@@ -495,6 +514,8 @@ watchEffect(async () => {
       search: _search || undefined,
       status: _status,
       paymentMode: _paymentMode,
+      paymentStatus: _paymentStatus,
+      period: _period,
       inactiveDays: _inactiveDays,
       sort: _sort,
       page: _page,
