@@ -7,10 +7,13 @@
           <h6 class="ms-2 mb-0">Drivers &middot; {{ total }}</h6>
         </div>
 
+        <!-- Spacer -->
+        <div class="col"></div>
+
         <!-- Send message (broadcast, no driver selected) button + modal -->
         <div class="col-auto">
-          <button class="btn btn-sm btn-warning" @click="showSendMessageModal()">
-            {{ $t('common.actions.send_message') }}
+          <button class="btn btn-sm bg-gradient-warning mb-0" @click="showSendMessageModal()">
+            <em class="fas fa-paper-plane me-1" aria-hidden="true"></em>{{ $t('common.actions.send_message') }}
           </button>
           <SendFcmModal
             :key="messageTo?.id ?? 'broadcast'"
@@ -20,15 +23,12 @@
           />
         </div>
 
-        <!-- Spacer -->
-        <div class="col"></div>
-
         <!-- Create driver button -->
         <div class="col-auto">
           <router-link
             :to="{ name: 'drivers.create' }"
             tag="a"
-            class="btn btn-sm btn-primary btn-rounded float-end"
+            class="btn btn-sm bg-gradient-primary btn-rounded mb-0"
             data-original-title="Create Driver"
           >
             <em class="fas fa-plus"></em>

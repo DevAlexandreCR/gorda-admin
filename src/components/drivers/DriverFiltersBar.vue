@@ -1,109 +1,125 @@
 <template>
   <div class="driver-filters-bar">
-    <div class="search-control-group">
-      <div class="search-control">
-        <em class="fas fa-search search-control__icon" aria-hidden="true"></em>
-        <input
-          type="text"
-          class="form-control form-control-sm search-control__input"
-          :placeholder="searchPlaceholder"
-          :aria-label="searchPlaceholder"
-          :value="localSearch"
-          @input="onSearchInput"
-        />
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_search', 'Buscar') }}
+        </label>
+        <div class="driver-filters-bar__search">
+          <em class="fas fa-search driver-filters-bar__search-icon" aria-hidden="true"></em>
+          <input
+            type="text"
+            class="form-control form-control-sm driver-filters-bar__search-input"
+            :placeholder="searchPlaceholder"
+            :aria-label="searchPlaceholder"
+            :value="localSearch"
+            @input="onSearchInput"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_status', 'Status') }}
+        </label>
+        <select
+          class="form-select form-select-sm"
+          name="status"
+          :aria-label="fallbackLabel('drivers.filters.filter_status', 'Status')"
+          :value="filters.status ?? ''"
+          @change="onStatusChange"
+        >
+          <option value="">{{ allLabel }}</option>
+          <option v-for="value in statusValues" :key="value" :value="value">
+            {{ statusLabel(value) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}
+        </label>
+        <select
+          class="form-select form-select-sm"
+          name="paymentMode"
+          :aria-label="fallbackLabel('drivers.filters.filter_payment', 'Payment')"
+          :value="filters.paymentMode ?? ''"
+          @change="onPaymentChange"
+        >
+          <option value="">{{ allLabel }}</option>
+          <option v-for="value in paymentValues" :key="value" :value="value">
+            {{ paymentLabel(value) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_payment_status', 'Payment status') }}
+        </label>
+        <select
+          class="form-select form-select-sm"
+          name="paymentStatus"
+          :aria-label="fallbackLabel('drivers.filters.filter_payment_status', 'Payment status')"
+          :value="filters.paymentStatus ?? ''"
+          :disabled="paymentStatusDisabled"
+          :title="paymentStatusDisabled ? paymentStatusHint : undefined"
+          @change="onPaymentStatusChange"
+        >
+          <option value="">{{ allLabel }}</option>
+          <option v-for="value in paymentStatusValues" :key="value" :value="value">
+            {{ paymentStatusLabel(value) }}
+          </option>
+        </select>
+      </div>
+
+      <div v-if="filters.paymentStatus" class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_period', 'Period') }}
+        </label>
+        <select
+          class="form-select form-select-sm"
+          name="period"
+          :aria-label="fallbackLabel('drivers.filters.filter_period', 'Period')"
+          :value="filters.period ?? defaultPeriod"
+          @change="onPeriodChange"
+        >
+          <option v-for="value in periodOptions" :key="value" :value="value">
+            {{ periodLabel(value) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3">
+        <label class="form-label fw-bold driver-filters-bar__label">
+          {{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}
+        </label>
+        <select
+          class="form-select form-select-sm"
+          name="inactiveDays"
+          :aria-label="fallbackLabel('drivers.filters.filter_inactive', 'Inactivity')"
+          :value="filters.inactiveDays?.toString() ?? ''"
+          @change="onInactiveChange"
+        >
+          <option value="">{{ inactiveNoneLabel }}</option>
+          <option v-for="days in inactiveOptions" :key="days" :value="days.toString()">
+            {{ inactiveLabel(days) }}
+          </option>
+        </select>
       </div>
     </div>
 
-    <label class="filter-control">
-      <span class="filter-control__label">
-        {{ fallbackLabel('drivers.filters.filter_status', 'Status') }}
-      </span>
-      <select
-        class="form-select form-select-sm filter-control__select filter-control__select--status"
-        name="status"
-        :aria-label="fallbackLabel('drivers.filters.filter_status', 'Status')"
-        :value="filters.status ?? ''"
-        @change="onStatusChange"
+    <div v-if="hasActiveFilters" class="mt-3">
+      <button
+        type="button"
+        class="btn btn-link btn-sm p-0 driver-filters-bar__clear"
+        @click="onClearFilters"
       >
-        <option value="">{{ allLabel }}</option>
-        <option v-for="value in statusValues" :key="value" :value="value">
-          {{ statusLabel(value) }}
-        </option>
-      </select>
-    </label>
-
-    <label class="filter-control">
-      <span class="filter-control__label">
-        {{ fallbackLabel('drivers.filters.filter_payment', 'Payment') }}
-      </span>
-      <select
-        class="form-select form-select-sm filter-control__select filter-control__select--payment"
-        name="paymentMode"
-        :aria-label="fallbackLabel('drivers.filters.filter_payment', 'Payment')"
-        :value="filters.paymentMode ?? ''"
-        @change="onPaymentChange"
-      >
-        <option value="">{{ allLabel }}</option>
-        <option v-for="value in paymentValues" :key="value" :value="value">
-          {{ paymentLabel(value) }}
-        </option>
-      </select>
-    </label>
-
-    <label class="filter-control">
-      <span class="filter-control__label">
-        {{ fallbackLabel('drivers.filters.filter_payment_status', 'Payment status') }}
-      </span>
-      <select
-        class="form-select form-select-sm filter-control__select filter-control__select--payment-status"
-        name="paymentStatus"
-        :aria-label="fallbackLabel('drivers.filters.filter_payment_status', 'Payment status')"
-        :value="filters.paymentStatus ?? ''"
-        :disabled="paymentStatusDisabled"
-        :title="paymentStatusDisabled ? paymentStatusHint : undefined"
-        @change="onPaymentStatusChange"
-      >
-        <option value="">{{ allLabel }}</option>
-        <option v-for="value in paymentStatusValues" :key="value" :value="value">
-          {{ paymentStatusLabel(value) }}
-        </option>
-      </select>
-    </label>
-
-    <label v-if="filters.paymentStatus" class="filter-control">
-      <span class="filter-control__label">
-        {{ fallbackLabel('drivers.filters.filter_period', 'Period') }}
-      </span>
-      <select
-        class="form-select form-select-sm filter-control__select filter-control__select--period"
-        name="period"
-        :aria-label="fallbackLabel('drivers.filters.filter_period', 'Period')"
-        :value="filters.period ?? defaultPeriod"
-        @change="onPeriodChange"
-      >
-        <option v-for="value in periodOptions" :key="value" :value="value">
-          {{ periodLabel(value) }}
-        </option>
-      </select>
-    </label>
-
-    <label class="filter-control">
-      <span class="filter-control__label">
-        {{ fallbackLabel('drivers.filters.filter_inactive', 'Inactivity') }}
-      </span>
-      <select
-        class="form-select form-select-sm filter-control__select filter-control__select--inactive"
-        name="inactiveDays"
-        :aria-label="fallbackLabel('drivers.filters.filter_inactive', 'Inactivity')"
-        :value="filters.inactiveDays?.toString() ?? ''"
-        @change="onInactiveChange"
-      >
-        <option value="">{{ inactiveNoneLabel }}</option>
-        <option v-for="days in inactiveOptions" :key="days" :value="days.toString()">
-          {{ inactiveLabel(days) }}
-        </option>
-      </select>
-    </label>
+        <em class="fas fa-times me-1" aria-hidden="true"></em
+        >{{ fallbackLabel('common.actions.clear_filters', 'Limpiar filtros') }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -164,6 +180,10 @@ const paymentStatusHint = computed(() =>
     'drivers.filters.payment_status_percentage_hint',
     'Not applicable for percentage-paid drivers'
   )
+)
+
+const hasActiveFilters = computed(() =>
+  Object.keys(props.filters).length > 0 || localSearch.value !== ''
 )
 
 function currentBogotaPeriod(): string {
@@ -288,120 +308,44 @@ function onInactiveChange(event: Event): void {
   }
   emit('update:filters', nextFilters)
 }
+
+function onClearFilters(): void {
+  if (debounceTimer !== null) {
+    clearTimeout(debounceTimer)
+    debounceTimer = null
+  }
+  localSearch.value = ''
+  emit('update:search', '')
+  emit('update:filters', {})
+}
 </script>
 
 <style scoped>
-.driver-filters-bar {
-  --filters-control-height: 3.15rem;
-  --filters-label-offset: 1.6rem;
-  --filters-surface: var(--drivers-filter-surface);
-  --filters-border: var(--drivers-filter-border);
-  --filters-text: var(--drivers-filter-text);
-  --filters-muted: var(--drivers-filter-muted);
-  --filters-shadow: var(--drivers-filter-shadow);
-  --filters-active-border: var(--drivers-filter-active-border);
-  --filters-focus-ring: var(--drivers-filter-focus-ring);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: flex-start;
-  padding-top: var(--filters-label-offset);
+.driver-filters-bar__label {
+  color: var(--text-heading);
+  margin-bottom: 0.35rem;
 }
 
-.search-control-group {
-  flex: 1 1 18rem;
-  max-width: 23rem;
-}
-
-.search-control {
-  height: var(--filters-control-height);
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0 0.95rem;
-  border: 1px solid var(--filters-border);
-  border-radius: 0.9rem;
-  background: var(--filters-surface);
-  box-shadow: var(--filters-shadow);
-  box-sizing: border-box;
-}
-
-.search-control:focus-within,
-.filter-control__select:focus {
-  border-color: var(--filters-active-border);
-  box-shadow: 0 0 0 0.2rem var(--filters-focus-ring);
-}
-
-.search-control__icon {
-  color: var(--filters-muted);
-  font-size: 0.9rem;
-}
-
-.search-control__input,
-.search-control__input:focus {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--filters-text);
-  box-shadow: none;
-}
-
-.search-control__input::placeholder {
-  color: var(--filters-muted);
-}
-
-.filter-control {
-  flex: 0 1 12rem;
-  min-width: 10rem;
+.driver-filters-bar__search {
   position: relative;
-  display: block;
 }
 
-.filter-control__label {
+.driver-filters-bar__search-icon {
   position: absolute;
-  left: 0;
-  bottom: calc(100% + 0.55rem);
-  display: flex;
-  align-items: flex-end;
-  color: var(--filters-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--drivers-filter-muted);
+  font-size: 0.8rem;
+  pointer-events: none;
 }
 
-.filter-control__select,
-.filter-control__select:focus {
-  height: var(--filters-control-height);
-  min-height: var(--filters-control-height);
-  border: 1px solid var(--filters-border);
-  border-radius: 0.9rem;
-  background-color: var(--filters-surface);
-  color: var(--filters-text);
-  box-shadow: var(--filters-shadow);
+.driver-filters-bar__search-input {
+  padding-left: 2rem;
+}
+
+.driver-filters-bar__clear {
   font-weight: 600;
-}
-
-@media (max-width: 1199.98px) {
-  .driver-filters-bar {
-    gap: 0.65rem;
-  }
-
-  .search-control {
-    max-width: 100%;
-  }
-
-  .search-control-group {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .search-control-group,
-  .filter-control {
-    flex-basis: 100%;
-    max-width: 100%;
-  }
+  text-decoration: none;
 }
 </style>

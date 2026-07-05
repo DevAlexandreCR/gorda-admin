@@ -66,6 +66,7 @@ export default {
   },
   filters: {
     add_filter: '+ Add filter',
+    filter_search: 'Search',
     filter_status: 'Status',
     filter_payment: 'Payment',
     filter_payment_status: 'Payment status',
