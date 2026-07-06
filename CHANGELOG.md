@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.10(2026-07-03)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.10...2.0.9)
+## [2.0.11(2026-07-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.11...2.0.10)
+
+### Added
+
+- Add payment filters to the drivers view: filter by payment mode (monthly/percentage) and by payment status (paid/pending) for a selected period. The payment status and period selectors are round-tripped through the URL state alongside the existing search, status, and inactivity filters.
+- Add a route integrity audit report in the services view: a new tab with a date-range filter listing per-driver metrics (total trips, flagged trips, and flagged ratio) to surface trips completed without a usable route capture.
 
 ### Added
 
