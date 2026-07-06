@@ -20,6 +20,7 @@ import Service from '@/models/Service'
 import AuthService from '@/services/AuthService'
 import { ServiceCursor } from '@/types/ServiceCursor'
 import {LocationType} from '@/types/LocationType'
+import { RouteIntegrityMetric } from '@/types/RouteIntegrityMetric'
 import serverApi, { ApiResponse } from '@/services/gordaApi/server/ServerApi'
 import * as Sentry from '@sentry/vue'
 
@@ -47,6 +48,7 @@ class ServiceRepository {
 		perPage: number
 		cursor: ServiceCursor
 		next: boolean
+		routeIntegrity?: 'flagged'
 	}): Promise<HistoryPageResponse> {
 		const hasCursor = options.cursor.id !== '' && options.cursor.created > 0
 		const response = await serverApi.get<ApiResponse<{
@@ -64,6 +66,7 @@ class ServiceRepository {
 				cursorCreated: hasCursor ? options.cursor.created : undefined,
 				cursorId: hasCursor ? options.cursor.id : undefined,
 				direction: options.next ? 'next' : 'prev',
+				routeIntegrity: options.routeIntegrity ?? undefined,
 			},
 		})
 
@@ -79,6 +82,25 @@ class ServiceRepository {
 			terminatedCount: response.data.data.terminatedCount,
 			canceledCount: response.data.data.canceledCount,
 		}
+	}
+
+	/* istanbul ignore next */
+	async getRouteIntegrityReport(options: {
+		from: number
+		to: number
+		driverId?: string | null
+	}): Promise<RouteIntegrityMetric[]> {
+		const response = await serverApi.get<ApiResponse<{
+			rows: RouteIntegrityMetric[]
+		}>>('/services/route-integrity', {
+			params: {
+				from: options.from,
+				to: options.to,
+				driverId: options.driverId ?? undefined,
+			},
+		})
+
+		return response.data.data.rows
 	}
 
 	/* istanbul ignore next */

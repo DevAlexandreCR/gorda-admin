@@ -30,6 +30,16 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" id="route-integrity-tab" data-bs-toggle="tab" @click="currentTap = 'routeIntegrity'"
+                data-bs-target="#routeIntegrity" type="button"
+                role="tab"
+                aria-controls="routeIntegrity" aria-selected="false">
+          <div class="d-flex align-items-center">
+            <span>{{ $t('services.route_integrity.tab') }}</span>
+          </div>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" id="map-tab" data-bs-toggle="tab" @click="currentTap = 'mapTab'"
                 data-bs-target="#mapTab" type="button" role="tab"
                 aria-controls="map" aria-selected="false">
@@ -60,6 +70,9 @@
       <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
         <History v-if="currentTap === 'history'"></History>
       </div>
+      <div class="tab-pane fade" id="routeIntegrity" role="tabpanel" aria-labelledby="route-integrity-tab">
+        <RouteIntegrityReport v-if="currentTap === 'routeIntegrity'"></RouteIntegrityReport>
+      </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
         <DriverMap v-if="currentTap === 'mapTab'"/>
       </div>
@@ -81,6 +94,7 @@ import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import DriverMap from '@/components/DriverMap.vue'
 import History from '@/components/services/History.vue'
+import RouteIntegrityReport from '@/components/services/RouteIntegrityReport.vue'
 import {useServicesStore} from '@/services/stores/ServiceStore'
 import {Tables} from '@/constants/Tables'
 import {ServiceList} from '@/models/ServiceList'

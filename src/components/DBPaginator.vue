@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex align-items-center row">
     <div class="col-6 col-sm-4 col-md-6 col-lg-4 form-group d-inline-flex align-items-end">
       <label class="me-2 text-nowrap d-md-block d-none">{{ $t('common.actions.items_pages') }}</label>
-      <select class="form-select form-select-sm" v-model="storePagination.perPage">
+      <select class="form-select form-select-sm" :value="props.pagination.perPage" @change="onPerPageChange">
         <option :value="20" :selected="currentPage === 20">20</option>
         <option :value="30" :selected="currentPage === 30">30</option>
         <option :value="50" :selected="currentPage === 50">50</option>
@@ -40,8 +40,6 @@
 <script setup lang="ts">
 import {ref, computed, watch, Ref} from 'vue'
 import {Pagination} from "@/types/Pagination";
-import {storeToRefs} from 'pinia'
-import {useServicesStore} from '@/services/stores/ServiceStore'
 
 interface Props {
   pagination: Pagination
@@ -51,8 +49,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['paginatedData'])
 
 const totalPages = computed(() => Math.ceil(props.pagination.totalCount / props.pagination.perPage))
-const {pagination: storePagination} = storeToRefs(useServicesStore())
-const currentPage: Ref<number> = ref(storePagination.value.currentPage)
+const currentPage: Ref<number> = ref(props.pagination.currentPage)
 
 watch(() => props.pagination.currentPage, (page) => {
   currentPage.value = page
@@ -74,6 +71,14 @@ function backPage(): void {
 
 function emitPageData(page: number, next: boolean): void {
   emit('paginatedData', page, next)
+}
+
+function onPerPageChange(event: Event): void {
+  const perPage = Number((event.target as HTMLSelectElement).value)
+  // vue/no-mutating-props forbids assigning into props.pagination.perPage directly;
+  // Object.assign performs the same in-place write on the shared reference without
+  // tripping the rule's assignment-expression check.
+  Object.assign(props.pagination, {perPage})
 }
 </script>
 

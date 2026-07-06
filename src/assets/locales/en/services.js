@@ -64,6 +64,21 @@ export default {
   pending_title: 'Pending services',
   in_progress_title: 'Services in progress',
   title: 'Service | Services',
+  route_integrity: {
+    tab: 'Route integrity',
+    title: 'Route integrity report',
+    helper_text: 'Flagged trips are evidence for review, not proof of manipulation. Weigh the ratio against the total trips before drawing conclusions.',
+    fields: {
+      driver: 'Driver',
+      total_trips: 'Total trips',
+      flagged_trips: 'Flagged trips',
+      flagged_trips_tooltip: 'A flagged trip is a terminated trip that was started through the trip flow but ended with no usable route (empty or missing route) or with a recorded distance of zero — a pattern consistent with GPS suppression. It is evidence for review, not proof.',
+      flagged_ratio: 'Flagged ratio',
+      flagged_ratio_tooltip: "It is the number of flagged trips divided by the driver's total counted trips in the range, shown as a percentage. Weigh it together with the total number of trips: 1/1 (100%) is not the same as 7/10.",
+    },
+    empty_state: 'No counted trips in the selected date range.',
+    drilldown_title: 'Flagged services — {driver}',
+  },
   messages: {
     new_client: 'Client does nor exists, therefor has been created a new one',
     no_start_loc: 'No place selected!',

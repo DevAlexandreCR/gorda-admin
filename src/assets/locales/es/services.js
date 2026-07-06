@@ -64,6 +64,21 @@ export default {
   pending_title: 'Servicios pendientes',
   in_progress_title: 'Servicios en curso',
   title: 'Servicio | Servicios',
+  route_integrity: {
+    tab: 'Integridad de ruta',
+    title: 'Reporte de integridad de ruta',
+    helper_text: 'Los viajes marcados son evidencia para revisión, no una prueba de manipulación. Pondera la proporción junto con el total de viajes antes de sacar conclusiones.',
+    fields: {
+      driver: 'Conductor',
+      total_trips: 'Viajes totales',
+      flagged_trips: 'Viajes marcados',
+      flagged_trips_tooltip: 'Un viaje marcado es un viaje finalizado que sí se inició por el flujo de viaje, pero terminó sin una ruta utilizable (ruta vacía o ausente) o con una distancia registrada de cero — un patrón compatible con supresión de GPS. Es evidencia para revisión, no una prueba.',
+      flagged_ratio: 'Proporción marcada',
+      flagged_ratio_tooltip: 'Es la proporción de viajes marcados sobre el total de viajes contabilizados del conductor en el rango, expresada en porcentaje. Analízala junto con el total de viajes: 1/1 (100%) no es lo mismo que 7/10.',
+    },
+    empty_state: 'No hay viajes contabilizados en el rango de fechas seleccionado.',
+    drilldown_title: 'Viajes marcados — {driver}',
+  },
   messages: {
     new_client: 'El cliente no existe, por lo que se ha creado uno nuevo',
     no_start_loc: 'Debe seleccionar un lugar!',

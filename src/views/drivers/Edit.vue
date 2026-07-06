@@ -2,15 +2,9 @@
   <div class="container-fluid pb-4">
     <Form @submit="updateDriver" :validation-schema="schema">
 
-      <!-- Page header: breadcrumb + driver name + back button -->
+      <!-- Page header: driver name + back button -->
       <div class="d-flex flex-wrap gap-2 justify-content-between align-items-start mb-4 px-xxl-5">
         <div>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-1">
-              <li class="breadcrumb-item text-muted" style="opacity: 0.7">Conductores</li>
-              <li class="breadcrumb-item active fw-semibold">Editar conductor</li>
-            </ol>
-          </nav>
           <h5 class="mb-0 fw-bold" style="color: var(--detail-section-label)">{{ driver.name }}</h5>
         </div>
         <button type="button" @click="goBack" class="btn btn-sm btn-outline-secondary">

@@ -79,35 +79,33 @@ describe('DBPaginator.vue', () => {
   })
 
   it('emits paginatedData event when changing the number of items per page', async () => {
-    const { pagination } = useServicesStore()
-    pagination.perPage = 20
-    createWrapper({
+    const pagination: Pagination = {
       totalCount: 100,
-      perPage: 20, 
+      perPage: 20,
       currentPage: 1,
       cursor: {
         id: '',
         created: 0,
       },
-    })
+    }
+    createWrapper(pagination)
     await nextTick()
     const selectPerPage = wrapper.find('select.form-select')
     await selectPerPage.setValue(30)
     expect(pagination.perPage).toBe(30)
   })
-  
+
   it('updates perPage correctly when selecting a different value', async () => {
-    const { pagination } = useServicesStore()
-    pagination.perPage = 20
-    createWrapper({
+    const pagination: Pagination = {
       totalCount: 100,
-      perPage: 20, 
+      perPage: 20,
       currentPage: 1,
       cursor: {
         id: '',
         created: 0,
       },
-    })
+    }
+    createWrapper(pagination)
     await nextTick()
     const selectPerPage = wrapper.find('select.form-select')
     await selectPerPage.setValue(30)
