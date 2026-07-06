@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid pb-4">
+    <div v-if="loadingDriver" class="text-center text-secondary text-xs py-2">
+      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{{ $t('common.messages.waiting') }}
+    </div>
     <Form @submit="updateDriver" :validation-schema="schema">
 
       <!-- Page header: driver name + back button -->
@@ -111,7 +114,8 @@
             <button type="button" class="btn btn-sm bg-gradient-secondary" @click="goBack">
               {{ $t('common.actions.close') }}
             </button>
-            <button type="submit" class="btn btn-sm bg-gradient-primary">
+            <button type="submit" class="btn btn-sm bg-gradient-primary" :disabled="submittingDriver">
+              <span v-if="submittingDriver" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               {{ $t('common.actions.submit') }}
             </button>
           </div>
@@ -144,7 +148,8 @@
                          aria-describedby="device-addon" v-model="driver.device.name">
                   <button class="badge bg-danger border-0" id="removeDevice" type="button" @click="removeDevice()"
                           :disabled="removingDevice" style="border-radius: 0 .5rem .5rem 0">
-                    <em class="fa fa-solid fa-trash"></em>
+                    <span v-if="removingDevice" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <em v-else class="fa fa-solid fa-trash"></em>
                   </button>
                 </div>
                 <input type="text" class="form-control form-control-sm" v-else
@@ -168,11 +173,12 @@
               <div class="row align-items-end g-3">
                 <div class="col-6">
                   <label class="form-label small fw-bold">{{ $t('drivers.fields.status') }}</label>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" @change="onEnable" :checked="driver.isEnabled()"/>
+                  <div class="form-check form-switch d-flex align-items-center">
+                    <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault" @change="onEnable" :checked="driver.isEnabled()" :disabled="togglingEnabled"/>
                     <label class="form-check-label">{{
                         $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
                       }}</label>
+                    <span v-if="togglingEnabled" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
                     <ErrorMessage name="enable"/>
                   </div>
                 </div>
@@ -425,7 +431,10 @@
           <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
             {{ $t('common.actions.cancel') }}
           </button>
-          <button @click="addBalance" type="button" class="btn bg-gradient-primary">{{ $t('drivers.forms.apply_adjustment') }}</button>
+          <button @click="addBalance" type="button" class="btn bg-gradient-primary" :disabled="submittingBalance">
+            <span v-if="submittingBalance" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ $t('drivers.forms.apply_adjustment') }}
+          </button>
         </div>
       </div>
     </div>
@@ -478,8 +487,9 @@
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             {{ $t('common.actions.cancel') }}
           </button>
-          <button @click="addMonthlyPayment" type="button" class="btn bg-gradient-primary">
-            <em class="fas fa-calendar-plus me-1"></em>{{ $t('drivers.monthly_payments.action_register') }}
+          <button @click="addMonthlyPayment" type="button" class="btn bg-gradient-primary" :disabled="submittingMonthlyPayment">
+            <span v-if="submittingMonthlyPayment" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <em v-else class="fas fa-calendar-plus me-1"></em>{{ $t('drivers.monthly_payments.action_register') }}
           </button>
         </div>
       </div>
@@ -514,8 +524,9 @@
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             {{ $t('common.actions.cancel') }}
           </button>
-          <button @click="confirmVoidPayment" type="button" class="btn bg-gradient-danger" :disabled="!voidReason.trim()">
-            <em class="fas fa-ban me-1"></em>{{ $t('drivers.monthly_payments.action_void_confirm') }}
+          <button @click="confirmVoidPayment" type="button" class="btn bg-gradient-danger" :disabled="!voidReason.trim() || submittingVoid">
+            <span v-if="submittingVoid" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <em v-else class="fas fa-ban me-1"></em>{{ $t('drivers.monthly_payments.action_void_confirm') }}
           </button>
         </div>
       </div>
@@ -549,7 +560,10 @@
             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
               {{ $t('common.actions.close') }}
             </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            <button type="submit" class="btn bg-gradient-primary" :disabled="submittingEmail">
+              <span v-if="submittingEmail" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ $t('common.actions.submit') }}
+            </button>
           </div>
         </Form>
       </div>
@@ -589,7 +603,10 @@
             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
               {{ $t('common.actions.close') }}
             </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            <button type="submit" class="btn bg-gradient-primary" :disabled="submittingPassword">
+              <span v-if="submittingPassword" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ $t('common.actions.submit') }}
+            </button>
           </div>
         </Form>
       </div>
@@ -613,7 +630,6 @@ import { computed, onBeforeMount, onMounted, ref, Ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import { mixed, object, string } from 'yup'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
 import { StrHelper } from '@/helpers/StrHelper'
 import { useI18n } from 'vue-i18n'
@@ -656,7 +672,14 @@ const periodOptions = computed(() =>
     return { label, value: d.format('YYYY-MM') }
   })
 )
-const { setLoading } = useLoadingState()
+const loadingDriver = ref(false)
+const submittingDriver = ref(false)
+const submittingEmail = ref(false)
+const submittingPassword = ref(false)
+const submittingBalance = ref(false)
+const submittingMonthlyPayment = ref(false)
+const submittingVoid = ref(false)
+const togglingEnabled = ref(false)
 const newBalance = ref(0)
 const rechargeNote = ref('')
 const adjustmentType = ref<'add' | 'subtract'>('add')
@@ -725,7 +748,7 @@ onBeforeMount(() => {
   if (driverTmp) {
     driver.value = driverTmp
   }
-  setLoading(true)
+  loadingDriver.value = true
   DriverRepository.getDriver(id)
     .then(async (updatedDriverData) => {
       const updatedDriver = new Driver()
@@ -736,10 +759,10 @@ onBeforeMount(() => {
       await loadRecharges()
       await loadMonthlyPayments()
       await loadSuggestedAmount()
-      setLoading(false)
+      loadingDriver.value = false
     })
     .catch(async (e) => {
-      setLoading(false)
+      loadingDriver.value = false
       await ToastService.toast(
         ToastService.ERROR,
         i18n.global.t('common.messages.error'),
@@ -772,36 +795,36 @@ function uploadImgDriver(url: string): void {
 }
 
 function updateDriver(): void {
-  setLoading(true)
+  submittingDriver.value = true
   DriverRepository.update(driver.value).then(async () => {
-    setLoading(false)
+    submittingDriver.value = false
    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submittingDriver.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function updateEmail(): void {
-  setLoading(true)
+  submittingEmail.value = true
   DriverRepository.updateEmail(driver.value.id, driver.value.email).then(async () => {
-    setLoading(false)
+    submittingEmail.value = false
     hide('editGmail')
    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submittingEmail.value = false
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function updatePassword(): void {
-  setLoading(true)
+  submittingPassword.value = true
   DriverRepository.updatePassword(driver.value.id, driver.value.password).then(async () => {
-    setLoading(false)
+    submittingPassword.value = false
     hide('editPassword')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submittingPassword.value = false
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
@@ -809,24 +832,24 @@ function updatePassword(): void {
 function addBalance(): void {
   if (!newBalance.value || newBalance.value <= 0) return
   const amount = adjustmentType.value === 'subtract' ? -Math.abs(newBalance.value) : Math.abs(newBalance.value)
-  setLoading(true)
+  submittingBalance.value = true
   DriverRepository.createRecharge(driver.value, amount, rechargeNote.value).then(async (result) => {
     driver.value.balance = result.driver.balance
     newBalance.value = 0
     rechargeNote.value = ''
     adjustmentType.value = 'add'
     await loadRecharges()
-    setLoading(false)
+    submittingBalance.value = false
     hide('balance-modal')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submittingBalance.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function addMonthlyPayment(): void {
-  setLoading(true)
+  submittingMonthlyPayment.value = true
   DriverRepository.createMonthlyPayment(driver.value.id, {
     period: monthlyPaymentPeriod.value,
     amount: monthlyPaymentAmount.value,
@@ -837,11 +860,11 @@ function addMonthlyPayment(): void {
     monthlyPaymentAmount.value = suggestedAmount.value
     monthlyPaymentNote.value = ''
     await loadMonthlyPayments()
-    setLoading(false)
+    submittingMonthlyPayment.value = false
     hide('monthly-payment-modal')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submittingMonthlyPayment.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
@@ -857,7 +880,7 @@ function openVoidModal(payment: MonthlyPaymentInterface): void {
 
 async function confirmVoidPayment(): Promise<void> {
   if (!voidingPayment.value || !voidReason.value.trim()) return
-  setLoading(true)
+  submittingVoid.value = true
   try {
     await DriverRepository.voidMonthlyPayment(driver.value.id, voidingPayment.value.id, voidReason.value.trim())
     await loadMonthlyPayments()
@@ -866,22 +889,22 @@ async function confirmVoidPayment(): Promise<void> {
   } catch (e: any) {
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   } finally {
-    setLoading(false)
+    submittingVoid.value = false
   }
 }
 
 function onEnable(event: Event): void {
-  setLoading(true)
+  togglingEnabled.value = true
   const target = event.target as HTMLInputElement
   const previousEnabledAt = driver.value.enabled_at
   driver.value.enabled_at = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.value.id ?? '', driver.value.enabled_at).then(async () => {
-    setLoading(false)
+    togglingEnabled.value = false
     const message = driver.value.enabled_at == 0 ?
       i18n.global.t('users.messages.disabled') : i18n.global.t('users.messages.enabled')
    await ToastService.toast(ToastService.SUCCESS, message)
   }).catch(async e => {
-    setLoading(false)
+    togglingEnabled.value = false
     driver.value.enabled_at = previousEnabledAt
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
@@ -891,7 +914,6 @@ async function removeDevice(): Promise<void> {
   if (removingDevice.value) return
   const previousDevice = driver.value.device
   removingDevice.value = true
-  setLoading(true)
   try {
     await DriverRepository.updateDevice(driver.value.id, null)
     driver.value.device = null
@@ -901,14 +923,12 @@ async function removeDevice(): Promise<void> {
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   } finally {
     removingDevice.value = false
-    setLoading(false)
   }
 }
 
 async function onChangePaymentMode(): Promise<void> {
   const previousPaymentMode = lastPaymentMode.value
   savingPaymentMode.value = true
-  setLoading(true)
   try {
     await DriverRepository.updatePaymentMode(driver.value.id, driver.value.paymentMode)
     lastPaymentMode.value = driver.value.paymentMode
@@ -918,7 +938,6 @@ async function onChangePaymentMode(): Promise<void> {
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   } finally {
     savingPaymentMode.value = false
-    setLoading(false)
   }
 }
 

@@ -53,6 +53,10 @@
           <span class="gorda-table-header-count">{{ rows.length }}</span>
         </div>
       </div>
+      <div v-if="loading && rows.length > 0" class="gorda-table-loading-indicator">
+        <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+        <span class="text-secondary text-xs">{{ $t('common.messages.waiting') }}</span>
+      </div>
       <div class="table-responsive">
         <table class="table table-sm table-borderless align-items-center mb-0">
           <caption hidden></caption>
@@ -84,7 +88,7 @@
               </th>
             </tr>
           </thead>
-          <tbody class="text-sm" v-if="!loading && rows.length > 0">
+          <tbody class="text-sm" :class="{ 'gorda-table-body--loading': loading && rows.length > 0 }" v-if="rows.length > 0">
             <tr
               v-for="row in rows"
               :key="row.driver_id"
@@ -103,7 +107,7 @@
             </tr>
           </tbody>
         </table>
-        <div v-if="loading" class="text-center py-4 text-secondary text-sm">
+        <div v-if="loading && rows.length === 0" class="text-center py-4 text-secondary text-sm">
           <em class="fas fa-circle-notch fa-spin me-1"></em>{{ $t('common.messages.waiting') }}
         </div>
         <div v-else-if="rows.length === 0" class="text-center py-4 gorda-route-integrity__empty">
@@ -144,13 +148,14 @@
 <script setup lang="ts">
 import { Field, Form } from 'vee-validate'
 import { date, object } from 'yup'
-import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { Modal, Tooltip } from 'bootstrap'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import DateHelper from '@/helpers/DateHelper'
 import { useDriversStore } from '@/services/stores/DriversStore'
+import { useRouteIntegrityStore } from '@/services/stores/RouteIntegrityStore'
 import { RouteIntegrityMetric } from '@/types/RouteIntegrityMetric'
 import { Pagination } from '@/types/Pagination'
 import { ServiceCursor } from '@/types/ServiceCursor'
@@ -164,18 +169,14 @@ import { Tables } from '@/constants/Tables'
 const { t } = useI18n()
 const { findById } = useDriversStore()
 
-const filter = reactive({
-  from: dayjs().subtract(29, 'day').format('YYYY-MM-DD'),
-  to: DateHelper.stringNow(),
-})
+const { getReport } = useRouteIntegrityStore()
+const { rows, loading, filter } = storeToRefs(useRouteIntegrityStore())
 
 const schema = object().shape({
   from: date().required(),
   to: date().required(),
 })
 
-const rows = ref<RouteIntegrityMetric[]>([])
-const loading = ref(false)
 const selectedDriverId = ref<string | null>(null)
 
 // Component-scoped drill-down state (design.md Decision 3): this list/pagination
@@ -192,20 +193,9 @@ const drillDownLoading = ref(false)
 const selectedService = ref<ServiceList | null>(null)
 
 async function loadReport(): Promise<void> {
-  loading.value = true
   selectedDriverId.value = null
   resetDrillDown()
-  try {
-    rows.value = await ServiceRepository.getRouteIntegrityReport({
-      from: DateHelper.getFromDate(filter.from),
-      to: DateHelper.getToDate(filter.to),
-    })
-  } catch (e: any) {
-    rows.value = []
-    await ToastService.toast(ToastService.ERROR, t('common.messages.error'), e?.message)
-  } finally {
-    loading.value = false
-  }
+  await getReport()
 }
 
 function driverName(driverId: string): string {
@@ -244,8 +234,8 @@ async function loadDrillDown(next = true): Promise<void> {
   drillDownLoading.value = true
   try {
     const response = await ServiceRepository.getHistoryPage({
-      from: DateHelper.getFromDate(filter.from),
-      to: DateHelper.getToDate(filter.to),
+      from: DateHelper.getFromDate(filter.value.from),
+      to: DateHelper.getToDate(filter.value.to),
       driverId: selectedDriverId.value,
       clientId: null,
       perPage: drillDownPagination.value.perPage,
@@ -296,7 +286,9 @@ watch(() => drillDownPagination.value.perPage, async () => {
 })
 
 onBeforeMount(async () => {
-  await loadReport()
+  if (!rows.value.length && !loading.value) {
+    await getReport()
+  }
 })
 
 // Header tooltips are static, so they can be initialized once the component mounts
@@ -495,5 +487,17 @@ body.dark-version .gorda-route-integrity {
   font-size: .72rem;
   font-weight: 700;
   color: var(--text-secondary);
+}
+
+.gorda-table-loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1rem 0;
+}
+
+.gorda-table-body--loading {
+  opacity: .5;
+  transition: opacity .15s ease-in-out;
 }
 </style>

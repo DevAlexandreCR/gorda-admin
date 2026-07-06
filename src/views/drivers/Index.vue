@@ -55,7 +55,8 @@
         <button class="btn btn-sm btn-outline-secondary" @click="bulkSendMessage">
           {{ $t('common.actions.send_message') }}
         </button>
-        <button class="btn btn-sm btn-outline-danger" @click="bulkDisable">
+        <button class="btn btn-sm btn-outline-danger" @click="bulkDisable" :disabled="bulkDisabling">
+          <span v-if="bulkDisabling" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
           {{ $t('common.fields.disabled') }}
         </button>
 
@@ -230,7 +231,7 @@
                 <!-- Actions -->
                 <td class="align-middle">
                   <div class="d-flex align-items-center gap-1 px-1">
-                    <div class="form-check form-switch mb-0">
+                    <div class="form-check form-switch mb-0 d-flex align-items-center">
                       <input
                         class="form-check-input"
                         name="enable"
@@ -238,8 +239,15 @@
                         role="switch"
                         :checked="driver.enabled_at > 0"
                         :id="driver.id"
+                        :disabled="togglingIds.has(driver.id)"
                         @change="onEnable"
                       />
+                      <span
+                        v-if="togglingIds.has(driver.id)"
+                        class="spinner-border spinner-border-sm text-secondary ms-1"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
                     </div>
                     <router-link
                       :to="{ name: 'drivers.edit', params: { id: driver.id } }"
@@ -286,7 +294,6 @@ import DriverRepository from '@/repositories/DriverRepository'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import AuthService from '@/services/AuthService'
 import ToastService from '@/services/ToastService'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import i18n from '@/plugins/i18n'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -321,7 +328,6 @@ const { findById } = useDriversStore()
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 const currentUser = AuthService.getCurrentUser()
-const { setLoading } = useLoadingState()
 
 // ── URL-derived state ─────────────────────────────────────────────────────────
 
@@ -565,14 +571,18 @@ function onRowCheckbox(id: string): void {
 
 // ── Per-row enable/disable (existing single-driver flow) ──────────────────────
 
+// Keyed by driver id so toggling one row's switch never disables its siblings.
+const togglingIds = ref<Set<string>>(new Set())
+
 function onEnable(event: Event): void {
-  setLoading(true)
   const target = event.target as HTMLInputElement
   const driver = findById(target.id) ?? ({ id: target.id, enabled_at: 0 } as any)
+  if (togglingIds.value.has(driver.id)) return
+  togglingIds.value.add(driver.id)
   const enabledAt = target.checked ? dayjs().unix() : 0
   DriverRepository.enable(driver.id, enabledAt)
     .then(() => {
-      setLoading(false)
+      togglingIds.value.delete(driver.id)
       const message =
         enabledAt === 0
           ? i18n.global.t('users.messages.disabled')
@@ -580,7 +590,7 @@ function onEnable(event: Event): void {
       ToastService.toast(ToastService.SUCCESS, message)
     })
     .catch((e: any) => {
-      setLoading(false)
+      togglingIds.value.delete(driver.id)
       ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
     })
 }
@@ -628,6 +638,8 @@ function closeBulkSendModal(): void {
   triggerRefetch()
 }
 
+const bulkDisabling = ref(false)
+
 async function bulkDisable(): Promise<void> {
   const ids = Array.from(selectedIds.value)
   const confirmed = window.confirm(
@@ -635,7 +647,7 @@ async function bulkDisable(): Promise<void> {
   )
   if (!confirmed) return
 
-  setLoading(true)
+  bulkDisabling.value = true
   try {
     const result = await DriverRepository.bulkDisable(ids)
     const message = i18n.global.t('drivers.bulk.disable_result', {
@@ -646,7 +658,7 @@ async function bulkDisable(): Promise<void> {
   } catch (e: any) {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e?.message)
   } finally {
-    setLoading(false)
+    bulkDisabling.value = false
     clearSelection()
     triggerRefetch()
   }

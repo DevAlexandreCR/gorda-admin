@@ -10,7 +10,8 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
         return {
             branches: [] as Branch[],
             branchSelected: null as BranchSelected | null,
-            rideFees: null as RideFeeInterface | null 
+            rideFees: null as RideFeeInterface | null,
+            rideFeesLoading: false
         }
     },
     actions: {
@@ -64,7 +65,12 @@ export const useSettingsStore = defineStore('generalSettingsStore', {
         },
 
         async getRideFees(): Promise<void> {
-            this.rideFees = await SettingsRepository.getRideFees()
+            this.rideFeesLoading = true
+            try {
+                this.rideFees = await SettingsRepository.getRideFees()
+            } finally {
+                this.rideFeesLoading = false
+            }
         }
     }
 })

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.12(2026-07-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.12...2.0.11)
+
+### Changed
+
+- Replace the fullscreen blocking loading overlay with scoped loading feedback. The global overlay now appears only during initial app bootstrap (authentication and the dashboard's core data load). Data fetches (service history, route integrity report, metrics, settings tabs) use widget-local indicators backed by store flags that survive tab switches, so switching away no longer discards an in-flight report. Tables refresh stale-while-revalidate: existing rows stay visible (dimmed) while reloading instead of blanking the page. Concurrent fetches resolve last-request-wins, so rapid successive filters always show the latest results. Form mutations show button-local spinners with double-submit protection, and per-row actions (WhatsApp client toggles, message enable switches) indicate busy state only on the affected row.
+
 ## [2.0.11(2026-07-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.11...2.0.10)
 
 ### Added

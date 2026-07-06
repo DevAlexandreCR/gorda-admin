@@ -3,7 +3,6 @@ import {Metric} from '@/types/Metric'
 import DateHelper from '@/helpers/DateHelper'
 import {MetricItem} from '@/types/MetricItem'
 import {ServiceStatus} from '@/types/ServiceStatus'
-import {useLoadingState} from '@/services/stores/LoadingState'
 import MetricRepository from '@/repositories/MetricRepository'
 import { useDriversStore } from './DriversStore'
 import { TopFrequency } from '@/constants/TopFrequency'
@@ -23,7 +22,6 @@ export const useMetricsStore = defineStore('metricsStore', {
 	},
 	actions: {
 		getGlobalMetric(startDate: string, endDate: string): Promise<void> {
-			const { setLoading } = useLoadingState()
 			this.loading = true
 			const lastMetricQuery = sessionStorage.getItem('lastMetricQuery')
 			this.globalMetric.splice(0, this.globalMetric.length)
@@ -36,6 +34,7 @@ export const useMetricsStore = defineStore('metricsStore', {
 						this.globalMetric.push(metric)
 					})
 					this.loaded = true
+					this.loading = false
 					return Promise.resolve()
 				} else {
 					this.loaded = false
@@ -44,10 +43,8 @@ export const useMetricsStore = defineStore('metricsStore', {
 			}
 
 			return new Promise((resolve, reject) => {
-				setLoading(true)
 				MetricRepository.getGlobal(startDate, endDate).then((metrics) => {
 					this.setMetricQueryToday('lastMetricQuery')
-					setLoading(false)
 					this.loading = false
 					this.loaded = true
 					metrics.forEach((metric: Metric) => {
@@ -57,7 +54,6 @@ export const useMetricsStore = defineStore('metricsStore', {
 					resolve()
 				}).catch(e => {
 					this.loading = false
-					setLoading(false)
 					console.log(e.message)
 					reject(e)
 				})

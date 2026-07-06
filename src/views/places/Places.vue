@@ -29,7 +29,10 @@
             </div>
             <div class="col-sm-3">
               <div class="form-group">
-                <button type="submit" class="btn btn-primary">{{ $t('common.actions.create') }}</button>
+                <button type="submit" class="btn btn-primary" :disabled="creating">
+                  <span v-if="creating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {{ $t('common.actions.create') }}
+                </button>
               </div>
             </div>
           </div>
@@ -53,7 +56,8 @@
                 {{place.name}}
               </div>
               <div class="col-2 text-end">
-                <em class="fa-solid fa-trash cursor-pointer" @click="deletePlace(place)"></em>
+                <span v-if="isDeleting(place)" class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+                <em v-else class="fa-solid fa-trash cursor-pointer" @click="deletePlace(place)"></em>
               </div>
             </div>
           </li>
@@ -76,7 +80,6 @@ import Map from '@/components/maps/Map.vue'
 import { storeToRefs } from 'pinia'
 import { google } from 'google-maps'
 import { StrHelper } from '@/helpers/StrHelper'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 
 const place: Ref<Place> = ref(new Place())
@@ -87,7 +90,16 @@ const { results, isReady, currentCityId } = storeToRefs(placesStore)
 const settingsStore = useSettingsStore()
 const { branchSelected } = storeToRefs(settingsStore)
 const selectedPlace: Ref<Array<Place>> = ref([])
-const { setLoading } = useLoadingState()
+const creating = ref(false)
+const deletingKeys: Ref<Set<string>> = ref(new Set())
+
+function placeKey(placeItem: Place): string {
+  return placeItem.id || placeItem.key
+}
+
+function isDeleting(placeItem: Place): boolean {
+  return deletingKeys.value.has(placeKey(placeItem))
+}
 
 onMounted(() => {
   if (!branchSelected.value?.city) {
@@ -119,9 +131,9 @@ const schema = yup.object().shape({
 })
 
 function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
-  setLoading(true)
+  creating.value = true
   if (!branchSelected.value?.city) {
-    setLoading(false)
+    creating.value = false
     ToastService.toast(ToastService.ERROR, i18n.global.t('settings.messages.select_city'))
     return
   }
@@ -130,10 +142,10 @@ function createPlace(_values: PlaceInterface, event: FormActions<any>): void {
     event.resetForm()
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
     placesStore.hydratePlacesInBackground(branchSelected.value?.city?.id).then(() => hydratePlaces(searchPlace.value)).finally(() => {
-      setLoading(false)
+      creating.value = false
     })
   }).catch((e) => {
-    setLoading(false)
+    creating.value = false
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
@@ -149,16 +161,16 @@ function onMapClick(latLng: google.maps.LatLng): void {
 }
 
 async function deletePlace(deletedPlace: Place): Promise<void> {
-  setLoading(true)
+  const deletedPlaceId = placeKey(deletedPlace)
+  deletingKeys.value.add(deletedPlaceId)
   deletedPlace.delete().then(() => {
-    setLoading(false)
+    deletingKeys.value.delete(deletedPlaceId)
     searchPlace.value = ''
-    const deletedPlaceId = deletedPlace.id || deletedPlace.key
-    foundPlaces.value = foundPlaces.value.filter((placeItem) => (placeItem.id || placeItem.key) !== deletedPlaceId)
+    foundPlaces.value = foundPlaces.value.filter((placeItem) => placeKey(placeItem) !== deletedPlaceId)
     placesStore.remove(deletedPlace)
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.deleted'))
   }).catch((e) => {
-    setLoading(false)
+    deletingKeys.value.delete(deletedPlaceId)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

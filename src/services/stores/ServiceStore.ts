@@ -3,7 +3,6 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import { DataSnapshot } from 'firebase/database'
 import { Filter } from '@/types/Filter'
 import DateHelper from '@/helpers/DateHelper'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { ServiceList } from '@/models/ServiceList'
 import { useDriversStore } from '@/services/stores/DriversStore'
 import ToastService from '@/services/ToastService'
@@ -13,12 +12,16 @@ import Service from '@/models/Service'
 import { ServiceCursor } from '@/types/ServiceCursor'
 import ServiceHelper from '@/helpers/ServiceHelper'
 
+// Private, non-reactive last-request-wins guard for getHistoryServices.
+let historyRequestToken = 0
+
 export const useServicesStore = defineStore('servicesStore', {
   state: () => {
     return {
       pendings: Array<ServiceList>(),
       inProgress: Array<ServiceList>(),
       history: Array<ServiceList>(),
+      historyLoading: false,
       currentCursor: <ServiceCursor>{
         id: '',
         created: DateHelper.endOfDayUnix()
@@ -102,10 +105,10 @@ export const useServicesStore = defineStore('servicesStore', {
     },
 
     async getHistoryServices(next = true, _contain = false): Promise<void> {
-      const { setLoading } = useLoadingState()
       const from = DateHelper.getFromDate(this.filter.from)
       const to = DateHelper.getToDate(this.filter.to)
-      setLoading(true)
+      const token = ++historyRequestToken
+      this.historyLoading = true
 
       const options = {
         from: from,
@@ -119,6 +122,7 @@ export const useServicesStore = defineStore('servicesStore', {
 
       await ServiceRepository.getHistoryPage(options)
         .then((response) => {
+          if (token !== historyRequestToken) return
           this.pagination.totalCount = response.totalCount
           this.completed = response.terminatedCount
           this.canceled = response.canceledCount
@@ -129,16 +133,16 @@ export const useServicesStore = defineStore('servicesStore', {
           })
           this.currentCursor.id = this.history[0]?.id
           this.currentCursor.created = this.history[0]?.created_at
+          this.historyLoading = false
         })
         .catch(async (e) => {
+          if (token !== historyRequestToken) return
+          this.historyLoading = false
           await ToastService.toast(
             ToastService.ERROR,
             i18n.global.t('common.messages.error'),
             e.message
           )
-        })
-        .finally(() => {
-          setLoading(false)
         })
     },
 

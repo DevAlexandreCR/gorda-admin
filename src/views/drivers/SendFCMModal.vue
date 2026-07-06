@@ -27,7 +27,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" @click="close">{{ $t('common.actions.cancel') }}</button>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" :disabled="submitting">
+              <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               {{ $t('common.actions.submit') }}
             </button>
           </div>
@@ -42,7 +43,6 @@ import { ref, computed, defineProps, defineEmits, watch } from 'vue'
 import FcmService from '@/services/FcmService'
 import DriverRepository from '@/repositories/DriverRepository'
 import { useI18n } from 'vue-i18n'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import { Modal } from 'bootstrap'
 import { DriverInterface } from '@/types/DriverInterface'
@@ -70,7 +70,7 @@ const message = ref<FCMNotification>({
     duration: duration.value.toString(),
   }
 })
-const { setLoading } = useLoadingState()
+const submitting = ref(false)
 
 function close(): void {
   message.value = {
@@ -97,7 +97,7 @@ watch(() => duration.value, (newDuration) => {
 })
 
 async function sendMessage(): Promise<void> {
-  setLoading(true)
+  submitting.value = true
   message.value.data = {
     duration: duration.value.toString(),
     timestamp: (DateHelper.unix() * 1000).toString()
@@ -115,7 +115,7 @@ async function sendMessage(): Promise<void> {
       error.value = err.message
     }).finally(() => {
       close()
-      setLoading(false)
+      submitting.value = false
     })
   } else if (props.driver) {
     FcmService.sendToDriver(props.driver.id, message.value).then(() => {
@@ -125,7 +125,7 @@ async function sendMessage(): Promise<void> {
       error.value = err.message
     }).finally(() => {
       close()
-      setLoading(false)
+      submitting.value = false
     })
   } else {
     FcmService.sendToAllDrivers(message.value).then(() => {
@@ -135,7 +135,7 @@ async function sendMessage(): Promise<void> {
       error.value = err.message
     }).finally(() => {
       close()
-      setLoading(false)
+      submitting.value = false
     })
   }
 }

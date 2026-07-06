@@ -1,7 +1,8 @@
 <template>
   <div class="card px-2 py-1">
-    <div class="card-header pb-0">
+    <div class="card-header pb-0 d-flex align-items-center">
       <h6>{{ $t('common.titles.title_card') }}</h6>
+      <span v-if="loading" class="spinner-border spinner-border-sm text-info ms-auto" role="status" aria-hidden="true"></span>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -26,7 +27,8 @@
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
                 <div class="form-check form-switch col-2">
-                  <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" @change="toggleMessage(message)">
+                  <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" :disabled="busy[message.id]" @change="toggleMessage(message)">
+                  <span v-if="busy[message.id]" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
                   <span class="badge badge-sm"
                         :class="message.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
                   >{{ $t(message.enabled ?
@@ -51,7 +53,8 @@
               <td class="align-middle p-0">
                 <div class="row row-cols-2 mx-2">
                   <div class="form-check form-switch col-2">
-                    <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" @change="toggleMessage(message)">
+                    <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" :disabled="busy[message.id]" @change="toggleMessage(message)">
+                    <span v-if="busy[message.id]" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
                     <span class="badge badge-sm"
                           :class="message.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
                     >{{ $t(message.enabled ?
@@ -77,22 +80,22 @@
 import {computed, onMounted, ref} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import {SettingsMessageInterface} from '@/types/SettingsMessagesInterface'
-import {useLoadingState} from '@/services/stores/LoadingState'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import EditModal from '@/views/settings/messages/Edit.vue'
 import {Constants} from '@/constants/Constants'
 
 const messages = ref<SettingsMessageInterface[]>([])
-const { setLoading } = useLoadingState()
+const loading = ref(false)
+const busy = ref<Record<string, boolean>>({})
 
 onMounted(async () => {
   await updateMessages()
 })
 
 const updateMessages = async () => {
-  setLoading(true)
-  messages.value = await SettingsRepository.getMessages().finally(() => setLoading(false))
+  loading.value = true
+  messages.value = await SettingsRepository.getMessages().finally(() => { loading.value = false })
 }
 
 const confirmationMessages = computed(() => {
@@ -108,19 +111,20 @@ const chatBotMessages = computed(() => {
 })
 
 const toggleMessage = async (message: SettingsMessageInterface): Promise<void> => {
-  setLoading(true);
+  busy.value[message.id] = true
   message.enabled = !message.enabled
   SettingsRepository.updateMessage(message)
     .then(async () => {
-      setLoading(false)
       const statusMessage = message.enabled
         ? i18n.global.t('common.fields.enabled')
         : i18n.global.t('common.fields.disabled')
       await ToastService.toast(ToastService.SUCCESS, statusMessage)
     })
     .catch(async (error) => {
-      setLoading(false);
       await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), error.message)
+    })
+    .finally(() => {
+      delete busy.value[message.id]
     })
 }
 </script>

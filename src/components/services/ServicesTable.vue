@@ -10,6 +10,10 @@
       </div>
       <slot name="actions" />
     </div>
+    <div v-if="props.table === Tables.history && props.loading && paginatedServices.length > 0" class="gorda-table-loading-indicator">
+      <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+      <span class="text-secondary text-xs">{{ $t('common.messages.waiting') }}</span>
+    </div>
     <div class="table-responsive">
       <table class="table table-sm table-borderless align-items-center mb-0">
         <caption hidden></caption>
@@ -27,7 +31,11 @@
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverNameColumn">{{ $t('services.fields.driver_name') }}</th>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showActionColumn"></th>
         </thead>
-        <tbody class="text-sm text-opacity-25"  v-if="paginatedServices.length > 0">
+        <tbody
+          class="text-sm text-opacity-25"
+          :class="{ 'gorda-table-body--loading': props.table === Tables.history && props.loading && paginatedServices.length > 0 }"
+          v-if="paginatedServices.length > 0"
+        >
         <tr v-for="(service, index) in paginatedServices" :key="service.id">
           <td class="text-secondary font-weight-bolder opacity-7 text-center position-relative">
             {{ index + 1 }}
@@ -135,6 +143,13 @@
             <button class="btn btn-sm btn-dark btn-rounded py-1 px-2 mx-1 my-0" @click="show(service)" v-if="props.table === Tables.history"
                     :title="$t('common.actions.see')">
               <em class="fas fa-eye"></em></button>
+          </td>
+        </tr>
+        </tbody>
+        <tbody v-else-if="props.table === Tables.history && props.loading">
+        <tr>
+          <td :colspan="visibleColumnCount" class="text-center py-4 text-secondary text-sm">
+            <em class="fas fa-circle-notch fa-spin me-1"></em>{{ $t('common.messages.waiting') }}
           </td>
         </tr>
         </tbody>
@@ -275,9 +290,12 @@ interface Props {
   services: Array<ServiceList>
   table: Tables
   pagination: Pagination
+  loading?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
+})
 const emit = defineEmits([
   Service.EVENT_CANCEL,
   Service.EVENT_RELEASE,
@@ -292,6 +310,14 @@ const showDestination = computed(() => props.table === Tables.pendings)
 const showDriverColumn = computed(() => props.table !== Tables.pendings)
 const showDriverNameColumn = computed(() => props.table !== Tables.pendings && props.table !== Tables.inProgress && props.table !== Tables.history)
 const showActionColumn = computed(() => true)
+const visibleColumnCount = computed(() => {
+  let count = 8 // #, hour, status, start_address, phone, name, comment, origin
+  if (showDestination.value) count++
+  if (showDriverColumn.value) count++
+  if (showDriverNameColumn.value) count++
+  if (showActionColumn.value) count++
+  return count
+})
 const placesStore = usePlacesStore()
 const { isReady: placesReady } = storeToRefs(placesStore)
 const {branchSelected} = storeToRefs(useSettingsStore())
@@ -602,6 +628,18 @@ tbody tr:hover {
   font-size: .72rem;
   font-weight: 700;
   color: var(--text-secondary);
+}
+
+.gorda-table-loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1rem 0;
+}
+
+.gorda-table-body--loading {
+  opacity: .5;
+  transition: opacity .15s ease-in-out;
 }
 
 .gorda-name-avatar {

@@ -62,10 +62,11 @@
               </div>
               <div class="form-check form-switch">
                 <input class="form-check-input" name="enable" type="checkbox" id="flexSwitchCheckDefault"
-                       :checked="user.isEnabled()" @change="onEnable"/>
+                       :checked="user.isEnabled()" @change="onEnable" :disabled="togglingEnabled"/>
                 <label class="form-check-label">{{
                     $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled')
                   }}</label>
+                <span v-if="togglingEnabled" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
                 <ErrorMessage name="enable"/>
               </div>
             </div>
@@ -73,7 +74,10 @@
         </div>
         <hr>
         <div class="card-footer text-end">
-          <button class="btn btn-info" type="submit">{{ $t('common.actions.submit') }}</button>
+          <button class="btn btn-info" type="submit" :disabled="submittingUser">
+            <span v-if="submittingUser" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ $t('common.actions.submit') }}
+          </button>
         </div>
       </div>
     </Form>
@@ -110,7 +114,10 @@
             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
               {{ $t('common.actions.close') }}
             </button>
-            <button type="submit" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+            <button type="submit" class="btn bg-gradient-primary" :disabled="submittingPassword">
+              <span v-if="submittingPassword" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ $t('common.actions.submit') }}
+            </button>
           </div>
         </Form>
       </div>
@@ -132,7 +139,6 @@ import i18n from '@/plugins/i18n'
 import ToastService from '@/services/ToastService'
 import {onBeforeMount, ref, Ref} from 'vue'
 import {useRoute} from 'vue-router'
-import {useLoadingState} from '@/services/stores/LoadingState'
 import { hide } from '@/helpers/ModalHelper'
 import ImageLoader from "@/components/ImageLoader.vue";
 
@@ -140,7 +146,9 @@ const user: Ref<User> = ref(new User)
 const route = useRoute()
 const userEvent = 'image-user-loaded'
 const showPassword = ref(false);
-const {setLoading} = useLoadingState()
+const submittingUser = ref(false)
+const togglingEnabled = ref(false)
+const submittingPassword = ref(false)
 const schema = yup.object().shape({
   name: yup.string().required().min(3),
   email: yup.string().required().email(),
@@ -158,9 +166,8 @@ function uploadImg(url: string): void {
 }
 
 function updateUser(): void {
-  setLoading(true)
+  submittingUser.value = true
   UserRepository.update(user.value).then(() => {
-    setLoading(false)
     Swal.fire({
       icon: 'success',
       title: i18n.global.t('common.messages.updated'),
@@ -171,40 +178,43 @@ function updateUser(): void {
     const modalImg = bootstrap.Modal.getOrCreateInstance(modal ?? '')
     modalImg.hide()
   }).catch(e => {
-    setLoading(false)
     Swal.fire({
       icon: 'error',
       title: i18n.global.t('common.messages.error'),
       text: e.message
     })
+  }).finally(() => {
+    submittingUser.value = false
   })
 }
 
 function onEnable(event: Event): void {
-  setLoading(true)
+  togglingEnabled.value = true
   const target = event.target as HTMLInputElement
+  const previousEnabledAt = user.value.enabled_at
   user.value.enabled_at = target.checked ? dayjs().unix() : 0
   UserRepository.enable(user.value.id ?? '', user.value.enabled_at).then(async () => {
-    setLoading(false)
+    togglingEnabled.value = false
     const message = user.value.enabled_at == 0 ?
         i18n.global.t('users.messages.disabled') :
         i18n.global.t('users.messages.enabled')
     await ToastService.toast(ToastService.SUCCESS, message)
   }).catch(async e => {
-    setLoading(false)
+    togglingEnabled.value = false
+    user.value.enabled_at = previousEnabledAt
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function updatePassword(): void {
-  setLoading(true)
+  submittingPassword.value = true
   UserRepository.updatePassword(user.value.id ?? '', user.value.password).then(async () => {
-    setLoading(false)
     hide('editPassword')
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  }).finally(() => {
+    submittingPassword.value = false
   })
 }
 

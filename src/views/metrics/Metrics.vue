@@ -2,8 +2,9 @@
   <div class="row me-2">
     <div class="col-sm-6 col-xxl-4 mt-2">
       <div class="card">
-        <div class="card-header">
-          <h4>{{ t('common.placeholders.year_service_progress') }}</h4>
+        <div class="card-header d-flex align-items-center">
+          <h4 class="mb-0">{{ t('common.placeholders.year_service_progress') }}</h4>
+          <span v-if="loading" class="spinner-border spinner-border-sm text-info ms-auto" role="status"></span>
         </div>
 
         <div class="card-body">
@@ -73,6 +74,7 @@
 <script lang="ts" setup>
 import {Bar, Line} from 'vue-chartjs'
 import {onBeforeMount, ref, Ref, watch} from 'vue'
+import {storeToRefs} from 'pinia'
 import {useMetricsStore} from '@/services/stores/MetricsStore'
 import {
   Chart,
@@ -90,7 +92,9 @@ import { TopFrequency } from '@/constants/TopFrequency'
 import { useThemeStore } from '@/services/stores/ThemeStore'
 
 Chart.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, BarElement)
-const {getCurrentYearMetric, globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric, top5DailyMetric, getTop5Metric, loaded, loading} = useMetricsStore()
+const metricsStore = useMetricsStore()
+const {getCurrentYearMetric, getTop5Metric} = metricsStore
+const {globalYearMetric, canceledYearMetric, completedYearMetric, percentYearMetric, top5DailyMetric, loaded, loading} = storeToRefs(metricsStore)
 const {t} = useI18n()
 const theme = useThemeStore()
 
@@ -174,7 +178,7 @@ watch(frequency, async (newFrequency) => {
 
 onBeforeMount(async () => {
   await getTop5Metric(frequency.value)
-  if (!loaded && !loading) await getCurrentYearMetric()
+  if (!loaded.value && !loading.value) await getCurrentYearMetric()
   isLoaded.value = true
   isTopLoaded.value = true
   const yellow = '#ffd500'
@@ -182,11 +186,11 @@ onBeforeMount(async () => {
   const red = '#ff0000'
 
   globalChartData = {
-    labels: Array.from(globalYearMetric.keys()),
+    labels: Array.from(globalYearMetric.value.keys()),
     datasets: [
       {
         label: t('services.total'),
-        data: Array.from(globalYearMetric.values()),
+        data: Array.from(globalYearMetric.value.values()),
         backgroundColor: yellow,
         borderColor: yellow,
         pointBackgroundColor: yellow,
@@ -197,7 +201,7 @@ onBeforeMount(async () => {
       },
       {
         label: t('services.statuses.terminated'),
-        data: Array.from(completedYearMetric.values()),
+        data: Array.from(completedYearMetric.value.values()),
         backgroundColor: green,
         borderColor: green,
         pointBackgroundColor: green,
@@ -208,7 +212,7 @@ onBeforeMount(async () => {
       },
       {
         label: t('services.statuses.canceled'),
-        data: Array.from(canceledYearMetric.values()),
+        data: Array.from(canceledYearMetric.value.values()),
         backgroundColor: red,
         borderColor: red,
         pointBackgroundColor: red,
@@ -220,11 +224,11 @@ onBeforeMount(async () => {
     ]
   }
   percentChartData = {
-    labels: Array.from(globalYearMetric.keys()),
+    labels: Array.from(globalYearMetric.value.keys()),
     datasets: [
       {
         label: t('common.placeholders.cancel_percent'),
-        data: Array.from(percentYearMetric.values()),
+        data: Array.from(percentYearMetric.value.values()),
         backgroundColor: '#e81022'
       }
     ]
@@ -242,11 +246,11 @@ watch(() => theme.effective, (/*mode*/) => {
 
 function setTop5Metric(): void {
   dailyTop5ChartData = {
-    labels: Array.from(top5DailyMetric.keys()),
+    labels: Array.from(top5DailyMetric.value.keys()),
     datasets: [{
       indexAxis: 'y',
       label: t('common.placeholders.first_place'),
-      data: Array.from(top5DailyMetric.values()),
+      data: Array.from(top5DailyMetric.value.values()),
       fill: false,
       backgroundColor: [
         '#ff0000',

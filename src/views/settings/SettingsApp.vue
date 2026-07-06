@@ -52,7 +52,10 @@
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
       <div class="tab-pane fade" role="tabpanel" id="ride-fees" aria-labelledby="ride-fees-tab">
-        <div class="row">
+        <div class="text-center py-4" v-if="rideFeesLoading">
+          <span class="spinner-border" role="status" aria-hidden="true"></span>
+        </div>
+        <div class="row" v-else>
           <div class="col-sm-6 mx-auto text-center">
             <div class="card mx-sm-2">
               <div class="card-body pt-2"  v-if="rideFees">
@@ -177,7 +180,8 @@
                     </div>
                   </div>
                   <div class="mt-4">
-                    <button type="button" class="btn btn-primary float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled">
+                    <button type="button" class="btn btn-primary float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled || updatingRideFees">
+                      <span v-if="updatingRideFees" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                       {{ $t('common.actions.submit') }}
                     </button>
                   </div>
@@ -247,7 +251,8 @@
                     </div>
                   </div>
                   <div class="mt-4">
-                    <button type="button" class="btn btn-primary float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled">
+                    <button type="button" class="btn btn-primary float-end" @click="updateAllFields"  :disabled="!submitButtonEnabled || updatingRideFees">
+                      <span v-if="updatingRideFees" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                       {{ $t('common.actions.submit') }}
                     </button>
                   </div>
@@ -263,8 +268,9 @@
                   <div class="col-12 bg-light my-1 p-2 elevation-2 rounded" v-for="(multiplier, index) in rideFees.dynamic_multipliers" :key="index">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                       <h6 class="mb-0">{{ multiplier.name }} <div class="badge bg-secondary mx-2">{{ multiplier.multiplier }}</div></h6>
-                      <button type="button" class="btn btn-danger btn-sm" @click="removeMultiplier(index)">
-                        <em class="fas fa-trash"></em>
+                      <button type="button" class="btn btn-danger btn-sm" @click="removeMultiplier(index)" :disabled="!!removingMultiplier[index]">
+                        <span v-if="removingMultiplier[index]" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <em v-else class="fas fa-trash"></em>
                       </button>
                     </div>
                     <label class="form-control-label">{{ $t('common.settings.hour_range') }}</label>
@@ -290,7 +296,10 @@
         <SettingsMsg v-if="currentTab === 'messages'" />
       </div>
       <div class="tab-pane fade" id="monthly-payment-settings" role="tabpanel" aria-labelledby="monthly-payment-settings-tab">
-        <div class="row mt-3" v-if="monthlyPaymentSettings">
+        <div class="text-center py-4" v-if="monthlyPaymentSettingsLoading">
+          <span class="spinner-border" role="status" aria-hidden="true"></span>
+        </div>
+        <div class="row mt-3" v-else-if="monthlyPaymentSettings">
           <div class="col-sm-6 mx-auto">
             <div class="card">
               <div class="card-header">
@@ -321,7 +330,8 @@
                   <small class="text-muted">{{ $t('settings.monthly_payments.hint_auto_disable') }}</small>
                 </div>
                 <div class="mt-4">
-                  <button type="button" class="btn btn-primary float-end" @click="saveMonthlyPaymentSettings">
+                  <button type="button" class="btn btn-primary float-end" @click="saveMonthlyPaymentSettings" :disabled="savingMonthlyPaymentSettings">
+                    <span v-if="savingMonthlyPaymentSettings" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     {{ $t('common.actions.submit') }}
                   </button>
                 </div>
@@ -391,7 +401,10 @@
               <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
                 {{ $t('common.actions.close') }}
               </button>
-              <button @click="setPercentageModal(citySelected, branch.id)" type="button" data-bs-dismiss="modal" class="btn bg-gradient-primary">{{ $t('common.actions.submit') }}</button>
+              <button @click="setPercentageModal(citySelected, branch.id)" type="button" data-bs-dismiss="modal" class="btn bg-gradient-primary" :disabled="submittingPercentage">
+                <span v-if="submittingPercentage" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ $t('common.actions.submit') }}
+              </button>
             </div>
           </div>
         </div>
@@ -405,7 +418,6 @@ import { ref, Ref } from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import MonthlyPaymentSettingsRepository from '@/repositories/MonthlyPaymentSettingsRepository'
 import { MonthlyPaymentSettingsInterface } from '@/types/MonthlyPaymentSettingsInterface'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import SettingsMsg from '@/views/settings/messages/Index.vue'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
@@ -417,10 +429,8 @@ import { City } from '@/types/City'
 import { Branch } from '@/types/Branch'
 import CreateMultiplierModal from './CreateMultiplierModal.vue'
 
-const { setLoading } = useLoadingState()
-
 const settingsStore = useSettingsStore()
-const { branches, branchSelected, rideFees } = storeToRefs(settingsStore)
+const { branches, branchSelected, rideFees, rideFeesLoading } = storeToRefs(settingsStore)
 const { setBranchSelected, setPercentage } = settingsStore
 const fieldEdited: Ref<string> = ref('')
 const submitButtonEnabled: Ref<boolean> = ref(false)
@@ -430,6 +440,11 @@ let citySelected: Ref<City> = ref({} as City)
 let branch: Ref<Branch> = ref({} as Branch)
 const monthlyPaymentSettings: Ref<MonthlyPaymentSettingsInterface | null> = ref(null)
 const reminderOffsetWarning = ref('')
+const updatingRideFees = ref(false)
+const removingMultiplier = ref<Record<number, boolean>>({})
+const submittingPercentage = ref(false)
+const savingMonthlyPaymentSettings = ref(false)
+const monthlyPaymentSettingsLoading = ref(false)
 
 function resetRideFeesFormState(): void {
   fieldEdited.value = ''
@@ -439,7 +454,6 @@ function resetRideFeesFormState(): void {
 
 async function handleRideFeesTabClick(): Promise<void> {
   currentTab.value = 'rideFees'
-  setLoading(true)
 
   try {
     await settingsStore.getRideFees()
@@ -447,8 +461,6 @@ async function handleRideFeesTabClick(): Promise<void> {
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : undefined
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
-  } finally {
-    setLoading(false)
   }
 }
 
@@ -468,38 +480,38 @@ function selectBranch(b: Branch, city: City): void {
 }
 
 function setPercentageModal(city: City, branchId: string): void {
-  setLoading(true)
+  submittingPercentage.value = true
   setPercentage(branchId, city).catch(async e => {
-    setLoading(false)
+    submittingPercentage.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   }).then(async () => {
-    setLoading(false)
+    submittingPercentage.value = false
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   })
 }
 
 function updateAllFields(): void {
   if (!rideFees.value) return
-  
-  setLoading(true)
+
+  updatingRideFees.value = true
   SettingsRepository.updateRideFee(rideFees.value).then(async () => {
-    setLoading(false)
+    updatingRideFees.value = false
     resetRideFeesFormState()
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    updatingRideFees.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
 
 function removeMultiplier(index: number): void {
   if (rideFees.value && rideFees.value.dynamic_multipliers) {
-    setLoading(true)
+    removingMultiplier.value[index] = true
     SettingsRepository.removeMultiplier(rideFees.value.dynamic_multipliers, index).then(async () => {
-      setLoading(false)
+      delete removingMultiplier.value[index]
       await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
     }).catch(async e => {
-      setLoading(false)
+      delete removingMultiplier.value[index]
       await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
     })
   }
@@ -525,7 +537,7 @@ function checkReminderOffsetWarning(): void {
 
 async function handleMonthlyPaymentSettingsTabClick(): Promise<void> {
   currentTab.value = 'monthlyPaymentSettings'
-  setLoading(true)
+  monthlyPaymentSettingsLoading.value = true
   try {
     monthlyPaymentSettings.value = await MonthlyPaymentSettingsRepository.get()
     checkReminderOffsetWarning()
@@ -533,13 +545,13 @@ async function handleMonthlyPaymentSettingsTabClick(): Promise<void> {
     const message = e instanceof Error ? e.message : undefined
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
   } finally {
-    setLoading(false)
+    monthlyPaymentSettingsLoading.value = false
   }
 }
 
 async function saveMonthlyPaymentSettings(): Promise<void> {
   if (!monthlyPaymentSettings.value) return
-  setLoading(true)
+  savingMonthlyPaymentSettings.value = true
   try {
     monthlyPaymentSettings.value = await MonthlyPaymentSettingsRepository.save(monthlyPaymentSettings.value)
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
@@ -547,7 +559,7 @@ async function saveMonthlyPaymentSettings(): Promise<void> {
     const message = e instanceof Error ? e.message : undefined
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), message)
   } finally {
-    setLoading(false)
+    savingMonthlyPaymentSettings.value = false
   }
 }
 

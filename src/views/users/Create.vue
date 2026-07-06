@@ -77,7 +77,10 @@
         </div>
         <hr>
         <div class="card-footer text-end">
-          <button class="btn btn-primary" type="submit">{{ $t('common.actions.create') }}</button>
+          <button class="btn btn-primary" type="submit" :disabled="submitting">
+            <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ $t('common.actions.create') }}
+          </button>
         </div>
       </div>
     </Form>
@@ -99,7 +102,6 @@ import {UserInterface} from '@/types/UserInterface'
 import {useStorage} from '@/services/stores/Storage'
 import {storeToRefs} from 'pinia'
 import router from '@/router'
-import {useLoadingState} from '@/services/stores/LoadingState'
 import {useSettingsStore} from "@/services/stores/SettingsStore";
 
 const storage = useStorage()
@@ -109,7 +111,7 @@ const {photoUrl} = storeToRefs(storage)
 const user: Ref<User> = ref(new User)
 const image: Ref<File[]> = ref([])
 const password: Ref<string> = ref('')
-const {setLoading} = useLoadingState()
+const submitting = ref(false)
 const { branchSelected } = useSettingsStore()
 
 const schema = yup.object().shape({
@@ -121,7 +123,7 @@ const schema = yup.object().shape({
 })
 
 function createUser(_values: UserInterface, event: FormActions<any>): void {
-  setLoading(true)
+  submitting.value = true
   user.value.phone = branchSelected.calling_code + user.value.phone
   UserRepository.create(user.value, password.value).then((id) => {
     user.value.id = id
@@ -130,7 +132,7 @@ function createUser(_values: UserInterface, event: FormActions<any>): void {
       user.value.photoUrl = url
       event.resetForm()
       UserRepository.update(user.value).then(() => {
-        setLoading(false)
+        submitting.value = false
         ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
         event.resetForm()
         user.value.photoUrl = photoUrl.value
@@ -139,7 +141,7 @@ function createUser(_values: UserInterface, event: FormActions<any>): void {
       })
     })
   }).catch(e => {
-    setLoading(false)
+    submitting.value = false
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

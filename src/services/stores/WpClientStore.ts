@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import SettingsRepository from '@/repositories/SettingsRepository'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { WpClient } from "@/types/WpClient"
 import { ClientDictionary } from "@/types/ClientDiccionary"
 import { Constants } from "@/constants/Constants"
@@ -12,7 +11,8 @@ export const useWpClientsStore = defineStore('settingsStore', {
   state: () => {
     return {
       clients: {} as ClientDictionary,
-      defaultClient: null as string | null
+      defaultClient: null as string | null,
+      busy: {} as Record<string, boolean>
     }
   },
   actions: {
@@ -26,16 +26,16 @@ export const useWpClientsStore = defineStore('settingsStore', {
 
         return
       }
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       SettingsRepository.enableWpNotifications(client.id, enabled).then(() => {
         this.clients[client.id].wpNotifications = enabled
       })
         .catch(async (e) => {
-          setLoading(false)
           await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error_chatBot'), e.message)
         })
-        .then(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     },
 
     getWpClient(clientId: string): WpClient | null {
@@ -52,8 +52,7 @@ export const useWpClientsStore = defineStore('settingsStore', {
 
         return
       }
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       SettingsRepository.enableChatBot(client.id, enabled).then(async () => {
         this.clients[client.id].chatBot = enabled
         if (enabled) {
@@ -61,14 +60,15 @@ export const useWpClientsStore = defineStore('settingsStore', {
         }
       })
         .catch(async () => {
-          setLoading(false)
           await ToastService.toast(
             ToastService.ERROR,
             i18n.global.t('common.messages.error'),
             i18n.global.t('common.messages.error_chatBot')
           )
         })
-        .then(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     },
 
     enableAssistant(client: WpClient, enabled: boolean): void {
@@ -81,29 +81,29 @@ export const useWpClientsStore = defineStore('settingsStore', {
 
         return
       }
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       SettingsRepository.enableAssistant(client.id, enabled).then(() => {
         this.clients[client.id].assistant = enabled
       })
         .catch(async (e) => {
-          setLoading(false)
           await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
         })
-        .then(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     },
 
     enableFull(client: WpClient, enabled: boolean): void {
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       SettingsRepository.enableFull(client.id, enabled).then(() => {
         this.clients[client.id].full = enabled
       })
         .catch(async (e) => {
-          setLoading(false)
           await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
         })
-        .then(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     },
 
     async getWpClients(): Promise<void> {
@@ -136,8 +136,7 @@ export const useWpClientsStore = defineStore('settingsStore', {
     },
 
     async createClient(client: WpClient): Promise<void> {
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       await SettingsRepository.createClient(client).then(() => {
         this.clients[client.id] = {
           id: client.id,
@@ -152,12 +151,13 @@ export const useWpClientsStore = defineStore('settingsStore', {
         .catch(async (e) => {
           await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
         })
-        .finally(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     },
 
     async deleteClient(client: WpClient): Promise<void> {
-      const { setLoading } = useLoadingState()
-      setLoading(true)
+      this.busy[client.id] = true
       await SettingsRepository.deleteClient(client).then(() => {
         delete this.clients[client.id]
         if (client.id === this.defaultClient) {
@@ -170,7 +170,9 @@ export const useWpClientsStore = defineStore('settingsStore', {
         .catch(async (e) => {
           await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
         })
-        .finally(() => setLoading(false))
+        .finally(() => {
+          delete this.busy[client.id]
+        })
     }
   }
 })

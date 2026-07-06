@@ -44,7 +44,10 @@
            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
              {{ $t('common.actions.close') }}
            </button>
-           <button type="button" class="btn bg-gradient-primary" @click="saveChanges">{{ $t('common.actions.submit') }}</button>
+           <button type="button" class="btn bg-gradient-primary" @click="saveChanges" :disabled="submitting">
+             <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+             {{ $t('common.actions.submit') }}
+           </button>
          </div>
        </div>
      </div>
@@ -55,7 +58,6 @@
 import {ref, defineProps, defineEmits, Ref, onMounted, watch} from 'vue'
 import SettingsRepository from '@/repositories/SettingsRepository'
 import ToastService from '@/services/ToastService'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { SettingsMessageInterface } from '@/types/SettingsMessagesInterface'
 import { hide } from '@/helpers/ModalHelper'
 import i18n from '@/plugins/i18n'
@@ -64,13 +66,13 @@ import TextEditor from '@/components/TextEditor.vue'
 import { Interactive } from '@/types/Interactive'
 
 const props = defineProps<{ selectedMessage: SettingsMessageInterface}>()
-const { setLoading } = useLoadingState()
 const textArea = ref<HTMLTextAreaElement | null>(null)
 const text = ref<string>('')
 const formattedMessage = ref<string>('')
 const emit = defineEmits(['updateMessages'])
 const isInteractiveMessage = ref<boolean>(false)
 const interactiveMessage = ref<Interactive|null>(null)
+const submitting = ref(false)
 
 function updateFormattedMessage(text: string): void{
   formattedMessage.value = text
@@ -109,7 +111,7 @@ function toggleInteractiveMessage(): void {
 
 function saveChanges(): void {
   if (!props.selectedMessage.message && text.value == '') return
-  setLoading(true)
+  submitting.value = true
   const updatedMessage = {
     id: props.selectedMessage.id,
     name: props.selectedMessage.name,
@@ -121,11 +123,11 @@ function saveChanges(): void {
 
   SettingsRepository.updateMessage(updatedMessage).then(async () => {
     emit('updateMessages')
-    setLoading(false)
+    submitting.value = false
     hide(updatedMessage.id)
     await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
   }).catch(async e => {
-    setLoading(false)
+    submitting.value = false
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }

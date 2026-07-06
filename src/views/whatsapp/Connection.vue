@@ -3,7 +3,10 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between">
         <div class="container">
-          <h4>{{client.alias}}</h4>
+          <h4 class="d-flex align-items-center">
+            {{client.alias}}
+            <span v-if="isBusy" class="spinner-border spinner-border-sm text-secondary ms-2" role="status" aria-hidden="true"></span>
+          </h4>
           <h6>
             {{ connected ? $t('common.chatBot.connected') : $t('common.chatBot.disconnected')}}
           </h6>
@@ -49,7 +52,7 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
-            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.wpNotifications" :disabled="!connected"
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.wpNotifications" :disabled="!connected || isBusy"
                    @click.prevent="enableWpNotifications(props.client, !props.client.wpNotifications)"/>
             <div class="d-flex flex-column justify-content-center">
               <h6 class="mb-0">{{$t('common.settings.wpNotifications')}}</h6>
@@ -62,7 +65,7 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
-            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.assistant" :disabled="!connected"
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.assistant" :disabled="!connected || isBusy"
                    @click.prevent="enableAssistant(props.client, !props.client.assistant)"/>
             <h6 class="mb-0">{{$t('common.settings.assistant')}}</h6>
             <p class="text-sm text-secondary my-0" v-if="connected && !props.client.assistant">{{ $t('common.settings.alert_assistant') }}</p>
@@ -70,7 +73,7 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
-            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected"
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.chatBot" :disabled="!connected || isBusy"
                    @click.prevent="enableChatBot(props.client, !props.client.chatBot)"/>
             <h6 class="mb-0">{{$t('common.settings.chatBot')}}</h6>
             <p class="text-sm" v-if="connected && !props.client.chatBot">{{ $t('common.settings.alert_chatBot') }}</p>
@@ -78,7 +81,7 @@
         </div>
         <div class="row mx-1 mt-3">
           <div class="form-check form-switch">
-            <input class="form-check-input form-check-danger" name="enableFull" type="checkbox" :checked="props.client.full" :disabled="!connected"
+            <input class="form-check-input form-check-danger" name="enableFull" type="checkbox" :checked="props.client.full" :disabled="!connected || isBusy"
                    @click.prevent="enableFull(props.client, !props.client.full)"/>
             <h6 class="mb-0">{{ $t('common.actions.toggle_full') }}</h6>
           </div>
@@ -109,7 +112,7 @@
           </div>
           <div class="card-footer text-end">
             <button class="btn btn-secondary me-2" type="button" @click="hide('delete-client' + client.id)">{{ $t('common.actions.cancel') }}</button>
-            <button class="btn btn-info" type="button" @click="deleteWpClient">{{ $t('common.actions.delete') }}</button>
+            <button class="btn btn-info" type="button" :disabled="isBusy" @click="deleteWpClient">{{ $t('common.actions.delete') }}</button>
           </div>
         </div>
       </div>
@@ -160,7 +163,8 @@ const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
 const router = useRouter()
 const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant, enableFull} = useWpClientsStore()
-const {defaultClient} = storeToRefs(useWpClientsStore())
+const {defaultClient, busy} = storeToRefs(useWpClientsStore())
+const isBusy = computed(() => !!busy.value[props.client.id])
 const chatUrl = computed(() => router.resolve({
   name: 'whatsapp.chat',
   params: { id: props.client.id }

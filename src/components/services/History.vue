@@ -125,7 +125,7 @@
         </div>
       </div>
     </div>
-    <ServicesTable @showService="show"  :table="Tables.history" :services="history" :pagination="pagination" @paginate="paginateData"></ServicesTable>
+    <ServicesTable @showService="show"  :table="Tables.history" :services="history" :pagination="pagination" :loading="historyLoading" @paginate="paginateData"></ServicesTable>
     <ShowServiceModal :key="selectedService.id" v-if="selectedService" :service="selectedService"></ShowServiceModal>
   </div>
 </template>
@@ -152,7 +152,7 @@ import {Modal} from 'bootstrap'
 import {ServiceList} from '@/models/ServiceList'
 
 const { getHistoryServices, resetCursor } = useServicesStore()
-const { history, pagination, completed, canceled, currentCursor } = storeToRefs(useServicesStore())
+const { history, pagination, completed, canceled, currentCursor, historyLoading } = storeToRefs(useServicesStore())
 const { drivers } = useDriversStore()
 const clientsStore = useClientsStore()
 const { isReady: clientsReady } = storeToRefs(clientsStore)

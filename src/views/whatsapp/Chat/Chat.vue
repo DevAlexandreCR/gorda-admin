@@ -3,6 +3,10 @@
     <strong>{{ activeChat }}</strong>  {{ $t('common.messages.copied') }}
   </div>
 
+  <div v-if="loading" class="position-fixed top-0 start-50 translate-middle-x mt-2 z-index-sticky d-flex align-items-center bg-white rounded-pill px-3 py-1 shadow-sm">
+    <span class="spinner-border spinner-border-sm text-info" role="status" aria-hidden="true"></span>
+  </div>
+
   <button
     v-if="canClaimChat"
     @click="claimChat"
@@ -56,7 +60,6 @@ import i18n from '@/plugins/i18n'
 import { useClientsStore } from '@/services/stores/ClientsStore'
 import SessionRepository from '@/repositories/SessionRepository'
 import Swal from 'sweetalert2'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { SessionStatuses } from '@/constants/SessionStatuses'
 import SettingsRepository from '@/repositories/SettingsRepository'
 
@@ -82,9 +85,10 @@ let wpClient: WhatsAppClient | null = null
 let observer: ClientObserver | null = null
 const { getWpClient } = useWpClientsStore()
 const { findById } = useClientsStore()
-const { setLoading } = useLoadingState()
+const loading = ref(false)
 const showTooltip = ref(false)
 const isClaimingChat = ref(false)
+const isSendingMessage = ref(false)
 const menuActions = [
   { name: 'copy', title: i18n.global.t('common.actions.copy_phone') },
   { name: 'dark', title: i18n.global.t('common.placeholders.' + ChatThemes.DARK) },
@@ -187,6 +191,14 @@ function fetchMessages(data: CustomEvent): void {
 }
 
 function sendMessage(data: CustomEvent): void {
+  // vue-advanced-chat exposes no prop to disable its internal send control and
+  // WhatsAppClient.sendMessage is a fire-and-forget socket.emit with no ack/promise
+  // to await, so we guard the handler itself with a brief cooldown to block a
+  // rapid double-send (double-click/double-Enter) instead of a button-local spinner.
+  if (isSendingMessage.value) return
+  isSendingMessage.value = true
+  setTimeout(() => { isSendingMessage.value = false }, 500)
+
   const { content, roomId } = data.detail[0]
   const id = DateHelper.unix()
   const newMessage = {
@@ -300,7 +312,7 @@ function onMessageCreated(payload: { chatId: string; message: Message }): void {
 }
 
 onBeforeMount(async () => {
-  setLoading(true)
+  loading.value = true
   try {
     checkPermission()
     clientId.value = route.params.id as string
@@ -316,7 +328,7 @@ onBeforeMount(async () => {
       wpClient.on('whatsapp:message-created', onMessageCreated)
     }
   } finally {
-    setLoading(false)
+    loading.value = false
   }
 })
 

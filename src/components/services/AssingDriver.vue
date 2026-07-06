@@ -16,7 +16,10 @@
               $t('common.actions.close')
             }}
           </button>
-          <button type="button" class="btn btn-primary" @click="assignDriver">{{ $t('common.actions.assign') }}</button>
+          <button type="button" class="btn btn-primary" @click="assignDriver" :disabled="submitting">
+            <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ $t('common.actions.assign') }}
+          </button>
         </div>
       </div>
     </div>
@@ -33,13 +36,12 @@ import {useI18n} from 'vue-i18n'
 import Service from '@/models/Service'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import {Modal} from 'bootstrap'
-import {useLoadingState} from '@/services/stores/LoadingState'
 
 const props = defineProps<{ drivers: Array<Driver> }>()
 const plates: Ref<Array<AutoCompleteType>> = ref([])
 const plate: Ref<string> = ref('')
 const keyAutoComplete: Ref<number> = ref(0)
-const {setLoading} = useLoadingState()
+const submitting = ref(false)
 let service: Service = new Service()
 let driverId: string|null
 let driverModal: Modal
@@ -78,14 +80,14 @@ const assignDriver = (): void => {
   }
   service.driver_id = driverId
   service.status = Service.STATUS_IN_PROGRESS
-  setLoading(true)
+  submitting.value = true
   service.assign(driverId).then(() => {
-    setLoading(false)
     ToastService.toast(ToastService.SUCCESS, t('common.messages.updated'))
     driverModal?.hide()
   }).catch(e => {
-    setLoading(false)
     ToastService.toast(ToastService.ERROR, t('common.messages.error'), e.message)
+  }).finally(() => {
+    submitting.value = false
   })
 }
 

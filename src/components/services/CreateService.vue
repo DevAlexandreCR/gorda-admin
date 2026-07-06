@@ -88,8 +88,9 @@
             </div>
           </div>
           <div class="col px-1 d-flex justify-content-end">
-            <button class="btn btn-primary d-inline-flex align-items-center submit-btn" type="submit">
-              <em class="fa-solid fa-paper-plane me-2"></em>{{ $t('common.actions.create') }} {{ $t('services.title', 1) }}
+            <button class="btn btn-primary d-inline-flex align-items-center submit-btn" type="submit" :disabled="submitting">
+              <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <em v-else class="fa-solid fa-paper-plane me-2"></em>{{ $t('common.actions.create') }} {{ $t('services.title', 1) }}
             </button>
           </div>
         </div>
@@ -113,7 +114,6 @@ import i18n from '@/plugins/i18n'
 import { ClientInterface } from '@/types/ClientInterface'
 import { usePlacesStore } from '@/services/stores/PlacesStore'
 import { useClientsStore } from '@/services/stores/ClientsStore'
-import { useLoadingState } from '@/services/stores/LoadingState'
 import { storeToRefs } from 'pinia'
 import { CountryCodeType } from '@/types/CountryCodeType'
 import { StrHelper } from '@/helpers/StrHelper'
@@ -129,7 +129,7 @@ const settingsStore = useSettingsStore()
 let start_loc: LocationType | null = null
 let end_loc: LocationType | null = null
 const service: Ref<Partial<Service>> = ref(new Service())
-const { setLoading } = useLoadingState()
+const submitting = ref(false)
 const {
   countryCodes,
   isReady: clientsReady,
@@ -177,7 +177,7 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 
   const currentClient = values.client_id ? await clientsStore.findById(values.client_id) : null
   if (!values.client_id || currentClient?.name !== values.name) {
-    setLoading(true)
+    submitting.value = true
     try {
       const client = await createClient({
         id: '',
@@ -192,10 +192,9 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('services.messages.new_client'))
     } catch (e: any) {
       ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
-      setLoading(false)
+      submitting.value = false
       return
     }
-    setLoading(false)
   }
 
   createService(values)
@@ -203,9 +202,9 @@ async function onSubmit(values: ServiceInterface, event: FormActions<any>): Prom
 }
 
 function createService(values: ServiceInterface): void {
-  setLoading(true)
+  submitting.value = true
   if (!start_loc || !branchSelected.value) {
-    setLoading(false)
+    submitting.value = false
     return
   }
   if (values.created_by === undefined) {
@@ -231,7 +230,6 @@ function createService(values: ServiceInterface): void {
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
   ServiceRepository.create(newService, count.value).then(() => {
-    setLoading(false)
     count.value = 1
     countryCode.value = fallbackCountryCode.value
     service.value.wp_client_id = defaultClient.value as string
@@ -239,8 +237,9 @@ function createService(values: ServiceInterface): void {
     end_loc = null
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch((e) => {
-    setLoading(false)
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+  }).finally(() => {
+    submitting.value = false
   })
 }
 

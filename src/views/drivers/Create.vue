@@ -106,7 +106,10 @@
         </div>
         <hr>
         <div class="card-footer text-end">
-          <button class="btn btn-info" type="submit">{{ $t('common.actions.submit') }}</button>
+          <button class="btn btn-info" type="submit" :disabled="submitting">
+            <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ $t('common.actions.submit') }}
+          </button>
         </div>
       </div>
     </Form>
@@ -126,7 +129,6 @@ import ToastService from '@/services/ToastService'
 import {DriverInterface} from '@/types/DriverInterface'
 import i18n from '@/plugins/i18n'
 import {onMounted, ref, Ref, watch} from 'vue'
-import {useLoadingState} from '@/services/stores/LoadingState'
 import router from '@/router'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {StrHelper} from '@/helpers/StrHelper'
@@ -140,7 +142,7 @@ const password: Ref<string> = ref('')
 const imageDriver: Ref<File[]> = ref([])
 const vehiclePayload: Ref<VehiclePayload | null> = ref(null)
 const types: Array<any> = Constants.DOC_TYPES
-const {setLoading} = useLoadingState()
+const submitting = ref(false)
 const {addDriver} = useDriversStore()
 const {branchSelected} = useSettingsStore()
 const schema: ObjectSchema<any> = object().shape({
@@ -171,13 +173,13 @@ function uploadImg(path: string, image: File): Promise<string> {
 }
 
 function createDriver(_values: DriverInterface, event: FormActions<any>): void {
-  setLoading(true)
+  submitting.value = true
   driver.value.phone = branchSelected?.calling_code + driver.value.phone
   DriverRepository.create(driver.value, password.value, vehiclePayload.value ?? undefined).then((id) => {
     driver.value.id = id
     uploadImg(StorageService.driverPath, imageDriver.value[0]).then(url => {
       driver.value.photoUrl = url
-      setLoading(false)
+      submitting.value = false
       addDriver(driver.value)
       DriverRepository.update(driver.value)
       ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
@@ -185,7 +187,7 @@ function createDriver(_values: DriverInterface, event: FormActions<any>): void {
       router.push({name: 'drivers.index'})
     })
   }).catch(e => {
-    setLoading(false)
+    submitting.value = false
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
   })
 }
