@@ -33,7 +33,7 @@ describe('Tabs.vue', () => {
     const form = wrapper.findComponent(CreateService)
     const tabs = wrapper.findAll('.nav-item')
     expect(tables.length).toBe(2)
-    expect(tabs.length).toBe(4)
+    expect(tabs.length).toBe(5)
     expect(form.exists()).toBeTruthy()
     expect(wrapper.html()).toContain(i18n.global.t('services.statuses.pending'))
     expect(wrapper.html()).toContain(i18n.global.t('services.statuses.in_progress'))
@@ -98,11 +98,24 @@ describe('Tabs.vue', () => {
   })
 	
 	it('an user can show search button in progress tab', async () => {
-		await nextTick()
+		// ServicesTable is stubbed under shallowMount and never renders its
+		// named "actions" slot, so this assertion needs a full mount to see
+		// the real search input (unrelated to the number of tabs registered).
+		wrapper = mount(Tabs,
+			{
+				attachTo: '#root',
+				global: {
+					plugins: [router, i18n],
+					provide: {
+						'appName': 'test'
+					}
+				}
+			})
+		await wrapper.vm.$nextTick()
 		const tab = wrapper.find('#progress-tab')
 		await tab.trigger('click')
 		await wrapper.vm.$nextTick()
-		
+
 		expect(wrapper.find('input[name="search"]').isVisible()).toBeTruthy()
 	})
 })
