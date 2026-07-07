@@ -1072,14 +1072,14 @@ const initials = (name: string): string => {
 }
 
 .payhist {
-  --payhist-th-color: #8392ab;
+  --payhist-th-color: var(--text-secondary);
   --payhist-th-bg: rgba(0, 0, 0, 0.02);
-  --payhist-td-border: #f3f4f6;
+  --payhist-td-border: var(--border-subtle);
   --payhist-td-color: #67748e;
   --payhist-clock: #d2d6da;
   --payhist-heading: #344767;
-  --payhist-pill-bg: #f3f4f6;
-  --payhist-pill-text: #67748e;
+  --payhist-pill-bg: var(--badge-secondary-bg);
+  --payhist-pill-text: var(--badge-secondary-fg);
   --payhist-footer: #adb5bd;
 
   th {
@@ -1103,14 +1103,14 @@ const initials = (name: string): string => {
 }
 
 :global(body.dark-version) .payhist {
-  --payhist-th-color: rgba(255, 255, 255, 0.55);
+  --payhist-th-color: var(--text-secondary);
   --payhist-th-bg: rgba(255, 255, 255, 0.04);
-  --payhist-td-border: rgba(255, 255, 255, 0.08);
+  --payhist-td-border: var(--border-subtle);
   --payhist-td-color: rgba(255, 255, 255, 0.7);
   --payhist-clock: rgba(255, 255, 255, 0.3);
   --payhist-heading: rgba(255, 255, 255, 0.9);
-  --payhist-pill-bg: rgba(255, 255, 255, 0.08);
-  --payhist-pill-text: rgba(255, 255, 255, 0.7);
+  --payhist-pill-bg: var(--badge-secondary-bg);
+  --payhist-pill-text: var(--badge-secondary-fg);
   --payhist-footer: rgba(255, 255, 255, 0.4);
 }
 
@@ -1163,8 +1163,8 @@ const initials = (name: string): string => {
 }
 
 .payhist-period-pill {
-  background: linear-gradient(310deg, #7928ca, #ff0080);
-  color: #fff;
+  background: var(--badge-primary-bg);
+  color: var(--badge-primary-fg);
   padding: 0.15rem 0.55rem;
   border-radius: 50rem;
   font-size: 0.72rem;
@@ -1196,8 +1196,8 @@ const initials = (name: string): string => {
 }
 
 .payhist-voided-badge {
-  --payhist-voided-bg: rgba(234, 6, 6, 0.1);
-  --payhist-voided-text: #ea0606;
+  --payhist-voided-bg: var(--badge-danger-bg);
+  --payhist-voided-text: var(--badge-danger-fg);
   display: inline-flex;
   align-items: center;
   background: var(--payhist-voided-bg);
@@ -1211,8 +1211,8 @@ const initials = (name: string): string => {
 }
 
 :global(body.dark-version) .payhist-voided-badge {
-  --payhist-voided-bg: rgba(255, 102, 124, 0.16);
-  --payhist-voided-text: #ff8fa3;
+  --payhist-voided-bg: var(--badge-danger-bg);
+  --payhist-voided-text: var(--badge-danger-fg);
 }
 
 .payhist-voided-meta {

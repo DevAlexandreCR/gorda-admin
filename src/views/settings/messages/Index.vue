@@ -10,11 +10,11 @@
           <caption hidden></caption>
           <thead>
             <tr>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.name') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.comment') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.WpMessages') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.status') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('services.fields.WpActions') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('services.fields.name') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('services.fields.comment') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('services.fields.WpMessages') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('common.fields.status') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('services.fields.WpActions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -29,8 +29,8 @@
                 <div class="form-check form-switch col-2">
                   <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" :disabled="busy[message.id]" @change="toggleMessage(message)">
                   <span v-if="busy[message.id]" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
-                  <span class="badge badge-sm"
-                        :class="message.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                  <span class="gorda-status-badge"
+                        :class="message.enabled ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                   >{{ $t(message.enabled ?
                       'common.fields.enabled' : 'common.fields.disabled') }}</span>
                       </div>
@@ -55,8 +55,8 @@
                   <div class="form-check form-switch col-2">
                     <input class="form-check-input" name="enable" type="checkbox" :checked="message.enabled" :disabled="busy[message.id]" @change="toggleMessage(message)">
                     <span v-if="busy[message.id]" class="spinner-border spinner-border-sm text-secondary ms-1" role="status" aria-hidden="true"></span>
-                    <span class="badge badge-sm"
-                          :class="message.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                    <span class="gorda-status-badge"
+                          :class="message.enabled ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                     >{{ $t(message.enabled ?
                         'common.fields.enabled' : 'common.fields.disabled') }}</span>
                   </div>

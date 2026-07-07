@@ -62,13 +62,13 @@
           <caption hidden></caption>
           <thead>
             <tr>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">
                 {{ $t('services.route_integrity.fields.driver') }}
               </th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2 text-center">
                 {{ $t('services.route_integrity.fields.total_trips') }}
               </th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2 text-center">
                 {{ $t('services.route_integrity.fields.flagged_trips') }}
                 <em
                   class="fa-solid fa-circle-info gorda-route-integrity__header-info"
@@ -77,7 +77,7 @@
                   :title="$t('services.route_integrity.fields.flagged_trips_tooltip')"
                 ></em>
               </th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2 text-center">
                 {{ $t('services.route_integrity.fields.flagged_ratio') }}
                 <em
                   class="fa-solid fa-circle-info gorda-route-integrity__header-info"
@@ -449,55 +449,5 @@ body.dark-version .gorda-route-integrity {
   color: var(--text-secondary);
   margin-left: 0.25rem;
   cursor: help;
-}
-
-.gorda-table-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: .75rem;
-  padding: .85rem 1rem;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.gorda-table-header-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: .5rem;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: .8rem;
-}
-
-.gorda-table-header-title {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--text-heading);
-}
-
-.gorda-table-header-count {
-  background: var(--surface-input);
-  border: 1px solid var(--border-subtle);
-  border-radius: 50rem;
-  padding: .1rem .6rem;
-  font-size: .72rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.gorda-table-loading-indicator {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .6rem 1rem 0;
-}
-
-.gorda-table-body--loading {
-  opacity: .5;
-  transition: opacity .15s ease-in-out;
 }
 </style>

@@ -60,8 +60,8 @@
                   <th class="text-secondary text-xs" scope="row">{{ $t('common.fields.status') }}</th>
                   <td>
                     <span
-                      class="badge badge-sm"
-                      :class="vehicle.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                      class="gorda-status-badge"
+                      :class="vehicle.enabled ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                     >
                       {{ $t(vehicle.enabled ? 'common.fields.enabled' : 'common.fields.disabled') }}
                     </span>
@@ -100,10 +100,10 @@
               <caption hidden></caption>
               <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                     {{ $t('common.fields.name') }}
                   </th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                     {{ $t('vehicles.fields.selectable') }}
                   </th>
                 </tr>

@@ -14,10 +14,10 @@
             <caption hidden></caption>
             <thead>
             <tr>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('users.fields.name') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('users.fields.phone') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('users.fields.role') }}</th>
-              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('common.fields.status') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('users.fields.name') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('users.fields.phone') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('users.fields.role') }}</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder">{{ $t('common.fields.status') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -40,8 +40,8 @@
                 <p class="text-xs font-weight-bold mb-0">{{ $t(user.roles.admin ? 'users.fields.admin' : 'users.fields.operator') }}</p>
               </td>
               <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-success"
-                      :class="user.enabled_at? 'bg-gradient-success' : 'bg-gradient-danger'"
+                <span class="gorda-status-badge"
+                      :class="user.enabled_at? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                 >{{ $t(user.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}</span>
               </td>
               <td class="align-middle text-center">

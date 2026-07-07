@@ -18,18 +18,18 @@
       <table class="table table-sm table-borderless align-items-center mb-0">
         <caption hidden></caption>
         <thead>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-2">#</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.hour') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.status') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.start_address') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDestination">{{ $t('services.fields.end_address') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ $t('services.fields.phone') }}</th>
-        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.name') }}</th>
-        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" >{{ $t('services.fields.comment') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center" style="width: 1%; white-space: nowrap;">{{ $t('services.fields.origin') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverColumn">{{ $t('services.fields.driver') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showDriverNameColumn">{{ $t('services.fields.driver_name') }}</th>
-        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" v-if="showActionColumn"></th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder w-2">#</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">{{ $t('services.fields.hour') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">{{ $t('services.fields.status') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">{{ $t('services.fields.start_address') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" v-if="showDestination">{{ $t('services.fields.end_address') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">{{ $t('services.fields.phone') }}</th>
+        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" >{{ $t('services.fields.name') }}</th>
+        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" >{{ $t('services.fields.comment') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2 text-center" style="width: 1%; white-space: nowrap;">{{ $t('services.fields.origin') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" v-if="showDriverColumn">{{ $t('services.fields.driver') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" v-if="showDriverNameColumn">{{ $t('services.fields.driver_name') }}</th>
+        <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2" v-if="showActionColumn"></th>
         </thead>
         <tbody
           class="text-sm text-opacity-25"
@@ -592,56 +592,6 @@ tbody tr:hover {
   background-color: var(--body-bg);
 }
 
-.gorda-table-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: .75rem;
-  padding: .85rem 1rem;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.gorda-table-header-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: .5rem;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: .8rem;
-}
-
-.gorda-table-header-title {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--text-heading);
-}
-
-.gorda-table-header-count {
-  background: var(--surface-input);
-  border: 1px solid var(--border-subtle);
-  border-radius: 50rem;
-  padding: .1rem .6rem;
-  font-size: .72rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.gorda-table-loading-indicator {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .6rem 1rem 0;
-}
-
-.gorda-table-body--loading {
-  opacity: .5;
-  transition: opacity .15s ease-in-out;
-}
-
 .gorda-name-avatar {
   width: 24px;
   height: 24px;
@@ -656,41 +606,4 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-.gorda-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  padding: .25rem .6rem;
-  border-radius: 50rem;
-  font-size: .65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  line-height: 1;
-  white-space: nowrap;
-}
-.gorda-status-badge::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: none;
-}
-.gorda-status-badge--success {
-  background: var(--badge-success-bg);
-  color: var(--badge-success-fg);
-}
-.gorda-status-badge--danger {
-  background: var(--badge-danger-bg);
-  color: var(--badge-danger-fg);
-}
-.gorda-status-badge--info {
-  background: var(--badge-info-bg);
-  color: var(--badge-info-fg);
-}
-.gorda-status-badge--warning {
-  background: var(--badge-warning-bg);
-  color: var(--badge-warning-fg);
-}
 </style>

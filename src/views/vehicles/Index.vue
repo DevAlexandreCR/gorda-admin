@@ -52,39 +52,39 @@
             <thead>
               <tr>
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('plate')"
                 >
                   {{ $t('drivers.fields.plate') }}
                   <span v-if="sortField === 'plate'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
                 </th>
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('brand')"
                 >
                   {{ $t('drivers.vehicle.brand') }}
                   <span v-if="sortField === 'brand'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('drivers.vehicle.model') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('drivers.placeholders.color') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('common.fields.status') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('vehicles.fields.linked_drivers') }}
                 </th>
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('created_at')"
                 >
                   {{ $t('common.fields.createdAt') }}
                   <span v-if="sortField === 'created_at'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('common.actions.edit') }}
                 </th>
               </tr>
@@ -124,8 +124,8 @@
                 </td>
                 <td class="align-middle text-center text-sm">
                   <span
-                    class="badge badge-sm"
-                    :class="vehicle.enabled ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                    class="gorda-status-badge"
+                    :class="vehicle.enabled ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                   >
                     {{ $t(vehicle.enabled ? 'common.fields.enabled' : 'common.fields.disabled') }}
                   </span>

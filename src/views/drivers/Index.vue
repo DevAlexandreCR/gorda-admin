@@ -96,29 +96,29 @@
 
                 <!-- Sortable: name -->
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('name')"
                 >
                   {{ $t('common.fields.name') }}
                   <span v-if="sortField === 'name'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
                 </th>
 
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('common.fields.phone') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('drivers.fields.vehicle') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('drivers.fields.plate') }}
                 </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('common.fields.status') }}
                 </th>
 
                 <!-- Sortable: created_at -->
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('created_at')"
                 >
                   {{ $t('common.fields.createdAt') }}
@@ -127,7 +127,7 @@
 
                 <!-- Sortable: last_connection -->
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('last_connection')"
                 >
                   {{ $t('common.fields.lastConnection') }}
@@ -136,7 +136,7 @@
 
                 <!-- Sortable: balance -->
                 <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer user-select-none"
+                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
                   @click="setSort('balance')"
                 >
                   {{ $t('drivers.fields.balance') }}
@@ -144,7 +144,7 @@
                 </th>
 
                 <!-- Actions column header -->
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
                   {{ $t('common.actions.edit') }}
                 </th>
               </tr>
@@ -209,8 +209,8 @@
 
                 <td class="align-middle text-center text-sm">
                   <span
-                    class="badge badge-sm"
-                    :class="driver.enabled_at ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                    class="gorda-status-badge"
+                    :class="driver.enabled_at ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
                   >
                     {{ $t(driver.enabled_at ? 'common.fields.enabled' : 'common.fields.disabled') }}
                   </span>
