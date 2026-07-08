@@ -35,7 +35,7 @@ describe('Edit.vue', () => {
   it('should render the modal title and form elements', () => {
     const labels = wrapper.findAll('.col-form-label')
     const submitButton = wrapper.find('.btn.bg-gradient-primary')
-    expect(wrapper.find('.modal-title').text()).toBe(i18n.global.t('common.titles.title_modal'))
+    expect(wrapper.find('.modal-title').text()).toBe(i18n.global.t('wp.modal.title'))
     expect(wrapper.find('.modal-body').exists()).toBe(true) 
     expect(wrapper.findComponent(TextEditor).exists()).toBe(true)
     expect(wrapper.find('textarea#description-text').exists()).toBe(true)
@@ -44,7 +44,7 @@ describe('Edit.vue', () => {
   })
 
   it('should toggle the interactive message builder', async () => {
-    const toggleButton = wrapper.find('.btn.btn-outline-primary')
+    const toggleButton = wrapper.find('.wa-modal__toggle')
     await toggleButton.trigger('click')
     expect(wrapper.vm.isInteractiveMessage).toBe(true)
     await toggleButton.trigger('click')

@@ -84,6 +84,12 @@
   --wp-button-bg: #0ba543;
   --wp-button-bg-hover: #1ebd5f;
   --wp-button-text: #ffffff;
+  --wp-bubble-bg: #dcf8c6;
+  --wp-timestamp: #7a9c7a;
+  --wp-check: #4fc3f7;
+  --wp-chip-bg: #ffffff;
+  --wp-chip-text: #128c7e;
+  --wp-border: rgba(0, 0, 0, 0.08);
 
   /* Driver detail view */
   --detail-section-label: #344767;
@@ -225,6 +231,12 @@ body.dark-version {
   --wp-button-bg: #25d366;
   --wp-button-bg-hover: #3ae084;
   --wp-button-text: #0a0a0a;
+  --wp-bubble-bg: #005c4b;
+  --wp-timestamp: rgba(220, 248, 198, 0.65);
+  --wp-check: #53bdeb;
+  --wp-chip-bg: #2a2f3a;
+  --wp-chip-text: #6fd9c9;
+  --wp-border: rgba(255, 255, 255, 0.08);
 
   /* Driver detail view */
   --detail-section-label: rgba(255,255,255,0.85);
@@ -436,4 +448,18 @@ body.dark-version {
     background-color: #cb0c9f;
     border-color: #cb0c9f;
   }
+}
+
+/* Modal backdrop: dimmed + blurred surface behind every dialog (both themes).
+   Bootstrap appends .modal-backdrop to <body> for each .modal, so this covers
+   all modals globally. Alpha is baked into the color and opacity forced to 1 on
+   .show so the blur renders at full strength (element opacity < 1 would halve it). */
+.modal-backdrop {
+  background-color: rgba(8, 11, 20, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal-backdrop.show {
+  opacity: 1;
 }
