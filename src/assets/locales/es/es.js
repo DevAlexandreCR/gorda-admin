@@ -73,6 +73,10 @@ export default {
       color_required: 'El color es obligatorio',
     },
   },
+  sidenav: {
+    collapse: 'Ocultar menú',
+    expand: 'Mostrar menú'
+  },
   users: users,
   common: common,
   validations: validations,

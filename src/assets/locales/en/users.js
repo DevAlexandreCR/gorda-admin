@@ -27,6 +27,7 @@ export default {
     roles: 'Roles',
     admin: 'Administrator',
     operator: 'Operator',
+    superadmin: 'Super Administrator',
     role: 'Role',
     device: 'Device',
     status: 'Status'

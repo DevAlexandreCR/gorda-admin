@@ -188,6 +188,8 @@ export default {
     alert_assistant: 'Enable the assistant bot to create services when client send a location',
     Ride_Fees: 'Ride Fees',
     Messages: 'Messages',
+    fees_base_title: 'Base Fees',
+    add_time_slot: 'Add Time Slot',
     price_kilometer: 'price for kilometer',
     price_minute: 'price for minute',
     fees_base: 'base fee',

@@ -188,6 +188,8 @@ export default {
     alert_assistant: 'Habilita el asistente para crear servicios cuando el cliente envía la ubicación',
     Ride_Fees: 'Tarifas',
     Messages: 'Mensajes',
+    fees_base_title: 'Tarifas Base',
+    add_time_slot: 'Agregar Franja',
     price_kilometer: 'Precio por kilómetro',
     price_minute: 'Precio por Minuto',
     fees_base: 'Tarifa Base',
