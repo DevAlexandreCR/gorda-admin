@@ -121,7 +121,7 @@
                         role="switch"
                         :checked="entry.selectable"
                         :disabled="togglingDriverId === entry.driver_id"
-                        @change="onSelectableToggle(entry.driver_id, !entry.selectable)"
+                        @change="onToggle(entry.driver_id, !entry.selectable)"
                       />
                     </div>
                   </td>
@@ -143,18 +143,18 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import VehicleRepository from '@/repositories/VehicleRepository'
-import DriverVehicleRepository from '@/repositories/DriverVehicleRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import DateHelper from '@/helpers/DateHelper'
 import { Vehicle } from '@/types/Vehicle'
+import { useSelectableToggle } from '@/composables/useSelectableToggle'
 
 const route = useRoute()
 const router = useRouter()
 
 const vehicle = ref<Vehicle | null>(null)
 const loading = ref<boolean>(false)
-const togglingDriverId = ref<string | null>(null)
+const { togglingDriverId, toggle } = useSelectableToggle()
 
 onMounted(async () => {
   const id = route.params.id as string
@@ -169,31 +169,8 @@ onMounted(async () => {
   }
 })
 
-async function onSelectableToggle(driverId: string, newValue: boolean): Promise<void> {
-  if (!vehicle.value) return
-
-  const isActive = vehicle.value.currently_driven_by?.id === driverId
-  if (!newValue && isActive) {
-    const driverName = vehicle.value.currently_driven_by?.name ?? driverId
-    const confirmed = window.confirm(
-      i18n.global.t('vehicles.messages.disable_selectable_confirm', { name: driverName })
-    )
-    if (!confirmed) return
-  }
-
-  togglingDriverId.value = driverId
-  try {
-    await DriverVehicleRepository.setSelectable(driverId, vehicle.value.id, newValue)
-    // Update local state
-    const entry = vehicle.value.linked_drivers?.find(e => e.driver_id === driverId)
-    if (entry) entry.selectable = newValue
-    ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
-  } catch (e: unknown) {
-    const err = e as { message?: string }
-    ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), err?.message)
-  } finally {
-    togglingDriverId.value = null
-  }
+function onToggle(driverId: string, newValue: boolean): Promise<void> {
+  return toggle(vehicle.value, driverId, newValue)
 }
 
 function goBack(): void {
