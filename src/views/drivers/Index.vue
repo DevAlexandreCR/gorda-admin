@@ -25,14 +25,19 @@
 
         <!-- Create driver button -->
         <div class="col-auto">
-          <router-link
-            :to="{ name: 'drivers.create' }"
-            tag="a"
+          <button
+            type="button"
             class="btn btn-sm bg-gradient-primary btn-rounded mb-0"
             data-original-title="Create Driver"
+            @click="showCreateDriverModal"
           >
             <em class="fas fa-plus"></em>
-          </router-link>
+          </button>
+          <CreateDriverModal
+            v-if="createModalOpen"
+            @close="closeCreateDriverModal"
+            @created="onDriverCreated"
+          />
         </div>
       </div>
 
@@ -167,7 +172,10 @@
                 <td class="py-0">
                   <div class="d-flex px-2 py-1">
                     <div>
-                      <img :src="driver.photoUrl || ''" class="avatar avatar-sm me-3" alt="Profile" />
+                      <img v-if="driver.photoUrl" :src="driver.photoUrl" class="avatar avatar-sm me-3" alt="Profile" />
+                      <div v-else class="avatar avatar-sm me-3 bg-gradient-secondary">
+                        <em class="fas fa-user-astronaut text-white text-xs"></em>
+                      </div>
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="mb-0 text-sm">{{ driver.name }}</h6>
@@ -304,6 +312,7 @@ import type { ActiveFilters } from '@/types/ActiveFilters'
 import DriverFiltersBar from '@/components/drivers/DriverFiltersBar.vue'
 import PagePaginator from '@/components/PagePaginator.vue'
 import SendFcmModal from '@/views/drivers/SendFCMModal.vue'
+import CreateDriverModal from '@/views/drivers/CreateDriverModal.vue'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -612,6 +621,33 @@ function closeSendMessageModal(): void {
     sendFcmModal.value.hide()
   }
   messageTo.value = null
+}
+
+// ── Create driver modal ───────────────────────────────────────────────────────
+
+const createDriverModal = ref<Modal | null>(null)
+const createModalOpen = ref(false)
+
+async function showCreateDriverModal(): Promise<void> {
+  createModalOpen.value = true
+  await nextTick()
+  const el = document.getElementById('create-driver-modal')
+  if (el) {
+    createDriverModal.value = new Modal(el)
+    createDriverModal.value.show()
+  }
+}
+
+function closeCreateDriverModal(): void {
+  if (createDriverModal.value) {
+    createDriverModal.value.hide()
+  }
+  createDriverModal.value = null
+  createModalOpen.value = false
+}
+
+function onDriverCreated(): void {
+  triggerRefetch()
 }
 
 // ── Bulk actions ──────────────────────────────────────────────────────────────
