@@ -160,6 +160,23 @@ window.GordaData = {
       semanal: [{ plate: 'FPK979', value: 92 },  { plate: 'LCI875', value: 81 },  { plate: 'IUA794', value: 77 },  { plate: 'CPO991', value: 69 },  { plate: 'DCA350', value: 58 }],
       mensual: [{ plate: 'FPK979', value: 340 }, { plate: 'IUA794', value: 305 }, { plate: 'LCI875', value: 298 }, { plate: 'DCA350', value: 276 }, { plate: 'CPO991', value: 240 }],
     },
+
+    // Ingresos: comisión = % descontado por servicio a conductores SIN mensualidad;
+    // mensualidad = cuota fija mensual de conductores que sí la pagan (no se les cobra por servicio).
+    revenue: {
+      monthly: [
+        { m: 'Ene', comision: 4180000, mensualidad: 3750000 },
+        { m: 'Feb', comision: 3960000, mensualidad: 3750000 },
+        { m: 'Mar', comision: 4560000, mensualidad: 3900000 },
+        { m: 'Abr', comision: 4190000, mensualidad: 3900000 },
+        { m: 'May', comision: 4380000, mensualidad: 3900000 },
+        { m: 'Jun', comision: 4270000, mensualidad: 3900000 },
+        { m: 'Jul', comision: 310000,  mensualidad: 3900000 },
+      ],
+      comisionDrivers: 41,
+      mensualidadDrivers: 26,
+      mensualidadFee: 150000,
+    },
   },
 
   confirmations: [

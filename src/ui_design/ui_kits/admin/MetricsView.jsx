@@ -2,7 +2,7 @@
 // Charts are hand-built inline SVG (no external chart lib) so they inherit theme tokens 1:1.
 function MetricsView() {
   const { Card, StatCard } = window.GordaDesignSystem_019e24;
-  const { monthly, topPlates } = window.GordaData.metrics;
+  const { monthly, topPlates, revenue } = window.GordaData.metrics;
   const [period, setPeriod] = React.useState('diario');
 
   const months = monthly.map(r => r.m);
@@ -17,6 +17,16 @@ function MetricsView() {
   const prevFin = Math.round((prev.completed / prev.total) * 1000) / 10;
   const totalDelta = Math.round(((last.total - prev.total) / prev.total) * 1000) / 10;
   const leader = topPlates.mensual[0];
+
+  // ── revenue KPIs — comisión (conductores sin mensualidad) vs cuota fija (conductores con mensualidad) ──
+  const revMonths = revenue.monthly.map(r => r.m);
+  const lastRev = revenue.monthly[revenue.monthly.length - 2];
+  const prevRev = revenue.monthly[revenue.monthly.length - 3];
+  const cop = (n) => `$${n.toLocaleString('es-CO')}`;
+  const copCompact = (n) => `$${Math.round(n / 100000) / 10}M`;
+  const comisionDelta = Math.round(((lastRev.comision - prevRev.comision) / prevRev.comision) * 1000) / 10;
+  const mensualidadDelta = Math.round(((lastRev.mensualidad - prevRev.mensualidad) / prevRev.mensualidad) * 1000) / 10;
+  const totalRevLast = lastRev.comision + lastRev.mensualidad;
 
   /* ── shared micro-styles ── */
   const cardHeader = (icon, grad, title, right) => (
@@ -50,20 +60,32 @@ function MetricsView() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-      {/* ── KPI strip ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
-        <StatCard label="Servicios · jun" value={last.total.toLocaleString('es-CO')} icon="fas fa-route" color="info"
-          delta={`${Math.abs(totalDelta)}%`} deltaUp={totalDelta >= 0} />
-        <StatCard label="Tasa de finalización" value={`${lastFin}%`} icon="fas fa-circle-check" color="success"
-          delta={`${Math.abs(Math.round((lastFin - prevFin) * 10) / 10)} pp`} deltaUp={lastFin >= prevFin} />
-        <StatCard label="Tasa de cancelación" value={`${lastRate}%`} icon="fas fa-ban" color="danger"
-          delta={`${Math.abs(Math.round((lastRate - prevRate) * 10) / 10)} pp`} deltaUp={lastRate >= prevRate} />
-        <StatCard label="Conductor líder · mes" value={leader.plate} icon="fas fa-trophy" color="warning"
-          delta={`${leader.value} servicios`} deltaUp={true} />
+      {/* ── KPI strip — service health, then revenue, as two visually grouped rows ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05rem', color: 'var(--text-secondary)' }}>Servicio</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          <StatCard label="Servicios · jun" value={last.total.toLocaleString('es-CO')} icon="fas fa-route" color="info"
+            delta={`${Math.abs(totalDelta)}%`} deltaUp={totalDelta >= 0} />
+          <StatCard label="Tasa de finalización" value={`${lastFin}%`} icon="fas fa-circle-check" color="success"
+            delta={`${Math.abs(Math.round((lastFin - prevFin) * 10) / 10)} pp`} deltaUp={lastFin >= prevFin} />
+          <StatCard label="Tasa de cancelación" value={`${lastRate}%`} icon="fas fa-ban" color="danger"
+            delta={`${Math.abs(Math.round((lastRate - prevRate) * 10) / 10)} pp`} deltaUp={lastRate >= prevRate} />
+          <StatCard label="Conductor líder · mes" value={leader.plate} icon="fas fa-trophy" color="warning"
+            delta={`${leader.value} servicios`} deltaUp={true} />
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05rem', color: 'var(--text-secondary)' }}>Ingresos</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          <StatCard label="Ingresos por comisión" value={copCompact(lastRev.comision)} icon="fas fa-percent" color="success"
+            delta={`${Math.abs(comisionDelta)}%`} deltaUp={comisionDelta >= 0} />
+          <StatCard label="Ingresos por mensualidad" value={copCompact(lastRev.mensualidad)} icon="fas fa-file-invoice-dollar" color="dark"
+            delta={`${revenue.mensualidadDrivers} conduct.`} deltaUp={mensualidadDelta >= 0} />
+        </div>
       </div>
 
       {/* ── Charts row ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
 
         {/* Progreso de servicios anual */}
         <Card>
@@ -112,6 +134,57 @@ function MetricsView() {
           ))}
           <TopList items={topPlates[period]} />
         </Card>
+      </div>
+
+      {/* ── Ingresos por tipo de cobro ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(360px, 2fr) minmax(280px, 1fr)', gap: '1.25rem', alignItems: 'start' }}>
+        <Card>
+          {cardHeader('fas fa-sack-dollar', 'linear-gradient(310deg,#17ad37,#98ec2d)', 'Ingresos por tipo de cobro')}
+          <Legend items={[
+            { label: 'Comisión por servicio', color: 'var(--success)' },
+            { label: 'Mensualidad fija', color: 'var(--dark, #344767)' },
+          ]} />
+          <GroupedBarChart
+            labels={revMonths}
+            seriesA={{ data: revenue.monthly.map(r => r.comision), color: 'var(--success)' }}
+            seriesB={{ data: revenue.monthly.map(r => r.mensualidad), color: 'var(--dark, #344767)' }}
+            formatTick={(v) => `${Math.round(v / 1000000 * 10) / 10}M`}
+          />
+        </Card>
+        <Card>
+          {cardHeader('fas fa-scale-balanced', 'linear-gradient(310deg,#627594,#a8b8d8)', 'Desglose de ingresos · jun')}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+            <RevenueRow label="Comisión por servicio" sub={`${revenue.comisionDrivers} conductores sin mensualidad`}
+              value={cop(lastRev.comision)} pct={Math.round((lastRev.comision / totalRevLast) * 100)} color="var(--success)" />
+            <RevenueRow label="Mensualidad fija" sub={`${revenue.mensualidadDrivers} conductores · ${cop(revenue.mensualidadFee)}/mes c/u`}
+              value={cop(lastRev.mensualidad)} pct={Math.round((lastRev.mensualidad / totalRevLast) * 100)} color="var(--dark, #344767)" />
+            <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '0.15rem 0' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Total · jun</span>
+              <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-heading)' }}>{cop(totalRevLast)}</span>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function RevenueRow({ label, sub, value, pct, color }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.35rem' }}>
+        <div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-heading)' }}>{label}</div>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{sub}</div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-heading)' }}>{value}</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{pct}%</div>
+        </div>
+      </div>
+      <div style={{ height: 7, borderRadius: '50rem', background: 'var(--surface-input)', overflow: 'hidden' }}>
+        <div style={{ width: `${pct}%`, height: '100%', borderRadius: '50rem', background: color }} />
       </div>
     </div>
   );
@@ -216,6 +289,51 @@ function BarChart({ labels, values, height = 220, color = 'var(--primary)', suff
           <path key={i} d={topRoundedRectPath(x, y, barW, h, 4)} fill={color}>
             <title>{`${labels[i]}: ${v}${suffix}`}</title>
           </path>
+        );
+      })}
+    </svg>
+  );
+}
+
+function GroupedBarChart({ labels, seriesA, seriesB, height = 220, formatTick = (v) => v }) {
+  const W = 600, H = height, padL = 40, padR = 8, padT = 8, padB = 26;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const maxVal = niceCeil(Math.max(...seriesA.data, ...seriesB.data) * 1.15, 500000);
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
+  const scaleY = v => (v / maxVal) * innerH;
+
+  const groupGap = 0.34;
+  const slot = innerW / labels.length;
+  const groupW = slot * (1 - groupGap);
+  const barW = groupW / 2 - 2;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block', fontFamily: "'Open Sans', sans-serif" }}>
+      {ticks.map((t, i) => {
+        const y = padT + innerH - scaleY(t);
+        return (
+          <g key={i}>
+            <line x1={padL} x2={W - padR} y1={y} y2={y} stroke="var(--border-subtle)" strokeWidth="1" />
+            <text x={padL - 6} y={y + 3} textAnchor="end" fontSize="9" fill="var(--text-secondary)">{formatTick(t)}</text>
+          </g>
+        );
+      })}
+      {labels.map((l, i) => (
+        <text key={l} x={padL + i * slot + slot / 2} y={H - 6} textAnchor="middle" fontSize="9" fill="var(--text-secondary)">{l}</text>
+      ))}
+      {labels.map((l, i) => {
+        const gx = padL + i * slot + (slot - groupW) / 2;
+        const hA = scaleY(seriesA.data[i]);
+        const hB = scaleY(seriesB.data[i]);
+        return (
+          <g key={l}>
+            <path d={topRoundedRectPath(gx, padT + innerH - hA, barW, hA, 3)} fill={seriesA.color}>
+              <title>{`${l} \u00b7 ${seriesA.data[i].toLocaleString('es-CO')}`}</title>
+            </path>
+            <path d={topRoundedRectPath(gx + barW + 4, padT + innerH - hB, barW, hB, 3)} fill={seriesB.color}>
+              <title>{`${l} \u00b7 ${seriesB.data[i].toLocaleString('es-CO')}`}</title>
+            </path>
+          </g>
         );
       })}
     </svg>

@@ -92,23 +92,23 @@ function PrimaryBtn({ children, onClick, disabled, outline }) {
 }
 
 /* ── toggle row ───────────────────────────────────────────── */
-function ToggleRow({ label, sub, checked, onChange, disabled, danger }) {
+function ToggleRow({ label, sub, checked, onChange, disabled, danger, last }) {
   return (
     <div style={{
-      display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-      padding: '0.65rem 0',
-      borderBottom: '1px solid var(--border-subtle)',
+      display: 'flex', alignItems: 'flex-start', gap: '0.65rem',
+      padding: '0.45rem 0',
+      borderBottom: last ? 'none' : '1px solid var(--border-subtle)',
     }}>
       <Toggle checked={checked} onChange={onChange} disabled={disabled} danger={danger} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
-          fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-heading)',
+          fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-heading)',
           lineHeight: 1.3,
         }}>{label}</div>
         {sub && (
           <div style={{
-            fontSize: '0.75rem', color: 'var(--text-muted)',
-            marginTop: '0.2rem', lineHeight: 1.4,
+            fontSize: '0.7rem', color: 'var(--text-muted)',
+            marginTop: '0.15rem', lineHeight: 1.35,
           }}>{sub}</div>
         )}
       </div>
@@ -136,48 +136,24 @@ function StatusPill({ connected, connecting, loading }) {
   );
 }
 
-/* ── connection visual ────────────────────────────────────── */
-function ConnectionVisual({ connected, connecting, loading, phoneId }) {
+/* ── connection state icon (small, lives in card header) ──── */
+function ConnectionIcon({ connected, connecting, loading }) {
+  const bg = connected
+    ? 'linear-gradient(310deg,#128c7e,#25d366)'
+    : connecting || loading
+      ? 'linear-gradient(310deg,#2152ff,#21d4fd)'
+      : 'var(--gradient-secondary)';
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center',
-      padding: '1.5rem 1rem 1rem', gap: '0.75rem',
+      width: 40, height: 40, borderRadius: '0.65rem', flex: 'none',
+      background: bg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
+      color: '#fff', fontSize: '1.05rem',
     }}>
-      {/* artwork */}
-      <div style={{
-        width: 110, height: 110, borderRadius: '1.5rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: connected
-          ? 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)'
-          : 'var(--surface-input)',
-        boxShadow: connected
-          ? '0 8px 26px -4px rgba(37,211,102,0.35)'
-          : 'var(--shadow-card)',
-        transition: 'all 0.3s ease',
-        flex: 'none',
-      }}>
-        {loading && (
-          <em className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2.5rem', color: '#fbcf33' }} />
-        )}
-        {connecting && !loading && (
-          <em className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2.5rem', color: '#17c1e8' }} />
-        )}
-        {connected && !connecting && !loading && (
-          <em className="fa-brands fa-whatsapp" style={{ fontSize: '3.2rem', color: '#fff' }} />
-        )}
-        {!connected && !connecting && !loading && (
-          <em className="fa-solid fa-circle-exclamation" style={{ fontSize: '2.5rem', color: 'var(--text-muted)' }} />
-        )}
-      </div>
-
-      {/* phone id */}
-      <div style={{
-        fontSize: '0.7rem', fontFamily: 'var(--font-mono)',
-        color: 'var(--text-muted)', textAlign: 'center', wordBreak: 'break-all',
-        padding: '0 0.5rem',
-      }}>
-        {phoneId}
-      </div>
+      {(connecting || loading)
+        ? <em className="fa-solid fa-spinner fa-spin" />
+        : <em className="fa-brands fa-whatsapp" />}
     </div>
   );
 }
@@ -224,37 +200,21 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
         padding: '1rem 1.25rem 0.85rem',
         borderBottom: '1px solid var(--border-subtle)',
       }}>
-        {/* icon chip */}
-        <div style={{
-          width: 38, height: 38, borderRadius: '0.6rem', flex: 'none',
-          background: connected
-            ? 'linear-gradient(310deg,#128c7e,#25d366)'
-            : 'var(--gradient-secondary)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
-          color: '#fff', fontSize: '1rem',
-        }}>
-          <em className="fa-brands fa-whatsapp" />
-        </div>
+        {/* icon chip (also reflects connection state) */}
+        <ConnectionIcon connected={connected} connecting={connecting} />
 
-        {/* name + status */}
+        {/* name + phone id */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)', lineHeight: 1.2 }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-heading)', lineHeight: 1.2 }}>
             {client.alias}
           </div>
-          <div style={{ marginTop: '0.3rem' }}>
-            <StatusPill connected={connected} connecting={connecting} />
+          <div style={{
+            fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)',
+            marginTop: '0.15rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
+            {client.id}
           </div>
         </div>
-
-        {/* default badge */}
-        {isDefault && (
-          <span style={{
-            fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em',
-            background: 'var(--badge-primary-bg)', color: 'var(--badge-primary-fg)',
-            padding: '0.2rem 0.55rem', borderRadius: '50rem',
-          }}>DEFAULT</span>
-        )}
 
         {/* actions */}
         <div style={{ display: 'flex', gap: '0.4rem' }}>
@@ -263,11 +223,30 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
         </div>
       </div>
 
-      {/* ── visual ── */}
-      <ConnectionVisual connected={connected} connecting={connecting} phoneId={client.id} />
-
-      {/* ── connect button / chat link ── */}
-      <div style={{ padding: '0 1.25rem 1rem', display: 'flex', gap: '0.6rem', justifyContent: connected ? 'flex-end' : 'flex-start' }}>
+      {/* ── status row: pill + default + primary action, one line ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.5rem',
+        padding: '0.65rem 1.25rem',
+        borderBottom: '1px solid var(--border-subtle)',
+      }}>
+        <StatusPill connected={connected} connecting={connecting} />
+        {isDefault && (
+          <span style={{
+            fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.05em',
+            background: 'var(--badge-primary-bg)', color: 'var(--badge-primary-fg)',
+            padding: '0.2rem 0.5rem', borderRadius: '50rem', flex: 'none',
+          }}>DEFAULT</span>
+        )}
+        {!isDefault && connected && (
+          <button onClick={() => onSetDefault(client.id)} style={{
+            border: 'none', background: 'none', cursor: 'pointer', padding: 0,
+            fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)',
+            textDecoration: 'underline', textUnderlineOffset: 2,
+          }}>
+            Marcar por defecto
+          </button>
+        )}
+        <div style={{ flex: 1 }} />
         {!connected && (
           <PrimaryBtn onClick={handleConnect} disabled={connecting}>
             {connecting ? 'Conectando…' : 'Conectar'}
@@ -275,13 +254,12 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
         )}
         {connected && (
           <a href="#" onClick={e => e.preventDefault()} style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            padding: '0.4rem 0.9rem',
+            display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+            padding: '0.3rem 0.75rem',
             borderRadius: '0.5rem',
             background: 'var(--badge-success-bg)', color: 'var(--badge-success-fg)',
-            fontSize: '0.75rem', fontWeight: 700,
-            textDecoration: 'none',
-            transition: 'opacity 0.15s',
+            fontSize: '0.72rem', fontWeight: 700,
+            textDecoration: 'none', flex: 'none',
           }}>
             <em className="fas fa-message" />
             Chat
@@ -290,7 +268,7 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
       </div>
 
       {/* ── toggles ── */}
-      <div style={{ padding: '0 1.25rem', marginBottom: '0.75rem' }}>
+      <div style={{ padding: '0.15rem 1.25rem 0.85rem' }}>
         <ToggleRow
           label="Confirmaciones de WhatsApp"
           checked={settings.wpNotifications}
@@ -317,12 +295,7 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
           onChange={() => toggle('full')}
           disabled={!connected}
           danger
-        />
-        <ToggleRow
-          label={isDefault ? 'Cliente por defecto' : 'Seleccionar como cliente por defecto'}
-          checked={isDefault}
-          onChange={() => !isDefault && onSetDefault(client.id)}
-          disabled={isDefault}
+          last
         />
       </div>
 
@@ -608,7 +581,7 @@ function WhatsAppView() {
 
       {/* ── connections ── */}
       {tab === 'connections' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
           {clients.map(client => (
             <ConnectionCard key={client.id} client={client} isDefault={defaultClient === client.id} onSetDefault={setDefaultClient} />
           ))}

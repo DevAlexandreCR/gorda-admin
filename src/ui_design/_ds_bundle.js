@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":3,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"8be0db4910c5","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/AutocompleteInput.jsx":"739f84e74986","ui_kits/admin/DriversView.jsx":"8aef334bad73","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/MetricsView.jsx":"bc7482667fea","ui_kits/admin/PlacesView.jsx":"5fc3c79f2418","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"e116f6f0bd0c","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"f6784eb4166b","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/UserDetailView.jsx":"e7f64e94a874","ui_kits/admin/UsersView.jsx":"67f18338def2","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"50921e559e05","ui_kits/admin/data.js":"bca7caa333e0","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"21c13a82957d","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/AutocompleteInput.jsx":"739f84e74986","ui_kits/admin/DriversView.jsx":"3262772df019","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/MetricsView.jsx":"304a8a39ea2e","ui_kits/admin/PlacesView.jsx":"5fc3c79f2418","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"e116f6f0bd0c","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"f6784eb4166b","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/UserDetailView.jsx":"e7f64e94a874","ui_kits/admin/UsersView.jsx":"67f18338def2","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"04833a3cdabc","ui_kits/admin/data.js":"f65154b77b05","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -156,27 +156,49 @@ function StatCard({
       borderRadius: '1rem',
       boxShadow: 'var(--shadow-card)',
       fontFamily: "'Open Sans', sans-serif",
-      padding: '1rem 1.25rem',
+      padding: '1.1rem 1.25rem',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '1rem',
+      flexDirection: 'column',
+      gap: '0.85rem',
       ...style
     }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      gap: '0.75rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '0.75rem',
       fontWeight: 700,
       textTransform: 'uppercase',
       letterSpacing: '0.02rem',
-      color: 'var(--text-secondary)'
+      color: 'var(--text-secondary)',
+      lineHeight: 1.3
     }
-  }, label), /*#__PURE__*/React.createElement("div", {
+  }, label), icon && /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: '2.5rem',
+      height: '2.5rem',
+      flex: 'none',
+      borderRadius: '0.7rem',
+      background: GRAD[color] || GRAD.dark,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '1rem',
+      boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: icon
+  }))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'baseline',
-      gap: '0.5rem',
-      marginTop: '0.25rem'
+      gap: '0.5rem'
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -189,25 +211,10 @@ function StatCard({
     style: {
       fontSize: '0.8rem',
       fontWeight: 700,
-      color: deltaUp ? '#82d616' : '#ea0606'
+      color: deltaUp ? '#82d616' : '#ea0606',
+      whiteSpace: 'nowrap'
     }
-  }, deltaUp ? '+' : '', delta))), icon && /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: '3rem',
-      height: '3rem',
-      flex: 'none',
-      borderRadius: '0.75rem',
-      background: GRAD[color] || GRAD.dark,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: '#fff',
-      fontSize: '1.1rem',
-      boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)'
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: icon
-  })));
+  }, deltaUp ? '+' : '', delta)));
 }
 Object.assign(__ds_scope, { StatCard });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/data/StatCard.jsx", error: String((e && e.message) || e) }); }
@@ -897,16 +904,37 @@ function DriversView({
     Avatar,
     Badge,
     Button,
-    Switch
+    Switch,
+    Select,
+    Input
   } = window.GordaDesignSystem_019e24;
   const data = window.GordaData;
   const [query, setQuery] = React.useState('');
-  const [filter, setFilter] = React.useState('all');
+  const defaultFilters = {
+    estado: 'todos',
+    pago: 'todos',
+    estadoPago: 'todos',
+    periodo: 'jul-2026',
+    inactividad: 'ninguno'
+  };
+  const [filters, setFilters] = React.useState(defaultFilters);
+  const setFilter = key => e => setFilters(f => ({
+    ...f,
+    [key]: e.target.value
+  }));
   const [enabledMap, setEnabledMap] = React.useState(Object.fromEntries(data.drivers.map(d => [d.id, d.enabled])));
+
+  // Periodo only makes sense once a payment status has been chosen.
+  const showPeriodo = filters.estadoPago !== 'todos';
+  const hasActiveFilters = query !== '' || Object.keys(defaultFilters).some(k => k !== 'periodo' && filters[k] !== defaultFilters[k]);
+  const clearFilters = () => {
+    setQuery('');
+    setFilters(defaultFilters);
+  };
   const rows = data.drivers.filter(d => {
     const matchQ = (d.name + d.email + d.plate).toLowerCase().includes(query.toLowerCase());
-    const matchF = filter === 'all' || (filter === 'enabled' ? enabledMap[d.id] : !enabledMap[d.id]);
-    return matchQ && matchF;
+    const matchEstado = filters.estado === 'todos' || (filters.estado === 'activo' ? enabledMap[d.id] : !enabledMap[d.id]);
+    return matchQ && matchEstado;
   });
   const th = {
     textAlign: 'left',
@@ -914,27 +942,20 @@ function DriversView({
     fontSize: '0.62rem',
     fontWeight: 700,
     letterSpacing: '0.02rem',
-    color: '#8392ab',
+    color: 'var(--text-secondary)',
     padding: '0.6rem 0.75rem',
-    borderBottom: '1px solid #e9ecef'
+    borderBottom: '1px solid var(--border-subtle)'
   };
   const td = {
     padding: '0.6rem 0.75rem',
     fontSize: '0.8rem',
-    color: '#67748e',
-    borderBottom: '1px solid #f3f4f6',
+    color: 'var(--text-body)',
+    borderBottom: '1px solid var(--border-subtle)',
     verticalAlign: 'middle'
   };
-  const filters = [{
-    id: 'all',
-    label: 'All'
-  }, {
-    id: 'enabled',
-    label: 'Enabled'
-  }, {
-    id: 'disabled',
-    label: 'Disabled'
-  }];
+  const fieldStyle = {
+    minWidth: 0
+  };
   return /*#__PURE__*/React.createElement(Card, {
     padding: "0"
   }, /*#__PURE__*/React.createElement("div", {
@@ -950,72 +971,146 @@ function DriversView({
       margin: 0,
       fontSize: '0.95rem',
       fontWeight: 700,
-      color: '#344767'
+      color: 'var(--text-heading)'
     }
   }, "Drivers \xB7 ", data.drivers.length), /*#__PURE__*/React.createElement("div", {
     style: {
+      marginLeft: 'auto',
       display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      background: '#fff',
-      border: '1px solid #d2d6da',
-      borderRadius: '0.5rem',
-      padding: '0.4rem 0.7rem',
-      width: 220
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: "fas fa-magnifying-glass",
-    style: {
-      color: '#8392ab',
-      fontSize: '0.78rem'
-    }
-  }), /*#__PURE__*/React.createElement("input", {
-    value: query,
-    onChange: e => setQuery(e.target.value),
-    placeholder: "Search drivers...",
-    style: {
-      border: 'none',
-      outline: 'none',
-      fontFamily: "'Open Sans', sans-serif",
-      fontSize: '0.8rem',
-      width: '100%',
-      color: '#495057'
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 4
-    }
-  }, filters.map(f => /*#__PURE__*/React.createElement("button", {
-    key: f.id,
-    onClick: () => setFilter(f.id),
-    style: {
-      padding: '0.35rem 0.8rem',
-      borderRadius: '50rem',
-      border: '1px solid',
-      cursor: 'pointer',
-      fontFamily: "'Open Sans', sans-serif",
-      fontSize: '0.7rem',
-      fontWeight: 700,
-      borderColor: filter === f.id ? '#cb0c9f' : '#e9ecef',
-      background: filter === f.id ? '#fde6f7' : '#fff',
-      color: filter === f.id ? '#a30c80' : '#8392ab'
-    }
-  }, f.label))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginLeft: 'auto'
+      gap: '0.6rem'
     }
   }, /*#__PURE__*/React.createElement(Button, {
     color: "warning",
-    variant: "outline",
+    variant: "gradient",
     size: "sm",
     icon: "fas fa-paper-plane"
-  }, "Send to all")), /*#__PURE__*/React.createElement(Button, {
+  }, "Enviar mensaje"), /*#__PURE__*/React.createElement(Button, {
     color: "primary",
     size: "sm",
     rounded: true,
     icon: "fas fa-plus"
-  })), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 1rem 1rem',
+      borderBottom: '1px solid var(--border-subtle)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+      gap: '0.75rem 1rem',
+      alignItems: 'end'
+    }
+  }, /*#__PURE__*/React.createElement(Input, {
+    label: "Buscar",
+    icon: "fas fa-magnifying-glass",
+    placeholder: "Buscar conductor...",
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    style: fieldStyle
+  }), /*#__PURE__*/React.createElement(Select, {
+    label: "Estado",
+    value: filters.estado,
+    onChange: setFilter('estado'),
+    style: fieldStyle,
+    options: [{
+      value: 'todos',
+      label: 'Todos'
+    }, {
+      value: 'activo',
+      label: 'Activo'
+    }, {
+      value: 'inactivo',
+      label: 'Inactivo'
+    }]
+  }), /*#__PURE__*/React.createElement(Select, {
+    label: "Pago",
+    value: filters.pago,
+    onChange: setFilter('pago'),
+    style: fieldStyle,
+    options: [{
+      value: 'todos',
+      label: 'Todos'
+    }, {
+      value: 'efectivo',
+      label: 'Efectivo'
+    }, {
+      value: 'tarjeta',
+      label: 'Tarjeta'
+    }]
+  }), /*#__PURE__*/React.createElement(Select, {
+    label: "Estado de pago",
+    value: filters.estadoPago,
+    onChange: setFilter('estadoPago'),
+    style: fieldStyle,
+    options: [{
+      value: 'todos',
+      label: 'Todos'
+    }, {
+      value: 'pagado',
+      label: 'Pagado'
+    }, {
+      value: 'pendiente',
+      label: 'Pendiente'
+    }, {
+      value: 'vencido',
+      label: 'Vencido'
+    }]
+  }), showPeriodo && /*#__PURE__*/React.createElement(Select, {
+    label: "Periodo",
+    value: filters.periodo,
+    onChange: setFilter('periodo'),
+    style: fieldStyle,
+    options: [{
+      value: 'jul-2026',
+      label: 'Julio 2026'
+    }, {
+      value: 'jun-2026',
+      label: 'Junio 2026'
+    }, {
+      value: 'may-2026',
+      label: 'Mayo 2026'
+    }]
+  }), /*#__PURE__*/React.createElement(Select, {
+    label: "Inactividad",
+    value: filters.inactividad,
+    onChange: setFilter('inactividad'),
+    style: fieldStyle,
+    options: [{
+      value: 'ninguno',
+      label: 'Ninguno'
+    }, {
+      value: '7d',
+      label: '+7 días'
+    }, {
+      value: '15d',
+      label: '+15 días'
+    }, {
+      value: '30d',
+      label: '+30 días'
+    }]
+  })), hasActiveFilters && /*#__PURE__*/React.createElement("button", {
+    onClick: clearFilters,
+    style: {
+      marginTop: '0.75rem',
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer',
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--primary)',
+      padding: 0,
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.35rem'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: "fas fa-xmark",
+    style: {
+      fontSize: '0.7rem'
+    }
+  }), "Limpiar filtros")), /*#__PURE__*/React.createElement("div", {
     style: {
       overflowX: 'auto'
     }
@@ -1063,12 +1158,12 @@ function DriversView({
     style: {
       fontSize: '0.8rem',
       fontWeight: 700,
-      color: '#344767'
+      color: 'var(--text-heading)'
     }
   }, d.name), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '0.7rem',
-      color: '#adb5bd'
+      color: 'var(--text-muted)'
     }
   }, d.email)))), /*#__PURE__*/React.createElement("td", {
     style: {
@@ -1082,25 +1177,25 @@ function DriversView({
     style: {
       fontSize: '0.8rem',
       fontWeight: 700,
-      color: '#344767'
+      color: 'var(--text-heading)'
     }
   }, d.brand), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '0.7rem',
-      color: '#adb5bd'
+      color: 'var(--text-muted)'
     }
   }, d.model)), /*#__PURE__*/React.createElement("td", {
     style: td
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      color: '#82d616',
+      color: 'var(--success)',
       marginRight: 4
     }
   }, "\u25CF"), /*#__PURE__*/React.createElement("a", {
     href: "#",
     onClick: e => e.preventDefault(),
     style: {
-      color: '#cb0c9f',
+      color: 'var(--primary)',
       fontWeight: 600
     }
   }, d.plate)), /*#__PURE__*/React.createElement("td", {
@@ -1117,7 +1212,7 @@ function DriversView({
     style: {
       ...td,
       fontWeight: 700,
-      color: d.balance.includes('−') ? '#ea0606' : '#344767'
+      color: d.balance.includes('−') ? 'var(--danger)' : 'var(--text-heading)'
     }
   }, d.balance), /*#__PURE__*/React.createElement("td", {
     style: {
@@ -1139,7 +1234,7 @@ function DriversView({
   }), /*#__PURE__*/React.createElement("em", {
     className: "fas fa-pencil",
     style: {
-      color: '#cb0c9f',
+      color: 'var(--primary)',
       cursor: 'pointer'
     },
     title: "Edit",
@@ -1147,7 +1242,7 @@ function DriversView({
   }), /*#__PURE__*/React.createElement("em", {
     className: "fas fa-paper-plane",
     style: {
-      color: '#8392ab',
+      color: 'var(--text-secondary)',
       cursor: 'pointer'
     },
     title: "Message"
@@ -1158,7 +1253,9 @@ function DriversView({
       justifyContent: 'space-between',
       padding: '0.85rem 1rem',
       fontSize: '0.75rem',
-      color: '#8392ab'
+      color: 'var(--text-secondary)',
+      flexWrap: 'wrap',
+      gap: '0.5rem'
     }
   }, /*#__PURE__*/React.createElement("span", null, "Showing 1\u2013", rows.length, " of ", data.drivers.length), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1185,9 +1282,9 @@ function pagBtn(active) {
     fontFamily: "'Open Sans', sans-serif",
     fontSize: '0.75rem',
     fontWeight: 700,
-    background: active ? 'linear-gradient(310deg, #7928ca, #ff0080)' : '#fff',
-    color: active ? '#fff' : '#8392ab',
-    boxShadow: active ? '0 4px 7px -1px rgba(0,0,0,0.11)' : '0 1px 3px rgba(0,0,0,0.08)'
+    background: active ? 'var(--gradient-primary)' : 'var(--surface-input)',
+    color: active ? '#fff' : 'var(--text-secondary)',
+    boxShadow: active ? '0 4px 7px -1px rgba(0,0,0,0.11)' : 'var(--shadow-sm)'
   };
 }
 window.DriversView = DriversView;
@@ -4820,7 +4917,8 @@ function MetricsView() {
   } = window.GordaDesignSystem_019e24;
   const {
     monthly,
-    topPlates
+    topPlates,
+    revenue
   } = window.GordaData.metrics;
   const [period, setPeriod] = React.useState('diario');
   const months = monthly.map(r => r.m);
@@ -4835,6 +4933,16 @@ function MetricsView() {
   const prevFin = Math.round(prev.completed / prev.total * 1000) / 10;
   const totalDelta = Math.round((last.total - prev.total) / prev.total * 1000) / 10;
   const leader = topPlates.mensual[0];
+
+  // ── revenue KPIs — comisión (conductores sin mensualidad) vs cuota fija (conductores con mensualidad) ──
+  const revMonths = revenue.monthly.map(r => r.m);
+  const lastRev = revenue.monthly[revenue.monthly.length - 2];
+  const prevRev = revenue.monthly[revenue.monthly.length - 3];
+  const cop = n => `$${n.toLocaleString('es-CO')}`;
+  const copCompact = n => `$${Math.round(n / 100000) / 10}M`;
+  const comisionDelta = Math.round((lastRev.comision - prevRev.comision) / prevRev.comision * 1000) / 10;
+  const mensualidadDelta = Math.round((lastRev.mensualidad - prevRev.mensualidad) / prevRev.mensualidad * 1000) / 10;
+  const totalRevLast = lastRev.comision + lastRev.mensualidad;
 
   /* ── shared micro-styles ── */
   const cardHeader = (icon, grad, title, right) => /*#__PURE__*/React.createElement("div", {
@@ -4909,8 +5017,22 @@ function MetricsView() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.6rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.7rem',
+      fontWeight: 700,
+      textTransform: 'uppercase',
+      letterSpacing: '0.05rem',
+      color: 'var(--text-secondary)'
+    }
+  }, "Servicio"), /*#__PURE__*/React.createElement("div", {
+    style: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
       gap: '1.25rem'
     }
   }, /*#__PURE__*/React.createElement(StatCard, {
@@ -4941,10 +5063,44 @@ function MetricsView() {
     color: "warning",
     delta: `${leader.value} servicios`,
     deltaUp: true
-  })), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.6rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.7rem',
+      fontWeight: 700,
+      textTransform: 'uppercase',
+      letterSpacing: '0.05rem',
+      color: 'var(--text-secondary)'
+    }
+  }, "Ingresos"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: '1.25rem'
+    }
+  }, /*#__PURE__*/React.createElement(StatCard, {
+    label: "Ingresos por comisi\xF3n",
+    value: copCompact(lastRev.comision),
+    icon: "fas fa-percent",
+    color: "success",
+    delta: `${Math.abs(comisionDelta)}%`,
+    deltaUp: comisionDelta >= 0
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Ingresos por mensualidad",
+    value: copCompact(lastRev.mensualidad),
+    icon: "fas fa-file-invoice-dollar",
+    color: "dark",
+    delta: `${revenue.mensualidadDrivers} conduct.`,
+    deltaUp: mensualidadDelta >= 0
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
       gap: '1.25rem',
       alignItems: 'start'
     }
@@ -5014,7 +5170,131 @@ function MetricsView() {
     }, label);
   }))), /*#__PURE__*/React.createElement(TopList, {
     items: topPlates[period]
-  }))));
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'minmax(360px, 2fr) minmax(280px, 1fr)',
+      gap: '1.25rem',
+      alignItems: 'start'
+    }
+  }, /*#__PURE__*/React.createElement(Card, null, cardHeader('fas fa-sack-dollar', 'linear-gradient(310deg,#17ad37,#98ec2d)', 'Ingresos por tipo de cobro'), /*#__PURE__*/React.createElement(Legend, {
+    items: [{
+      label: 'Comisión por servicio',
+      color: 'var(--success)'
+    }, {
+      label: 'Mensualidad fija',
+      color: 'var(--dark, #344767)'
+    }]
+  }), /*#__PURE__*/React.createElement(GroupedBarChart, {
+    labels: revMonths,
+    seriesA: {
+      data: revenue.monthly.map(r => r.comision),
+      color: 'var(--success)'
+    },
+    seriesB: {
+      data: revenue.monthly.map(r => r.mensualidad),
+      color: 'var(--dark, #344767)'
+    },
+    formatTick: v => `${Math.round(v / 1000000 * 10) / 10}M`
+  })), /*#__PURE__*/React.createElement(Card, null, cardHeader('fas fa-scale-balanced', 'linear-gradient(310deg,#627594,#a8b8d8)', 'Desglose de ingresos · jun'), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.9rem'
+    }
+  }, /*#__PURE__*/React.createElement(RevenueRow, {
+    label: "Comisi\xF3n por servicio",
+    sub: `${revenue.comisionDrivers} conductores sin mensualidad`,
+    value: cop(lastRev.comision),
+    pct: Math.round(lastRev.comision / totalRevLast * 100),
+    color: "var(--success)"
+  }), /*#__PURE__*/React.createElement(RevenueRow, {
+    label: "Mensualidad fija",
+    sub: `${revenue.mensualidadDrivers} conductores · ${cop(revenue.mensualidadFee)}/mes c/u`,
+    value: cop(lastRev.mensualidad),
+    pct: Math.round(lastRev.mensualidad / totalRevLast * 100),
+    color: "var(--dark, #344767)"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderTop: '1px solid var(--border-subtle)',
+      margin: '0.15rem 0'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.78rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, "Total \xB7 jun"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--text-heading)'
+    }
+  }, cop(totalRevLast)))))));
+}
+function RevenueRow({
+  label,
+  sub,
+  value,
+  pct,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      marginBottom: '0.35rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.8rem',
+      fontWeight: 700,
+      color: 'var(--text-heading)'
+    }
+  }, label), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.68rem',
+      color: 'var(--text-muted)'
+    }
+  }, sub)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.85rem',
+      fontWeight: 800,
+      color: 'var(--text-heading)'
+    }
+  }, value), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.68rem',
+      fontWeight: 700,
+      color: 'var(--text-secondary)'
+    }
+  }, pct, "%"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 7,
+      borderRadius: '50rem',
+      background: 'var(--surface-input)',
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: `${pct}%`,
+      height: '100%',
+      borderRadius: '50rem',
+      background: color
+    }
+  })));
 }
 
 /* ───────────────────────── chart primitives ───────────────────────── */
@@ -5172,6 +5452,76 @@ function BarChart({
       d: topRoundedRectPath(x, y, barW, h, 4),
       fill: color
     }, /*#__PURE__*/React.createElement("title", null, `${labels[i]}: ${v}${suffix}`));
+  }));
+}
+function GroupedBarChart({
+  labels,
+  seriesA,
+  seriesB,
+  height = 220,
+  formatTick = v => v
+}) {
+  const W = 600,
+    H = height,
+    padL = 40,
+    padR = 8,
+    padT = 8,
+    padB = 26;
+  const innerW = W - padL - padR,
+    innerH = H - padT - padB;
+  const maxVal = niceCeil(Math.max(...seriesA.data, ...seriesB.data) * 1.15, 500000);
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
+  const scaleY = v => v / maxVal * innerH;
+  const groupGap = 0.34;
+  const slot = innerW / labels.length;
+  const groupW = slot * (1 - groupGap);
+  const barW = groupW / 2 - 2;
+  return /*#__PURE__*/React.createElement("svg", {
+    viewBox: `0 0 ${W} ${H}`,
+    style: {
+      width: '100%',
+      height: 'auto',
+      display: 'block',
+      fontFamily: "'Open Sans', sans-serif"
+    }
+  }, ticks.map((t, i) => {
+    const y = padT + innerH - scaleY(t);
+    return /*#__PURE__*/React.createElement("g", {
+      key: i
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: padL,
+      x2: W - padR,
+      y1: y,
+      y2: y,
+      stroke: "var(--border-subtle)",
+      strokeWidth: "1"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: padL - 6,
+      y: y + 3,
+      textAnchor: "end",
+      fontSize: "9",
+      fill: "var(--text-secondary)"
+    }, formatTick(t)));
+  }), labels.map((l, i) => /*#__PURE__*/React.createElement("text", {
+    key: l,
+    x: padL + i * slot + slot / 2,
+    y: H - 6,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "var(--text-secondary)"
+  }, l)), labels.map((l, i) => {
+    const gx = padL + i * slot + (slot - groupW) / 2;
+    const hA = scaleY(seriesA.data[i]);
+    const hB = scaleY(seriesB.data[i]);
+    return /*#__PURE__*/React.createElement("g", {
+      key: l
+    }, /*#__PURE__*/React.createElement("path", {
+      d: topRoundedRectPath(gx, padT + innerH - hA, barW, hA, 3),
+      fill: seriesA.color
+    }, /*#__PURE__*/React.createElement("title", null, `${l} \u00b7 ${seriesA.data[i].toLocaleString('es-CO')}`)), /*#__PURE__*/React.createElement("path", {
+      d: topRoundedRectPath(gx + barW + 4, padT + innerH - hB, barW, hB, 3),
+      fill: seriesB.color
+    }, /*#__PURE__*/React.createElement("title", null, `${l} \u00b7 ${seriesB.data[i].toLocaleString('es-CO')}`)));
   }));
 }
 function TopList({
@@ -9841,15 +10191,16 @@ function ToggleRow({
   checked,
   onChange,
   disabled,
-  danger
+  danger,
+  last
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: '0.75rem',
-      padding: '0.65rem 0',
-      borderBottom: '1px solid var(--border-subtle)'
+      gap: '0.65rem',
+      padding: '0.45rem 0',
+      borderBottom: last ? 'none' : '1px solid var(--border-subtle)'
     }
   }, /*#__PURE__*/React.createElement(Toggle, {
     checked: checked,
@@ -9863,17 +10214,17 @@ function ToggleRow({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.85rem',
+      fontSize: '0.8rem',
       fontWeight: 600,
       color: 'var(--text-heading)',
       lineHeight: 1.3
     }
   }, label), sub && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.75rem',
+      fontSize: '0.7rem',
       color: 'var(--text-muted)',
-      marginTop: '0.2rem',
-      lineHeight: 1.4
+      marginTop: '0.15rem',
+      lineHeight: 1.35
     }
   }, sub)));
 }
@@ -9930,68 +10281,32 @@ function StatusPill({
   }), label);
 }
 
-/* ── connection visual ────────────────────────────────────── */
-function ConnectionVisual({
+/* ── connection state icon (small, lives in card header) ──── */
+function ConnectionIcon({
   connected,
   connecting,
-  loading,
-  phoneId
+  loading
 }) {
+  const bg = connected ? 'linear-gradient(310deg,#128c7e,#25d366)' : connecting || loading ? 'linear-gradient(310deg,#2152ff,#21d4fd)' : 'var(--gradient-secondary)';
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '1.5rem 1rem 1rem',
-      gap: '0.75rem'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 110,
-      height: 110,
-      borderRadius: '1.5rem',
+      width: 40,
+      height: 40,
+      borderRadius: '0.65rem',
+      flex: 'none',
+      background: bg,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: connected ? 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)' : 'var(--surface-input)',
-      boxShadow: connected ? '0 8px 26px -4px rgba(37,211,102,0.35)' : 'var(--shadow-card)',
-      transition: 'all 0.3s ease',
-      flex: 'none'
+      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
+      color: '#fff',
+      fontSize: '1.05rem'
     }
-  }, loading && /*#__PURE__*/React.createElement("em", {
-    className: "fa-solid fa-spinner fa-spin",
-    style: {
-      fontSize: '2.5rem',
-      color: '#fbcf33'
-    }
-  }), connecting && !loading && /*#__PURE__*/React.createElement("em", {
-    className: "fa-solid fa-spinner fa-spin",
-    style: {
-      fontSize: '2.5rem',
-      color: '#17c1e8'
-    }
-  }), connected && !connecting && !loading && /*#__PURE__*/React.createElement("em", {
-    className: "fa-brands fa-whatsapp",
-    style: {
-      fontSize: '3.2rem',
-      color: '#fff'
-    }
-  }), !connected && !connecting && !loading && /*#__PURE__*/React.createElement("em", {
-    className: "fa-solid fa-circle-exclamation",
-    style: {
-      fontSize: '2.5rem',
-      color: 'var(--text-muted)'
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.7rem',
-      fontFamily: 'var(--font-mono)',
-      color: 'var(--text-muted)',
-      textAlign: 'center',
-      wordBreak: 'break-all',
-      padding: '0 0.5rem'
-    }
-  }, phoneId));
+  }, connecting || loading ? /*#__PURE__*/React.createElement("em", {
+    className: "fa-solid fa-spinner fa-spin"
+  }) : /*#__PURE__*/React.createElement("em", {
+    className: "fa-brands fa-whatsapp"
+  }));
 }
 
 /* ── single connection card ───────────────────────────────── */
@@ -10045,52 +10360,32 @@ function ConnectionCard({
       padding: '1rem 1.25rem 0.85rem',
       borderBottom: '1px solid var(--border-subtle)'
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 38,
-      height: 38,
-      borderRadius: '0.6rem',
-      flex: 'none',
-      background: connected ? 'linear-gradient(310deg,#128c7e,#25d366)' : 'var(--gradient-secondary)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
-      color: '#fff',
-      fontSize: '1rem'
-    }
-  }, /*#__PURE__*/React.createElement("em", {
-    className: "fa-brands fa-whatsapp"
-  })), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(ConnectionIcon, {
+    connected: connected,
+    connecting: connecting
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       minWidth: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.95rem',
+      fontSize: '0.9rem',
       fontWeight: 700,
       color: 'var(--text-heading)',
       lineHeight: 1.2
     }
   }, client.alias), /*#__PURE__*/React.createElement("div", {
     style: {
-      marginTop: '0.3rem'
+      fontSize: '0.68rem',
+      fontFamily: 'var(--font-mono)',
+      color: 'var(--text-muted)',
+      marginTop: '0.15rem',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
     }
-  }, /*#__PURE__*/React.createElement(StatusPill, {
-    connected: connected,
-    connecting: connecting
-  }))), isDefault && /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: '0.65rem',
-      fontWeight: 700,
-      letterSpacing: '0.05em',
-      background: 'var(--badge-primary-bg)',
-      color: 'var(--badge-primary-fg)',
-      padding: '0.2rem 0.55rem',
-      borderRadius: '50rem'
-    }
-  }, "DEFAULT"), /*#__PURE__*/React.createElement("div", {
+  }, client.id)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       gap: '0.4rem'
@@ -10105,18 +10400,46 @@ function ConnectionCard({
     gradient: "linear-gradient(310deg,#d60808,#ff6690)",
     title: "Eliminar",
     onClick: () => setShowDeleteModal(true)
-  }))), /*#__PURE__*/React.createElement(ConnectionVisual, {
-    connected: connected,
-    connecting: connecting,
-    phoneId: client.id
-  }), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: '0 1.25rem 1rem',
       display: 'flex',
-      gap: '0.6rem',
-      justifyContent: connected ? 'flex-end' : 'flex-start'
+      alignItems: 'center',
+      gap: '0.5rem',
+      padding: '0.65rem 1.25rem',
+      borderBottom: '1px solid var(--border-subtle)'
     }
-  }, !connected && /*#__PURE__*/React.createElement(PrimaryBtn, {
+  }, /*#__PURE__*/React.createElement(StatusPill, {
+    connected: connected,
+    connecting: connecting
+  }), isDefault && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.62rem',
+      fontWeight: 700,
+      letterSpacing: '0.05em',
+      background: 'var(--badge-primary-bg)',
+      color: 'var(--badge-primary-fg)',
+      padding: '0.2rem 0.5rem',
+      borderRadius: '50rem',
+      flex: 'none'
+    }
+  }, "DEFAULT"), !isDefault && connected && /*#__PURE__*/React.createElement("button", {
+    onClick: () => onSetDefault(client.id),
+    style: {
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer',
+      padding: 0,
+      fontSize: '0.68rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)',
+      textDecoration: 'underline',
+      textUnderlineOffset: 2
+    }
+  }, "Marcar por defecto"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), !connected && /*#__PURE__*/React.createElement(PrimaryBtn, {
     onClick: handleConnect,
     disabled: connecting
   }, connecting ? 'Conectando…' : 'Conectar'), connected && /*#__PURE__*/React.createElement("a", {
@@ -10125,22 +10448,21 @@ function ConnectionCard({
     style: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '0.4rem',
-      padding: '0.4rem 0.9rem',
+      gap: '0.35rem',
+      padding: '0.3rem 0.75rem',
       borderRadius: '0.5rem',
       background: 'var(--badge-success-bg)',
       color: 'var(--badge-success-fg)',
-      fontSize: '0.75rem',
+      fontSize: '0.72rem',
       fontWeight: 700,
       textDecoration: 'none',
-      transition: 'opacity 0.15s'
+      flex: 'none'
     }
   }, /*#__PURE__*/React.createElement("em", {
     className: "fas fa-message"
   }), "Chat")), /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: '0 1.25rem',
-      marginBottom: '0.75rem'
+      padding: '0.15rem 1.25rem 0.85rem'
     }
   }, /*#__PURE__*/React.createElement(ToggleRow, {
     label: "Confirmaciones de WhatsApp",
@@ -10164,12 +10486,8 @@ function ConnectionCard({
     checked: settings.full,
     onChange: () => toggle('full'),
     disabled: !connected,
-    danger: true
-  }), /*#__PURE__*/React.createElement(ToggleRow, {
-    label: isDefault ? 'Cliente por defecto' : 'Seleccionar como cliente por defecto',
-    checked: isDefault,
-    onChange: () => !isDefault && onSetDefault(client.id),
-    disabled: isDefault
+    danger: true,
+    last: true
   })), showDeleteModal && /*#__PURE__*/React.createElement(Modal, {
     title: "Eliminar conexi\xF3n",
     body: `¿Estás seguro de que deseas eliminar la conexión "${client.alias}"? Esta acción no se puede deshacer.`,
@@ -10724,8 +11042,8 @@ function WhatsAppView() {
   }), "Crear"))), tab === 'connections' && /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-      gap: '1.25rem'
+      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+      gap: '1rem'
     }
   }, clients.map(client => /*#__PURE__*/React.createElement(ConnectionCard, {
     key: client.id,
@@ -11599,6 +11917,42 @@ window.GordaData = {
         plate: 'CPO991',
         value: 240
       }]
+    },
+    // Ingresos: comisión = % descontado por servicio a conductores SIN mensualidad;
+    // mensualidad = cuota fija mensual de conductores que sí la pagan (no se les cobra por servicio).
+    revenue: {
+      monthly: [{
+        m: 'Ene',
+        comision: 4180000,
+        mensualidad: 3750000
+      }, {
+        m: 'Feb',
+        comision: 3960000,
+        mensualidad: 3750000
+      }, {
+        m: 'Mar',
+        comision: 4560000,
+        mensualidad: 3900000
+      }, {
+        m: 'Abr',
+        comision: 4190000,
+        mensualidad: 3900000
+      }, {
+        m: 'May',
+        comision: 4380000,
+        mensualidad: 3900000
+      }, {
+        m: 'Jun',
+        comision: 4270000,
+        mensualidad: 3900000
+      }, {
+        m: 'Jul',
+        comision: 310000,
+        mensualidad: 3900000
+      }],
+      comisionDrivers: 41,
+      mensualidadDrivers: 26,
+      mensualidadFee: 150000
     }
   },
   confirmations: [{

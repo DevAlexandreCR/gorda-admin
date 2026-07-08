@@ -167,7 +167,7 @@
             height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
           }}>
             <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} isMobile={isMobile} onToggleSidebar={() => setSidebarOpen(o => !o)} />
-            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', paddingBottom: isMobile ? '0.75rem' : '1.5rem' }}>
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '0.75rem' : '1.5rem' }}>
               {content}
             </div>
           </main>
