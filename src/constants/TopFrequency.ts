@@ -1,4 +1,5 @@
 export enum TopFrequency {
     Daily = 'daily',
-    Weekly = 'weekly'
+    Weekly = 'weekly',
+    Monthly = 'monthly'
  }

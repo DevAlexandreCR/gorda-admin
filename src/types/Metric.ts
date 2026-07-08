@@ -7,3 +7,12 @@ export type Metric = {
 	status: ServiceStatus
 	count: number
 }
+
+export type RevenuePeriod = {
+	period: string
+	commissionSum: number
+	monthlyFeeSum: number
+	payingDriverCount: number
+	rechargeSum: number
+	rechargeCount: number
+}

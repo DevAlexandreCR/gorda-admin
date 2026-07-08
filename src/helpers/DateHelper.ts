@@ -54,6 +54,10 @@ export default class DateHelper {
   static endOfDayUnix(): number {
     return dayjs().endOf('day').unix()
   }
+
+  static startOfMonthUnix(): number {
+    return dayjs().startOf('month').unix()
+  }
   
   static aGo(unix: number): string {
     if (unix > 3600) {
@@ -105,9 +109,14 @@ export default class DateHelper {
     return dayjs(date, format).endOf('day').unix()
   }
 	
-	public static lastYear(): string
+	public static lastYear(format = 'YYYY-MM-DD'): string
 	{
-		return dayjs().subtract(11, 'month').startOf('month').format('YYYY-MM-DD').toString()
+		return dayjs().subtract(11, 'month').startOf('month').format(format).toString()
+	}
+
+	public static previousPeriod(format = 'YYYY-MM'): string
+	{
+		return dayjs().subtract(1, 'month').format(format)
 	}
 
   public static getTime(start: number, end: number, metric: dayjs.UnitType = 'minutes'): string {

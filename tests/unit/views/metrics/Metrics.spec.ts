@@ -25,6 +25,7 @@ describe('Metrics.vue', () => {
 			}
 		])
 		MetricRepository.getTopDrivers = jest.fn().mockResolvedValue(new Map())
+		MetricRepository.getRevenue = jest.fn().mockResolvedValue([])
 		wrapper = mount(Metrics,
 			{
 				global: {
