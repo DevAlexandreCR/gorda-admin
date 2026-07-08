@@ -33,7 +33,33 @@ body.dark-version .gorda-sidenav {
   --sidenav-active-bg: var(--surface-input);
 }
 
-// Nav row geometry
+// Brand row: flex like the reference so the photo and name center-align with a
+// real gap. The 3-class img selector outranks the vendor's
+// `.navbar-vertical .navbar-brand > img` (0,2,1) that caps max-height at 2rem.
+.gorda-sidenav .navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.gorda-sidenav .navbar-brand .navbar-brand-img {
+  width: 34px;
+  height: 34px;
+  max-height: none;
+  border-radius: .5rem;
+  object-fit: cover;
+  flex: none;
+}
+
+.gorda-sidenav .gorda-sidenav__brand-name {
+  margin-left: .6rem;
+}
+
+// Nav row geometry. Margin overrides the vendor's `margin: 0 1rem` (a 4-class
+// selector, hence the .navbar-expand-xs echo) to match the reference's 12px inset.
+.gorda-sidenav.navbar-expand-xs .navbar-nav .nav-link {
+  margin: 0 .75rem;
+}
+
 .gorda-sidenav .navbar-nav .nav-link {
   padding: .55rem .6rem;
   border-radius: .5rem;
@@ -101,10 +127,162 @@ body.dark-version .gorda-sidenav {
 }
 
 // Version label: muted, small, bold, centered
-.gorda-sidenav .position-absolute.bottom-0 {
+.gorda-sidenav .gorda-sidenav__version {
   color: var(--text-muted);
   font-size: .65rem;
   font-weight: 700;
   text-align: center;
-  padding-bottom: .5rem;
+  padding: .5rem 0 .75rem;
+}
+
+// ─── Gorda Sidenav — collapse-to-rail ────────────────────────────────────────
+// Desktop-only slim icon rail, toggled by a pill pinned to the sidenav's right
+// edge. See admin/src/ui_design/ui_kits/admin/Sidebar.jsx for the reference motion.
+
+$gorda-rail-width: 4.75rem;
+
+// Anchor for the absolutely-positioned toggle pill.
+.gorda-sidenav .sidenav-header {
+  position: relative;
+}
+
+// Toggle pill — hidden below xxl (see media block); base look + position here
+// so it's defined once regardless of viewport.
+.gorda-sidenav__rail-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--surface-card);
+  color: var(--text-heading);
+  font-size: .5rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, .45);
+  z-index: 5;
+  transition: background .15s ease, color .15s ease;
+
+  em {
+    -webkit-text-stroke: .4px currentColor;
+  }
+}
+
+// Overflow fix: soft-ui-dashboard/_navbar-vertical.scss sets `overflow-y: auto`
+// unconditionally on .navbar-vertical.navbar-expand-xs (#sidenav-main), which per the
+// CSS spec computes overflow-x to auto too — that clips the pill hanging outside the
+// aside's right edge. Restore visible overflow on the aside itself; the nav list keeps
+// its own scroll region via #sidenav-collapse-main's flex/overflow rule below.
+.gorda-sidenav.navbar-expand-xs {
+  overflow: visible !important;
+  display: flex;
+  flex-direction: column;
+  // Bootstrap's base .navbar sets align-items: center / justify-content: space-between,
+  // dormant while the vendor forced display: block. With the aside back on flex, that
+  // centering shrinks header/hr/nav to fit-content and re-centers them, inflating the
+  // row margins and pulling the edge pill inside the card — pin the column layout.
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+// Collapse region as a flex column so the spacer li (flex-grow-1) pushes the
+// logout row + version caption to the bottom of the aside. Vendor selector
+// `.navbar-vertical.navbar-expand-xs .navbar-collapse` is 3 classes, so this
+// 3-class form is required to win specificity (a 2-class form would lose).
+.gorda-sidenav.navbar-expand-xs .navbar-collapse {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  // Bootstrap's base .navbar-collapse sets align-items: center (dormant under the
+  // vendor's display: block) — on this flex column it would shrink the nav list to
+  // fit-content and center it, inflating the rows' lateral inset.
+  align-items: stretch;
+}
+
+// Rail is only offered at the breakpoint where the old desktop hamburger used to live
+// (d-none d-xxl-block, >=1400px) — below that the mobile hamburger (d-xxl-none) is still
+// in play, so collapsing the sidebar to a rail would leave no way to reopen it on hover-out.
+@include media-breakpoint-up(xxl) {
+  .gorda-sidenav .gorda-sidenav__rail-toggle {
+    display: flex;
+  }
+
+  .gorda-sidenav {
+    transition: width .28s cubic-bezier(.4, 0, .2, 1), padding .28s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .gorda-sidenav--rail {
+    width: $gorda-rail-width !important;
+  }
+
+  // Labels that fade/collapse away in the rail state.
+  .gorda-sidenav .nav-link-text,
+  .gorda-sidenav .gorda-sidenav__brand-name {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 160px;
+    opacity: 1;
+    transition: opacity .16s ease, max-width .28s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .gorda-sidenav--rail .nav-link-text,
+  .gorda-sidenav--rail .gorda-sidenav__brand-name {
+    margin: 0;
+    opacity: 0;
+    max-width: 0;
+  }
+
+  // Row centering: nav rows, logout row and the brand row collapse to icon-only.
+  .gorda-sidenav--rail .navbar-nav .nav-link,
+  .gorda-sidenav--rail #signOut {
+    justify-content: center;
+    padding: .55rem 0;
+  }
+
+  .gorda-sidenav--rail .navbar-nav .nav-link .icon {
+    margin-right: 0 !important;
+  }
+
+  .gorda-sidenav--rail .navbar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: .25rem;
+    padding-right: .25rem;
+  }
+
+  // Version footer: fade out rather than fighting Bootstrap's `w-100` (width: 100% !important).
+  .gorda-sidenav--rail .gorda-sidenav__version {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  // Main-content margin for the collapsed rail. Must come after the open-width margin
+  // rule at the top of this file — same specificity (two classes), so source order picks
+  // the winner, mirroring the pattern already used there.
+  .gorda-sidenav--rail.fixed-start ~ .main-content {
+    margin-left: $gorda-rail-width + 1.25;
+  }
+
+  // Vendor sets `.main-content, .sidenav { transition: $transition-base; }` (all .2s
+  // ease-in-out) unconditionally — a plain `transition: margin-left ...` here would
+  // replace that shorthand for every property, killing the dark-mode color/shadow fade.
+  // Repeating margin-left after $transition-base keeps the vendor transition for every
+  // other property while giving margin-left its own (slower, eased) timing, per the CSS
+  // spec rule that a property listed twice in transition-property uses its last entry.
+  .sidenav.fixed-start ~ .main-content {
+    transition: $transition-base, margin-left .28s cubic-bezier(.4, 0, .2, 1);
+  }
 }

@@ -121,6 +121,11 @@ const routes: Array<any> = [
         name: 'metrics',
         redirect: { name: 'metrics.index' },
         component: Metrics,
+        beforeEnter: (
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) => adminGuard(to, from, next),
         children: [
           {
             path: '/dashboard/metrics/index/',

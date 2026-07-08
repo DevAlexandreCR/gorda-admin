@@ -10,13 +10,6 @@
               <em class="sidenav-toggler-line"></em>
             </div>
           </a>
-          <a href="javascript:" class="nav-link d-none d-xxl-block text-body p-0 me-2" id="iconNavbarSidenavLg">
-            <div class="sidenav-toggler-inner">
-              <em class="sidenav-toggler-line"></em>
-              <em class="sidenav-toggler-line"></em>
-              <em class="sidenav-toggler-line"></em>
-            </div>
-          </a>
           <div class="gorda-topnav-heading">
             <div class="gorda-topnav-breadcrumb">
               <span class="gorda-topnav-breadcrumb-root">{{ $t('common.breadcrumb.root') }}</span>

@@ -1,170 +1,146 @@
 <template>
   <div class="mx-3">
-    <div class="card mb-4">
-      <div class="row m-3 align-items-center">
-        <div class="col-auto">
-          <h6 class="ms-2 mb-0">{{ $t('routes.vehicles') }} &middot; {{ total }}</h6>
-        </div>
-        <div class="col"></div>
-      </div>
+    <div class="gorda-vehicles-card">
+      <div class="gorda-vehicles-toolbar">
+        <h6 class="gorda-vehicles-toolbar__title">{{ $t('routes.vehicles') }} &middot; {{ total }}</h6>
 
-      <!-- Filter bar -->
-      <div class="mx-3 mb-2 d-flex align-items-center gap-2 flex-wrap">
-        <input
-          class="form-control form-control-sm"
-          style="max-width: 240px"
-          type="search"
-          :placeholder="$t('common.placeholders.search')"
-          v-model="search"
-          @input="onSearchInput"
-          autocomplete="off"
-        />
-        <div class="btn-group btn-group-sm" role="group">
+        <div class="gorda-vehicles-search">
+          <em class="fas fa-magnifying-glass"></em>
+          <input
+            type="search"
+            :placeholder="$t('vehicles.placeholders.search')"
+            v-model="search"
+            @input="onSearchInput"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="gorda-vehicles-pills">
           <button
             type="button"
-            class="btn"
-            :class="enabledFilter === null ? 'btn-secondary' : 'btn-outline-secondary'"
+            class="gorda-pill gorda-pill--neutral"
+            :class="{ 'gorda-pill--active': enabledFilter === null }"
             @click="setEnabledFilter(null)"
           >{{ $t('common.placeholders.all') }}</button>
           <button
             type="button"
-            class="btn"
-            :class="enabledFilter === true ? 'btn-success' : 'btn-outline-success'"
+            class="gorda-pill gorda-pill--success"
+            :class="{ 'gorda-pill--active': enabledFilter === true }"
             @click="setEnabledFilter(true)"
           >{{ $t('common.fields.enabled') }}</button>
           <button
             type="button"
-            class="btn"
-            :class="enabledFilter === false ? 'btn-danger' : 'btn-outline-danger'"
+            class="gorda-pill gorda-pill--danger"
+            :class="{ 'gorda-pill--active': enabledFilter === false }"
             @click="setEnabledFilter(false)"
           >{{ $t('common.fields.disabled') }}</button>
         </div>
+
+        <button
+          type="button"
+          class="gorda-vehicles-add-btn"
+          :title="$t('vehicles.actions.add_vehicle')"
+          :aria-label="$t('vehicles.actions.add_vehicle')"
+          @click="createModalRef?.open()"
+        >
+          <em class="fas fa-plus"></em>
+        </button>
       </div>
 
-      <div class="card-body px-0 pt-0 pb-2">
-        <div class="table-responsive p-0">
-          <div v-if="loading" class="text-center py-2 text-secondary text-xs">
-            <em class="fas fa-circle-notch fa-spin me-1"></em>{{ $t('common.messages.waiting') }}
-          </div>
+      <div class="table-responsive p-0">
+        <div v-if="loading" class="gorda-table-loading-indicator text-secondary text-xs">
+          <em class="fas fa-circle-notch fa-spin me-1"></em>{{ $t('common.messages.waiting') }}
+        </div>
 
-          <table class="table align-items-center mb-0" :class="{ 'opacity-50': loading }">
-            <caption hidden></caption>
-            <thead>
-              <tr>
-                <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
-                  @click="setSort('plate')"
-                >
-                  {{ $t('drivers.fields.plate') }}
-                  <span v-if="sortField === 'plate'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
-                </th>
-                <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
-                  @click="setSort('brand')"
-                >
-                  {{ $t('drivers.vehicle.brand') }}
-                  <span v-if="sortField === 'brand'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
-                </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
-                  {{ $t('drivers.vehicle.model') }}
-                </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
-                  {{ $t('drivers.placeholders.color') }}
-                </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
-                  {{ $t('common.fields.status') }}
-                </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
-                  {{ $t('vehicles.fields.linked_drivers') }}
-                </th>
-                <th
-                  class="text-uppercase text-secondary text-xxs font-weight-bolder cursor-pointer user-select-none"
-                  @click="setSort('created_at')"
-                >
-                  {{ $t('common.fields.createdAt') }}
-                  <span v-if="sortField === 'created_at'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
-                </th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder">
-                  {{ $t('common.actions.edit') }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="vehicle in rows" :key="vehicle.id">
-                <td class="py-0">
-                  <div class="d-flex px-2 py-1 align-items-center">
-                    <img
-                      :src="vehicle.photoUrl || ''"
-                      class="avatar avatar-sm me-3"
-                      alt="Vehicle"
-                      v-if="vehicle.photoUrl"
-                    />
-                    <router-link
-                      :to="{ name: 'vehicles.detail', params: { id: vehicle.id } }"
-                      class="text-sm font-weight-bold mb-0"
-                    >{{ vehicle.plate }}</router-link>
-                  </div>
-                </td>
-                <td>
-                  <p class="text-xs font-weight-bold mb-0">{{ vehicle.brand }}</p>
-                </td>
-                <td>
-                  <p class="text-xs text-secondary mb-0">{{ vehicle.model }}</p>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center gap-1">
-                    <span
-                      v-if="vehicle.color?.hex"
-                      class="rounded-circle d-inline-block"
-                      style="width: 14px; height: 14px; border: 1px solid #ccc;"
-                      :style="{ backgroundColor: vehicle.color.hex }"
-                    ></span>
-                    <p class="text-xs mb-0">{{ vehicle.color?.name ?? '' }}</p>
-                  </div>
-                </td>
-                <td class="align-middle text-center text-sm">
-                  <span
-                    class="gorda-status-badge"
-                    :class="vehicle.enabled ? 'gorda-status-badge--success' : 'gorda-status-badge--danger'"
-                  >
-                    {{ $t(vehicle.enabled ? 'common.fields.enabled' : 'common.fields.disabled') }}
-                  </span>
-                </td>
-                <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold">
-                    {{ vehicle.linked_drivers_count ?? 0 }}
-                  </span>
-                </td>
-                <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold">
-                    {{ vehicle.created_at ? formatDate(vehicle.created_at) : '' }}
-                  </span>
-                </td>
-                <td class="align-middle">
+        <table class="table align-items-center mb-0 gorda-vehicles-table" :class="{ 'gorda-table-body--loading': loading }">
+          <caption hidden></caption>
+          <thead>
+            <tr>
+              <th class="gorda-th cursor-pointer user-select-none" @click="setSort('plate')">
+                {{ $t('drivers.fields.plate') }}
+                <em class="gorda-sort-icon" :class="sortIconClass('plate')"></em>
+              </th>
+              <th class="gorda-th cursor-pointer user-select-none" @click="setSort('brand')">
+                {{ $t('vehicles.fields.brand') }}
+                <em class="gorda-sort-icon" :class="sortIconClass('brand')"></em>
+              </th>
+              <th class="gorda-th">{{ $t('vehicles.fields.model') }}</th>
+              <th class="gorda-th">{{ $t('vehicles.fields.color') }}</th>
+              <th class="gorda-th text-center">{{ $t('common.fields.status') }}</th>
+              <th class="gorda-th text-center">{{ $t('vehicles.fields.linked_drivers') }}</th>
+              <th class="gorda-th text-center cursor-pointer user-select-none" @click="setSort('created_at')">
+                {{ $t('common.fields.createdAt') }}
+                <em class="gorda-sort-icon" :class="sortIconClass('created_at')"></em>
+              </th>
+              <th class="gorda-th text-center">{{ $t('common.actions.edit') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="vehicle in rows" :key="vehicle.id" class="gorda-vehicles-row">
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="gorda-plate-icon"><em class="fas fa-car"></em></span>
                   <router-link
-                    :to="{ name: 'vehicles.edit', params: { id: vehicle.id } }"
-                    class="btn btn-sm btn-outline-primary px-2"
-                    :title="$t('common.actions.edit')"
-                  >
-                    <em class="fas fa-pencil"></em>
-                  </router-link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    :to="{ name: 'vehicles.detail', params: { id: vehicle.id } }"
+                    class="gorda-plate-link"
+                  >{{ vehicle.plate }}</router-link>
+                </div>
+              </td>
+              <td><span class="gorda-brand">{{ vehicle.brand }}</span></td>
+              <td><span class="gorda-model">{{ vehicle.model }}</span></td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <span
+                    v-if="vehicle.color?.hex"
+                    class="gorda-color-dot"
+                    :style="{ backgroundColor: vehicle.color.hex }"
+                  ></span>
+                  <span class="gorda-color-name">{{ vehicle.color?.name ?? '—' }}</span>
+                </div>
+              </td>
+              <td class="text-center">
+                <span
+                  class="gorda-status-badge"
+                  :class="vehicle.enabled ? 'gorda-status-badge--solid-success' : 'gorda-status-badge--solid-danger'"
+                >
+                  {{ $t(vehicle.enabled ? 'common.fields.enabled' : 'common.fields.disabled') }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span
+                  class="gorda-linked-count"
+                  :class="{ 'gorda-linked-count--active': (vehicle.linked_drivers_count ?? 0) > 0 }"
+                >{{ vehicle.linked_drivers_count ?? 0 }}</span>
+              </td>
+              <td class="text-center">
+                <span class="gorda-created">{{ vehicle.created_at ? formatDate(vehicle.created_at) : '' }}</span>
+              </td>
+              <td class="text-center">
+                <router-link
+                  :to="{ name: 'vehicles.edit', params: { id: vehicle.id } }"
+                  class="gorda-edit-btn"
+                  :title="$t('common.actions.edit')"
+                >
+                  <em class="fas fa-pencil"></em>
+                </router-link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-          <div class="container mt-2">
-            <PagePaginator
-              :total="total"
-              :page="page"
-              :per-page="perPage"
-              @update:page="onPageUpdate"
-              @update:per-page="onPerPageUpdate"
-            />
-          </div>
+        <div class="px-3 pb-2">
+          <PagePaginator
+            :total="total"
+            :page="page"
+            :per-page="perPage"
+            @update:page="onPageUpdate"
+            @update:per-page="onPerPageUpdate"
+          />
         </div>
       </div>
     </div>
+
+    <VehicleCreateModal ref="createModalRef" @created="onVehicleCreated" />
   </div>
 </template>
 
@@ -175,6 +151,7 @@ import VehicleRepository from '@/repositories/VehicleRepository'
 import ToastService from '@/services/ToastService'
 import i18n from '@/plugins/i18n'
 import PagePaginator from '@/components/PagePaginator.vue'
+import VehicleCreateModal from '@/components/vehicles/VehicleCreateModal.vue'
 import { Vehicle } from '@/types/Vehicle'
 import dayjs from 'dayjs'
 
@@ -248,6 +225,13 @@ function setSort(field: string): void {
   commitUrlState()
 }
 
+function sortIconClass(field: string): string[] {
+  if (sortField.value !== field) return ['fas', 'fa-sort']
+  return sortDir.value === 'asc'
+    ? ['fas', 'fa-sort-up', 'gorda-sort-icon--active']
+    : ['fas', 'fa-sort-down', 'gorda-sort-icon--active']
+}
+
 // ── Enabled filter ─────────────────────────────────────────────────────────────
 
 function setEnabledFilter(value: boolean | null): void {
@@ -289,6 +273,7 @@ function onPerPageUpdate(value: number): void {
 const rows = ref<Vehicle[]>([])
 const total = ref<number>(0)
 const loading = ref<boolean>(false)
+const reloadNonce = ref<number>(0)
 
 watchEffect(async () => {
   void committedSearch.value
@@ -296,6 +281,7 @@ watchEffect(async () => {
   void sortParam.value
   void page.value
   void perPage.value
+  void reloadNonce.value
 
   const _search = committedSearch.value
   const _enabled = enabledFilter.value
@@ -327,6 +313,16 @@ watchEffect(async () => {
   }
 })
 
+// ── Create vehicle ─────────────────────────────────────────────────────────────
+
+const createModalRef = ref<InstanceType<typeof VehicleCreateModal> | null>(null)
+
+function onVehicleCreated(vehicleId: string): void {
+  void vehicleId
+  page.value = 1
+  reloadNonce.value++
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function formatDate(value: string): string {
@@ -334,3 +330,210 @@ function formatDate(value: string): string {
   return dayjs(value).format('YYYY-MM-DD')
 }
 </script>
+
+<style scoped>
+.gorda-vehicles-card {
+  background: var(--surface-card);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.gorda-vehicles-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem 0.85rem;
+}
+
+.gorda-vehicles-toolbar__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.gorda-vehicles-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 240px;
+  padding: 0.4rem 0.7rem;
+  background: var(--surface-input);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+}
+
+.gorda-vehicles-search em {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.gorda-vehicles-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.8rem;
+  color: var(--text-body);
+}
+
+.gorda-vehicles-pills {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.gorda-pill {
+  padding: 0.35rem 0.9rem;
+  border-radius: 50rem;
+  border: 1.5px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.gorda-pill--neutral.gorda-pill--active {
+  background: var(--surface-input);
+  border-color: var(--text-heading);
+  color: var(--text-heading);
+}
+
+.gorda-pill--success.gorda-pill--active {
+  background: rgba(130, 214, 22, 0.12);
+  border-color: #82d616;
+  color: #82d616;
+}
+
+.gorda-pill--danger.gorda-pill--active {
+  background: rgba(234, 6, 6, 0.1);
+  border-color: #ea0606;
+  color: #ea0606;
+}
+
+.gorda-vehicles-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.gorda-th {
+  padding: 0.6rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.gorda-sort-icon {
+  margin-left: 0.3rem;
+  font-size: 0.65rem;
+  opacity: 0.4;
+}
+
+.gorda-sort-icon--active {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.gorda-vehicles-table td {
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.gorda-vehicles-row:hover {
+  background: var(--surface-input);
+}
+
+.gorda-plate-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 0.4rem;
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.gorda-plate-link {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.gorda-brand {
+  font-weight: 700;
+  color: var(--text-heading);
+  font-size: 0.8rem;
+}
+
+.gorda-model {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.gorda-color-dot {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-color);
+}
+
+.gorda-color-name {
+  font-size: 0.78rem;
+  color: var(--text-body);
+}
+
+.gorda-linked-count {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.gorda-linked-count--active {
+  color: var(--text-heading);
+}
+
+.gorda-created {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.gorda-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.45rem;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+</style>

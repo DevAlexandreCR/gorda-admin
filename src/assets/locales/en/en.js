@@ -47,6 +47,7 @@ export default {
     },
     placeholders: {
       photo_url: 'Enter the photo URL',
+      search: 'Search vehicle...',
     },
     messages: {
       no_linked_drivers: 'No linked drivers',

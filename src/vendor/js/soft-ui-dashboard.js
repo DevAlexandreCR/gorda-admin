@@ -340,7 +340,7 @@ let className = 'g-sidenav-pinned';
 
 if (iconNavbarSidenav) {
   iconNavbarSidenav.addEventListener("click", toggleSidenav);
-  iconNavbarSidenavLg.addEventListener("click", toggleSidenav);
+  if (iconNavbarSidenavLg) iconNavbarSidenavLg.addEventListener("click", toggleSidenav);
 }
 
 if (iconSidenav) {

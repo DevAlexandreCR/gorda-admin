@@ -38,6 +38,20 @@
   background: var(--badge-warning-bg);
   color: var(--badge-warning-fg);
 }
+.gorda-status-badge--solid-success,
+.gorda-status-badge--solid-danger {
+  color: #ffffff;
+}
+.gorda-status-badge--solid-success::before,
+.gorda-status-badge--solid-danger::before {
+  content: none;
+}
+.gorda-status-badge--solid-success {
+  background: #82d616;
+}
+.gorda-status-badge--solid-danger {
+  background: #ea0606;
+}
 
 .gorda-table-header {
   display: flex;
