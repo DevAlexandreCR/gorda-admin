@@ -212,7 +212,8 @@ const onUpdate = (socket: WhatsAppClient): void => {
   connecting.value = false
   qr.value = socket.qr
   loading.value = socket.loading
-  if (qr.value) QRCode.toCanvas(document.getElementById(props.client.id), qr.value as string, (e) => {console.log(e)})
+  // width kept below .wpc-qr-box's 176px so the QR is never clipped
+  if (qr.value) QRCode.toCanvas(document.getElementById(props.client.id), qr.value as string, { width: 160 }, (e) => {console.log(e)})
   connected.value = socket.isConnected()
   connecting.value = socket.isConnecting()
 }
@@ -340,6 +341,7 @@ onMounted(() => {
 .wpc-status-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
   border-bottom: 1px solid var(--border-subtle);
@@ -399,6 +401,7 @@ onMounted(() => {
 }
 .wpc-primary-btn {
   flex: none;
+  margin-left: auto;
   padding: 0.45rem 1.25rem;
   border: none;
   border-radius: 0.5rem;
@@ -426,6 +429,7 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   flex: none;
+  margin-left: auto;
   gap: 0.35rem;
   padding: 0.3rem 0.75rem;
   border-radius: 0.5rem;
@@ -460,6 +464,7 @@ onMounted(() => {
 .wpc-qr-canvas {
   display: block;
   max-width: 100%;
+  max-height: 100%;
   height: auto;
 }
 .wpc-qr-spinner {
