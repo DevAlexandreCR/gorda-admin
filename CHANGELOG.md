@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.13(2026-07-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.13...2.0.12)
+
+### Added
+
+- Redesign the Metrics page with revenue visibility: seven KPI cards (monthly services with MoM delta, completion rate, cancellation rate, leading driver, commission income, monthly-fee income, total recharges), an income-by-charge-type chart, a monthly income breakdown, and a day/week/month toggle on the top-5 drivers.
+- Redesign the WhatsApp message editor: an interactive-message builder (button/list/location-request) with a live WhatsApp phone preview shown for all message editing.
+- Add a collapsible sidebar rail whose collapsed state persists across sessions.
+
+### Changed
+
+- Unify all admin data tables on a shared design-system layer (`custom/__tables.scss`): soft-tint status pills with a leading dot and magenta selection controls across drivers, users, vehicles, and messages.
+
 ## [2.0.12(2026-07-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.0.12...2.0.11)
 
 ### Changed
