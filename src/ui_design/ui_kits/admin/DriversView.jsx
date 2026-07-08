@@ -3,6 +3,7 @@ function DriversView({ onEditDriver }) {
   const { Card, Avatar, Badge, Button, Switch, Select, Input } = window.GordaDesignSystem_019e24;
   const data = window.GordaData;
   const [query, setQuery] = React.useState('');
+  const [showCreate, setShowCreate] = React.useState(false);
 
   const defaultFilters = { estado: 'todos', pago: 'todos', estadoPago: 'todos', periodo: 'jul-2026', inactividad: 'ninguno' };
   const [filters, setFilters] = React.useState(defaultFilters);
@@ -36,9 +37,13 @@ function DriversView({ onEditDriver }) {
         <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)' }}>Drivers · {data.drivers.length}</h6>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.6rem' }}>
           <Button color="warning" variant="gradient" size="sm" icon="fas fa-paper-plane">Enviar mensaje</Button>
-          <Button color="primary" size="sm" rounded icon="fas fa-plus" />
+          <Button color="primary" size="sm" rounded icon="fas fa-plus" onClick={() => setShowCreate(true)} />
         </div>
       </div>
+
+      {showCreate && (
+        <CreateDriverModal onClose={() => setShowCreate(false)} onCreate={() => {}} />
+      )}
 
       {/* Filters */}
       <div style={{ padding: '0 1rem 1rem', borderBottom: '1px solid var(--border-subtle)' }}>

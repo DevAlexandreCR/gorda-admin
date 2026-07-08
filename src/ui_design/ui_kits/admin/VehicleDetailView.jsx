@@ -1,8 +1,25 @@
-// Vehicle detail view — info card + linked drivers with selectable toggles.
+// Vehicle detail view — direct-edit form (no separate read-only mode) + linked drivers.
 function VehicleDetailView({ vehicle: initialVehicle, onBack }) {
-  const { Card, Badge, Button, Switch } = window.GordaDesignSystem_019e24;
+  const { Card, Badge, Button, Switch, Input } = window.GordaDesignSystem_019e24;
+  const isMobile = window.useIsMobile();
 
   const [vehicle, setVehicle] = React.useState(initialVehicle);
+  const [form, setForm] = React.useState({
+    plate: initialVehicle.plate || '',
+    brand: initialVehicle.brand || '',
+    model: initialVehicle.model || '',
+    photoUrl: initialVehicle.photoUrl || '',
+    enabled: initialVehicle.enabled,
+    colorName: initialVehicle.color?.name || '',
+    colorHex: initialVehicle.color?.hex || '#8392ab',
+    soat: initialVehicle.soat || '',
+    tec: initialVehicle.tec || '',
+  });
+  const [saved, setSaved] = React.useState(false);
+  const savedTimer = React.useRef(null);
+  const colorPickerRef = React.useRef(null);
+
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   function toggleSelectable(driverId, newVal) {
     setVehicle(v => ({
@@ -13,59 +30,35 @@ function VehicleDetailView({ vehicle: initialVehicle, onBack }) {
     }));
   }
 
-  // Expiry status helper
-  function expiryStatus(dateStr) {
-    if (!dateStr || dateStr === '—') return 'neutral';
-    const exp  = new Date(dateStr);
-    const now  = new Date();
-    const diff = (exp - now) / (1000 * 60 * 60 * 24); // days
-    if (diff < 0)   return 'expired';
-    if (diff < 30)  return 'warning';
-    return 'ok';
+  function handleSubmit() {
+    setVehicle(v => ({
+      ...v,
+      plate: form.plate, brand: form.brand, model: form.model,
+      photoUrl: form.photoUrl, enabled: form.enabled,
+      color: { name: form.colorName, hex: form.colorHex },
+      soat: form.soat, tec: form.tec,
+    }));
+    setSaved(true);
+    clearTimeout(savedTimer.current);
+    savedTimer.current = setTimeout(() => setSaved(false), 1800);
   }
 
-  function ExpiryBadge({ date }) {
-    const status = expiryStatus(date);
-    const cfg = {
-      expired: { bg: '#fde0e0', fg: '#b30505', icon: 'fas fa-triangle-exclamation', label: 'Vencido' },
-      warning: { bg: '#fef6d8', fg: '#9a7b00', icon: 'fas fa-clock',                label: 'Por vencer' },
-      ok:      { bg: '#eafad0', fg: '#4d8b00', icon: 'fas fa-check',                label: null },
-      neutral: { bg: 'var(--surface-input)', fg: 'var(--text-secondary)', icon: null, label: null },
-    }[status];
-    return (
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-heading)' }}>
-        {date || '—'}
-        {cfg.icon && (
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
-            padding: '0.1rem 0.45rem', borderRadius: '50rem',
-            background: cfg.bg, color: cfg.fg, fontSize: '0.62rem', fontWeight: 700,
-          }}>
-            <em className={cfg.icon} />{cfg.label}
-          </span>
-        )}
-      </span>
-    );
+  React.useEffect(() => () => clearTimeout(savedTimer.current), []);
+
+  // Expiry helper — shown as a small hint under the date fields, not a new field.
+  function expiryHint(dateStr) {
+    if (!dateStr) return null;
+    const exp = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.round((exp - now) / (1000 * 60 * 60 * 24));
+    if (diff < 0) return { color: '#ea0606', text: 'Vencido' };
+    if (diff < 30) return { color: '#fbcf33', text: `Vence en ${diff} días` };
+    return { color: '#82d616', text: `Vigente · ${diff} días` };
   }
 
-  // ── table styles ──────────────────────────────────────────────────────────
-  const thD = {
-    textAlign: 'left', textTransform: 'uppercase',
-    fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.04em',
-    color: 'var(--text-secondary)', padding: '0.55rem 1rem',
-    borderBottom: '1px solid var(--border-subtle)',
-    background: 'var(--body-bg)',
-  };
-  const tdKey = {
-    padding: '0.65rem 1rem', fontSize: '0.75rem', fontWeight: 700,
-    color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-subtle)',
-    textTransform: 'uppercase', letterSpacing: '0.02em', width: '42%',
-    whiteSpace: 'nowrap',
-  };
-  const tdVal = {
-    padding: '0.65rem 1rem', fontSize: '0.82rem',
-    color: 'var(--text-heading)', borderBottom: '1px solid var(--border-subtle)',
-  };
+  const soatHint = expiryHint(form.soat);
+  const tecHint = expiryHint(form.tec);
+
   const thL = {
     textAlign: 'left', textTransform: 'uppercase',
     fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.04em',
@@ -95,42 +88,15 @@ function VehicleDetailView({ vehicle: initialVehicle, onBack }) {
           </h6>
         </div>
 
-        {/* Action buttons — mirrors the screenshot exactly */}
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
-          <button onClick={onBack} style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            padding: '0.45rem 1.1rem', borderRadius: '0.5rem', border: 'none',
-            background: 'linear-gradient(310deg,#2152ff,#21d4fd)',
-            color: '#fff', fontFamily: "'Open Sans', sans-serif",
-            fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(33,82,255,0.35)', transition: 'opacity 0.15s',
-            letterSpacing: '0.02em',
-          }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-          >
-            <em className="fas fa-arrow-left" />REGRESAR
-          </button>
-          <button style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            padding: '0.45rem 1.1rem', borderRadius: '0.5rem',
-            border: '1.5px solid #cb0c9f', background: 'transparent',
-            color: '#cb0c9f', fontFamily: "'Open Sans', sans-serif",
-            fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
-            transition: 'all 0.15s', letterSpacing: '0.02em',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#cb0c9f'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#cb0c9f'; }}
-          >
-            <em className="fas fa-pencil" />EDITAR
-          </button>
-        </div>
+        <Button color="info" variant="gradient" size="sm" icon="fas fa-arrow-left" onClick={onBack}>
+          Regresar
+        </Button>
       </div>
 
       {/* ── Two-column layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '1.25rem', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1.25fr) minmax(0,1fr)', gap: '1.25rem', alignItems: 'start' }}>
 
-        {/* LEFT — Detalle del Vehículo */}
+        {/* LEFT — Editar Vehículo (direct-edit form) */}
         <Card padding="0">
           {/* Card header */}
           <div style={{
@@ -147,69 +113,118 @@ function VehicleDetailView({ vehicle: initialVehicle, onBack }) {
               <em className="fas fa-car-side" />
             </span>
             <h6 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-heading)' }}>
-              Detalle del Vehículo
+              Editar Vehículo
             </h6>
           </div>
 
-          {/* Vehicle photo / placeholder */}
-          <div style={{
-            margin: '1.25rem auto',
-            width: 180, height: 140,
-            borderRadius: '0.75rem',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            background: 'var(--surface-input)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            {vehicle.photoUrl ? (
-              <img src={vehicle.photoUrl} alt={vehicle.plate}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-                <em className="fas fa-car-side" style={{ fontSize: '3.5rem', opacity: 0.25 }} />
-                <div style={{ fontSize: '0.65rem', marginTop: '0.4rem', opacity: 0.4 }}>Sin foto</div>
-              </div>
-            )}
-          </div>
+          <div style={{ padding: '1.25rem' }}>
 
-          {/* Details table */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Open Sans', sans-serif" }}>
-            <tbody>
-              {[
-                { key: 'Placa',   val: <span style={{ fontWeight: 800, color: '#cb0c9f', letterSpacing: '0.06em' }}>{vehicle.plate}</span> },
-                { key: 'Marca',   val: vehicle.brand },
-                { key: 'Modelo',  val: vehicle.model },
-                { key: 'Año',     val: vehicle.year },
-                {
-                  key: 'Color', val: (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                      <span style={{
-                        width: 14, height: 14, borderRadius: '50%', flex: 'none',
-                        background: vehicle.color?.hex || '#ccc',
-                        border: '1.5px solid var(--border-color)',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                      }} />
-                      {vehicle.color?.name ?? '—'}
+            {/* Photo + URL + Estado — centered, compact */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.85rem', marginBottom: '1.5rem' }}>
+              <div style={{ position: 'relative', width: 164, height: 128 }}>
+                <div style={{
+                  width: '100%', height: '100%',
+                  borderRadius: '0.75rem', overflow: 'hidden',
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--surface-input)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {form.photoUrl ? (
+                    <img src={form.photoUrl} alt={form.plate}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                      <em className="fas fa-car-side" style={{ fontSize: '3rem', opacity: 0.25 }} />
                     </div>
-                  ),
-                },
-                {
-                  key: 'Estado', val: (
-                    <Badge color={vehicle.enabled ? 'success' : 'danger'} variant="solid">
-                      {vehicle.enabled ? 'HABILITADO' : 'INHABILITADO'}
-                    </Badge>
-                  ),
-                },
-                { key: 'Venc. SOAT',    val: <ExpiryBadge date={vehicle.soat} /> },
-                { key: 'Venc. Tec-Mec', val: <ExpiryBadge date={vehicle.tec}  /> },
-              ].map(({ key, val }) => (
-                <tr key={key}>
-                  <td style={tdKey}>{key}</td>
-                  <td style={tdVal}>{val}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  )}
+                </div>
+                <button
+                  title="Cambiar foto"
+                  onClick={() => document.getElementById('vehicle-photo-url')?.focus()}
+                  style={{
+                    position: 'absolute', bottom: -10, right: -10,
+                    width: 32, height: 32, borderRadius: '50%', border: '3px solid var(--surface-card)',
+                    background: 'linear-gradient(310deg,#17c1e8,#21d4fd)', color: '#fff',
+                    cursor: 'pointer', fontSize: '0.75rem',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
+                  }}
+                >
+                  <em className="fas fa-pencil" />
+                </button>
+              </div>
+
+              <Input id="vehicle-photo-url" label="URL de la foto" value={form.photoUrl} onChange={set('photoUrl')}
+                placeholder="https://…" icon="fas fa-link" style={{ width: '100%', maxWidth: 340 }} />
+
+              <Switch
+                checked={form.enabled}
+                onChange={(v) => setForm(f => ({ ...f, enabled: v }))}
+                label={form.enabled ? 'Habilitado' : 'Inhabilitado'}
+              />
+            </div>
+
+            {/* Form fields — two per row, so the card stays wide & compact instead of tall & narrow */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '1rem' }}>
+                <Input label="Placa" value={form.plate} onChange={set('plate')} placeholder="ABC123" icon="fas fa-id-card" />
+                <Input label="Marca" value={form.brand} onChange={set('brand')} placeholder="Marca del vehículo" icon="fas fa-industry" />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '1rem' }}>
+                <Input label="Modelo" value={form.model} onChange={set('model')} placeholder="Año / modelo" icon="fas fa-calendar" />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-heading)', marginBottom: '0.5rem', marginLeft: '0.25rem' }}>Color</div>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'stretch' }}>
+                    <Input value={form.colorName} onChange={set('colorName')} placeholder="Nombre del color" style={{ flex: 1, minWidth: 0 }} />
+                    <button
+                      title="Elegir color"
+                      onClick={() => colorPickerRef.current?.click()}
+                      style={{
+                        width: 42, flex: 'none', borderRadius: '0.5rem',
+                        border: '1px solid var(--border-color)', cursor: 'pointer',
+                        background: form.colorHex, position: 'relative', overflow: 'hidden',
+                      }}
+                    >
+                      <input
+                        ref={colorPickerRef} type="color" value={form.colorHex}
+                        onChange={(e) => setForm(f => ({ ...f, colorHex: e.target.value }))}
+                        style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', border: 'none', padding: 0 }}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '1rem' }}>
+                <div style={{ minWidth: 0 }}>
+                  <Input type="date" label="Soat" value={form.soat} onChange={set('soat')} icon="fas fa-file-shield" />
+                  {soatHint && (
+                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: soatHint.color, marginTop: '0.35rem', marginLeft: '0.25rem' }}>{soatHint.text}</div>
+                  )}
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <Input type="date" label="Tecno-mecánica" value={form.tec} onChange={set('tec')} icon="fas fa-gauge" />
+                  {tecHint && (
+                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: tecHint.color, marginTop: '0.35rem', marginLeft: '0.25rem' }}>{tecHint.text}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.75rem', marginTop: '1.5rem' }}>
+              {saved && (
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#82d616', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <em className="fas fa-check-circle" />Guardado
+                </span>
+              )}
+              <Button color="info" variant="gradient" size="sm" icon="fas fa-paper-plane" onClick={handleSubmit}>
+                Enviar
+              </Button>
+            </div>
+          </div>
         </Card>
 
         {/* RIGHT — Conductores Vinculados */}

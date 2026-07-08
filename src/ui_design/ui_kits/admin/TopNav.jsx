@@ -1,6 +1,6 @@
 // Gorda admin top navbar — breadcrumb + title, search, theme toggle, icons.
 // On mobile: shows hamburger button, hides search and bell.
-function TopNav({ title, breadcrumb, theme, onToggleTheme, isMobile, onToggleSidebar }) {
+function TopNav({ title, breadcrumb, theme, onToggleTheme, isMobile, onToggleSidebar, onAvatarClick }) {
   const isDark = theme === 'dark';
   return (
     <nav style={{
@@ -70,10 +70,13 @@ function TopNav({ title, breadcrumb, theme, onToggleTheme, isMobile, onToggleSid
 
         <img
           src="redblanca.jpg" alt="branch"
+          onClick={onAvatarClick}
+          title="Perfil"
           style={{
             width: 34, height: 34, flex: 'none',
             borderRadius: '50%', objectFit: 'cover',
             boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4)',
+            cursor: onAvatarClick ? 'pointer' : 'default',
           }}
         />
       </div>

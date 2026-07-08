@@ -46,6 +46,7 @@
   <script type="text/babel" src="ServicesView.jsx"></script>
   <script type="text/babel" src="UsersView.jsx"></script>
   <script type="text/babel" src="UserDetailView.jsx"></script>
+  <script type="text/babel" src="CreateDriverModal.jsx"></script>
   <script type="text/babel" src="DriversView.jsx"></script>
   <script type="text/babel" src="EditDriverView.jsx"></script>
   <script type="text/babel" src="SettingsView.jsx"></script>
@@ -56,6 +57,7 @@
   <script type="text/babel" src="EditMessageModal.jsx"></script>
   <script type="text/babel" src="LoadingModal.jsx"></script>
   <script type="text/babel" src="LoginView.jsx"></script>
+  <script type="text/babel" src="ProfileView.jsx"></script>
 
   <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
@@ -63,7 +65,7 @@
     const TITLES = {
       dashboard: 'Dashboard', users: 'Usuarios', drivers: 'Drivers',
       vehicles: 'Vehículos', places: 'Places', whatsapp: 'WhatsApp connection',
-      metrics: 'Metrics', settings: 'Settings',
+      metrics: 'Metrics', settings: 'Settings', profile: 'Perfil',
     };
 
     function Placeholder({ title }) {
@@ -115,6 +117,7 @@
       if (!authed) return <LoginView onLogin={() => setAuthed(true)} />;
 
       const handleNavigate = (v) => { setView(v); setEditingDriver(null); setViewingVehicle(null); setEditingUser(undefined); if (isMobile) setSidebarOpen(false); };
+      const goToProfile = () => handleNavigate('profile');
 
       let content;
       if (view === 'dashboard') content = <ServicesView />;
@@ -143,6 +146,7 @@
       else if (view === 'whatsapp') content = <WhatsAppView />;
       else if (view === 'settings') content = <SettingsView />;
       else if (view === 'metrics') content = <MetricsView />;
+      else if (view === 'profile') content = <ProfileView />;
       else content = <Placeholder title={TITLES[view]} />;
 
       const navTitle = editingDriver ? 'Drivers' : viewingVehicle ? 'Vehículos' : (editingUser !== undefined ? 'Usuarios' : (TITLES[view] || view));
@@ -166,7 +170,7 @@
             transition: 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)', minWidth: 0,
             height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
           }}>
-            <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} isMobile={isMobile} onToggleSidebar={() => setSidebarOpen(o => !o)} />
+            <TopNav title={navTitle} theme={theme} onToggleTheme={toggleTheme} isMobile={isMobile} onToggleSidebar={() => setSidebarOpen(o => !o)} onAvatarClick={goToProfile} />
             <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '0.75rem' : '1.5rem' }}>
               {content}
             </div>

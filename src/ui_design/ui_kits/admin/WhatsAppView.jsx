@@ -117,10 +117,10 @@ function ToggleRow({ label, sub, checked, onChange, disabled, danger, last }) {
 }
 
 /* ── status pill ──────────────────────────────────────────── */
-function StatusPill({ connected, connecting, loading }) {
+function StatusPill({ connected, connecting, awaiting }) {
   let label, bg, fg, dot;
-  if (loading) { label = 'Loading…'; bg = 'var(--badge-warning-bg)'; fg = 'var(--badge-warning-fg)'; dot = '#fbcf33'; }
-  else if (connecting) { label = 'Connecting'; bg = 'var(--badge-info-bg)'; fg = 'var(--badge-info-fg)'; dot = '#17c1e8'; }
+  if (awaiting) { label = 'Esperando escaneo'; bg = 'var(--badge-info-bg)'; fg = 'var(--badge-info-fg)'; dot = '#17c1e8'; }
+  else if (connecting) { label = 'Generando código…'; bg = 'var(--badge-info-bg)'; fg = 'var(--badge-info-fg)'; dot = '#17c1e8'; }
   else if (connected) { label = 'Conectado'; bg = 'var(--badge-success-bg)'; fg = 'var(--badge-success-fg)'; dot = '#82d616'; }
   else { label = 'Desconectado'; bg = 'var(--badge-danger-bg)'; fg = 'var(--badge-danger-fg)'; dot = '#ea0606'; }
   return (
@@ -137,10 +137,10 @@ function StatusPill({ connected, connecting, loading }) {
 }
 
 /* ── connection state icon (small, lives in card header) ──── */
-function ConnectionIcon({ connected, connecting, loading }) {
+function ConnectionIcon({ connected, connecting }) {
   const bg = connected
     ? 'linear-gradient(310deg,#128c7e,#25d366)'
-    : connecting || loading
+    : connecting
       ? 'linear-gradient(310deg,#2152ff,#21d4fd)'
       : 'var(--gradient-secondary)';
   return (
@@ -151,10 +151,67 @@ function ConnectionIcon({ connected, connecting, loading }) {
       boxShadow: '0 2px 9px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.08)',
       color: '#fff', fontSize: '1.05rem',
     }}>
-      {(connecting || loading)
+      {connecting
         ? <em className="fa-solid fa-spinner fa-spin" />
         : <em className="fa-brands fa-whatsapp" />}
     </div>
+  );
+}
+
+/* ── mock QR code (seeded per client so it's stable across re-renders) ──── */
+function seededRandom(seed) {
+  let s = 0;
+  for (let i = 0; i < seed.length; i++) s = (s * 31 + seed.charCodeAt(i)) >>> 0;
+  return function () {
+    s ^= s << 13; s >>>= 0;
+    s ^= s >> 17;
+    s ^= s << 5; s >>>= 0;
+    return (s >>> 0) / 4294967296;
+  };
+}
+
+function QRCodeCanvas({ seed, size = 176 }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const modules = 25;
+    const cell = size / modules;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#0b0b0f';
+
+    const rand = seededRandom(seed || 'gorda');
+    const isFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= modules - 7) || (r >= modules - 7 && c < 7);
+
+    // data modules — deterministic noise, skipping finder-pattern zones
+    for (let r = 0; r < modules; r++) {
+      for (let c = 0; c < modules; c++) {
+        if (isFinder(r, c)) continue;
+        if (rand() > 0.545) ctx.fillRect(c * cell, r * cell, cell, cell);
+      }
+    }
+
+    // finder patterns (top-left, top-right, bottom-left)
+    const drawFinder = (r0, c0) => {
+      ctx.fillRect(c0 * cell, r0 * cell, 7 * cell, 7 * cell);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect((c0 + 1) * cell, (r0 + 1) * cell, 5 * cell, 5 * cell);
+      ctx.fillStyle = '#0b0b0f';
+      ctx.fillRect((c0 + 2) * cell, (r0 + 2) * cell, 3 * cell, 3 * cell);
+    };
+    drawFinder(0, 0);
+    drawFinder(0, modules - 7);
+    drawFinder(modules - 7, 0);
+  }, [seed, size]);
+
+  return (
+    <canvas ref={ref} style={{ display: 'block', borderRadius: '0.35rem' }} />
   );
 }
 
@@ -162,6 +219,8 @@ function ConnectionIcon({ connected, connecting, loading }) {
 function ConnectionCard({ client, isDefault, onSetDefault }) {
   const [connected, setConnected] = React.useState(client.connected);
   const [connecting, setConnecting] = React.useState(false);
+  const [awaiting, setAwaiting] = React.useState(false);
+  const [qrNonce, setQrNonce] = React.useState(0);
   const [settings, setSettings] = React.useState({
     wpNotifications: client.wpNotifications,
     assistant: client.assistant,
@@ -170,11 +229,28 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
   });
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [showRestartModal, setShowRestartModal] = React.useState(false);
+  const timers = React.useRef([]);
+
+  React.useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   function handleConnect() {
     setConnecting(true);
-    // simulate connect
-    setTimeout(() => { setConnecting(false); setConnected(true); }, 2200);
+    setAwaiting(false);
+    // simulate backend generating a pairing QR
+    timers.current.push(setTimeout(() => { setConnecting(false); setAwaiting(true); }, 700));
+    // simulate the phone scanning it
+    timers.current.push(setTimeout(() => { setAwaiting(false); setConnected(true); }, 5200));
+  }
+
+  function handleCancelConnect() {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    setConnecting(false);
+    setAwaiting(false);
+  }
+
+  function handleRefreshQR() {
+    setQrNonce(n => n + 1);
   }
 
   function toggle(key) {
@@ -201,7 +277,7 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
         borderBottom: '1px solid var(--border-subtle)',
       }}>
         {/* icon chip (also reflects connection state) */}
-        <ConnectionIcon connected={connected} connecting={connecting} />
+        <ConnectionIcon connected={connected} connecting={connecting || awaiting} />
 
         {/* name + phone id */}
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -229,7 +305,7 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
         padding: '0.65rem 1.25rem',
         borderBottom: '1px solid var(--border-subtle)',
       }}>
-        <StatusPill connected={connected} connecting={connecting} />
+        <StatusPill connected={connected} connecting={connecting} awaiting={awaiting} />
         {isDefault && (
           <span style={{
             fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.05em',
@@ -247,10 +323,11 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
           </button>
         )}
         <div style={{ flex: 1 }} />
-        {!connected && (
-          <PrimaryBtn onClick={handleConnect} disabled={connecting}>
-            {connecting ? 'Conectando…' : 'Conectar'}
-          </PrimaryBtn>
+        {!connected && !connecting && !awaiting && (
+          <PrimaryBtn onClick={handleConnect}>Conectar</PrimaryBtn>
+        )}
+        {!connected && (connecting || awaiting) && (
+          <PrimaryBtn outline onClick={handleCancelConnect}>Cancelar</PrimaryBtn>
         )}
         {connected && (
           <a href="#" onClick={e => e.preventDefault()} style={{
@@ -266,6 +343,42 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
           </a>
         )}
       </div>
+
+      {/* ── QR pairing panel ── shown while generating/awaiting a scan ── */}
+      {!connected && (connecting || awaiting) && (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem',
+          padding: '1.25rem 1.25rem 0.5rem',
+        }}>
+          <div style={{
+            width: 176, height: 176, borderRadius: '0.6rem', flex: 'none',
+            background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 9px -5px rgba(0,0,0,0.35)', position: 'relative', overflow: 'hidden',
+          }}>
+            {connecting && (
+              <em className="fa-solid fa-spinner fa-spin" style={{ color: '#0b0b0f', fontSize: '1.3rem', opacity: 0.6 }} />
+            )}
+            {awaiting && <QRCodeCanvas seed={client.id + ':' + qrNonce} size={176} />}
+          </div>
+          <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+            {client.id}
+          </div>
+          {awaiting && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                Escanea con WhatsApp → Dispositivos vinculados
+              </span>
+              <button onClick={handleRefreshQR} title="Generar nuevo código" style={{
+                width: 26, height: 26, borderRadius: '0.4rem', border: 'none', flex: 'none',
+                background: 'var(--surface-input)', color: 'var(--text-body)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem',
+              }}>
+                <em className="fas fa-rotate" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── toggles ── */}
       <div style={{ padding: '0.15rem 1.25rem 0.85rem' }}>
@@ -316,7 +429,7 @@ function ConnectionCard({ client, isDefault, onSetDefault }) {
           body={`¿Deseas reiniciar la conexión "${client.alias}"? Se desconectará brevemente y volverá a conectar.`}
           confirmLabel="Reiniciar"
           confirmGradient="linear-gradient(310deg,#2152ff,#21d4fd)"
-          onConfirm={() => { setShowRestartModal(false); setConnected(false); setConnecting(false); }}
+          onConfirm={() => { setShowRestartModal(false); handleCancelConnect(); setConnected(false); }}
           onCancel={() => setShowRestartModal(false)}
         />
       )}

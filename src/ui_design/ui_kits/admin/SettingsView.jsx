@@ -47,7 +47,7 @@ function SCard({ title, icon, grad = 'linear-gradient(310deg,#7928ca,#ff0080)', 
 }
 
 // ── Inline-editable field ─────────────────────────────────────────────────────
-function EField({ label, value, onChange, locked }) {
+function EField({ label, value, onChange, locked, help }) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(value != null ? String(value) : '');
   const ref = React.useRef(null);
@@ -96,6 +96,11 @@ function EField({ label, value, onChange, locked }) {
           <button onClick={activate} style={sBtn('#17c1e8')}><em className="fas fa-pencil" /></button>
         )}
       </div>
+      {help && (
+        <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.5, marginTop: '0.4rem', fontFamily: "'Open Sans', sans-serif" }}>
+          {help}
+        </div>
+      )}
     </div>
   );
 }
@@ -364,6 +369,7 @@ function SettTab2({ onSave }) {
 // ─────────────────────────────────────────────────────────────────────────────
 function SettTab3() {
   const { Badge } = window.GordaDesignSystem_019e24;
+  const [editingMsg, setEditingMsg] = React.useState(null);
 
   const [grupos, setGrupos] = React.useState([
     {
@@ -487,12 +493,82 @@ function SettTab3() {
                   </Badge>
                 </div>
                 <div style={{ ...cellStyle('act'), overflow: 'visible' }}>
-                  <button className="msg-edit-btn" title="Editar mensaje" style={sBtn('#17c1e8')}><em className="fas fa-pencil" /></button>
+                  <button className="msg-edit-btn" title="Editar mensaje" style={sBtn('#17c1e8')} onClick={() => setEditingMsg({ groupId: g.id, key: it.key, name: it.nombre, text: it.mensaje, desc: it.comentario })}><em className="fas fa-pencil" /></button>
                 </div>
               </div>
             ))}
           </div>
         ))}
+      </div>
+
+      {editingMsg && (
+        <EditMessageModal
+          msg={editingMsg}
+          onClose={() => setEditingMsg(null)}
+          onSave={(updated) => {
+            setGrupos(gs => gs.map(g => g.id !== editingMsg.groupId ? g : {
+              ...g, items: g.items.map(it => it.key !== editingMsg.key ? it : { ...it, nombre: updated.name, mensaje: updated.text, comentario: updated.desc }),
+            }));
+          }}
+        />
+      )}
+    </SCard>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TAB 4 · Mensualidades
+// ─────────────────────────────────────────────────────────────────────────────
+function SettTab4({ onSave }) {
+  const [form, setForm] = React.useState({
+    monto: '100000',
+    diaCorte: '3',
+    recordatorios: '3, 1',
+    autoInhabilitar: true,
+  });
+  const upd = k => v => setForm(f => ({ ...f, [k]: v }));
+
+  return (
+    <SCard
+      title="Configuración de Mensualidad"
+      icon="fas fa-calendar-check"
+      grad="linear-gradient(310deg,#7928ca,#ff0080)"
+      style={{ maxWidth: 640 }}
+    >
+      <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: 'var(--text-body)', fontFamily: "'Open Sans', sans-serif", lineHeight: 1.6 }}>
+        Configure la ejecución automática para conductores con plan mensual.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>
+        <EField label="Monto sugerido" value={form.monto} onChange={upd('monto')} />
+        <EField label="Día de corte" value={form.diaCorte} onChange={upd('diaCorte')}
+          help="Día del mes (1–28) en que se inhabilitan los conductores mensuales impagos." />
+        <EField label="Anticipación de recordatorios (días antes del corte)" value={form.recordatorios} onChange={upd('recordatorios')}
+          help="El offset(s) 3 caería en día ≤ 0 para el corte actual y será ignorado." />
+
+        {/* auto-disable toggle row */}
+        <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start', padding: '0.9rem 1rem', background: 'var(--surface-input)', borderRadius: '0.65rem', border: '1px solid var(--border-color)' }}>
+          <div style={{ marginTop: 2, flex: 'none' }}>
+            <SToggle on={form.autoInhabilitar} onChange={() => setForm(f => ({ ...f, autoInhabilitar: !f.autoInhabilitar }))} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>
+              Inhabilitar automáticamente conductores impagos en el día de corte
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem', lineHeight: 1.5, fontFamily: "'Open Sans', sans-serif" }}>
+              Desactivar esto detiene la ejecución futura pero NO rehabilita conductores ya inhabilitados.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={() => onSave('Configuración de mensualidad guardada')} style={{
+          padding: '0.55rem 2rem', background: 'var(--gradient-primary)',
+          border: 'none', borderRadius: '0.5rem', color: '#fff',
+          fontFamily: "'Open Sans', sans-serif", fontSize: '0.75rem', fontWeight: 800,
+          cursor: 'pointer', letterSpacing: '0.08em',
+        }}>ENVIAR</button>
       </div>
     </SCard>
   );
@@ -523,9 +599,10 @@ function SettingsView() {
   };
 
   const TABS = [
-    { id: 'general',  label: 'Ajustes Generales', icon: 'fas fa-sliders'       },
-    { id: 'tarifas',  label: 'Tarifas',            icon: 'fas fa-dollar-sign'   },
-    { id: 'mensajes', label: 'Mensajes',            icon: 'fas fa-envelope'      },
+    { id: 'general',       label: 'Ajustes Generales', icon: 'fas fa-sliders'         },
+    { id: 'tarifas',       label: 'Tarifas',            icon: 'fas fa-dollar-sign'     },
+    { id: 'mensajes',      label: 'Mensajes',           icon: 'fas fa-envelope'        },
+    { id: 'mensualidades', label: 'Mensualidades',      icon: 'fas fa-calendar-check'  },
   ];
 
   return (
@@ -571,9 +648,10 @@ function SettingsView() {
       <LoadingModal open={loading} />
 
       {/* Content */}
-      {tab === 'general'  && <SettTab1 onSave={handleSave} />}
-      {tab === 'tarifas'  && <SettTab2 onSave={handleSave} />}
-      {tab === 'mensajes' && <SettTab3 />}
+      {tab === 'general'       && <SettTab1 onSave={handleSave} />}
+      {tab === 'tarifas'       && <SettTab2 onSave={handleSave} />}
+      {tab === 'mensajes'      && <SettTab3 />}
+      {tab === 'mensualidades' && <SettTab4 onSave={handleSave} />}
     </div>
   );
 }
