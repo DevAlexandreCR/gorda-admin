@@ -3,7 +3,12 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">{{ $t('vehicles.forms.create') }}</h5>
+          <div class="d-flex align-items-center gap-2">
+            <span class="vehicle-modal-icon-chip">
+              <em class="fas fa-car"></em>
+            </span>
+            <h5 class="modal-title mb-0">{{ $t('vehicles.forms.create') }}</h5>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -81,3 +86,24 @@ async function onFormSubmit(payload: CreateVehiclePayload, file: File | null): P
   }
 }
 </script>
+
+<style scoped>
+.vehicle-modal-icon-chip {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11);
+}
+
+.modal-title {
+  font-weight: 700;
+  color: var(--text-heading);
+}
+</style>

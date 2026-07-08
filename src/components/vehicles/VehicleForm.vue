@@ -1,29 +1,29 @@
 <template>
-  <div @keydown.enter.prevent>
-    <div class="form-group">
-      <label>{{ $t('vehicles.fields.plate') }}</label>
+  <div class="vehicle-form" @keydown.enter.prevent>
+    <div class="vehicle-form-group">
+      <label class="vehicle-form-label">{{ $t('vehicles.fields.plate') }}</label>
       <input
-        class="form-control form-control-sm"
+        class="vehicle-form-input"
         type="text"
         :value="normalizedPlate"
         disabled
         autocomplete="none"
       />
     </div>
-    <div class="form-group">
-      <label>{{ $t('vehicles.fields.brand') }} <span class="text-danger">*</span></label>
+    <div class="vehicle-form-group">
+      <label class="vehicle-form-label">{{ $t('vehicles.fields.brand') }} <span class="text-danger">*</span></label>
       <input
-        class="form-control form-control-sm"
+        class="vehicle-form-input"
         type="text"
         v-model="brand"
         :placeholder="$t('vehicles.fields.brand')"
         autocomplete="none"
       />
     </div>
-    <div class="form-group">
-      <label>{{ $t('vehicles.fields.model') }} <span class="text-danger">*</span></label>
+    <div class="vehicle-form-group">
+      <label class="vehicle-form-label">{{ $t('vehicles.fields.model') }} <span class="text-danger">*</span></label>
       <input
-        class="form-control form-control-sm"
+        class="vehicle-form-input"
         type="text"
         v-model="model"
         :placeholder="$t('vehicles.fields.model')"
@@ -31,18 +31,18 @@
       />
     </div>
     <div class="row">
-      <div class="form-group col-sm-8">
-        <label>{{ $t('vehicles.fields.color') }} <span class="text-danger">*</span></label>
-        <select class="form-select form-select-sm" v-model="selectedColorHex">
+      <div class="vehicle-form-group col-sm-8">
+        <label class="vehicle-form-label">{{ $t('vehicles.fields.color') }} <span class="text-danger">*</span></label>
+        <select class="vehicle-form-input" v-model="selectedColorHex">
           <option v-for="(c, key) in Constants.COLORS" :key="key" :value="c.hex">
             {{ $t('common.colors.' + c.name) }}
           </option>
         </select>
       </div>
-      <div class="form-group col-sm-4">
-        <label>&nbsp;</label>
+      <div class="vehicle-form-group col-sm-4">
+        <label class="vehicle-form-label">&nbsp;</label>
         <input
-          class="form-control form-control-sm p-0"
+          class="vehicle-form-color-preview"
           type="color"
           disabled
           :value="selectedColorHex"
@@ -50,37 +50,37 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-sm-6">
-        <label>{{ $t('vehicles.fields.soat_exp') }}</label>
+      <div class="vehicle-form-group col-sm-6">
+        <label class="vehicle-form-label">{{ $t('vehicles.fields.soat_exp') }}</label>
         <input
-          class="form-control form-control-sm"
+          class="vehicle-form-input"
           type="date"
           v-model="soat_exp"
           autocomplete="none"
         />
       </div>
-      <div class="form-group col-sm-6">
-        <label>{{ $t('vehicles.fields.tec_exp') }}</label>
+      <div class="vehicle-form-group col-sm-6">
+        <label class="vehicle-form-label">{{ $t('vehicles.fields.tec_exp') }}</label>
         <input
-          class="form-control form-control-sm"
+          class="vehicle-form-input"
           type="date"
           v-model="tec_exp"
           autocomplete="none"
         />
       </div>
     </div>
-    <div class="form-group">
-      <label>{{ $t('vehicles.fields.photo') }}</label>
+    <div class="vehicle-form-group">
+      <label class="vehicle-form-label">{{ $t('vehicles.fields.photo') }}</label>
       <input
-        class="form-control form-control-sm"
+        class="vehicle-form-input"
         type="file"
         accept="image/jpeg,image/png"
         @change="onFileChange"
       />
     </div>
     <p v-if="formError" class="text-danger small mt-1 mb-0">{{ formError }}</p>
-    <div class="mt-2">
-      <button type="button" class="btn btn-success btn-sm" @click="onSubmit">
+    <div class="vehicle-form-actions">
+      <button type="button" class="vehicle-form-submit" @click="onSubmit">
         {{ $t('common.actions.submit') }}
       </button>
     </div>
@@ -169,3 +169,74 @@ function onSubmit(): void {
   emit('submit', payload, selectedFile.value)
 }
 </script>
+
+<style scoped>
+.vehicle-form-group {
+  margin-bottom: 1rem;
+}
+
+.vehicle-form-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.vehicle-form-input {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  background: var(--surface-input);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-heading);
+  font-size: 0.875rem;
+}
+
+.vehicle-form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.vehicle-form-input:disabled {
+  opacity: 0.65;
+}
+
+.vehicle-form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.vehicle-form-color-preview {
+  width: 100%;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--surface-input);
+}
+
+.vehicle-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.vehicle-form-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+</style>
