@@ -14,7 +14,8 @@ export default {
     soat_exp: 'Soat',
     tec_exp: 'Techno',
     balance: 'Balance',
-    payment_mode: 'Payment mode'
+    payment_mode: 'Payment mode',
+    photo: 'Profile photo'
   },
   actions: {
     send_message_to_all: 'Send message to all drivers',
@@ -23,8 +24,7 @@ export default {
   },
   forms: {
     edit: 'Edit driver information',
-    create: 'Create driver information',
-    create_vehicle: 'Vehicle information',
+    create_title: 'Create driver',
     create_driver: 'Driver information',
     upload: 'Upload photo profile',
     upload_vehicle: 'Upload photo vehicle',
@@ -58,6 +58,7 @@ export default {
     model: 'Enter car model',
     plate: 'Enter licence plate number',
     photo: 'Choose photo profile',
+    photo_hint: 'Optional · JPG or PNG',
     photo_vehicle: 'Choose photo vehicle',
     color: 'Choose color vehicle',
     soat_exp: 'Choose Soat expiration',

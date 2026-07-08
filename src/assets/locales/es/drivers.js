@@ -14,7 +14,8 @@ export default {
     soat_exp: 'Soat',
     tec_exp: 'Tecno-mecánica',
     balance: 'Saldo',
-    payment_mode: 'Modo de pago'
+    payment_mode: 'Modo de pago',
+    photo: 'Foto de perfil'
   },
   actions: {
     send_message_to_all: 'Enviar mensaje a todos los conductores',
@@ -23,8 +24,7 @@ export default {
   },
   forms: {
     edit: 'Editar información del conductor',
-    create: 'Formulario de creación del conductor',
-    create_vehicle: 'Información del vehículo',
+    create_title: 'Crear conductor',
     create_driver: 'Información del conductor',
     upload: 'Cargar foto de perfil',
     upload_vehicle: 'Cargar foto del vehículo',
@@ -56,6 +56,7 @@ export default {
     model: 'Ingrese modelo del vehículo',
     plate: 'ingrese el número de placa',
     photo: 'Seleccione foto de perfil',
+    photo_hint: 'Opcional · JPG o PNG',
     photo_vehicle: 'Seleccione foto del vehículo',
     color: 'Seleccione el color del vehículo',
     soat_exp: 'Seleccione vencimiento del soat',
