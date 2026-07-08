@@ -1,30 +1,31 @@
 <template>
-    <div>
-        <label for="message-text" class="col-form-label">{{ $t('common.fields.label_message') }}</label>
-        <textarea rows="5" ref="textArea" id="editorText" class="form-control text-area-Message" contenteditable="true"  @input="updateTextareaMessage"
-        v-model="newMessage" />
-        <div class="d-flex mt-1">
-        <button class="bold-button btn btn-sm btn-info btn-squared px-4 py-2 active"
-                @click="letterBold">
-            <b>B</b>
-        </button>
-        <button class="italic-button btn btn-sm btn-info btn-squared px-4 py-2 active ms-1"
-                @click="letterItalic">
-                <span class="fs-6">I</span><i></i>
-        </button>
-        <button class="emoji-button btn btn-sm btn-info btn-squared px-4 py-2 ms-1" @click="toggleEmojiPicker">
-        😀
-        </button>
+    <div class="wpedit-editor">
+        <label for="editorText" class="col-form-label wpedit-editor__label">{{ $t('common.fields.label_message') }}</label>
+        <div class="wpedit-editor__block">
+            <div class="wpedit-editor__toolbar">
+                <button class="bold-button wpedit-editor__tool-btn wpedit-editor__tool-btn--bold" @click="letterBold">
+                    <b>B</b>
+                </button>
+                <button class="italic-button wpedit-editor__tool-btn wpedit-editor__tool-btn--italic" @click="letterItalic">
+                    <span class="fs-6">I</span><i></i>
+                </button>
+                <button class="emoji-button wpedit-editor__tool-btn wpedit-editor__tool-btn--emoji" @click="toggleEmojiPicker">
+                    😀
+                </button>
+                <span class="wpedit-editor__divider"></span>
+                <span v-for="(placeholder, index) in placeholders" :key="index"
+                      class="tooltip-element wpedit-editor__chip" data-bs-toggle="tooltip" :title="$t(placeholder.description)"
+                      @click="insertPlaceholder(placeholder.value)">
+                    {{ $t(placeholder.label) }}
+                </span>
+            </div>
+            <textarea rows="5" ref="textArea" id="editorText" class="text-area-Message wpedit-editor__textarea" contenteditable="true"
+                      :placeholder="$t('wp.placeholders.editor_message')"
+                      @input="updateTextareaMessage"
+                      v-model="newMessage" />
         </div>
         <div v-show="isEmojiPickerOpen" class="emoji-picker position-absolute z-index-1">
             <EmojiPicker @select="insertEmoji" />
-        </div>
-        <div class="d-flex align-items-center flex-wrap">
-            <div v-for="(placeholder, index) in placeholders" :key="index">
-                <span class="tooltip-element badge bg-secondary ms-1" data-bs-toggle="tooltip" :title="$t(placeholder.description)" @click="insertPlaceholder(placeholder.value)">
-                {{ $t(placeholder.label) }}
-                </span>
-            </div>
         </div>
     </div>
 </template>
@@ -148,3 +149,125 @@ watch(() => props.selectedMessage, (newValue) => {
     emit('messageUpdated', newMessage.value)
 })
 </script>
+<style scoped lang="scss">
+.wpedit-editor {
+  --wpedit-border: var(--border-color);
+  --wpedit-border-subtle: var(--border-subtle);
+  --wpedit-surface: var(--surface-input);
+  --wpedit-text: var(--text-heading);
+  --wpedit-muted: var(--text-muted);
+  --wpedit-primary: var(--primary);
+  --wpedit-chip-hover-bg: var(--badge-primary-bg);
+}
+
+body.dark-version .wpedit-editor {
+  --wpedit-border: var(--border-color);
+  --wpedit-border-subtle: var(--border-subtle);
+  --wpedit-surface: var(--surface-input);
+  --wpedit-text: var(--text-heading);
+  --wpedit-muted: var(--text-muted);
+  --wpedit-primary: var(--primary);
+  --wpedit-chip-hover-bg: var(--badge-primary-bg);
+}
+
+.wpedit-editor__label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--wpedit-text);
+  margin-bottom: 0.35rem;
+}
+
+.wpedit-editor__block {
+  border: 1.5px solid var(--wpedit-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.wpedit-editor__block:focus-within {
+  border-color: var(--wpedit-primary);
+}
+
+.wpedit-editor__toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  background: var(--wpedit-surface);
+  border-bottom: 1px solid var(--wpedit-border-subtle);
+}
+
+.wpedit-editor__tool-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--wpedit-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.wpedit-editor__tool-btn:hover {
+  background: var(--wpedit-chip-hover-bg);
+}
+
+.wpedit-editor__tool-btn--bold {
+  font-weight: 900;
+}
+
+.wpedit-editor__tool-btn--italic {
+  font-style: italic;
+}
+
+.wpedit-editor__divider {
+  width: 1px;
+  height: 16px;
+  background: var(--wpedit-border-subtle);
+  margin: 0 0.1rem;
+}
+
+.wpedit-editor__chip {
+  padding: 0.18rem 0.5rem;
+  border-radius: 50rem;
+  border: 1px solid var(--wpedit-border);
+  background: transparent;
+  color: var(--wpedit-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.13s ease;
+  margin-left: 0.1rem;
+}
+
+.wpedit-editor__chip:hover {
+  border-color: var(--wpedit-primary);
+  background: var(--wpedit-chip-hover-bg);
+  color: var(--wpedit-primary);
+}
+
+.wpedit-editor__textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  outline: none;
+  background: var(--wpedit-surface);
+  color: var(--wpedit-text);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  resize: vertical;
+}
+</style>

@@ -1,55 +1,59 @@
 <template>
-  <div class="whatsapp-container">
-    <div class="whatsapp-message">
-      <div v-if="message.header" class="header">
-        {{ message.header.text }}
+  <div class="wa-preview-row">
+    <div class="wa-preview-col">
+      <div class="wa-preview-bubble">
+        <div class="wa-preview-bubble-tail"></div>
+        <div v-if="message.header" class="wa-preview-header">
+          {{ message.header.text }}
+        </div>
+
+        <div class="wa-preview-body" v-html="formattedMessage"></div>
+
+        <div v-if="message.footer" class="wa-preview-footer">
+          {{ message.footer.text }}
+        </div>
       </div>
 
-      <div class="preview-container" v-html="formattedMessage"></div>
-
       <!-- Button Message -->
-      <div v-if="message.type === 'button'" class="buttons">
-        <button
+      <div v-if="message.type === 'button'" class="wa-preview-chips">
+        <div
           v-for="(button, idx) in message.action?.buttons"
           :key="idx"
-          class="whatsapp-button"
+          class="wa-preview-chip"
         >
+          <em class="fas fa-reply"></em>
           {{ button.reply?.title }}
-        </button>
+        </div>
       </div>
 
       <!-- List Message -->
-      <div v-if="message.type === 'list'" class="list-container">
-        <button class="list-trigger-button">
-          {{ message.action?.button || 'Select an option' }}
-          <span class="dropdown-arrow">▼</span>
+      <div v-if="message.type === 'list'" class="wa-preview-list">
+        <button type="button" class="wa-preview-chip wa-preview-chip--trigger">
+          <span>{{ message.action?.button || 'Select an option' }}</span>
+          <em class="fas fa-chevron-down"></em>
         </button>
-        <div class="list-options">
-          <div 
-            v-for="(section, sectionIdx) in message.action?.sections" 
-            :key="sectionIdx" 
-            class="list-section"
+        <div class="wa-preview-list-panel">
+          <div
+            v-for="(section, sectionIdx) in message.action?.sections"
+            :key="sectionIdx"
+            class="wa-preview-list-section"
           >
-            <div v-if="section.title" class="section-title">{{ section.title }}</div>
-            <div 
-              v-for="(row, rowIdx) in section.rows" 
-              :key="rowIdx" 
-              class="list-row"
+            <div v-if="section.title" class="wa-preview-list-section-title">{{ section.title }}</div>
+            <div
+              v-for="(row, rowIdx) in section.rows"
+              :key="rowIdx"
+              class="wa-preview-list-row"
             >
-              <div class="row-title">{{ row.title }}</div>
-              <div v-if="row.description" class="row-description">{{ row.description }}</div>
+              <div class="wa-preview-list-row-title">{{ row.title }}</div>
+              <div v-if="row.description" class="wa-preview-list-row-desc">{{ row.description }}</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Location Request -->
-      <div v-if="message.type === 'location_request_message'" class="location-box">
+      <div v-if="message.type === 'location_request_message'" class="wa-preview-location">
         {{ $t('wp.actions.share_location') }}
-      </div>
-
-      <div v-if="message.footer" class="footer">
-        {{ message.footer.text }}
       </div>
     </div>
   </div>
@@ -62,144 +66,155 @@ defineProps<{ message: Interactive, formattedMessage: string }>();
 </script>
 
 <style scoped>
-.whatsapp-container {
-  max-width: 300px;
-  margin: 0 auto;
+.wa-preview-row {
+  display: flex;
+  justify-content: flex-end;
 }
 
-.whatsapp-message {
-  background: #dcf8c6;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin: 8px;
+.wa-preview-col {
+  max-width: 88%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.wa-preview-bubble {
+  width: 100%;
   position: relative;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background: var(--wp-bubble-bg);
+  border-radius: 0.7rem 0 0.7rem 0.7rem;
+  padding: 0.5rem 0.7rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  font-size: 0.79rem;
+  color: var(--wp-text);
+  line-height: 1.55;
 }
 
-.header {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #128c7e;
+.wa-preview-bubble-tail {
+  position: absolute;
+  right: -7px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 8px solid var(--wp-bubble-bg);
+  border-left: 8px solid transparent;
 }
 
-.preview-container {
-  margin: 8px 0;
+.wa-preview-header {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--wp-header);
+}
+
+.wa-preview-body {
   word-wrap: break-word;
 }
 
-.buttons {
-  margin-top: 8px;
+.wa-preview-footer {
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--wp-muted);
 }
 
-.whatsapp-button {
-  display: block;
+.wa-preview-chips {
   width: 100%;
-  background: transparent;
-  border: 1px solid #128c7e;
-  color: #128c7e;
-  padding: 8px 12px;
-  margin: 4px 0;
-  border-radius: 20px;
-  text-align: center;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.whatsapp-button:hover {
-  background: #f0f8f5;
-}
-
-.list-container {
-  margin-top: 8px;
-}
-
-.list-trigger-button {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.22rem;
+}
+
+.wa-preview-chip {
+  background: var(--wp-chip-bg);
+  color: var(--wp-chip-text);
+  border: none;
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: default;
+}
+
+.wa-preview-chip em {
+  font-size: 0.58rem;
+}
+
+.wa-preview-list {
   width: 100%;
-  background: transparent;
-  border: 1px solid #128c7e;
-  color: #128c7e;
-  padding: 8px 12px;
-  border-radius: 20px;
+  margin-top: 0.22rem;
+}
+
+.wa-preview-chip--trigger {
+  width: 100%;
+  justify-content: space-between;
   cursor: pointer;
-  font-size: 14px;
 }
 
-.dropdown-arrow {
-  font-size: 12px;
-  margin-left: 8px;
-}
-
-.list-options {
-  margin-top: 8px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
+.wa-preview-list-panel {
+  margin-top: 0.35rem;
+  border: 1px solid var(--wp-border);
+  border-radius: 0.5rem;
+  background: var(--wp-card-bg);
   max-height: 200px;
   overflow-y: auto;
 }
 
-.list-section {
-  border-bottom: 1px solid #f0f0f0;
+.wa-preview-list-section {
+  border-bottom: 1px solid var(--wp-border);
 }
 
-.list-section:last-child {
+.wa-preview-list-section:last-child {
   border-bottom: none;
 }
 
-.section-title {
-  background: #f8f9fa;
-  padding: 8px 12px;
-  font-weight: bold;
-  font-size: 12px;
-  color: #666;
+.wa-preview-list-section-title {
+  background: var(--wp-alt-bg);
+  color: var(--wp-alt-text);
+  padding: 0.4rem 0.7rem;
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.list-row {
-  padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.wa-preview-list-row {
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--wp-border);
 }
 
-.list-row:hover {
-  background: #f8f9fa;
-}
-
-.list-row:last-child {
+.wa-preview-list-row:last-child {
   border-bottom: none;
 }
 
-.row-title {
+.wa-preview-list-row-title {
   font-weight: 500;
-  color: #333;
-  margin-bottom: 2px;
+  color: var(--wp-text);
+  margin-bottom: 0.1rem;
 }
 
-.row-description {
-  font-size: 12px;
-  color: #666;
+.wa-preview-list-row-desc {
+  font-size: 0.66rem;
+  color: var(--wp-muted);
   line-height: 1.3;
 }
 
-.location-box {
-  margin-top: 8px;
-  padding: 12px;
-  background: #e3f2fd;
-  border: 1px solid #2196f3;
-  border-radius: 8px;
+.wa-preview-location {
+  width: 100%;
+  margin-top: 0.22rem;
+  padding: 0.6rem 0.7rem;
+  background: var(--wp-chip-bg);
+  color: var(--wp-chip-text);
+  border: 1px solid var(--wp-border);
+  border-radius: 0.5rem;
   text-align: center;
-  color: #1976d2;
-}
-
-.footer {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #666;
-  font-style: italic;
+  font-size: 0.76rem;
+  font-weight: 500;
 }
 </style>

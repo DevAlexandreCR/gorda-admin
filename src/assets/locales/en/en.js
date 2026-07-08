@@ -73,6 +73,11 @@ export default {
       model_required: 'Model is required',
       color_required: 'Color is required',
     },
+    expiry: {
+      expired: 'Expired',
+      expires_in: 'Expires in {n} day | Expires in {n} days',
+      valid: 'Valid',
+    },
   },
   sidenav: {
     collapse: 'Hide menu',

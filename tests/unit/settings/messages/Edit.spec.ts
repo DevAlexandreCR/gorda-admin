@@ -34,7 +34,7 @@ describe('Edit.vue', () => {
 
   it('should render the modal title and form elements', () => {
     const labels = wrapper.findAll('.col-form-label')
-    const submitButton = wrapper.find('.btn.bg-gradient-primary')
+    const submitButton = wrapper.find('.wa-modal__btn-submit')
     expect(wrapper.find('.modal-title').text()).toBe(i18n.global.t('wp.modal.title'))
     expect(wrapper.find('.modal-body').exists()).toBe(true) 
     expect(wrapper.findComponent(TextEditor).exists()).toBe(true)
@@ -65,7 +65,7 @@ describe('Edit.vue', () => {
   it('should update message when the submit button is clicked', async () => {
     const newMessage = 'Nuevo mensaje de prueba'
     wrapper.findComponent(TextEditor).vm.$emit('messageUpdated', newMessage)
-    const submitButton = wrapper.find('.btn.bg-gradient-primary')
+    const submitButton = wrapper.find('.wa-modal__btn-submit')
     await submitButton.trigger('click')
     await nextTick()
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()
@@ -73,7 +73,7 @@ describe('Edit.vue', () => {
 
   it('should display success message after successfully saving changes', async () => {
     const toast = jest.spyOn(ToastService, 'toast')
-    const submitButton = wrapper.find('.btn.bg-gradient-primary')
+    const submitButton = wrapper.find('.wa-modal__btn-submit')
     await submitButton.trigger('click')
     await nextTick()
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()
@@ -83,7 +83,7 @@ describe('Edit.vue', () => {
   it('should display error message when saving changes fails', async () => {
     SettingsRepository.updateMessage = jest.fn().mockRejectedValue(new Error('Failed to save changes'))
     const toast = jest.spyOn(ToastService, 'toast')
-    const submitButton = wrapper.find('.btn.bg-gradient-primary')
+    const submitButton = wrapper.find('.wa-modal__btn-submit')
     await submitButton.trigger('click')
     await nextTick()
     expect(SettingsRepository.updateMessage).toHaveBeenCalled()

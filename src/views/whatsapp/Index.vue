@@ -1,14 +1,23 @@
 <template>
   <div>
-    <div class="container-fluid d-flex justify-content-end gap-2">
-      <button class="btn btn-success" @click="launchWhatsAppSignup">
-        <i class="bi bi-whatsapp me-2"></i>{{ $t('wp.actions.add_phone_number') }}
-      </button>
-      <button class="btn btn-primary" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
-    </div>
-    <div class="row container-fluid">
-      <div class="col-md-6 mt-2" v-for="client in clients" :key="client.id">
-        <Connection :client="client"></Connection>
+    <div class="container-fluid">
+      <div class="wpv-topbar">
+        <div class="wpv-tabbar">
+          <span class="wpv-tab wpv-tab--active">
+            <em class="fas fa-wifi"></em>
+            {{ $t('wp.tabs.connections') }}
+          </span>
+        </div>
+        <div class="wpv-actions">
+          <button class="wpv-btn wpv-btn--outline" @click="launchWhatsAppSignup">
+            <i class="bi bi-whatsapp"></i>
+            {{ $t('wp.actions.add_phone_number') }}
+          </button>
+          <button class="wpv-btn wpv-btn--solid" data-bs-target="#create-client" data-bs-toggle="modal">{{$t('common.actions.create')}}</button>
+        </div>
+      </div>
+      <div class="wpv-grid">
+        <Connection v-for="client in clients" :key="client.id" :client="client"></Connection>
       </div>
     </div>
   </div>
@@ -173,3 +182,86 @@ function create(_values: any, event: any): void {
   })
 }
 </script>
+
+<style scoped>
+.wpv-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+.wpv-tabbar {
+  display: flex;
+  gap: 0.2rem;
+  background: var(--surface-card);
+  padding: 0.25rem;
+  border-radius: 0.625rem;
+  box-shadow: var(--shadow-card);
+}
+.wpv-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 1rem;
+  border-radius: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-body);
+}
+.wpv-tab--active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.wpv-tab em {
+  font-size: 0.74rem;
+}
+
+.wpv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.wpv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.wpv-btn--outline {
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+}
+.wpv-btn--outline:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.wpv-btn--solid {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.wpv-btn--solid:hover {
+  background: linear-gradient(310deg, #7928ca, #ff0080);
+}
+
+.wpv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+</style>

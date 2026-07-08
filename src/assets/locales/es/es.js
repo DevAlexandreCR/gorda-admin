@@ -73,6 +73,11 @@ export default {
       model_required: 'El modelo es obligatorio',
       color_required: 'El color es obligatorio',
     },
+    expiry: {
+      expired: 'Vencido',
+      expires_in: 'Vence en {n} día | Vence en {n} días',
+      valid: 'Vigente',
+    },
   },
   sidenav: {
     collapse: 'Ocultar menú',
