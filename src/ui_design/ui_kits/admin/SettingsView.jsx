@@ -10,7 +10,7 @@ const sBtn = (bg, fg = '#fff', border) => ({
 });
 
 // ── Section card ──────────────────────────────────────────────────────────────
-function SCard({ title, action, children, noPad, style: extraStyle }) {
+function SCard({ title, icon, grad = 'linear-gradient(310deg,#7928ca,#ff0080)', action, children, noPad, style: extraStyle }) {
   return (
     <div style={{
       background: 'var(--surface-card)', borderRadius: '1rem',
@@ -19,10 +19,25 @@ function SCard({ title, action, children, noPad, style: extraStyle }) {
     }}>
       {(title || action) && (
         <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
           padding: '1.1rem 1.25rem 0',
         }}>
-          {title && <h6 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>{title}</h6>}
+          {title && (
+            typeof title === 'string' ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', minWidth: 0 }}>
+                {icon && (
+                  <span style={{
+                    width: 30, height: 30, flex: 'none', borderRadius: '0.55rem',
+                    background: grad, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', fontSize: '0.8rem', boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)',
+                  }}>
+                    <em className={icon} />
+                  </span>
+                )}
+                <h6 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>{title}</h6>
+              </div>
+            ) : title
+          )}
           {action}
         </div>
       )}
@@ -47,18 +62,18 @@ function EField({ label, value, onChange, locked }) {
   const cancel = () => { setEditing(false); setDraft(value != null ? String(value) : ''); };
 
   return (
-    <div>
+    <div style={{ minWidth: 0 }}>
       <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', marginBottom: 5, fontFamily: "'Open Sans', sans-serif" }}>
         {label}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, minWidth: 0 }}>
         <input ref={ref}
           value={draft}
           onChange={e => setDraft(e.target.value)}
           readOnly={!editing || locked}
           onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') cancel(); }}
           style={{
-            flex: 1, padding: '0.48rem 0.65rem',
+            flex: '1 1 0%', minWidth: 0, width: '100%', padding: '0.48rem 0.65rem',
             background: 'var(--surface-input)',
             border: `1px solid ${editing ? '#17c1e8' : 'var(--border-color)'}`,
             borderRadius: '0.45rem', outline: 'none',
@@ -124,6 +139,8 @@ function SettTab1() {
   return (
     <SCard
       title="Sucursales"
+      icon="fas fa-city"
+      grad="linear-gradient(310deg,#2152ff,#21d4fd)"
       action={
         <button style={{
           display: 'flex', alignItems: 'center', gap: 6, padding: '0.4rem 1rem',
@@ -247,9 +264,9 @@ function SettTab2({ onSave }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Row 1: two cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1.25rem' }}>
-        <SCard title="Tarifas Base">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1.25rem' }}>
+        <SCard title="Tarifas Base" icon="fas fa-tags" grad="linear-gradient(310deg,#17ad37,#98ec2d)">
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '0.85rem 1rem' }}>
             <EField label="Precio por Kilómetro"       value={base.precioKm}                onChange={updBase('precioKm')} />
             <EField label="Precio por Minuto"           value={base.precioMin}               onChange={updBase('precioMin')} />
             <EField label="Tarifa Base"                 value={base.tarifaBase}              onChange={updBase('tarifaBase')} />
@@ -267,8 +284,8 @@ function SettTab2({ onSave }) {
           </div>
         </SCard>
 
-        <SCard title="Tarifa Mínima Dinámica">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+        <SCard title="Tarifa Mínima Dinámica" icon="fas fa-gauge-high" grad="linear-gradient(310deg,#2152ff,#21d4fd)">
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '0.85rem 1rem' }}>
             <EField label="Tarifa Mínima Diurna"          value={minDin.diurna}         onChange={updMin('diurna')} />
             <EField label="Tarifa Mínima Nocturna"        value={minDin.nocturna}       onChange={updMin('nocturna')} />
             <EField label="Tarifa Mínima Festiva Diurna"  value={minDin.festivaDiurna}  onChange={updMin('festivaDiurna')} />
@@ -283,6 +300,8 @@ function SettTab2({ onSave }) {
       {/* Row 2: dynamic multipliers */}
       <SCard
         title="Multiplicador Dinámico de Tarifa"
+        icon="fas fa-clock"
+        grad="linear-gradient(310deg,#f53939,#fbcf33)"
         action={
           <button onClick={addMult} style={{
             display: 'flex', alignItems: 'center', gap: 5, padding: '0.4rem 1rem',
@@ -344,9 +363,11 @@ function SettTab2({ onSave }) {
 // TAB 3 · Mensajes
 // ─────────────────────────────────────────────────────────────────────────────
 function SettTab3() {
+  const { Badge } = window.GordaDesignSystem_019e24;
+
   const [grupos, setGrupos] = React.useState([
     {
-      id: 'conf', titulo: 'Mensajes de Confirmación',
+      id: 'conf', titulo: 'Mensajes de Confirmación', icon: 'fas fa-check-double', grad: 'linear-gradient(310deg,#17ad37,#98ec2d)',
       items: [
         { key: 'cancelaciones',    nombre: 'Cancelaciones',           comentario: 'Cuando no se ha asignado un conductor',    mensaje: '_Que pena contigo_ 😔 ...', habilitado: true  },
         { key: 'cancelado',        nombre: 'Cancelado',               comentario: 'Cuando un servicio es cancelado',          mensaje: 'se ha cancelado tu solicitud...', habilitado: false },
@@ -357,7 +378,7 @@ function SettTab3() {
       ],
     },
     {
-      id: 'bot', titulo: 'Chatbot Mensajes',
+      id: 'bot', titulo: 'Chatbot Mensajes', icon: 'fas fa-robot', grad: 'linear-gradient(310deg,#2152ff,#21d4fd)',
       items: [
         { key: 'cancelar_sin_c',    nombre: 'Cancelar si no hay conductor',      comentario: 'Solicita cancelar el servicio',              mensaje: '🔍 Seguimos buscando...',    habilitado: false },
         { key: 'cancelar_asignado', nombre: 'Cancelar en estado asignado',       comentario: 'Cuando el cliente escribe para cancelar',     mensaje: 'Tu conductor está en ca...', habilitado: false },
@@ -371,7 +392,14 @@ function SettTab3() {
     ...g, items: g.items.map(it => it.key === key ? { ...it, habilitado: !it.habilitado } : it),
   }));
 
-  const C = { nom: '22%', com: '27%', msg: '27%', st: '16%', act: '8%' };
+  // shared column geometry — used by both the header row and every data row
+  const COLS = {
+    nom: { flex: '1.1 1 170px', minWidth: 150 },
+    com: { flex: '1.3 1 190px', minWidth: 170 },
+    msg: { flex: '1.3 1 190px', minWidth: 170 },
+    st:  { flex: '0 0 152px',   minWidth: 152 },
+    act: { flex: '0 0 44px',    minWidth: 44  },
+  };
 
   const th = txt => (
     <span style={{ fontSize: '0.64rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: "'Open Sans', sans-serif" }}>
@@ -379,61 +407,92 @@ function SettTab3() {
     </span>
   );
 
+  const cellStyle = col => ({
+    flex: COLS[col].flex, minWidth: COLS[col].minWidth,
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10,
+  });
+
   return (
-    <SCard title="Tabla de Mensajes WhatsApp" noPad>
-      <div style={{ overflowX: 'auto' }}>
-      {/* Column headers */}
-      <div style={{ display: 'flex', padding: '0.85rem 1.25rem 0.7rem', borderBottom: '2px solid var(--border-subtle)', gap: 8, minWidth: 560 }}>
-        <div style={{ width: C.nom }}>{th('Nombre')}</div>
-        <div style={{ width: C.com }}>{th('Comentario')}</div>
-        <div style={{ width: C.msg }}>{th('Mensajes')}</div>
-        <div style={{ width: C.st  }}>{th('Estado')}</div>
-        <div style={{ width: C.act }}>{th('Acciones')}</div>
-      </div>
-
-      {grupos.map(g => (
-        <div key={g.id}>
-          {/* Group row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0.8rem 1.25rem 0.3rem' }}>
-            <span style={{ width: 3, height: 15, borderRadius: 2, background: 'var(--gradient-primary)', flexShrink: 0, display: 'inline-block' }} />
-            <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>{g.titulo}</span>
-          </div>
-
-          {g.items.map((it, i) => (
-            <div key={it.key} style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '0.65rem 1.25rem',
-              borderTop: '1px solid var(--border-subtle)',
-              background: i % 2 === 1 ? 'var(--surface-input)' : 'transparent',
-            }}>
-              <div style={{ width: C.nom, fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
-                {it.nombre}
-              </div>
-              <div style={{ width: C.com, fontSize: '0.78rem', color: 'var(--text-body)', fontFamily: "'Open Sans', sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
-                {it.comentario}
-              </div>
-              <div style={{ width: C.msg, fontSize: '0.78rem', color: 'var(--text-secondary)', fontFamily: "'Open Sans', sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8, fontStyle: 'italic' }}>
-                {it.mensaje}
-              </div>
-              <div style={{ width: C.st, display: 'flex', alignItems: 'center', gap: 7, flexWrap: 'nowrap' }}>
-                <SToggle on={it.habilitado} onChange={() => toggle(g.id, it.key)} />
-                <span style={{
-                  padding: '0.18rem 0.48rem', borderRadius: '0.4rem', flexShrink: 0,
-                  fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.04em', whiteSpace: 'nowrap',
-                  fontFamily: "'Open Sans', sans-serif",
-                  background: it.habilitado ? 'var(--badge-success-bg)' : 'var(--badge-danger-bg)',
-                  color:      it.habilitado ? 'var(--badge-success-fg)' : 'var(--badge-danger-fg)',
-                }}>
-                  {it.habilitado ? 'HABILITADO' : 'INHABILITADO'}
-                </span>
-              </div>
-              <div style={{ width: C.act }}>
-                <button style={sBtn('#17c1e8')}><em className="fas fa-pencil" /></button>
-              </div>
-            </div>
-          ))}
+    <SCard
+      noPad
+      title={(
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+          <span style={{
+            width: 34, height: 34, flex: 'none', borderRadius: '0.6rem',
+            background: 'linear-gradient(310deg,#128c7e,#25d366)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.9rem',
+            boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)',
+          }}>
+            <em className="fa-brands fa-whatsapp" />
+          </span>
+          <h6 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>
+            Tabla de Mensajes WhatsApp
+          </h6>
         </div>
-      ))}
+      )}
+    >
+      <style>{`
+        .msg-row { transition: background-color 0.15s ease; }
+        .msg-row:hover { background: var(--badge-info-bg) !important; }
+        .msg-row:hover .msg-edit-btn { box-shadow: 0 0 0 3px var(--badge-info-bg); }
+      `}</style>
+      <div style={{ overflowX: 'auto' }}>
+        {/* Column headers */}
+        <div style={{
+          display: 'flex', padding: '0 1.25rem 0.7rem', gap: 8, minWidth: 620,
+          borderBottom: '2px solid var(--border-subtle)',
+          position: 'sticky', top: 0, background: 'var(--surface-card)', zIndex: 1,
+        }}>
+          <div style={cellStyle('nom')}>{th('Nombre')}</div>
+          <div style={cellStyle('com')}>{th('Comentario')}</div>
+          <div style={cellStyle('msg')}>{th('Mensajes')}</div>
+          <div style={cellStyle('st')}>{th('Estado')}</div>
+          <div style={cellStyle('act')}>{th('Acciones')}</div>
+        </div>
+
+        {grupos.map(g => (
+          <div key={g.id}>
+            {/* Group row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0.9rem 1.25rem 0.5rem', minWidth: 620 }}>
+              <span style={{
+                width: 22, height: 22, flex: 'none', borderRadius: '0.4rem',
+                background: g.grad, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: '0.6rem',
+              }}>
+                <em className={g.icon} />
+              </span>
+              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>{g.titulo}</span>
+            </div>
+
+            {g.items.map((it, i) => (
+              <div key={it.key} className="msg-row" style={{
+                display: 'flex', alignItems: 'center', gap: 8, minWidth: 620,
+                padding: '0.7rem 1.25rem',
+                borderTop: '1px solid var(--border-subtle)',
+                background: i % 2 === 1 ? 'var(--surface-input)' : 'transparent',
+              }}>
+                <div title={it.nombre} style={{ ...cellStyle('nom'), fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-heading)', fontFamily: "'Open Sans', sans-serif" }}>
+                  {it.nombre}
+                </div>
+                <div title={it.comentario} style={{ ...cellStyle('com'), fontSize: '0.78rem', color: 'var(--text-body)', fontFamily: "'Open Sans', sans-serif" }}>
+                  {it.comentario}
+                </div>
+                <div title={it.mensaje} style={{ ...cellStyle('msg'), fontSize: '0.78rem', color: 'var(--text-secondary)', fontFamily: "'Open Sans', sans-serif", fontStyle: 'italic' }}>
+                  {it.mensaje}
+                </div>
+                <div style={{ ...cellStyle('st'), display: 'flex', alignItems: 'center', gap: 8, overflow: 'visible' }}>
+                  <SToggle on={it.habilitado} onChange={() => toggle(g.id, it.key)} />
+                  <Badge color={it.habilitado ? 'success' : 'danger'}>
+                    {it.habilitado ? 'Habilitado' : 'Inhabilitado'}
+                  </Badge>
+                </div>
+                <div style={{ ...cellStyle('act'), overflow: 'visible' }}>
+                  <button className="msg-edit-btn" title="Editar mensaje" style={sBtn('#17c1e8')}><em className="fas fa-pencil" /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </SCard>
   );

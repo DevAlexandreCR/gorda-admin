@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"21c13a82957d","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/AutocompleteInput.jsx":"739f84e74986","ui_kits/admin/DriversView.jsx":"3262772df019","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/MetricsView.jsx":"304a8a39ea2e","ui_kits/admin/PlacesView.jsx":"5fc3c79f2418","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"e116f6f0bd0c","ui_kits/admin/SettingsView.jsx":"998423bbaf70","ui_kits/admin/Sidebar.jsx":"f6784eb4166b","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/UserDetailView.jsx":"e7f64e94a874","ui_kits/admin/UsersView.jsx":"67f18338def2","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"04833a3cdabc","ui_kits/admin/data.js":"f65154b77b05","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"GordaDesignSystem_019e24","components":[{"name":"Avatar","sourcePath":"components/data/Avatar.jsx"},{"name":"Card","sourcePath":"components/data/Card.jsx"},{"name":"StatCard","sourcePath":"components/data/StatCard.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"Badge","sourcePath":"components/feedback/Badge.jsx"},{"name":"StatusBadge","sourcePath":"components/feedback/StatusBadge.jsx"},{"name":"Button","sourcePath":"components/forms/Button.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/data/Avatar.jsx":"7d141312e7fe","components/data/Card.jsx":"682a006e2bb8","components/data/StatCard.jsx":"21c13a82957d","components/feedback/Alert.jsx":"b9a352b46fbf","components/feedback/Badge.jsx":"d00ee62ddf7e","components/feedback/StatusBadge.jsx":"e8bf0ec84800","components/forms/Button.jsx":"d1eb2af292ed","components/forms/Input.jsx":"f48e4b9f2dfb","components/forms/Select.jsx":"27f6a0639604","components/forms/Switch.jsx":"0a04a2742b65","ui_kits/admin/AutocompleteInput.jsx":"739f84e74986","ui_kits/admin/DriversView.jsx":"3262772df019","ui_kits/admin/EditDriverView.jsx":"84ad1db3da45","ui_kits/admin/EditMessageModal.jsx":"3ee9cb99b21a","ui_kits/admin/HistoryView.jsx":"bf002ea765ab","ui_kits/admin/LoadingModal.jsx":"6d1e8388a8fd","ui_kits/admin/LoginView.jsx":"5647019ec566","ui_kits/admin/MapView.jsx":"a0e4149b2c0a","ui_kits/admin/MetricsView.jsx":"304a8a39ea2e","ui_kits/admin/PlacesView.jsx":"5fc3c79f2418","ui_kits/admin/ServiceDetailModal.jsx":"8f79d1071dfa","ui_kits/admin/ServicesView.jsx":"e116f6f0bd0c","ui_kits/admin/SettingsView.jsx":"29e0483e094a","ui_kits/admin/Sidebar.jsx":"f6784eb4166b","ui_kits/admin/TopNav.jsx":"ffb787641155","ui_kits/admin/UserDetailView.jsx":"e7f64e94a874","ui_kits/admin/UsersView.jsx":"67f18338def2","ui_kits/admin/VehicleDetailView.jsx":"09d6e4651e7a","ui_kits/admin/VehiclesView.jsx":"3ec37cc12e5d","ui_kits/admin/WhatsAppView.jsx":"04833a3cdabc","ui_kits/admin/data.js":"f65154b77b05","ui_kits/admin/utils.js":"e1743b19c788"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -7136,6 +7136,8 @@ const sBtn = (bg, fg = '#fff', border) => ({
 // ── Section card ──────────────────────────────────────────────────────────────
 function SCard({
   title,
+  icon,
+  grad = 'linear-gradient(310deg,#7928ca,#ff0080)',
   action,
   children,
   noPad,
@@ -7154,9 +7156,33 @@ function SCard({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
+      gap: '0.75rem',
       padding: '1.1rem 1.25rem 0'
     }
-  }, title && /*#__PURE__*/React.createElement("h6", {
+  }, title && (typeof title === 'string' ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.65rem',
+      minWidth: 0
+    }
+  }, icon && /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 30,
+      height: 30,
+      flex: 'none',
+      borderRadius: '0.55rem',
+      background: grad,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.8rem',
+      boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)'
+    }
+  }, /*#__PURE__*/React.createElement("em", {
+    className: icon
+  })), /*#__PURE__*/React.createElement("h6", {
     style: {
       margin: 0,
       fontSize: '0.9rem',
@@ -7164,7 +7190,7 @@ function SCard({
       color: 'var(--text-heading)',
       fontFamily: "'Open Sans', sans-serif"
     }
-  }, title), action), /*#__PURE__*/React.createElement("div", {
+  }, title)) : title), action), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: noPad ? 0 : '1.25rem'
     }
@@ -7195,7 +7221,11 @@ function EField({
     setEditing(false);
     setDraft(value != null ? String(value) : '');
   };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '0.68rem',
       fontWeight: 700,
@@ -7209,7 +7239,8 @@ function EField({
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: 5
+      gap: 5,
+      minWidth: 0
     }
   }, /*#__PURE__*/React.createElement("input", {
     ref: ref,
@@ -7221,7 +7252,9 @@ function EField({
       if (e.key === 'Escape') cancel();
     },
     style: {
-      flex: 1,
+      flex: '1 1 0%',
+      minWidth: 0,
+      width: '100%',
       padding: '0.48rem 0.65rem',
       background: 'var(--surface-input)',
       border: `1px solid ${editing ? '#17c1e8' : 'var(--border-color)'}`,
@@ -7334,6 +7367,8 @@ function SettTab1() {
   };
   return /*#__PURE__*/React.createElement(SCard, {
     title: "Sucursales",
+    icon: "fas fa-city",
+    grad: "linear-gradient(310deg,#2152ff,#21d4fd)",
     action: /*#__PURE__*/React.createElement("button", {
       style: {
         display: 'flex',
@@ -7652,16 +7687,18 @@ function SettTab2({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+      gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) minmax(0, 1fr)',
       gap: '1.25rem'
     }
   }, /*#__PURE__*/React.createElement(SCard, {
-    title: "Tarifas Base"
+    title: "Tarifas Base",
+    icon: "fas fa-tags",
+    grad: "linear-gradient(310deg,#17ad37,#98ec2d)"
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '0.85rem'
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+      gap: '0.85rem 1rem'
     }
   }, /*#__PURE__*/React.createElement(EField, {
     label: "Precio por Kil\xF3metro",
@@ -7712,12 +7749,14 @@ function SettTab2({
   }, /*#__PURE__*/React.createElement(EnviarBtn, {
     label: "Tarifas base"
   }))), /*#__PURE__*/React.createElement(SCard, {
-    title: "Tarifa M\xEDnima Din\xE1mica"
+    title: "Tarifa M\xEDnima Din\xE1mica",
+    icon: "fas fa-gauge-high",
+    grad: "linear-gradient(310deg,#2152ff,#21d4fd)"
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '0.85rem'
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+      gap: '0.85rem 1rem'
     }
   }, /*#__PURE__*/React.createElement(EField, {
     label: "Tarifa M\xEDnima Diurna",
@@ -7745,6 +7784,8 @@ function SettTab2({
     label: "Tarifa m\xEDnima din\xE1mica"
   })))), /*#__PURE__*/React.createElement(SCard, {
     title: "Multiplicador Din\xE1mico de Tarifa",
+    icon: "fas fa-clock",
+    grad: "linear-gradient(310deg,#f53939,#fbcf33)",
     action: /*#__PURE__*/React.createElement("button", {
       onClick: addMult,
       style: {
@@ -7868,9 +7909,14 @@ function SettTab2({
 // TAB 3 · Mensajes
 // ─────────────────────────────────────────────────────────────────────────────
 function SettTab3() {
+  const {
+    Badge
+  } = window.GordaDesignSystem_019e24;
   const [grupos, setGrupos] = React.useState([{
     id: 'conf',
     titulo: 'Mensajes de Confirmación',
+    icon: 'fas fa-check-double',
+    grad: 'linear-gradient(310deg,#17ad37,#98ec2d)',
     items: [{
       key: 'cancelaciones',
       nombre: 'Cancelaciones',
@@ -7911,6 +7957,8 @@ function SettTab3() {
   }, {
     id: 'bot',
     titulo: 'Chatbot Mensajes',
+    icon: 'fas fa-robot',
+    grad: 'linear-gradient(310deg,#2152ff,#21d4fd)',
     items: [{
       key: 'cancelar_sin_c',
       nombre: 'Cancelar si no hay conductor',
@@ -7944,12 +7992,29 @@ function SettTab3() {
       habilitado: !it.habilitado
     } : it)
   }));
-  const C = {
-    nom: '22%',
-    com: '27%',
-    msg: '27%',
-    st: '16%',
-    act: '8%'
+
+  // shared column geometry — used by both the header row and every data row
+  const COLS = {
+    nom: {
+      flex: '1.1 1 170px',
+      minWidth: 150
+    },
+    com: {
+      flex: '1.3 1 190px',
+      minWidth: 170
+    },
+    msg: {
+      flex: '1.3 1 190px',
+      minWidth: 170
+    },
+    st: {
+      flex: '0 0 152px',
+      minWidth: 152
+    },
+    act: {
+      flex: '0 0 44px',
+      minWidth: 44
+    }
   };
   const th = txt => /*#__PURE__*/React.createElement("span", {
     style: {
@@ -7961,41 +8026,77 @@ function SettTab3() {
       fontFamily: "'Open Sans', sans-serif"
     }
   }, txt);
+  const cellStyle = col => ({
+    flex: COLS[col].flex,
+    minWidth: COLS[col].minWidth,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    paddingRight: 10
+  });
   return /*#__PURE__*/React.createElement(SCard, {
-    title: "Tabla de Mensajes WhatsApp",
-    noPad: true
-  }, /*#__PURE__*/React.createElement("div", {
+    noPad: true,
+    title: /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.7rem'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 34,
+        height: 34,
+        flex: 'none',
+        borderRadius: '0.6rem',
+        background: 'linear-gradient(310deg,#128c7e,#25d366)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        fontSize: '0.9rem',
+        boxShadow: '0 4px 7px -1px rgba(0,0,0,0.11)'
+      }
+    }, /*#__PURE__*/React.createElement("em", {
+      className: "fa-brands fa-whatsapp"
+    })), /*#__PURE__*/React.createElement("h6", {
+      style: {
+        margin: 0,
+        fontSize: '0.95rem',
+        fontWeight: 800,
+        color: 'var(--text-heading)',
+        fontFamily: "'Open Sans', sans-serif"
+      }
+    }, "Tabla de Mensajes WhatsApp"))
+  }, /*#__PURE__*/React.createElement("style", null, `
+        .msg-row { transition: background-color 0.15s ease; }
+        .msg-row:hover { background: var(--badge-info-bg) !important; }
+        .msg-row:hover .msg-edit-btn { box-shadow: 0 0 0 3px var(--badge-info-bg); }
+      `), /*#__PURE__*/React.createElement("div", {
     style: {
       overflowX: 'auto'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      padding: '0.85rem 1.25rem 0.7rem',
-      borderBottom: '2px solid var(--border-subtle)',
+      padding: '0 1.25rem 0.7rem',
       gap: 8,
-      minWidth: 560
+      minWidth: 620,
+      borderBottom: '2px solid var(--border-subtle)',
+      position: 'sticky',
+      top: 0,
+      background: 'var(--surface-card)',
+      zIndex: 1
     }
   }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.nom
-    }
+    style: cellStyle('nom')
   }, th('Nombre')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.com
-    }
+    style: cellStyle('com')
   }, th('Comentario')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.msg
-    }
+    style: cellStyle('msg')
   }, th('Mensajes')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.st
-    }
+    style: cellStyle('st')
   }, th('Estado')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.act
-    }
+    style: cellStyle('act')
   }, th('Acciones'))), grupos.map(g => /*#__PURE__*/React.createElement("div", {
     key: g.id
   }, /*#__PURE__*/React.createElement("div", {
@@ -8003,18 +8104,25 @@ function SettTab3() {
       display: 'flex',
       alignItems: 'center',
       gap: 8,
-      padding: '0.8rem 1.25rem 0.3rem'
+      padding: '0.9rem 1.25rem 0.5rem',
+      minWidth: 620
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      width: 3,
-      height: 15,
-      borderRadius: 2,
-      background: 'var(--gradient-primary)',
-      flexShrink: 0,
-      display: 'inline-block'
+      width: 22,
+      height: 22,
+      flex: 'none',
+      borderRadius: '0.4rem',
+      background: g.grad,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontSize: '0.6rem'
     }
-  }), /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("em", {
+    className: g.icon
+  })), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: '0.82rem',
       fontWeight: 800,
@@ -8023,78 +8131,63 @@ function SettTab3() {
     }
   }, g.titulo)), g.items.map((it, i) => /*#__PURE__*/React.createElement("div", {
     key: it.key,
+    className: "msg-row",
     style: {
       display: 'flex',
       alignItems: 'center',
       gap: 8,
-      padding: '0.65rem 1.25rem',
+      minWidth: 620,
+      padding: '0.7rem 1.25rem',
       borderTop: '1px solid var(--border-subtle)',
       background: i % 2 === 1 ? 'var(--surface-input)' : 'transparent'
     }
   }, /*#__PURE__*/React.createElement("div", {
+    title: it.nombre,
     style: {
-      width: C.nom,
+      ...cellStyle('nom'),
       fontSize: '0.85rem',
       fontWeight: 600,
       color: 'var(--text-heading)',
-      fontFamily: "'Open Sans', sans-serif",
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      paddingRight: 8
+      fontFamily: "'Open Sans', sans-serif"
     }
   }, it.nombre), /*#__PURE__*/React.createElement("div", {
+    title: it.comentario,
     style: {
-      width: C.com,
+      ...cellStyle('com'),
       fontSize: '0.78rem',
       color: 'var(--text-body)',
-      fontFamily: "'Open Sans', sans-serif",
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      paddingRight: 8
+      fontFamily: "'Open Sans', sans-serif"
     }
   }, it.comentario), /*#__PURE__*/React.createElement("div", {
+    title: it.mensaje,
     style: {
-      width: C.msg,
+      ...cellStyle('msg'),
       fontSize: '0.78rem',
       color: 'var(--text-secondary)',
       fontFamily: "'Open Sans', sans-serif",
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      paddingRight: 8,
       fontStyle: 'italic'
     }
   }, it.mensaje), /*#__PURE__*/React.createElement("div", {
     style: {
-      width: C.st,
+      ...cellStyle('st'),
       display: 'flex',
       alignItems: 'center',
-      gap: 7,
-      flexWrap: 'nowrap'
+      gap: 8,
+      overflow: 'visible'
     }
   }, /*#__PURE__*/React.createElement(SToggle, {
     on: it.habilitado,
     onChange: () => toggle(g.id, it.key)
-  }), /*#__PURE__*/React.createElement("span", {
+  }), /*#__PURE__*/React.createElement(Badge, {
+    color: it.habilitado ? 'success' : 'danger'
+  }, it.habilitado ? 'Habilitado' : 'Inhabilitado')), /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: '0.18rem 0.48rem',
-      borderRadius: '0.4rem',
-      flexShrink: 0,
-      fontSize: '0.6rem',
-      fontWeight: 800,
-      letterSpacing: '0.04em',
-      whiteSpace: 'nowrap',
-      fontFamily: "'Open Sans', sans-serif",
-      background: it.habilitado ? 'var(--badge-success-bg)' : 'var(--badge-danger-bg)',
-      color: it.habilitado ? 'var(--badge-success-fg)' : 'var(--badge-danger-fg)'
-    }
-  }, it.habilitado ? 'HABILITADO' : 'INHABILITADO')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: C.act
+      ...cellStyle('act'),
+      overflow: 'visible'
     }
   }, /*#__PURE__*/React.createElement("button", {
+    className: "msg-edit-btn",
+    title: "Editar mensaje",
     style: sBtn('#17c1e8')
   }, /*#__PURE__*/React.createElement("em", {
     className: "fas fa-pencil"
