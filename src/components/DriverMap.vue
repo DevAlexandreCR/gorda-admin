@@ -26,62 +26,32 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, onBeforeUnmount, ref, Ref, watch} from 'vue'
+import {computed, onBeforeMount, onBeforeUnmount, ref, Ref} from 'vue'
+import {storeToRefs} from 'pinia'
 import {useDriversStore} from '@/services/stores/DriversStore'
 import {Field} from 'vee-validate'
 import Map from '@/components/maps/Map.vue'
 import {PlaceInterface} from '@/types/PlaceInterface'
 
-const {connectedDrivers, getOnlineDrivers, offOnlineDrivers} = useDriversStore()
+const driversStore = useDriversStore()
+const {connectedDrivers} = storeToRefs(driversStore)
 const searchDriver: Ref<string> = ref('')
-const filteredDrivers: Ref<Array<PlaceInterface>> = ref([])
 const icon: Ref<string> = ref(process.env.VUE_APP_DRIVER_LOC_IMAGE_URL as string)
-let filtering = false
 
-watch(searchDriver, (plate) => {
-  if (plate.length > 0) {
-    filtering = true
-    const filtered = connectedDrivers.filter(place => place.name.toLowerCase().includes(plate.toLowerCase()))
-    filteredDrivers.value.splice(0, filteredDrivers.value.length)
-    filtered.forEach(driver => filteredDrivers.value.push(driver))
-  } else {
-    filtering = false
-    connectedDrivers.forEach(driver => filteredDrivers.value.push(driver))
+const filteredDrivers = computed<Array<PlaceInterface>>(() => {
+  const search = searchDriver.value
+  if (search.length === 0) {
+    return connectedDrivers.value.slice()
   }
-})
-
-watch(connectedDrivers, (newConnectedDrivers) => {
-  if (!filtering) {
-    if (filteredDrivers.value.length <= newConnectedDrivers.length) {
-      const intersections = newConnectedDrivers.filter(driver => filteredDrivers.value.indexOf(driver) === -1)
-      intersections.forEach(driver => { 
-        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
-        if (currents.length === 1) {
-          const index = filteredDrivers.value.indexOf(currents[0])
-          filteredDrivers.value[index] = driver
-        } else {
-          filteredDrivers.value.push(driver)
-        }
-      })
-      } else {
-      const intersections = filteredDrivers.value.filter(driver => newConnectedDrivers.indexOf(driver) === -1)
-      intersections.forEach(driver => {
-        const currents = filteredDrivers.value.filter(dri => dri.key === driver.key)
-        currents.forEach(current => {
-          const index = filteredDrivers.value.indexOf(current)
-          filteredDrivers.value.splice(index, 1)
-        })
-      })      
-      }
-    }
+  return connectedDrivers.value.filter(place => place.name.toLowerCase().includes(search.toLowerCase()))
 })
 
 onBeforeUnmount(() => {
-  offOnlineDrivers()
+  driversStore.offOnlineDrivers()
 })
 
 onBeforeMount(() => {
-  getOnlineDrivers()
+  driversStore.getOnlineDrivers()
 })
 </script>
 
