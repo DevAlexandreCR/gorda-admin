@@ -36,6 +36,7 @@ This document summarizes the current codebase so autonomous agents can execute t
 - WhatsApp-related code is sensitive; ensure Socket.IO namespaces, QR flows, and Firestore chat syncing remain intact.
 - CacheStore and other Pinia stores assume certain lifecycle hooks (subscribe/unsubscribe). When refactoring, keep listener cleanup logic.
 - Default styling uses Bootstrap 5; avoid bespoke CSS unless necessary.
+- When a change (OpenSpec or otherwise) affecting `admin` is completed, add a short entry to `CHANGELOG.md` under `## [Unreleased]`, matching the file's current Keep a Changelog format — never add a new version heading.
 
 ## Vehicles Section (extract-vehicles-table)
 - **Routes**: `/vehicles` (index), `/vehicles/:id` (detail), `/vehicles/:id/edit` — registered in the router with admin-role guards.

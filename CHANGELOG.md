@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix the connected-drivers map marker reconciliation: markers now add, move, and remove in real time, without losing an add and a remove that land in the same update, and without duplicating markers when the plate search filter is cleared.
+
 ## [2.1.0(2026-07-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.1.0...2.0.12)
 
 ### Added
