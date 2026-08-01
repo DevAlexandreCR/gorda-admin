@@ -15,7 +15,7 @@
       </div>
       <div class="card-body collapse show" id="collapse-filter">
         <Form @submit="getServices" :validation-schema="schema" @keydown.enter="$event.preventDefault()">
-          <div class="row align-items-end">
+          <div class="row align-items-end gorda-history__filter-row">
             <div class="col-md-2">
               <label class="gorda-history__label" for="from">{{ $t('common.filters.driver_plate') }}</label>
               <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected"
@@ -47,11 +47,21 @@
                 <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
               </Field>
             </div>
-            <div class="col-md-4">
-              <div class="d-flex">
-                <button class="btn gorda-history__btn-filter me-2" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
-                <button class="btn gorda-history__btn-clear me-2" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
-              </div>
+            <div class="col-md-2">
+              <label class="gorda-history__label" for="origin">{{ $t('common.filters.origin') }}</label>
+              <select id="origin" name="origin" class="form-select form-select-sm" v-model="filter.origin">
+                <option :value="null">{{ $t('common.placeholders.all') }}</option>
+                <option :value="Service.ORIGIN_ADMIN">{{ $t('services.origin.admin') }}</option>
+                <option :value="Service.ORIGIN_BOT">{{ $t('services.origin.bot') }}</option>
+                <option :value="Service.ORIGIN_TEST">{{ $t('services.origin.test') }}</option>
+                <option :value="Service.ORIGIN_DRIVER">{{ $t('services.origin.driver') }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="row gorda-history__filter-actions mt-3">
+            <div class="col-12 d-flex flex-wrap gap-2 justify-content-end">
+              <button class="btn gorda-history__btn-filter" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
+              <button class="btn gorda-history__btn-clear" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
             </div>
           </div>
         </Form>
@@ -226,6 +236,7 @@ async function clearFilters(): Promise<void> {
   filter.value.to = DateHelper.stringNow()
   filter.value.clientId = null
   filter.value.driverId = null
+  filter.value.origin = null
   clientPhone.value++
   plate.value++
   resetCursor()
@@ -345,14 +356,21 @@ body.dark-version .gorda-history {
   margin-bottom: 0 !important;
 }
 
-.gorda-history #collapse-filter :deep(.form-control) {
+.gorda-history #collapse-filter :deep(.form-control),
+.gorda-history #collapse-filter :deep(.form-select) {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background-color: var(--surface-input);
   padding: 0.6rem 0.9rem;
 }
 
-.gorda-history #collapse-filter :deep(.form-control:focus) {
+/* Keep room for the native chevron the shared padding above would otherwise cover. */
+.gorda-history #collapse-filter :deep(.form-select) {
+  padding-right: 2.25rem;
+}
+
+.gorda-history #collapse-filter :deep(.form-control:focus),
+.gorda-history #collapse-filter :deep(.form-select:focus) {
   box-shadow: 0 0 0 2px rgba(203, 12, 159, .15);
 }
 

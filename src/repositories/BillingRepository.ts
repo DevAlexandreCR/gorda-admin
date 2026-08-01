@@ -35,7 +35,7 @@ export interface BillingPreviewPayload {
 }
 
 export interface BillingSummarySource {
-  key: "admin" | "bot" | "unidentified";
+  key: "admin" | "bot" | "driver" | "unidentified";
   label: string;
   count: number;
 }

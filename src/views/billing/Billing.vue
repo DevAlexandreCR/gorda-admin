@@ -51,6 +51,17 @@
                 selectedMonthLabel
               }}</span>
             </p>
+            <div
+              v-if="billingSummary.serviceSources.length > 0"
+              class="d-flex flex-wrap gap-2 mt-2 billing-source-badges"
+            >
+              <span
+                v-for="source in billingSummary.serviceSources"
+                :key="source.key"
+                class="text-xs billing-source-badge"
+                >{{ source.label }}: {{ source.count }}</span
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -830,6 +841,17 @@ function formatMonthLabel(month: string): string {
   color: var(--billing-muted);
 }
 
+.billing-source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: var(--billing-chip-bg);
+  color: var(--billing-text);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .billing-panel__header .d-flex.align-items-center {
   min-height: 32px;
 }
@@ -1110,7 +1132,8 @@ body.dark-version .billing-page .billing-preview-badge {
 
 body.dark-version .billing-page .billing-amount span,
 body.dark-version .billing-page .billing-inline-amount span,
-body.dark-version .billing-page .billing-extra-row span {
+body.dark-version .billing-page .billing-extra-row span,
+body.dark-version .billing-page .billing-source-badge {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.72) !important;

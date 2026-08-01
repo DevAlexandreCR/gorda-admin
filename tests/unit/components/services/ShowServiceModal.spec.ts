@@ -149,4 +149,20 @@ describe('ShowServiceModal.vue', () => {
     await nextTick()
     expect(wrapper.text()).toContain('Admin 1')
   })
+
+  it('classifies a driver-origin service as Conductor even with the driver-app wp_client_id placeholder', async () => {
+    const driverOriginService = {
+      ...service,
+      origin: 'driver',
+      created_by: null,
+      wp_client_id: 'driver-app',
+    }
+    await wrapper.setProps({ service: driverOriginService })
+    await nextTick()
+
+    expect(wrapper.text()).toContain(wrapper.vm.$t('services.origin.driver'))
+    expect(wrapper.text()).toContain(driverOriginService.driver?.name)
+    expect(wrapper.text()).not.toContain(wrapper.vm.$t('services.origin.bot'))
+    expect(wrapper.text()).not.toContain(wrapper.vm.$t('services.origin.unknown'))
+  })
 })

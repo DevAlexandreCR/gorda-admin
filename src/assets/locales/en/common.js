@@ -145,7 +145,8 @@ export default {
     from: 'From',
     until: 'Until',
     driver_plate: 'Driver\'s plate',
-    number_client: 'Client\'s number'
+    number_client: 'Client\'s number',
+    origin: 'Origin'
   },
   forms: {
     select_img: 'Choose image from files'
@@ -201,6 +202,9 @@ export default {
     fees_minimum_festive_nigth: 'Minimum fee for festive night',
     dynamic_min_fee: 'Dynamic min fee',
     dynamic_multiplier_fee: 'Dynamic multiplier fee',
+    self_service_cancel_window_title: 'Self-Service Cancellation',
+    self_service_cancel_window: 'Cancel window (seconds)',
+    self_service_cancel_window_hint: 'Maximum time, in seconds, a driver has to cancel a self-service trip before the window expires.',
     hour_range: 'Time ranges',
     fees_night: 'fee of night',
     fees_DxF: 'Sundays and holidays',

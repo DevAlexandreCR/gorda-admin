@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add a "Servicio de prueba" toggle to the create-service form with a mandatory target-driver selector, forced passenger count of 1, and a persistent no-charge note; test services are written with `directed_to` and `origin: 'test'`.
 - Show a distinct "Prueba" origin badge in the pending, in-progress, and history services tables and in the service detail modal, which now also shows the target driver.
+- Classify and render `origin: 'driver'` services as "Conductor" in the live services list and the service detail modal, checked ahead of the `created_by`/`wp_client_id` fallbacks so the `driver-app` placeholder is never misread as a bot service.
+- Add a "Conductor" origin filter option to the service history view.
+- Show per-source service counts, including the new driver source, in the billing summary.
+- Add a "Cancelación de Autoservicio" field to the Ride Fees settings tab so admins can view and edit the driver self-service cancel window (`self_service_cancel_window`, in seconds), which previously had no settings UI despite being stored, delivered, and enforced end to end.
 
 ### Fixed
 

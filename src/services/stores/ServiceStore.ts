@@ -41,7 +41,8 @@ export const useServicesStore = defineStore('servicesStore', {
         from: DateHelper.stringNow(),
         to: DateHelper.stringNow(),
         clientId: null,
-        driverId: null
+        driverId: null,
+        origin: null
       }
     }
   },
@@ -115,6 +116,7 @@ export const useServicesStore = defineStore('servicesStore', {
         to: to,
         driverId: this.filter.driverId,
         clientId: this.filter.clientId,
+        origin: this.filter.origin,
         perPage: this.pagination.perPage,
         cursor: this.pagination.cursor,
         next: next

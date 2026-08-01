@@ -32,6 +32,12 @@ describe('History.vue', () => {
     const service = Object.assign(new Service(), new ServiceMock)
     ServiceRepository.getPaginated = jest.fn().mockResolvedValue([service, service])
     ServiceRepository.getCount = jest.fn().mockResolvedValue([1])
+    ServiceRepository.getHistoryPage = jest.fn().mockResolvedValue({
+      services: [],
+      totalCount: 0,
+      terminatedCount: 0,
+      canceledCount: 0,
+    })
 		const servicesStore = useServicesStore()
     await servicesStore.getHistoryServices()
     wrapper = mount(History, options)
@@ -41,7 +47,7 @@ describe('History.vue', () => {
 	it('A user can see inputs to History services', async () => {
     expect(wrapper.findAllComponents(Field).length).toBe(5)
     expect(wrapper.findComponent(Form).exists()).toBeTruthy()
-    expect(wrapper.findAll('.form-control-label').length).toBe(5)
+    expect(wrapper.findAll('.gorda-history__label').length).toBe(5)
     expect(wrapper.findAllComponents(AutoComplete).length).toBe(3)
     expect(wrapper.findComponent(ServicesTable).exists()).toBeTruthy()
 	})
@@ -55,12 +61,37 @@ describe('History.vue', () => {
 		const servicesStore = useServicesStore()
     servicesStore.filter.driverId = DriverMock.id
     servicesStore.filter.clientId = 'client-id'
+    servicesStore.filter.origin = Service.ORIGIN_DRIVER
     await wrapper.vm.clearFilters()
-	
+
 		await nextTick()
 		expect(servicesStore.filter.driverId).toBeNull()
 		expect(servicesStore.filter.clientId).toBeNull()
+		expect(servicesStore.filter.origin).toBeNull()
 	})
+
+  it('offers an "all origins" default plus the four origin options', () => {
+    const select = wrapper.find('select#origin')
+    expect(select.exists()).toBeTruthy()
+    expect(select.findAll('option')).toHaveLength(5)
+  })
+
+  it('selecting an origin option updates the store filter and refetches history', async () => {
+    jest.useRealTimers()
+    const servicesStore = useServicesStore()
+    const select = wrapper.find('select#origin')
+
+    await select.setValue(Service.ORIGIN_DRIVER)
+
+    expect(servicesStore.filter.origin).toBe(Service.ORIGIN_DRIVER)
+
+    await wrapper.vm.getServices()
+    await flushPromises()
+
+    expect(ServiceRepository.getHistoryPage).toHaveBeenCalledWith(
+      expect.objectContaining({ origin: Service.ORIGIN_DRIVER })
+    )
+  })
 
   it('calculates the percentage correctly', () => {
     expect(wrapper.vm.isWhatPercent(3)).toBe(300)

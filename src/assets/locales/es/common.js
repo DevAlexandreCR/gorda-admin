@@ -151,7 +151,8 @@ export default {
     from: 'Desde',
     until: 'Hasta',
     driver_plate: 'Placa conductor',
-    number_client: 'Número del cliente'
+    number_client: 'Número del cliente',
+    origin: 'Origen'
   },
   chatBot: {
     connected: 'Conectado',
@@ -201,6 +202,9 @@ export default {
     fees_minimum_festive_nigth: 'Tarifa Mínima Festiva Nocturna',
     dynamic_min_fee: 'Tarifa Mínima Dinámica',
     dynamic_multiplier_fee: 'Multiplicador Dinámico de Tarifa',
+    self_service_cancel_window_title: 'Cancelación de Autoservicio',
+    self_service_cancel_window: 'Ventana de cancelación (segundos)',
+    self_service_cancel_window_hint: 'Tiempo máximo, en segundos, que tiene el conductor para cancelar un viaje de autoservicio antes de que la ventana expire.',
     hour_range: 'Horarios',
     fees_night: 'Nocturno',
     fees_DxF: 'Domingos y Festivos',

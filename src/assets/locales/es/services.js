@@ -36,6 +36,7 @@ export default {
     admin: 'Panel admin',
     bot: 'Bot WhatsApp',
     test: 'Prueba',
+    driver: 'Conductor',
     unknown: 'Sin identificar',
   },
   labels: {

@@ -15,6 +15,7 @@ export interface RideFeeInterface {
     fees_min_festive_nigth: number
     timeout_to_complete: number
     timeout_to_connection: number
+    self_service_cancel_window: number
     fee_multiplier: number
     dynamic_multipliers: DynamicMultiplier[]
   }

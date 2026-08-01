@@ -209,5 +209,13 @@ describe('ServicesTable.vue', () => {
       service.wp_client_id = '' as any
       expect((wrapper.vm as any).originKind(service)).toBe('unknown')
     })
+
+    it('classifies origin = driver as driver even with the driver-app wp_client_id placeholder (precedence over bot fallback)', () => {
+      service.origin = Service.ORIGIN_DRIVER
+      service.created_by = null
+      service.wp_client_id = 'driver-app'
+      expect((wrapper.vm as any).originKind(service)).toBe('driver')
+      expect((wrapper.vm as any).originKind(service)).not.toBe('bot')
+    })
   })
 })

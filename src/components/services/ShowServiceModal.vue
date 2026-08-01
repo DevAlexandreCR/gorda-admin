@@ -76,7 +76,7 @@
                 </h6>
                 <div class="gorda-info-row">
                   <span class="gorda-info-row__key">
-                    <em :class="['fa-solid', originIcon, 'me-1', origin.kind === 'test' ? 'text-warning' : '']"></em>
+                    <em :class="['fa-solid', originIcon, 'me-1', origin.kind === 'test' ? 'text-warning' : origin.kind === 'driver' ? 'text-primary' : '']"></em>
                     {{ $t('services.fields.origin') }}
                   </span>
                   <span class="gorda-info-row__value">
@@ -262,6 +262,7 @@ const loadUserData = async () => {
 const origin = computed(() => {
   const explicit = props.service.origin
   const kind = explicit === Service.ORIGIN_TEST ? 'test'
+    : explicit === Service.ORIGIN_DRIVER ? 'driver'
     : explicit === 'admin' ? 'admin'
     : explicit === 'bot' ? 'bot'
     : props.service.created_by ? 'admin'
@@ -269,6 +270,9 @@ const origin = computed(() => {
     : 'unknown'
   if (kind === 'test') {
     return { kind: 'test' as const, label: t('services.origin.test'), sublabel: null }
+  }
+  if (kind === 'driver') {
+    return { kind: 'driver' as const, label: t('services.origin.driver'), sublabel: props.service.driver?.name ?? null }
   }
   if (kind === 'admin') {
     return { kind: 'admin' as const, label: t('services.origin.admin'), sublabel: createdBy.value || null }
@@ -284,6 +288,7 @@ const originIcon = computed(() => {
   if (origin.value.kind === 'test') return 'fa-flask'
   if (origin.value.kind === 'bot') return 'fa-tower-broadcast'
   if (origin.value.kind === 'admin') return 'fa-toolbox'
+  if (origin.value.kind === 'driver') return 'fa-mobile-screen'
   return 'fa-question'
 })
 

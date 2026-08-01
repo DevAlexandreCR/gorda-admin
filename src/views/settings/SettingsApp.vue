@@ -226,6 +226,40 @@
                 </div>
               </div>
             </div>
+            <div class="col-12 col-lg-6">
+              <div class="settings-card">
+                <div class="settings-card__header">
+                  <span class="settings-icon-chip settings-icon-chip--primary">
+                    <em class="fas fa-stopwatch"></em>
+                  </span>
+                  <h6 class="settings-card__title">{{ $t('common.settings.self_service_cancel_window_title') }}</h6>
+                </div>
+                <div class="settings-card__body">
+                  <Form v-if="rideFees">
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <label class="settings-field-label">{{ $t('common.settings.self_service_cancel_window') }}</label>
+                        <div class="settings-fee-field">
+                          <input type="number" class="settings-fee-input" min="1" step="1"
+                                 :disabled="fieldEdited !== 'self_service_cancel_window' || allFieldsDisabled" v-model="rideFees.self_service_cancel_window" />
+                          <button type="button" class="settings-icon-btn" @click="editField('self_service_cancel_window')"
+                                  :disabled="fieldEdited === 'self_service_cancel_window'">
+                            <em class="fas fa-pencil"></em>
+                          </button>
+                        </div>
+                        <small class="settings-monthly-hint">{{ $t('common.settings.self_service_cancel_window_hint') }}</small>
+                      </div>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-end">
+                      <button type="button" class="settings-primary-btn" @click="updateAllFields" :disabled="!submitButtonEnabled || updatingRideFees">
+                        <span v-if="updatingRideFees" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        {{ $t('common.actions.submit') }}
+                      </button>
+                    </div>
+                  </Form>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="settings-card mt-3">
             <div class="settings-card__header">

@@ -102,7 +102,7 @@
           <td class="py-1 text-center">
             <em
               class="fa-solid"
-              :class="[originIcon(service), originKind(service) === 'test' ? 'text-warning' : originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : 'text-muted']"
+              :class="[originIcon(service), originKind(service) === 'test' ? 'text-warning' : originKind(service) === 'bot' ? 'text-success' : originKind(service) === 'admin' ? 'text-secondary' : originKind(service) === 'driver' ? 'text-primary' : 'text-muted']"
               data-bs-toggle="tooltip"
               data-bs-placement="top"
               :title="originTitle(service)"
@@ -415,8 +415,9 @@ function hasApplicants(service: ServiceList): boolean {
   return applicantsCount(service) > 0
 }
 
-function originKind(service: ServiceList): 'admin' | 'bot' | 'test' | 'unknown' {
+function originKind(service: ServiceList): 'admin' | 'bot' | 'test' | 'driver' | 'unknown' {
   if (service.origin === Service.ORIGIN_TEST) return 'test'
+  if (service.origin === Service.ORIGIN_DRIVER) return 'driver'
   if (service.origin === 'admin') return 'admin'
   if (service.origin === 'bot') return 'bot'
   if (service.created_by) return 'admin'
@@ -429,6 +430,7 @@ function originIcon(service: ServiceList): string {
   if (kind === 'test') return 'fa-flask'
   if (kind === 'bot') return 'fa-robot'
   if (kind === 'admin') return 'fa-desktop'
+  if (kind === 'driver') return 'fa-mobile-screen'
   return 'fa-question'
 }
 

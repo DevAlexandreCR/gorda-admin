@@ -45,6 +45,7 @@ class ServiceRepository {
 		to: number
 		driverId: string | null
 		clientId: string | null
+		origin?: string | null
 		perPage: number
 		cursor: ServiceCursor
 		next: boolean
@@ -62,6 +63,7 @@ class ServiceRepository {
 				to: options.to,
 				driverId: options.driverId ?? undefined,
 				clientId: options.clientId ?? undefined,
+				origin: options.origin ?? undefined,
 				perPage: options.perPage,
 				cursorCreated: hasCursor ? options.cursor.created : undefined,
 				cursorId: hasCursor ? options.cursor.id : undefined,
