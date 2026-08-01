@@ -13,56 +13,56 @@
           <em class="fa-solid fa-chevron-up"></em>
         </button>
       </div>
-      <div class="card-body collapse show" id="collapse-filter">
+      <div class="collapse show" id="collapse-filter">
         <Form @submit="getServices" :validation-schema="schema" @keydown.enter="$event.preventDefault()">
-          <div class="row align-items-end gorda-history__filter-row">
-            <div class="col-md-2">
-              <label class="gorda-history__label" for="from">{{ $t('common.filters.driver_plate') }}</label>
-              <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected"
-                :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'" :key="plate"
-                :classes="'form-control form-control-sm'" />
-            </div>
-            <div class="col-md-2">
-              <label class="gorda-history__label" for="from">{{ $t('common.filters.number_client') }}</label>
-              <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" @on-change="onClientInput" :key="clientPhone"
-                :search-handler="searchClientsAutocomplete"
-                :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
-                :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'" :disabled="!clientsReady"/>
-            </div>
-            <div class="col-md-2">
-              <label class="gorda-history__label" for="from">{{ $t('common.filters.from') }}</label>
-              <Field name="from" type="date" v-model="filter.from" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" type="date" v-model="field.value"
-                  :placeholder="$t('drivers.placeholders.tec_exp')" id="from" aria-label="Pec_from"
-                  aria-describedby="from-addon" v-bind="field" :fieldName="'from'" autocomplete="none" />
-                <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
-              </Field>
-            </div>
-            <div class="col-md-2">
-              <label class="gorda-history__label" for="to">{{ $t('common.filters.until') }}</label>
-              <Field name="to" type="date" v-model="filter.to" v-slot="{ field, errorMessage, meta }">
-                <input class="form-control form-control-sm" type="date" v-model="field.value"
-                  :placeholder="$t('drivers.placeholders.tec_exp')" id="to" aria-label="Pec_to"
-                  aria-describedby="to-addon" v-bind="field" autocomplete="none" />
-                <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
-              </Field>
-            </div>
-            <div class="col-md-2">
-              <label class="gorda-history__label" for="origin">{{ $t('common.filters.origin') }}</label>
-              <select id="origin" name="origin" class="form-select form-select-sm" v-model="filter.origin">
-                <option :value="null">{{ $t('common.placeholders.all') }}</option>
-                <option :value="Service.ORIGIN_ADMIN">{{ $t('services.origin.admin') }}</option>
-                <option :value="Service.ORIGIN_BOT">{{ $t('services.origin.bot') }}</option>
-                <option :value="Service.ORIGIN_TEST">{{ $t('services.origin.test') }}</option>
-                <option :value="Service.ORIGIN_DRIVER">{{ $t('services.origin.driver') }}</option>
-              </select>
+          <div class="gorda-history__filter-fields">
+            <div class="row g-3 align-items-end gorda-history__filter-row">
+              <div class="col-12 col-sm-6 col-lg">
+                <label class="gorda-history__label" for="from">{{ $t('common.filters.driver_plate') }}</label>
+                <AutoComplete :idField="'field-driver'" :elements="plates" @selected="onDriverSelected"
+                  :placeholder="$t('common.filters.driver_plate')" :fieldName="'driver'" :key="plate"
+                  :classes="'form-control form-control-sm'" />
+              </div>
+              <div class="col-12 col-sm-6 col-lg">
+                <label class="gorda-history__label" for="from">{{ $t('common.filters.number_client') }}</label>
+                <AutoComplete :idField="'field-client'" :elements="clientsPhone" @selected="onClientSelected" @on-change="onClientInput" :key="clientPhone"
+                  :search-handler="searchClientsAutocomplete"
+                  :placeholder="$t('common.filters.number_client')" :fieldName="'client'"
+                  :normalizer="StrHelper.formatNumber" :classes="'form-control form-control-sm'" :disabled="!clientsReady"/>
+              </div>
+              <div class="col-12 col-sm-6 col-lg">
+                <label class="gorda-history__label" for="from">{{ $t('common.filters.from') }}</label>
+                <Field name="from" type="date" v-model="filter.from" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" type="date" v-model="field.value"
+                    :placeholder="$t('drivers.placeholders.tec_exp')" id="from" aria-label="Pec_from"
+                    aria-describedby="from-addon" v-bind="field" :fieldName="'from'" autocomplete="none" />
+                  <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="col-12 col-sm-6 col-lg">
+                <label class="gorda-history__label" for="to">{{ $t('common.filters.until') }}</label>
+                <Field name="to" type="date" v-model="filter.to" v-slot="{ field, errorMessage, meta }">
+                  <input class="form-control form-control-sm" type="date" v-model="field.value"
+                    :placeholder="$t('drivers.placeholders.tec_exp')" id="to" aria-label="Pec_to"
+                    aria-describedby="to-addon" v-bind="field" autocomplete="none" />
+                  <span class="is-invalid" v-if="errorMessage && meta.dirty">{{ errorMessage }}</span>
+                </Field>
+              </div>
+              <div class="col-12 col-sm-6 col-lg">
+                <label class="gorda-history__label" for="origin">{{ $t('common.filters.origin') }}</label>
+                <select id="origin" name="origin" class="form-select form-select-sm" v-model="filter.origin">
+                  <option :value="null">{{ $t('common.placeholders.all') }}</option>
+                  <option :value="Service.ORIGIN_ADMIN">{{ $t('services.origin.admin') }}</option>
+                  <option :value="Service.ORIGIN_BOT">{{ $t('services.origin.bot') }}</option>
+                  <option :value="Service.ORIGIN_TEST">{{ $t('services.origin.test') }}</option>
+                  <option :value="Service.ORIGIN_DRIVER">{{ $t('services.origin.driver') }}</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="row gorda-history__filter-actions mt-3">
-            <div class="col-12 d-flex flex-wrap gap-2 justify-content-end">
-              <button class="btn gorda-history__btn-filter" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
-              <button class="btn gorda-history__btn-clear" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
-            </div>
+          <div class="gorda-history__filter-actions">
+            <button class="btn gorda-history__btn-clear" type="button" name="clear" @click="clearFilters">{{$t('common.actions.clear_filters') }}</button>
+            <button class="btn gorda-history__btn-filter" type="submit" name="submit">{{ $t('common.actions.filter') }}</button>
           </div>
         </Form>
       </div>
@@ -348,8 +348,18 @@ body.dark-version .gorda-history {
   margin-bottom: 0.25rem;
 }
 
-.gorda-history #collapse-filter {
-  padding-top: 0.5rem;
+.gorda-history__filter-fields {
+  padding: 1.25rem;
+}
+
+.gorda-history__filter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .gorda-history #collapse-filter :deep(.form-group) {
@@ -374,17 +384,24 @@ body.dark-version .gorda-history {
   box-shadow: 0 0 0 2px rgba(203, 12, 159, .15);
 }
 
+/* Both buttons keep a 1px border box so the outlined and the gradient one
+   resolve to the exact same height inside the actions strip. */
 .gorda-history__btn-filter,
 .gorda-history__btn-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.6rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
   line-height: 1.4;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .gorda-history__btn-filter {
   background: linear-gradient(310deg, #7928ca, #ff0080);
   color: #fff;
-  border: none;
   box-shadow: 0 4px 12px rgba(121, 40, 202, 0.35);
 }
 
@@ -395,7 +412,7 @@ body.dark-version .gorda-history {
 .gorda-history__btn-clear {
   background: var(--history-clear-bg);
   color: var(--history-clear-color);
-  border: 1px solid var(--history-clear-border);
+  border-color: var(--history-clear-border);
 }
 
 .gorda-history__stat-label {

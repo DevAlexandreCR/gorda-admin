@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix the misaligned filter buttons in the service history view: the fields now span the full card width and "Filtrar"/"Limpiar filtros" sit in a bordered actions strip at the bottom of the filter card, both resolving to the same height.
 - Fix the connected-drivers map marker reconciliation: markers now add, move, and remove in real time, without losing an add and a remove that land in the same update, and without duplicating markers when the plate search filter is cleared.
 - Fix `ServiceRepository.create()` unconditionally overwriting `origin` with `'admin'`, which clobbered the `'test'` origin of a directed test service.
 - Fix `restart()` dropping the `origin` and `directed_to` fields when recreating a service.
