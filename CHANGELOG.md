@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1(2026-08-01)](https://github.com/DevAlexandreCR/admin-driver/compare/2.1.1...2.1.0)
+
 ### Added
 
 - Add a "Servicio de prueba" toggle to the create-service form with a mandatory target-driver selector, forced passenger count of 1, and a persistent no-charge note; test services are written with `directed_to` and `origin: 'test'`.
