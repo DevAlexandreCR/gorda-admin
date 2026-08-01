@@ -9,6 +9,7 @@ import { nextTick } from 'vue'
 import ServiceRepository from '@/repositories/ServiceRepository'
 import ClientRepository from '@/repositories/ClientRepository'
 import ClientMock from '../../../mocks/entities/ClientMock'
+import DriverMock from '../../../mocks/entities/DriverMock'
 import AutoComplete from '@/components/AutoComplete.vue'
 import { getPlaces } from '../../../mocks/entities/PlaceMock'
 import { usePlacesStore } from '@/services/stores/PlacesStore'
@@ -17,6 +18,8 @@ import { StrHelper } from '@/helpers/StrHelper'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
 import { WhatsappServices } from "@/constants/WhatsappServices"
 import { useSettingsStore } from '@/services/stores/SettingsStore'
+import { useDriversStore } from '@/services/stores/DriversStore'
+import Service from '@/models/Service'
 
 describe('CreateService.vue', () => {
   let wrapper: VueWrapper<any>
@@ -27,6 +30,8 @@ describe('CreateService.vue', () => {
     const clientsStore = useClientsStore()
     const wpClient = useWpClientsStore()
     const settingsStore = useSettingsStore()
+    const driversStore = useDriversStore()
+    driversStore.drivers = [DriverMock] as any
     const places = getPlaces()
     settingsStore.branchSelected = {
       id: 'branch-1',
@@ -88,6 +93,17 @@ describe('CreateService.vue', () => {
     expect(input.length).toBe(5)
     expect(autoComplete.length).toBe(3)
   })
+
+  async function toggleTestServiceAndSelectDriver(plate: string): Promise<void> {
+    await wrapper.find('#isTestServiceToggle').setValue(true)
+    const input = wrapper.find('input[name="target_driver"]')
+    await input.setValue(plate)
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
+    await li?.trigger('click')
+  }
 
   it('an user can select location from neighborhoods', async () => {
     const onSelected = jest.spyOn(wrapper.vm, 'locSelected')
@@ -274,5 +290,168 @@ describe('CreateService.vue', () => {
         toast: true,
       })
     })
+  })
+
+  it('blocks submit and creates no service when the test toggle is on without a target driver', async () => {
+    ServiceRepository.create = jest.fn().mockResolvedValue('success')
+    const swal = jest.spyOn(Swal, 'fire')
+    await nextTick()
+
+    await wrapper.find('#isTestServiceToggle').setValue(true)
+    await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
+    await wrapper.find('input[name="phone"]').setValue('3100000000')
+    await wrapper.find('input[name="name"]').setValue('Name User')
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mari')
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
+    await li?.trigger('click')
+
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+
+    await waitForExpect(() => {
+      expect(swal).toBeCalledWith({
+        icon: 'error',
+        position: 'top-right',
+        title: i18n.global.t('common.messages.error'),
+        showConfirmButton: false,
+        text: i18n.global.t('services.messages.test_driver_required'),
+        timer: 3000,
+        toast: true,
+      })
+    })
+    expect(ServiceRepository.create).not.toBeCalled()
+  })
+
+  it('forces count to 1 and submits a test service directed to the selected driver', async () => {
+    ServiceRepository.create = jest.fn().mockResolvedValue('success')
+    ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
+    await nextTick()
+
+    await wrapper.find('select[name="count"]').setValue('3')
+    expect((wrapper.vm as any).count).toBe(3)
+
+    await wrapper.find('#isTestServiceToggle').setValue(true)
+    expect((wrapper.vm as any).count).toBe(1)
+    expect(wrapper.find('select[name="count"]').attributes('disabled')).toBeDefined()
+
+    await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
+    await wrapper.find('input[name="phone"]').setValue('3100000000')
+    await wrapper.find('input[name="name"]').setValue('Name User')
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mari')
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
+    await li?.trigger('click')
+
+    const targetDriverInput = wrapper.find('input[name="target_driver"]')
+    await targetDriverInput.setValue(DriverMock.vehicle.plate)
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const targetDriverLi = wrapper.findAll('.autocomplete-list li').at(0)
+    await targetDriverLi?.trigger('click')
+
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+    await flushPromises()
+
+    await waitForExpect(() => {
+      expect(ServiceRepository.create).toBeCalledTimes(1)
+    })
+    const [createdService, createdCount] = (ServiceRepository.create as jest.Mock).mock.calls[0]
+    expect(createdCount).toBe(1)
+    expect(createdService.origin).toBe(Service.ORIGIN_TEST)
+    expect(createdService.directed_to).toBe(DriverMock.id)
+  })
+
+  it('submits a test service directed to a driver resolved from selected_vehicle over the legacy vehicle', async () => {
+    const secondDriver = { ...DriverMock, id: 'SecondDriverID', selected_vehicle: { plate: 'CURRENT1' } }
+    const driversStore = useDriversStore()
+    driversStore.drivers = [DriverMock, secondDriver] as any
+    wrapper.unmount()
+    wrapper = mount(CreateService, {
+      attachTo: document.body,
+      global: {
+        plugins: [router, i18n],
+        provide: {
+          'appName': 'test',
+        },
+      },
+    })
+    await router.isReady()
+
+    ServiceRepository.create = jest.fn().mockResolvedValue('success')
+    ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
+    await nextTick()
+
+    await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
+    await wrapper.find('input[name="phone"]').setValue('3100000000')
+    await wrapper.find('input[name="name"]').setValue('Name User')
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mari')
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
+    await li?.trigger('click')
+
+    await toggleTestServiceAndSelectDriver('CURRENT1')
+
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+    await flushPromises()
+
+    await waitForExpect(() => {
+      expect(ServiceRepository.create).toBeCalledTimes(1)
+    })
+    const [createdService] = (ServiceRepository.create as jest.Mock).mock.calls[0]
+    expect(createdService.directed_to).toBe(secondDriver.id)
+  })
+
+  it('blocks submit when the target driver text is edited after selection without picking a new suggestion', async () => {
+    ServiceRepository.create = jest.fn().mockResolvedValue('success')
+    ClientRepository.create = jest.fn().mockResolvedValue(ClientMock)
+    const swal = jest.spyOn(Swal, 'fire')
+    await nextTick()
+
+    await wrapper.find('select[name="wp_client_id"]').setValue('3103794656')
+    await wrapper.find('input[name="phone"]').setValue('3100000000')
+    await wrapper.find('input[name="name"]').setValue('Name User')
+    const input = wrapper.find('input[name="start_address"]')
+    await input.setValue('mari')
+    await waitForExpect(() => {
+      expect(wrapper.findAll('.autocomplete-list li').length).toBeGreaterThan(0)
+    })
+    const li = wrapper.findAll('.autocomplete-list li').at(0)
+    await li?.trigger('click')
+
+    await toggleTestServiceAndSelectDriver(DriverMock.vehicle.plate)
+    expect((wrapper.vm as any).targetDriverId).toBe(DriverMock.id)
+
+    const targetDriverInput = wrapper.find('input[name="target_driver"]')
+    await targetDriverInput.setValue('so')
+    expect((wrapper.vm as any).targetDriverId).toBeNull()
+
+    const buttonSave = wrapper.find('button[type="submit"]')
+    await buttonSave.trigger('click')
+
+    await waitForExpect(() => {
+      expect(swal).toBeCalledWith({
+        icon: 'error',
+        position: 'top-right',
+        title: i18n.global.t('common.messages.error'),
+        showConfirmButton: false,
+        text: i18n.global.t('services.messages.test_driver_required'),
+        timer: 3000,
+        toast: true,
+      })
+    })
+    expect(ServiceRepository.create).not.toBeCalled()
   })
 })

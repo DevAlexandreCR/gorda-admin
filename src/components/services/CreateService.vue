@@ -68,7 +68,7 @@
           <div class="col-12 col-md-2 col-xl-1 px-1">
             <div class="form-group">
               <label class="field-label">{{ $t('services.labels.count') }}</label>
-              <select name="count" class="form-select form-select-sm pe-0" id="color" v-model="count">
+              <select name="count" class="form-select form-select-sm pe-0" id="color" v-model="count" :disabled="isTestService">
                 <option v-for="(count) in [1, 2, 3, 4, 5]" :key="count" :value="count">{{ count }}</option>
               </select>
             </div>
@@ -87,11 +87,36 @@
               </ErrorMessage>
             </div>
           </div>
+          <div class="col-12 col-md-3 col-xl-2 px-1">
+            <div class="form-group">
+              <label class="field-label">&nbsp;</label>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="isTestServiceToggle" v-model="isTestService">
+                <label class="form-check-label" for="isTestServiceToggle">{{ $t('services.labels.test_toggle') }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 col-xl-3 px-1" v-if="isTestService">
+            <div class="form-group">
+              <label class="field-label">{{ $t('services.labels.target_driver') }}</label>
+              <AutoComplete :idField="'fieldTargetDriver'" :fieldName="'target_driver'" @selected="onTargetDriverSelected"
+                            @on-change="onTargetDriverChange" :elements="targetDriverPlates"
+                            :placeholder="$t('drivers.placeholders.plate')" classes="form-control form-control-sm" icon="fas fa-car"/>
+            </div>
+          </div>
           <div class="col px-1 d-flex justify-content-end">
             <button class="btn btn-primary d-inline-flex align-items-center submit-btn" type="submit" :disabled="submitting">
               <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               <em v-else class="fa-solid fa-paper-plane me-2"></em>{{ $t('common.actions.create') }} {{ $t('services.title', 1) }}
             </button>
+          </div>
+        </div>
+        <div class="row gy-2" v-if="isTestService">
+          <div class="col-12 px-1">
+            <div class="test-notice d-flex align-items-center mb-0" role="alert">
+              <em class="fas fa-circle-info me-2"></em>
+              <span>{{ $t('services.messages.test_notice') }}</span>
+            </div>
           </div>
         </div>
       </Form>
@@ -120,6 +145,7 @@ import { StrHelper } from '@/helpers/StrHelper'
 import { useWpClientsStore } from "@/services/stores/WpClientStore";
 import AuthService from '@/services/AuthService'
 import { useSettingsStore } from "@/services/stores/SettingsStore";
+import { useDriversStore } from '@/services/stores/DriversStore'
 
 const placesAutocomplete: Ref<Array<AutoCompleteType>> = ref([])
 const clientsPhone: Ref<Array<AutoCompleteType>> = ref([])
@@ -141,9 +167,29 @@ const countryCode: Ref<CountryCodeType> = ref(countryCodes.value[0])
 const count: Ref<number> = ref(1)
 const { clients: wpClients, defaultClient } = storeToRefs(useWpClientsStore())
 const { branchSelected } = storeToRefs(settingsStore)
+const { drivers } = useDriversStore()
+const isTestService = ref(false)
+const targetDriverId: Ref<string | null> = ref(null)
+const targetDriverPlates = computed<Array<AutoCompleteType>>(() => {
+  return drivers.reduce((plates: Array<AutoCompleteType>, driver) => {
+    const plate = driver.selected_vehicle?.plate ?? driver.vehicle?.plate
+    if (driver.id && plate) {
+      plates.push({ id: driver.id, value: plate })
+    }
+    return plates
+  }, [])
+})
 
 watch(() => service.value.name, (name) => {
   service.value.name = StrHelper.toCamelCase(name ?? '')
+})
+
+watch(isTestService, (enabled) => {
+  if (enabled) {
+    count.value = 1
+  } else {
+    targetDriverId.value = null
+  }
 })
 
 const schema = yup.object().shape({
@@ -172,6 +218,11 @@ function submitFromEnter(event: Event) {
 async function onSubmit(values: ServiceInterface, event: FormActions<any>): Promise<void> {
   if (!start_loc) {
     await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.no_start_loc'))
+    return
+  }
+
+  if (isTestService.value && !targetDriverId.value) {
+    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), i18n.global.t('services.messages.test_driver_required'))
     return
   }
 
@@ -229,12 +280,18 @@ function createService(values: ServiceInterface): void {
   newService.end_loc = endLocWithBranch
   newService.wp_client_id = values.wp_client_id
   newService.created_by = values.created_by
-  ServiceRepository.create(newService, count.value).then(() => {
+  if (isTestService.value) {
+    newService.origin = Service.ORIGIN_TEST
+    newService.directed_to = targetDriverId.value
+  }
+  ServiceRepository.create(newService, isTestService.value ? 1 : count.value).then(() => {
     count.value = 1
     countryCode.value = fallbackCountryCode.value
     service.value.wp_client_id = defaultClient.value as string
     start_loc = null
     end_loc = null
+    isTestService.value = false
+    targetDriverId.value = null
     ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.created'))
   }).catch((e) => {
     ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
@@ -313,6 +370,14 @@ async function endLocSelected(element: AutoCompleteType): Promise<void> {
 
 function onEndAddressChange(): void {
   end_loc = null
+}
+
+function onTargetDriverSelected(element: AutoCompleteType): void {
+  targetDriverId.value = element.id
+}
+
+function onTargetDriverChange(): void {
+  targetDriverId.value = null
 }
 
 function buildClientIdentifiers(phone: string): { phone: string, id: string } {
@@ -410,5 +475,14 @@ async function searchPlacesAutocomplete(term: string): Promise<Array<AutoComplet
 .submit-btn {
   text-transform: uppercase;
   background-image: var(--gradient-primary);
+}
+
+.test-notice {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--badge-info-bg);
+  color: var(--badge-info-fg);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
 }
 </style>

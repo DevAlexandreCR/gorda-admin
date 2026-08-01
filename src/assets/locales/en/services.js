@@ -35,6 +35,7 @@ export default {
   origin: {
     admin: 'Admin panel',
     bot: 'WhatsApp Bot',
+    test: 'Test',
     unknown: 'Unidentified',
   },
   labels: {
@@ -46,6 +47,8 @@ export default {
     comment: 'Comment',
     count: 'Qty.',
     line: 'Line',
+    test_toggle: 'Test service',
+    target_driver: 'Target driver',
   },
   edit_start_address: 'Edit pickup address',
   current_start_address: 'Current pickup address',
@@ -57,7 +60,7 @@ export default {
     name: 'Passenger name',
     start_address: 'Pickup point',
     end_address: 'Destination (optional)',
-    comment: 'Additional note'
+    comment: 'Additional note',
   },
   history: 'History',
   total: 'Total',
@@ -86,6 +89,8 @@ export default {
     has_applicants: 'Cannot restart the service because drivers are currently applied',
     start_address_updated: 'Pickup address updated',
     branch_required: 'Select a branch to update the pickup address',
-    comment_updated: 'Comment updated'
+    comment_updated: 'Comment updated',
+    test_driver_required: 'You must select a driver for the test service',
+    test_notice: 'This is a test service: it will only be visible to the selected driver and will not generate charges to the driver.',
   }
 }

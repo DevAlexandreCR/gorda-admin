@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add a "Servicio de prueba" toggle to the create-service form with a mandatory target-driver selector, forced passenger count of 1, and a persistent no-charge note; test services are written with `directed_to` and `origin: 'test'`.
+- Show a distinct "Prueba" origin badge in the pending, in-progress, and history services tables and in the service detail modal, which now also shows the target driver.
+
 ### Fixed
 
 - Fix the connected-drivers map marker reconciliation: markers now add, move, and remove in real time, without losing an add and a remove that land in the same update, and without duplicating markers when the plate search filter is cleared.
+- Fix `ServiceRepository.create()` unconditionally overwriting `origin` with `'admin'`, which clobbered the `'test'` origin of a directed test service.
+- Fix `restart()` dropping the `origin` and `directed_to` fields when recreating a service.
 
 ## [2.1.0(2026-07-08)](https://github.com/DevAlexandreCR/admin-driver/compare/2.1.0...2.0.12)
 

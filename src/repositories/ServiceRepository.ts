@@ -211,6 +211,8 @@ class ServiceRepository {
 		newService.amount = service.amount ?? null
 		newService.applicants = service.applicants ?? null
 		newService.metadata = service.metadata ?? null
+		newService.origin = service.origin
+		newService.directed_to = service.directed_to ?? null
 
 		await remove(child(DBService.dbServices(), service.id))
 		return this.create(newService)
@@ -272,7 +274,7 @@ class ServiceRepository {
 			const res = await push(DBService.dbServices(), service).catch(e => Promise.reject(e))
 			service.id = res.key
 			service.created_by = AuthService.getCurrentUser()?.id ?? null
-			service.origin = Service.ORIGIN_ADMIN
+			service.origin = service.origin ?? Service.ORIGIN_ADMIN
 			await this.update(service).catch(e => Promise.reject(e))
 		}
 		await Promise.resolve()

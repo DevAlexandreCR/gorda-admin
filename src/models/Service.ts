@@ -29,6 +29,7 @@ export default class Service implements ServiceInterface {
   deducted_value: number | null = null
   created_by: string | null = null
   origin: string | null = null
+  directed_to: string | null = null
   assigned_by: string | null = null
   canceled_by: string | null = null
   terminated_by: string | null = null
@@ -45,6 +46,7 @@ export default class Service implements ServiceInterface {
   static readonly STATUS_CANCELED = 'canceled'
   static readonly ORIGIN_ADMIN = 'admin'
   static readonly ORIGIN_BOT = 'bot'
+  static readonly ORIGIN_TEST = 'test'
   static readonly EVENT_CANCEL = 'cancel-service'
   static readonly EVENT_TERMINATE = 'end-service'
   static readonly EVENT_SHOW = 'show-service'

@@ -171,4 +171,43 @@ describe('ServicesTable.vue', () => {
     await nextTick()
     expect(wrapper.find('span.badge.bg-info').exists()).toBe(false)
   })
+
+  describe('originKind', () => {
+    it('classifies origin = test as test even though created_by is non-null (precedence over admin fallback)', () => {
+      service.origin = Service.ORIGIN_TEST
+      service.created_by = 'operator-1'
+      expect((wrapper.vm as any).originKind(service)).toBe('test')
+    })
+
+    it('classifies persisted origin = admin as admin', () => {
+      service.origin = Service.ORIGIN_ADMIN
+      service.created_by = null
+      expect((wrapper.vm as any).originKind(service)).toBe('admin')
+    })
+
+    it('classifies persisted origin = bot as bot', () => {
+      service.origin = 'bot'
+      expect((wrapper.vm as any).originKind(service)).toBe('bot')
+    })
+
+    it('falls back to admin when origin is unset but created_by is present', () => {
+      service.origin = null
+      service.created_by = 'operator-1'
+      expect((wrapper.vm as any).originKind(service)).toBe('admin')
+    })
+
+    it('falls back to bot when origin and created_by are unset but wp_client_id is present', () => {
+      service.origin = null
+      service.created_by = null
+      service.wp_client_id = '3103794656'
+      expect((wrapper.vm as any).originKind(service)).toBe('bot')
+    })
+
+    it('falls back to unknown when origin, created_by, and wp_client_id are all unset', () => {
+      service.origin = null
+      service.created_by = null
+      service.wp_client_id = '' as any
+      expect((wrapper.vm as any).originKind(service)).toBe('unknown')
+    })
+  })
 })

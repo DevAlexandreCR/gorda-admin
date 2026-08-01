@@ -76,12 +76,16 @@
                 </h6>
                 <div class="gorda-info-row">
                   <span class="gorda-info-row__key">
-                    <em :class="`fa-solid ${originIcon} me-1`"></em>
+                    <em :class="['fa-solid', originIcon, 'me-1', origin.kind === 'test' ? 'text-warning' : '']"></em>
                     {{ $t('services.fields.origin') }}
                   </span>
                   <span class="gorda-info-row__value">
                     {{ origin.label }}<template v-if="origin.sublabel"> · {{ origin.sublabel }}</template>
                   </span>
+                </div>
+                <div class="gorda-info-row" v-if="service.directed_to">
+                  <span class="gorda-info-row__key">{{ $t('services.labels.target_driver') }}</span>
+                  <span class="gorda-info-row__value">{{ targetDriverName }}</span>
                 </div>
                 <div class="gorda-info-row">
                   <span class="gorda-info-row__key">{{$t('services.fields.start_address')}}</span>
@@ -194,6 +198,7 @@ import ServiceHelper from '@/helpers/ServiceHelper'
 import AuthService from '@/services/AuthService'
 import { useSettingsStore } from '@/services/stores/SettingsStore'
 import { useWpClientsStore } from '@/services/stores/WpClientStore'
+import { useDriversStore } from '@/services/stores/DriversStore'
 
 interface Props {
   service: ServiceList
@@ -204,6 +209,7 @@ const { t } = useI18n()
 const location = reactive<Array<PlaceInterface>>([])
 const { branchSelected } = useSettingsStore()
 const wpClientsStore = useWpClientsStore()
+const driversStore = useDriversStore()
 
 const createdBy = ref<string>('Sistema')
 const canceledBy = ref<string>('Sistema')
@@ -255,11 +261,15 @@ const loadUserData = async () => {
 
 const origin = computed(() => {
   const explicit = props.service.origin
-  const kind = explicit === 'admin' ? 'admin'
+  const kind = explicit === Service.ORIGIN_TEST ? 'test'
+    : explicit === 'admin' ? 'admin'
     : explicit === 'bot' ? 'bot'
     : props.service.created_by ? 'admin'
     : props.service.wp_client_id ? 'bot'
     : 'unknown'
+  if (kind === 'test') {
+    return { kind: 'test' as const, label: t('services.origin.test'), sublabel: null }
+  }
   if (kind === 'admin') {
     return { kind: 'admin' as const, label: t('services.origin.admin'), sublabel: createdBy.value || null }
   }
@@ -271,9 +281,15 @@ const origin = computed(() => {
 })
 
 const originIcon = computed(() => {
+  if (origin.value.kind === 'test') return 'fa-flask'
   if (origin.value.kind === 'bot') return 'fa-tower-broadcast'
   if (origin.value.kind === 'admin') return 'fa-toolbox'
   return 'fa-question'
+})
+
+const targetDriverName = computed(() => {
+  if (!props.service.directed_to) return null
+  return driversStore.findById(props.service.directed_to)?.name ?? props.service.directed_to
 })
 
 const statusBadgeClass = computed(() => {

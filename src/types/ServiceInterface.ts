@@ -19,6 +19,7 @@ export interface ServiceInterface {
   created_at: number
   created_by: string | null
   origin: string | null
+  directed_to?: string | null
   assigned_by: string | null
   canceled_by: string | null
   terminated_by: string | null

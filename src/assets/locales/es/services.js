@@ -35,6 +35,7 @@ export default {
   origin: {
     admin: 'Panel admin',
     bot: 'Bot WhatsApp',
+    test: 'Prueba',
     unknown: 'Sin identificar',
   },
   labels: {
@@ -46,6 +47,8 @@ export default {
     comment: 'Comentario',
     count: 'Cant.',
     line: 'Línea',
+    test_toggle: 'Servicio de prueba',
+    target_driver: 'Conductor destino',
   },
   edit_start_address: 'Editar dirección inicial',
   current_start_address: 'Dirección inicial actual',
@@ -57,7 +60,7 @@ export default {
     name: 'Nombre del pasajero',
     start_address: 'Punto de recogida',
     end_address: 'Destino (opcional)',
-    comment: 'Nota adicional'
+    comment: 'Nota adicional',
   },
   history: 'Historial',
   total: 'Total',
@@ -86,6 +89,8 @@ export default {
     has_applicants: 'No se puede reiniciar el servicio porque tiene conductores postulados en el momento',
     start_address_updated: 'Dirección de recogida actualizada',
     branch_required: 'Seleccione una sucursal para actualizar la dirección de recogida',
-    comment_updated: 'Comentario actualizado'
+    comment_updated: 'Comentario actualizado',
+    test_driver_required: 'Debe seleccionar un conductor para el servicio de prueba',
+    test_notice: 'Este es un servicio de prueba: solo será visible para el conductor seleccionado y no generará cobros al conductor.',
   }
 }
