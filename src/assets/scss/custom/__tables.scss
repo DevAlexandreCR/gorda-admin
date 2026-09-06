@@ -38,6 +38,10 @@
   background: var(--badge-warning-bg);
   color: var(--badge-warning-fg);
 }
+.gorda-status-badge--secondary {
+  background: var(--badge-secondary-bg);
+  color: var(--badge-secondary-fg);
+}
 .gorda-status-badge--solid-success,
 .gorda-status-badge--solid-danger {
   color: #ffffff;

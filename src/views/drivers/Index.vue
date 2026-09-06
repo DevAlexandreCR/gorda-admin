@@ -10,6 +10,17 @@
         <!-- Spacer -->
         <div class="col"></div>
 
+        <!-- Payments audit entry point (admin only) -->
+        <div class="col-auto" v-if="currentUser && currentUser.isAdmin()">
+          <router-link
+            :to="{ name: 'drivers.payments' }"
+            tag="a"
+            class="btn btn-sm btn-outline-dark btn-rounded mb-0"
+          >
+            {{ $t('drivers.payments_audit.entry_label') }}
+          </router-link>
+        </div>
+
         <!-- Send message (broadcast, no driver selected) button + modal -->
         <div class="col-auto">
           <button class="btn btn-sm bg-gradient-warning mb-0" @click="showSendMessageModal()">

@@ -496,42 +496,7 @@
     </div>
   </div>
 
-  <!-- Modal Void Monthly Payment -->
-  <div class="modal fade" id="void-monthly-payment-modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content border-0 rounded-3">
-        <div class="modal-header border-bottom">
-          <div class="d-flex align-items-center gap-2">
-            <span class="modal-icon-chip modal-icon-chip-danger">
-              <em class="fas fa-ban"></em>
-            </span>
-            <h6 class="modal-title mb-0">{{ $t('drivers.monthly_payments.void_modal_title') }}</h6>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div v-if="voidingPayment" class="rounded-3 p-3 mb-3 d-flex justify-content-between align-items-center payhist-void-summary">
-            <span class="payhist-period-pill">{{ voidingPayment.period }}</span>
-            <span class="fw-bold">{{ (voidingPayment.amount ?? 0).toLocaleString('es-CO') + ' COP' }}</span>
-          </div>
-          <div class="form-group">
-            <label>{{ $t('drivers.monthly_payments.field_void_reason') }}</label>
-            <textarea class="form-control mt-1" rows="3" v-model="voidReason"
-                      :placeholder="$t('drivers.monthly_payments.placeholder_void_reason')"></textarea>
-          </div>
-        </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            {{ $t('common.actions.cancel') }}
-          </button>
-          <button @click="confirmVoidPayment" type="button" class="btn bg-gradient-danger" :disabled="!voidReason.trim() || submittingVoid">
-            <span v-if="submittingVoid" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            <em v-else class="fas fa-ban me-1"></em>{{ $t('drivers.monthly_payments.action_void_confirm') }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <VoidMonthlyPaymentModal ref="voidModalRef" :driver-id="driver.id" @voided="onPaymentVoided" />
 
   <!-- Modal Edit Gmail -->
   <div class="modal fade" id="editGmail" tabindex="-1" aria-labelledby="editGmailLabel" aria-hidden="true">
@@ -618,13 +583,13 @@
 import StorageService from '@/services/StorageService'
 import { ErrorMessage, Field, Form } from 'vee-validate'
 import dayjs from 'dayjs'
-import * as bootstrap from 'bootstrap'
 import Driver from '@/models/Driver'
 import DriverRepository from '@/repositories/DriverRepository'
 import { Constants } from '@/constants/Constants'
 import ToastService from '@/services/ToastService'
 import ImageLoader from '@/components/ImageLoader.vue'
 import RosterPanel from '@/components/vehicles/RosterPanel.vue'
+import VoidMonthlyPaymentModal from '@/components/drivers/VoidMonthlyPaymentModal.vue'
 import i18n from '@/plugins/i18n'
 import { computed, onBeforeMount, onMounted, ref, Ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -648,8 +613,7 @@ const monthlyPaymentAmount = ref(0)
 const monthlyPaymentNote = ref('')
 const monthlyPayments: Ref<MonthlyPaymentInterface[]> = ref([])
 const monthlyPaymentsTotal = ref(0)
-const voidingPayment: Ref<MonthlyPaymentInterface | null> = ref(null)
-const voidReason = ref('')
+const voidModalRef = ref<InstanceType<typeof VoidMonthlyPaymentModal> | null>(null)
 const suggestedAmount = ref(0)
 const types: Ref<Array<string>> = ref(Constants.DOC_TYPES)
 const showPassword = ref(false);
@@ -678,7 +642,6 @@ const submittingEmail = ref(false)
 const submittingPassword = ref(false)
 const submittingBalance = ref(false)
 const submittingMonthlyPayment = ref(false)
-const submittingVoid = ref(false)
 const togglingEnabled = ref(false)
 const newBalance = ref(0)
 const rechargeNote = ref('')
@@ -780,13 +743,6 @@ onMounted(() => {
       adjustmentType.value = 'add'
     })
   }
-  const voidModalEl = document.getElementById('void-monthly-payment-modal')
-  if (voidModalEl) {
-    voidModalEl.addEventListener('hidden.bs.modal', () => {
-      voidingPayment.value = null
-      voidReason.value = ''
-    })
-  }
 })
 
 function uploadImgDriver(url: string): void {
@@ -870,27 +826,11 @@ function addMonthlyPayment(): void {
 }
 
 function openVoidModal(payment: MonthlyPaymentInterface): void {
-  voidingPayment.value = payment
-  voidReason.value = ''
-  const modalEl = document.getElementById('void-monthly-payment-modal')
-  if (modalEl) {
-    bootstrap.Modal.getOrCreateInstance(modalEl).show()
-  }
+  voidModalRef.value?.open(payment)
 }
 
-async function confirmVoidPayment(): Promise<void> {
-  if (!voidingPayment.value || !voidReason.value.trim()) return
-  submittingVoid.value = true
-  try {
-    await DriverRepository.voidMonthlyPayment(driver.value.id, voidingPayment.value.id, voidReason.value.trim())
-    await loadMonthlyPayments()
-    hide('void-monthly-payment-modal')
-    await ToastService.toast(ToastService.SUCCESS, i18n.global.t('common.messages.updated'))
-  } catch (e: any) {
-    await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
-  } finally {
-    submittingVoid.value = false
-  }
+async function onPaymentVoided(): Promise<void> {
+  await loadMonthlyPayments()
 }
 
 function onEnable(event: Event): void {
@@ -1046,10 +986,6 @@ const initials = (name: string): string => {
   flex: none;
 }
 
-.modal-icon-chip-danger {
-  background: linear-gradient(310deg, #ea0606, #ff667c);
-}
-
 .period-pill-row {
   display: flex;
   flex-wrap: wrap;
@@ -1180,10 +1116,6 @@ const initials = (name: string): string => {
   font-size: 0.72rem;
   padding: 0.6rem 1.25rem;
   border-top: 1px solid var(--payhist-td-border);
-}
-
-.payhist-void-summary {
-  background: var(--payhist-pill-bg);
 }
 
 .payhist-status-cell {

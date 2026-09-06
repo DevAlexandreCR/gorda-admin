@@ -127,16 +127,12 @@
 import { computed, ref, watch } from 'vue'
 import type { ActiveFilters } from '@/types/ActiveFilters'
 import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import 'dayjs/locale/es'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
-const BOGOTA_TIMEZONE = 'America/Bogota'
-const PERIOD_HISTORY_MONTHS = 12
+import {
+  currentBogotaPeriod,
+  fallbackLabel as fallbackLabelHelper,
+  periodLabel as periodLabelHelper,
+  periodOptions as periodOptionsHelper,
+} from '@/helpers/driverFilterLabels'
 
 interface Props {
   filters: ActiveFilters
@@ -186,25 +182,9 @@ const hasActiveFilters = computed(() =>
   Object.keys(props.filters).length > 0 || localSearch.value !== ''
 )
 
-function currentBogotaPeriod(): string {
-  return dayjs().tz(BOGOTA_TIMEZONE).format('YYYY-MM')
-}
-
 const defaultPeriod = computed(() => currentBogotaPeriod())
 
-const periodOptions = computed(() => {
-  const current = dayjs().tz(BOGOTA_TIMEZONE)
-  const periods: string[] = []
-  for (let i = 0; i < PERIOD_HISTORY_MONTHS; i++) {
-    periods.push(current.subtract(i, 'month').format('YYYY-MM'))
-  }
-  const selected = props.filters.period
-  if (selected && !periods.includes(selected)) {
-    periods.push(selected)
-    periods.sort((a, b) => (a > b ? -1 : 1))
-  }
-  return periods
-})
+const periodOptions = computed(() => periodOptionsHelper(props.filters.period))
 
 watch(() => props.search, (value) => {
   localSearch.value = value
@@ -220,8 +200,7 @@ function onSearchInput(event: Event): void {
 }
 
 function fallbackLabel(key: string, fallback: string, params?: Record<string, number>): string {
-  const translated = t(key, params ?? {})
-  return translated === key ? fallback : translated
+  return fallbackLabelHelper(t, key, fallback, params)
 }
 
 function statusLabel(value: 'enabled' | 'disabled'): string {
@@ -241,9 +220,7 @@ function paymentStatusLabel(value: 'paid' | 'pending'): string {
 }
 
 function periodLabel(period: string): string {
-  const dayjsLocale = locale.value === 'es' ? 'es' : 'en'
-  const value = dayjs(`${period}-01`).locale(dayjsLocale).format('MMMM YYYY')
-  return value.charAt(0).toUpperCase() + value.slice(1)
+  return periodLabelHelper(period, locale.value)
 }
 
 function onStatusChange(event: Event): void {

@@ -84,6 +84,16 @@ const routes: Array<any> = [
             path: '/dashboard/drivers/:id/edit',
             name: 'drivers.edit',
             component: DriverEdit
+          },
+          {
+            path: '/dashboard/drivers/payments',
+            name: 'drivers.payments',
+            component: () => import('@/views/drivers/Payments.vue'),
+            beforeEnter: (
+              to: RouteLocationNormalized,
+              from: RouteLocationNormalized,
+              next: NavigationGuardNext
+            ) => adminGuard(to, from, next)
           }
         ]
       },
