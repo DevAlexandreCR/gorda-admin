@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0(2026-09-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.0...2.1.1)
+
 ### Added
 
 - Add a new admin-only view "Conductores › Pagos" (`/dashboard/drivers/payments`): a cross-driver audit of monthly payments and recharges with Mensualidades/Recargas tabs, a Detalle/Resumen por conductor mode toggle, a filter bar (period, registration date range, driver search, registered-by actor, anomaly pills, status/amount bounds) fully round-tripped through the URL, and a footer with the filtered-set totals that reconcile with the metrics dashboard. Monthly payments can be voided directly from a row; recharges remain read-only everywhere.
