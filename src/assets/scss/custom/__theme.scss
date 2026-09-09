@@ -385,7 +385,6 @@ body.dark-version {
   .gm-style .gm-style-iw-d { color: var(--card-text) !important; }
   .gm-style .gm-ui-hover-effect { filter: invert(1) brightness(1.2); }
   .gm-style .gm-style-iw-tc { background-color: #252d3d !important; }
-  .gorda-infowindow { color: var(--card-text); }
 }
 
 .form-switch .form-check-input:checked {
@@ -393,29 +392,9 @@ body.dark-version {
   border-color: #cb0c9f;
 }
 
-/* Fleet map: render the plate as a bare pill, hide Google's InfoWindow chrome */
-.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) .gm-style-iw-d {
-  overflow: visible !important;
-  padding: 0 !important;
-}
-/* hide the tail and the close button only for the vehicle pill */
-.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) + .gm-style-iw-tc { display: none !important; }
-.gm-style .gm-style-iw-c:has(.gorda-infowindow--vehicle) button.gm-ui-hover-effect,
-.gm-style .gm-style-iw:has(.gorda-infowindow--vehicle) button.gm-ui-hover-effect { display: none !important; }
-
 .gorda-plate-pill {
   display: inline-block;
-  font-size: 0.68rem;
-  font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
   padding: 0.14rem 0.45rem;
   border-radius: 0.35rem;
   white-space: nowrap;
@@ -424,6 +403,8 @@ body.dark-version {
 }
 .gorda-plate-pill--free { background: #82d616; }
 .gorda-plate-pill--busy { background: #ea0606; }
+.gorda-plate-pill--aging { background: #8392ab; }
+.gorda-plate-pill--stale { background: #5c6b82; opacity: .85; }
 
 /* Tabs (Bootstrap nav-tabs) */
 body.dark-version {

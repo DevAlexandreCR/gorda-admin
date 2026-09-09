@@ -74,7 +74,7 @@
         <RouteIntegrityReport v-if="currentTap === 'routeIntegrity'"></RouteIntegrityReport>
       </div>
       <div class="tab-pane fade card card-body" id="mapTab" role="tabpanel" aria-labelledby="map-tab">
-        <DriverMap v-if="currentTap === 'mapTab'"/>
+        <DriverMap v-if="mapActivated" v-show="currentTap === 'mapTab'" :visible="currentTap === 'mapTab'"/>
       </div>
     </div>
     <AssignDriver :drivers="drivers"></AssignDriver>
@@ -106,6 +106,7 @@ const {pendings, inProgress} = storeToRefs(useServicesStore())
 const {filterInProgressServices} = useServicesStore()
 const {drivers} = storeToRefs(driverStore)
 const currentTap: Ref<string> = ref('pendings')
+const mapActivated: Ref<boolean> = ref(false)
 const searchService: Ref<string> = ref('')
 const filteredInProgress: Ref<Array<ServiceList>> = ref([])
 const paginationInProgress = reactive<Pagination>({
@@ -122,6 +123,12 @@ const paginationPendings = reactive<Pagination>({
 watch(pendings, (newPendings) => {
   paginationPendings.totalCount = newPendings.length
 })
+
+watch(currentTap, (tap) => {
+  if (tap === 'mapTab') {
+    mapActivated.value = true
+  }
+}, {immediate: true})
 watch(searchService, (search) => {
   filteredInProgress.value.splice(0, filteredInProgress.value.length)
   if (search.length > 2) {

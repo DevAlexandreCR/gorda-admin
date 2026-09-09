@@ -68,13 +68,15 @@ describe('DriverMap.vue', () => {
 
     store.connectedDrivers.push(place({ lat: 1, lng: 2 }))
     await nextTick()
-    expect(mapPlaces()).toEqual([place({ lat: 1, lng: 2 })])
+    // Every place now carries an explicit `freshness` (task 4.1) — drivers with no
+    // `lastSeenAt` are always 'fresh', so it is added to the expectation here.
+    expect(mapPlaces()).toEqual([place({ lat: 1, lng: 2, freshness: 'fresh' })])
 
     // Move: same key, new coordinates — reflected without add/remove churn.
     const index = store.connectedDrivers.findIndex((driver) => driver.key === 'driver-1')
     store.connectedDrivers[index] = place({ lat: 9, lng: 9 })
     await nextTick()
-    expect(mapPlaces()).toEqual([place({ lat: 9, lng: 9 })])
+    expect(mapPlaces()).toEqual([place({ lat: 9, lng: 9, freshness: 'fresh' })])
 
     store.connectedDrivers.splice(0, 1)
     await nextTick()
@@ -127,5 +129,65 @@ describe('DriverMap.vue', () => {
     const uniqueKeys = new Set(cleared.map((p) => p.key))
     expect(uniqueKeys.size).toBe(3)
     expect([...uniqueKeys].sort()).toEqual(['driver-1', 'driver-2', 'driver-3'])
+  })
+
+  it('renders a driver without lastSeenAt as fresh with no suffix', async () => {
+    const store = useDriversStore()
+    store.connectedDrivers.push(place())
+    wrapper = mountDriverMap()
+    await nextTick()
+
+    const [driver] = mapPlaces()
+    expect(driver.freshness).toBe('fresh')
+    expect(driver.name).toBe('ABC123')
+  })
+
+  it('dims a driver to aging at 75s and to stale at 120s, appending the elapsed suffix', async () => {
+    jest.useFakeTimers()
+    try {
+      const start = Date.now()
+      const store = useDriversStore()
+      store.connectedDrivers.push(place({ lastSeenAt: start - 75_000 }))
+      wrapper = mountDriverMap()
+      await nextTick()
+
+      let [driver] = mapPlaces()
+      expect(driver.freshness).toBe('aging')
+      expect(driver.name).toBe('ABC123 · 1m')
+
+      // Advance past the 120s stale threshold; the 15s tick recomputes freshness.
+      jest.advanceTimersByTime(45_000)
+      await nextTick()
+
+      ;[driver] = mapPlaces()
+      expect(driver.freshness).toBe('stale')
+      expect(driver.name).toBe('ABC123 · 2m')
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('yields value-identical places on a tick where every driver stays fresh', async () => {
+    jest.useFakeTimers()
+    try {
+      const store = useDriversStore()
+      store.connectedDrivers.push(
+        place({ key: 'driver-1', name: 'ABC123' }),
+        place({ key: 'driver-2', name: 'XYZ987', lastSeenAt: Date.now() - 1_000 })
+      )
+      wrapper = mountDriverMap()
+      await nextTick()
+
+      const before = mapPlaces()
+      expect(before.every((driver) => driver.freshness === 'fresh')).toBe(true)
+
+      jest.advanceTimersByTime(15_000)
+      await nextTick()
+
+      const after = mapPlaces()
+      expect(after).toEqual(before)
+    } finally {
+      jest.useRealTimers()
+    }
   })
 })

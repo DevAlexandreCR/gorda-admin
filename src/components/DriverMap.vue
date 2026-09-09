@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="gorda-map__surface">
-      <Map :places="filteredDrivers" :icon="icon"/>
+      <Map :places="filteredDrivers" :icon="icon" :visible="props.visible"/>
     </div>
   </div>
 </template>
@@ -33,25 +33,74 @@ import {Field} from 'vee-validate'
 import Map from '@/components/maps/Map.vue'
 import {PlaceInterface} from '@/types/PlaceInterface'
 
+// Freshness thresholds derived from `last_seen_at` (see design.md D6).
+const AGING_AFTER_MS = 60_000
+const STALE_AFTER_MS = 120_000
+const TICK_INTERVAL_MS = 15_000
+
+interface Props {
+  visible?: boolean
+}
+
+const props = defineProps<Props>()
+
 const driversStore = useDriversStore()
 const {connectedDrivers} = storeToRefs(driversStore)
 const searchDriver: Ref<string> = ref('')
 const icon: Ref<string> = ref(process.env.VUE_APP_DRIVER_LOC_IMAGE_URL as string)
+const nowTick: Ref<number> = ref(Date.now())
+let tickInterval: ReturnType<typeof setInterval> | undefined
+
+function computeFreshness(lastSeenAt: number | undefined, now: number): NonNullable<PlaceInterface['freshness']> {
+  if (typeof lastSeenAt !== 'number') {
+    return 'fresh'
+  }
+  const age = now - lastSeenAt
+  if (age >= STALE_AFTER_MS) return 'stale'
+  if (age >= AGING_AFTER_MS) return 'aging'
+  return 'fresh'
+}
+
+function formatElapsed(lastSeenAt: number, now: number): string {
+  const elapsed = now - lastSeenAt
+  if (elapsed < AGING_AFTER_MS) {
+    return `${Math.floor(elapsed / 1000)}s`
+  }
+  return `${Math.floor(elapsed / 60_000)}m`
+}
 
 const filteredDrivers = computed<Array<PlaceInterface>>(() => {
   const search = searchDriver.value
-  if (search.length === 0) {
-    return connectedDrivers.value.slice()
-  }
-  return connectedDrivers.value.filter(place => place.name.toLowerCase().includes(search.toLowerCase()))
+  const now = nowTick.value
+  const matched = search.length === 0
+    ? connectedDrivers.value
+    : connectedDrivers.value.filter(place => place.name.toLowerCase().includes(search.toLowerCase()))
+
+  return matched.map(place => {
+    const freshness = computeFreshness(place.lastSeenAt, now)
+    if (freshness === 'fresh') {
+      return {...place, freshness}
+    }
+    return {
+      ...place,
+      freshness,
+      name: `${place.name} · ${formatElapsed(place.lastSeenAt as number, now)}`,
+    }
+  })
 })
 
 onBeforeUnmount(() => {
   driversStore.offOnlineDrivers()
+  if (tickInterval !== undefined) {
+    clearInterval(tickInterval)
+  }
 })
 
 onBeforeMount(() => {
   driversStore.getOnlineDrivers()
+  tickInterval = setInterval(() => {
+    nowTick.value = Date.now()
+  }, TICK_INTERVAL_MS)
 })
 </script>
 

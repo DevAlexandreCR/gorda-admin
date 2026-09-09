@@ -10,6 +10,7 @@ import ServiceRepository from '@/repositories/ServiceRepository'
 import Swal from 'sweetalert2'
 import {nextTick} from 'vue'
 import DriverRepository from '@/repositories/DriverRepository'
+import DriverMap from '@/components/DriverMap.vue'
 
 describe('Tabs.vue', () => {
   let wrapper: VueWrapper<any>
@@ -118,4 +119,21 @@ describe('Tabs.vue', () => {
 
 		expect(wrapper.find('input[name="search"]').isVisible()).toBeTruthy()
 	})
+
+  it('lazily mounts DriverMap on first map tab activation and keeps it alive on later tab switches', async () => {
+    await nextTick()
+    expect(wrapper.findComponent(DriverMap).exists()).toBeFalsy()
+
+    await wrapper.find('#map-tab').trigger('click')
+    await nextTick()
+    let driverMap = wrapper.findComponent(DriverMap)
+    expect(driverMap.exists()).toBeTruthy()
+    expect(driverMap.props('visible')).toBe(true)
+
+    await wrapper.find('#pending-tab').trigger('click')
+    await nextTick()
+    driverMap = wrapper.findComponent(DriverMap)
+    expect(driverMap.exists()).toBeTruthy()
+    expect(driverMap.props('visible')).toBe(false)
+  })
 })

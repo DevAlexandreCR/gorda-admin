@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Render the connected-drivers fleet map incrementally: markers are indexed by key and only the marker whose position, label, or colour actually changed is touched, instead of re-rendering every marker on every RTDB presence event.
+- Replace the always-open `InfoWindow` plate card on each marker with a lightweight pill-style label rendered above the vehicle icon.
+- Batch inbound RTDB presence events (`child_added`/`child_changed`/`child_removed`) and flush them to the connected-drivers list once per animation frame, so a burst of heartbeats produces a single reactive update; a driver whose plate is not yet cached still paints immediately with the fallback name and correct busy/free colour, then receives one follow-up label patch once the plate resolves.
+- Recolour busy/free markers immediately when a service enters or leaves in-progress, driven by the occupied-drivers state instead of waiting for the next heartbeat.
+- Show a freshness indicator on connected-driver markers: dimmed with elapsed time in the label past 60s of inactivity, and a distinct stale style past 120s.
+- Keep the fleet map instance alive when switching between tabs on the Services view, avoiding map re-creation and RTDB re-subscription on every tab change.
+
+### Fixed
+
+- Fix `removeOccupiedDriver` leaving `undefined` holes in the occupied-drivers array (it used `delete`); it now locates the entry with `indexOf` and removes it with `splice`.
+
 ## [2.2.0(2026-09-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.0...2.1.1)
 
 ### Added

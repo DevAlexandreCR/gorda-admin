@@ -134,4 +134,88 @@ describe('Map.vue', () => {
       lng: -76.601789,
     })
   })
+
+  it('changing one of three places calls updateMarker exactly once', async () => {
+    const threePlaces = [
+      { id: 'driver-1', key: 'driver-1', name: 'A', lat: 1, lng: 1 },
+      { id: 'driver-2', key: 'driver-2', name: 'B', lat: 2, lng: 2 },
+      { id: 'driver-3', key: 'driver-3', name: 'C', lat: 3, lng: 3 },
+    ]
+    await wrapper.setProps({ places: threePlaces })
+    await flushPromises()
+    await nextTick()
+
+    updateMarkerSpy.mockClear()
+    addMarkerSpy.mockClear()
+    removeMarkerSpy.mockClear()
+
+    await wrapper.setProps({
+      places: [
+        threePlaces[0],
+        { ...threePlaces[1], name: 'B-changed' },
+        threePlaces[2],
+      ],
+    })
+    await flushPromises()
+    await nextTick()
+
+    expect(updateMarkerSpy).toHaveBeenCalledTimes(1)
+    expect(updateMarkerSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ key: 'driver-2', name: 'B-changed' }),
+    )
+    expect(addMarkerSpy).not.toHaveBeenCalled()
+    expect(removeMarkerSpy).not.toHaveBeenCalled()
+  })
+
+  it('removing one key calls removeMarker once', async () => {
+    const threePlaces = [
+      { id: 'driver-1', key: 'driver-1', name: 'A', lat: 1, lng: 1 },
+      { id: 'driver-2', key: 'driver-2', name: 'B', lat: 2, lng: 2 },
+      { id: 'driver-3', key: 'driver-3', name: 'C', lat: 3, lng: 3 },
+    ]
+    await wrapper.setProps({ places: threePlaces })
+    await flushPromises()
+    await nextTick()
+
+    updateMarkerSpy.mockClear()
+    addMarkerSpy.mockClear()
+    removeMarkerSpy.mockClear()
+
+    await wrapper.setProps({
+      places: [threePlaces[0], threePlaces[2]],
+    })
+    await flushPromises()
+    await nextTick()
+
+    expect(removeMarkerSpy).toHaveBeenCalledTimes(1)
+    expect(removeMarkerSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ key: 'driver-2' }),
+    )
+    expect(addMarkerSpy).not.toHaveBeenCalled()
+  })
+
+  it('resize is not called on the visible prop falling or flat edge', async () => {
+    const resizeSpy = jest.spyOn(GoogleMaps.prototype, 'resize').mockImplementation(() => undefined)
+
+    await wrapper.setProps({ visible: false })
+    await flushPromises()
+    await nextTick()
+
+    expect(resizeSpy).not.toHaveBeenCalled()
+  })
+
+  it('calls resize on the rising edge of visible after the container has layout', async () => {
+    const resizeSpy = jest.spyOn(GoogleMaps.prototype, 'resize').mockImplementation(() => undefined)
+
+    await wrapper.setProps({ visible: false })
+    await flushPromises()
+    await nextTick()
+    resizeSpy.mockClear()
+
+    await wrapper.setProps({ visible: true })
+    await flushPromises()
+    await nextTick()
+
+    expect(resizeSpy).toHaveBeenCalledTimes(1)
+  })
 })

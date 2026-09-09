@@ -4,7 +4,7 @@ import { PlaceInterface } from '@/types/PlaceInterface'
 interface MarkerEntry {
   key: string
   marker: google.maps.Marker
-  infoWindow: google.maps.InfoWindow
+  place: PlaceInterface
 }
 
 const VEHICLE_ICON_PATH =
@@ -14,17 +14,26 @@ export function vehicleIconColor(color?: string): string {
   return color === 'danger' ? '#ea0606' : '#82d616'
 }
 
-export function platePillClass(color?: string): string {
-  return color === 'danger' ? 'gorda-plate-pill--busy' : 'gorda-plate-pill--free'
+export function markerOpacity(freshness?: PlaceInterface['freshness']): number {
+  if (freshness === 'aging') return 0.55
+  if (freshness === 'stale') return 0.4
+  return 1
+}
+
+export function platePillClass(color?: string, freshness?: PlaceInterface['freshness']): string {
+  const classes = ['gorda-plate-pill', color === 'danger' ? 'gorda-plate-pill--busy' : 'gorda-plate-pill--free']
+  if (freshness === 'aging') classes.push('gorda-plate-pill--aging')
+  if (freshness === 'stale') classes.push('gorda-plate-pill--stale')
+  return classes.join(' ')
 }
 
 export class GoogleMaps {
   loader: Loader
   map: google.maps.Map
-  markers: Array<MarkerEntry> = []
+  markers: Map<string, MarkerEntry> = new Map()
   icon: string
   center: google.maps.LatLngLiteral
-  coloredVehicle: boolean
+  private staleIconCache: Map<string, google.maps.Icon> = new Map()
 
   static DARK_STYLE: google.maps.MapTypeStyle[] = [
     { elementType: 'geometry', stylers: [{ color: '#1f2530' }] },
@@ -50,33 +59,54 @@ export class GoogleMaps {
     { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#8f9bb3' }] },
   ]
 
-  constructor(icon: string, lat: number, lng: number, coloredVehicle = false) {
+  constructor(icon: string, lat: number, lng: number) {
     this.center = { lat: lat, lng: lng }
     this.loader = new Loader({
       apiKey: process.env.VUE_APP_GOOGLE_API_KEY ?? '',
       version: 'weekly',
     })
     this.icon = icon
-    this.coloredVehicle = coloredVehicle
   }
 
+  // Only ever used for the 'stale' freshness level: fresh/aging markers keep the
+  // plain `this.icon` URL. The stale marker is rendered at setOpacity(0.4) (see
+  // markerOpacity), so the vivid busy/free colour from vehicleIconColor already
+  // reads as desaturated/muted once dimmed — no separate colour palette needed.
   private buildVehicleIcon(color?: string): google.maps.Icon {
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='${vehicleIconColor(color)}' d='${VEHICLE_ICON_PATH}'/></svg>`
     return {
       url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-      scaledSize: new google.maps.Size(34, 34),
-      anchor: new google.maps.Point(17, 17),
+      scaledSize: new google.maps.Size(30, 30),
+      labelOrigin: new google.maps.Point(15, -10),
     }
   }
 
-  private buildInfoWindowContent(place: PlaceInterface): string {
-    if (this.coloredVehicle) {
-      return `<div class="gorda-infowindow gorda-infowindow--vehicle"><span class="gorda-plate-pill ${platePillClass(place.color)}">${place.name}</span></div>`
+  private getVehicleIcon(place: PlaceInterface): google.maps.Icon {
+    if (place.freshness !== 'stale') {
+      return {
+        url: this.icon,
+        scaledSize: new google.maps.Size(30, 30),
+        labelOrigin: new google.maps.Point(15, -10),
+      }
     }
+    const cacheKey = `${place.color}|${place.freshness}`
+    const cached = this.staleIconCache.get(cacheKey)
+    if (cached) {
+      return cached
+    }
+    const icon = this.buildVehicleIcon(place.color)
+    this.staleIconCache.set(cacheKey, icon)
+    return icon
+  }
 
-    return place.color !== undefined
-      ? `<div class="gorda-infowindow"><span class="badge bg-${place.color}">${place.name}</span></div>`
-      : `<div class="gorda-infowindow">${place.name}</div>`
+  private buildMarkerLabel(place: PlaceInterface): google.maps.MarkerLabel {
+    return {
+      text: place.name,
+      className: platePillClass(place.color, place.freshness),
+      color: '#ffffff',
+      fontSize: '11px',
+      fontWeight: '700',
+    }
   }
 
   /* istanbul ignore next */
@@ -100,66 +130,75 @@ export class GoogleMaps {
 
   /* istanbul ignore next */
   addMarker(place: PlaceInterface): void {
-    const infoWindow = new google.maps.InfoWindow({
-      content: place.name,
-      disableAutoPan: true,
-      ...(this.coloredVehicle ? { pixelOffset: new google.maps.Size(0, -20) } : {}),
-    })
     const markerOptions: google.maps.MarkerOptions = {
       position: {
         lat: place.lat,
         lng: place.lng,
       },
       map: this.map,
-      icon: this.coloredVehicle
-        ? this.buildVehicleIcon(place.color)
-        : {
-            url: this.icon,
-            scaledSize: new google.maps.Size(30, 30),
-          },
+      icon: this.getVehicleIcon(place),
+      label: this.buildMarkerLabel(place),
       title: place.name,
+      opacity: markerOpacity(place.freshness),
       optimized: true,
     }
     const marker = new google.maps.Marker(markerOptions)
 
-    // Wrap content to allow dark-mode styling of InfoWindow
-    infoWindow.setContent(this.buildInfoWindowContent(place))
-    infoWindow.open(this.map, marker)
-    this.markers.push({
+    this.markers.set(place.key, {
       key: place.key,
       marker,
-      infoWindow,
+      place,
     })
   }
 
   updateMarker(place: PlaceInterface): void {
-    const markerIndex = this.findMarkerIndexByKey(place.key)
-    const latlng = new google.maps.LatLng(place.lat, place.lng)
-    if (markerIndex < 0) {
+    const markerEntry = this.getMarker(place.key)
+    if (!markerEntry) {
       return
     }
+    const previous = markerEntry.place
 
-    const markerEntry = this.markers[markerIndex]
+    const positionChanged = previous.lat !== place.lat || previous.lng !== place.lng
+    const nameChanged = previous.name !== place.name
+    const colorChanged = previous.color !== place.color
+    const freshnessChanged = previous.freshness !== place.freshness
 
-    markerEntry.marker.setPosition(latlng)
-    markerEntry.marker.setTitle(place.name)
-    if (this.coloredVehicle) {
-      markerEntry.marker.setIcon(this.buildVehicleIcon(place.color))
+    if (positionChanged) {
+      markerEntry.marker.setPosition(new google.maps.LatLng(place.lat, place.lng))
     }
-    markerEntry.infoWindow.setContent(this.buildInfoWindowContent(place))
-    markerEntry.infoWindow.open(this.map, markerEntry.marker)
+    if (nameChanged) {
+      markerEntry.marker.setTitle(place.name)
+    }
+    if (nameChanged || colorChanged || freshnessChanged) {
+      markerEntry.marker.setLabel(this.buildMarkerLabel(place))
+    }
+    if (colorChanged || freshnessChanged) {
+      markerEntry.marker.setIcon(this.getVehicleIcon(place))
+    }
+    if (freshnessChanged) {
+      markerEntry.marker.setOpacity(markerOpacity(place.freshness))
+    }
+
+    markerEntry.place = place
   }
 
   removeMarker(place: PlaceInterface): void {
-    const markerIndex = this.findMarkerIndexByKey(place.key)
-    if (markerIndex >= 0) {
-      this.markers[markerIndex].marker.setMap(null)
-      this.markers.splice(markerIndex, 1)
+    const markerEntry = this.getMarker(place.key)
+    if (markerEntry) {
+      markerEntry.marker.setMap(null)
+      this.markers.delete(place.key)
     }
   }
 
-  findMarkerIndexByKey(key: string): number {
-    return this.markers.findIndex((markerEntry) => markerEntry.key === key)
+  getMarker(key: string): MarkerEntry | undefined {
+    return this.markers.get(key)
+  }
+
+  resize(): void {
+    google.maps.event.trigger(this.map, 'resize')
+    if (this.markers.size === 0) {
+      this.map.panTo(this.center)
+    }
   }
 
   /* istanbul ignore next */
@@ -175,10 +214,17 @@ export class GoogleMaps {
         this.clearMap()
         marker.setPosition(event.latLng)
         marker.setMap(this.map)
-        this.markers.push({
-          key: `listener-marker-${Date.now()}`,
+        const key = `listener-marker-${Date.now()}`
+        this.markers.set(key, {
+          key,
           marker,
-          infoWindow: new google.maps.InfoWindow(),
+          place: {
+            id: key,
+            key,
+            name: '',
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+          },
         })
         this.map.panTo(event.latLng)
         listener(event.latLng)
@@ -208,7 +254,7 @@ export class GoogleMaps {
   /* istanbul ignore next */
   clearMap(): void {
     this.markers.forEach((markerEntry) => markerEntry.marker.setMap(null))
-    this.markers = []
+    this.markers.clear()
   }
 
   /* istanbul ignore next */
