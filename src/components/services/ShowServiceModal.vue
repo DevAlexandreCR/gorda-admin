@@ -6,7 +6,7 @@
           <div class="d-flex align-items-center flex-grow-1 gap-2">
             <span :class="['gorda-status-badge', `gorda-status-badge--${statusBadgeClass}`]">{{ $t(`services.statuses.${service.status}`) }}</span>
             <span class="text-sm fw-semibold">
-              {{ service.start_loc.name }} → {{ service.end_loc?.name ?? $t('common.placeholders.no_destination') }}
+              {{ startLocName }} → {{ service.end_loc?.name ?? $t('common.placeholders.no_destination') }}
             </span>
             <span class="ms-auto text-sm text-muted">{{ DateHelper.unixToDate(service.created_at, 'YYYY-MM-DD HH:mm') }}</span>
           </div>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="gorda-info-row">
                   <span class="gorda-info-row__key">{{$t('services.fields.start_address')}}</span>
-                  <span class="gorda-info-row__value">{{ service.start_loc.name }}</span>
+                  <span class="gorda-info-row__value">{{ startLocName }}</span>
                 </div>
                 <div class="gorda-info-row">
                   <span class="gorda-info-row__key">{{$t('services.fields.end_address')}}</span>
@@ -211,6 +211,11 @@ const { branchSelected } = useSettingsStore()
 const wpClientsStore = useWpClientsStore()
 const driversStore = useDriversStore()
 
+const startLocName = computed(() => {
+  const name = props.service.start_loc.name
+  return ServiceHelper.isSelfServiceStartLoc(name) ? t('services.self_service_trip') : name
+})
+
 const createdBy = ref<string>('Sistema')
 const canceledBy = ref<string>('Sistema')
 const terminatedBy = ref<string>('Sistema')
@@ -220,7 +225,7 @@ onMounted(async () => {
   location.push({
     id: props.service.id,
     key: props.service.id,
-    name: props.service.start_loc.name,
+    name: startLocName.value,
     lat: props.service.start_loc.lat,
     lng: props.service.start_loc.lng
   })

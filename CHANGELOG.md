@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix `removeOccupiedDriver` leaving `undefined` holes in the occupied-drivers array (it used `delete`); it now locates the entry with `indexOf` and removes it with `splice`.
+- Show a translated "Viaje de autoservicio" / "Self-service trip" label instead of the raw literal `Self service trip` for self-service start locations, in the pendings/history tables, the start-address edit modal, the service detail modal, and its map marker.
 
 ## [2.2.0(2026-09-05)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.0...2.1.1)
 

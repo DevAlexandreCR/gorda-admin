@@ -53,6 +53,7 @@ export default {
   },
   edit_start_address: 'Edit pickup address',
   current_start_address: 'Current pickup address',
+  self_service_trip: 'Self-service trip',
   edit_comment: 'Edit comment',
   current_comment: 'Current comment',
   placeholders: {

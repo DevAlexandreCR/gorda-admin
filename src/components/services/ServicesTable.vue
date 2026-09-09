@@ -56,7 +56,7 @@
           </td>
           <td class="py-1">
             <div class="d-flex align-items-center">
-              <span class="text-truncate" style="max-width: 180px" :title="service.start_loc?.name">{{ service.start_loc?.name }}</span>
+              <span class="text-truncate" style="max-width: 180px" :title="startLocationName(service)">{{ startLocationName(service) }}</span>
               <button
                 v-if="props.table === Tables.pendings"
                 class="btn btn-link btn-sm text-secondary ms-2 p-0"
@@ -334,7 +334,10 @@ let commentModal: Modal | null = null
 const newComment = ref<string>('')
 const isUpdatingComment = ref(false)
 const { t } = useI18n()
-const currentStartAddress = computed(() => editingService.value?.start_loc?.name ?? 'N/A')
+const currentStartAddress = computed(() => {
+  const name = editingService.value?.start_loc?.name
+  return ServiceHelper.isSelfServiceStartLoc(name) ? t('services.self_service_trip') : name ?? 'N/A'
+})
 const currentComment = computed(() => editingCommentService.value?.comment ?? 'N/A')
 const headerConfig = computed(() => {
   if (props.table === Tables.pendings) {
@@ -436,6 +439,11 @@ function originIcon(service: ServiceList): string {
 
 function originTitle(service: ServiceList): string {
   return t('services.origin.' + originKind(service))
+}
+
+function startLocationName(service: ServiceList): string | undefined {
+  const name = service.start_loc?.name
+  return ServiceHelper.isSelfServiceStartLoc(name) ? t('services.self_service_trip') : name
 }
 
 function initials(name: string): string {

@@ -48,6 +48,9 @@ export default class Service implements ServiceInterface {
   static readonly ORIGIN_BOT = 'bot'
   static readonly ORIGIN_TEST = 'test'
   static readonly ORIGIN_DRIVER = 'driver'
+  // Must stay in sync with the literal written by the api at
+  // api/src/Api/Controllers/Drivers/DriverAppController.ts:625 (startLoc.name for self-service trips).
+  static readonly SELF_SERVICE_START_LOC_NAME = 'Self service trip'
   static readonly EVENT_CANCEL = 'cancel-service'
   static readonly EVENT_TERMINATE = 'end-service'
   static readonly EVENT_SHOW = 'show-service'

@@ -53,6 +53,7 @@ export default {
   },
   edit_start_address: 'Editar dirección inicial',
   current_start_address: 'Dirección inicial actual',
+  self_service_trip: 'Viaje de autoservicio',
   edit_comment: 'Editar comentario',
   current_comment: 'Comentario actual',
   placeholders: {
