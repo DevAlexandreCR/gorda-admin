@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1(2026-09-09)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.1...2.2.0)
+
 ### Changed
 
 - Render the connected-drivers fleet map incrementally: markers are indexed by key and only the marker whose position, label, or colour actually changed is touched, instead of re-rendering every marker on every RTDB presence event.
