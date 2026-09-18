@@ -106,6 +106,19 @@ export const useWpClientsStore = defineStore('settingsStore', {
         })
     },
 
+    enableAgentInTrip(client: WpClient, enabled: boolean): void {
+      this.busy[client.id] = true
+      SettingsRepository.enableAgentInTrip(client.id, enabled).then(() => {
+        this.clients[client.id].agentInTrip = enabled
+      })
+        .catch(async (e) => {
+          await ToastService.toast(ToastService.ERROR, i18n.global.t('common.messages.error'), e.message)
+        })
+        .finally(() => {
+          delete this.busy[client.id]
+        })
+    },
+
     async getWpClients(): Promise<void> {
       this.clients = await SettingsRepository.getWpClients()
       if (Object.values(this.clients).length) {
@@ -145,6 +158,7 @@ export const useWpClientsStore = defineStore('settingsStore', {
           wpNotifications: false,
           chatBot: false,
           assistant: false,
+          agentInTrip: false,
           service: client.service
         }
       })

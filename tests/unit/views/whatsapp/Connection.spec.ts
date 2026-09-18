@@ -22,6 +22,7 @@ describe('Connection.vue', () => {
     wpNotifications: false,
     chatBot: false,
     assistant: false,
+    agentInTrip: false,
     service: WhatsappServices.OFFICIAL
   }
 
@@ -123,4 +124,47 @@ describe('Connection.vue', () => {
     await nextTick()
     expect(fn).toBeCalled()
   }, 10000)
+
+  function findAgentInTripInput(target: VueWrapper<any>) {
+    const rows = target.findAll('.wpc-toggle-row')
+    const row = rows.find((r) => r.find('.wpc-toggle-label').text() === i18n.global.t('common.settings.agentInTrip'))
+    return row?.find('input.form-check-input')
+  }
+
+  test('agent-in-trip checkbox is disabled while chatBot is off, even when connected', async () => {
+    wrapper.vm.connected = true
+    await nextTick()
+
+    const input = findAgentInTripInput(wrapper)
+    expect(input?.exists()).toBeTruthy()
+    expect(input?.attributes('disabled')).toBeDefined()
+  })
+
+  test('agent-in-trip checkbox is enabled and calls enableAgentInTrip when chatBot is on and connected', async () => {
+    const chatBotClient: WpClient = { ...client, id: '3103794999', chatBot: true, agentInTrip: false }
+    const wpClientStore = useWpClientsStore()
+    wpClientStore.clients[chatBotClient.id] = chatBotClient
+    const freshWrapper: VueWrapper<any> = shallowMount(Connection, {
+      attachTo: '#root',
+      props: {
+        client: chatBotClient
+      },
+      global: {
+        plugins: [router, i18n]
+      }
+    })
+    await nextTick()
+    freshWrapper.vm.connected = true
+    await nextTick()
+
+    SettingsRepository.enableAgentInTrip = jest.fn().mockResolvedValue(undefined)
+    const input = findAgentInTripInput(freshWrapper)
+    expect(input?.attributes('disabled')).toBeUndefined()
+
+    await input?.trigger('click')
+    await flushPromises()
+
+    expect(SettingsRepository.enableAgentInTrip).toBeCalledWith(chatBotClient.id, true)
+    freshWrapper.unmount()
+  })
 })

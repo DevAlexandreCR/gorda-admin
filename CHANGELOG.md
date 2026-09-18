@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add an "agent in trip" toggle to the Conexiones WhatsApp line settings (`enableAgentInTrip` repository/store method, checkbox in `Connection.vue`, ES/EN strings), controlling `WpClient.agentInTrip`.
+
+### Changed
+
+- Collapse the `SessionStatuses` enum to five values: `BOOKING`, `REQUESTING_SERVICE`, `SERVICE_IN_PROGRESS`, `COMPLETED`, `SUPPORT`.
+
 ## [2.2.1(2026-09-09)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.1...2.2.0)
 
 ### Changed

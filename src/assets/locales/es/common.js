@@ -187,6 +187,8 @@ export default {
     assistant: 'Asistente Bot',
     alert_chatBot: 'Habilita el chatBot para que gestione completamente los servicios',
     alert_assistant: 'Habilita el asistente para crear servicios cuando el cliente envía la ubicación',
+    agentInTrip: 'Agente en Viaje',
+    alert_agentInTrip: 'Requiere el chatBot habilitado. Mantiene al agente respondiendo después de asignar un conductor',
     Ride_Fees: 'Tarifas',
     Messages: 'Mensajes',
     fees_base_title: 'Tarifas Base',

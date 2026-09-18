@@ -187,6 +187,8 @@ export default {
     alert_notifications: 'Until confirmations are enabled won\'t send messages',
     alert_chatBot: 'Enable chatBot to completely manage WhatsApp messages',
     alert_assistant: 'Enable the assistant bot to create services when client send a location',
+    agentInTrip: 'Agent In Trip',
+    alert_agentInTrip: 'Requires ChatBot enabled. Keeps the agent answering after a driver is assigned',
     Ride_Fees: 'Ride Fees',
     Messages: 'Messages',
     fees_base_title: 'Base Fees',

@@ -87,6 +87,7 @@ const newClient = reactive<WpClient>({
   full: false,
   chatBot: false,
   assistant: false,
+  agentInTrip: false,
   service: WhatsappServices.BAILEYS
 })
 const schema = yup.object().shape({
@@ -155,6 +156,7 @@ async function processWhatsAppSignup(code: string) {
     full: false,
     chatBot: false,
     assistant: false,
+    agentInTrip: false,
     service: WhatsappServices.OFFICIAL
   }
   

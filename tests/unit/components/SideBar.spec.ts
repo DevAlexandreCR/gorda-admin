@@ -26,6 +26,7 @@ describe('SideBar.vue', () => {
         wpNotifications: false,
         chatBot: false,
         assistant: false,
+        agentInTrip: false,
         service: WhatsappServices.WHATSAPP_WEB_JS
       }
     }

@@ -93,6 +93,12 @@ class SettingsRepository {
     return serverApi.patch(`/master-data/wp-clients/${clientId}`, { full: enable }).then(() => undefined)
   }
 
+  enableAgentInTrip(clientId: string, enable: boolean): Promise<void> {
+    return serverApi
+      .patch(`/master-data/wp-clients/${clientId}`, { agentInTrip: enable })
+      .then(() => undefined)
+  }
+
   onWpNotifications(_client: WpClient, _listener: (enable: unknown) => void): void {
     return
   }

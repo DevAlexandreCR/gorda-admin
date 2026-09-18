@@ -99,6 +99,16 @@
             <p class="text-sm" v-if="connected && !props.client.chatBot">{{ $t('common.settings.alert_chatBot') }}</p>
           </div>
         </div>
+        <div class="wpc-toggle-row">
+          <div class="form-check form-switch wpc-switch mb-0">
+            <input class="form-check-input" name="enable" type="checkbox" :checked="props.client.agentInTrip" :disabled="!connected || isBusy || !props.client.chatBot"
+                   @click.prevent="enableAgentInTrip(props.client, !props.client.agentInTrip)"/>
+          </div>
+          <div class="wpc-toggle-text">
+            <div class="wpc-toggle-label">{{$t('common.settings.agentInTrip')}}</div>
+            <p class="text-sm text-secondary my-0">{{ $t('common.settings.alert_agentInTrip') }}</p>
+          </div>
+        </div>
         <div class="wpc-toggle-row wpc-toggle-row--last">
           <div class="form-check form-switch wpc-switch wpc-switch--danger mb-0">
             <input class="form-check-input form-check-danger" name="enableFull" type="checkbox" :checked="props.client.full" :disabled="!connected || isBusy"
@@ -175,7 +185,7 @@ const connected: Ref<boolean> = ref(false)
 const connecting: Ref<boolean> = ref(false)
 const loading: Ref<LoadingType|null> = ref(null)
 const router = useRouter()
-const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant, enableFull} = useWpClientsStore()
+const {enableWpNotifications, onWpNotification, offWpNotifications, deleteClient, setDefault, enableChatBot, enableAssistant, enableFull, enableAgentInTrip} = useWpClientsStore()
 const {defaultClient, busy} = storeToRefs(useWpClientsStore())
 const isBusy = computed(() => !!busy.value[props.client.id])
 const chatUrl = computed(() => router.resolve({
