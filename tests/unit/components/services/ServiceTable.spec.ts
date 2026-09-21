@@ -60,7 +60,7 @@ describe('ServicesTable.vue', () => {
         chatBot: false,
         assistant: false,
         agentInTrip: false,
-        service: WhatsappServices.WHATSAPP_WEB_JS
+        service: WhatsappServices.BAILEYS
       }
     }
 

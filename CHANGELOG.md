@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Collapse the `SessionStatuses` enum to five values: `BOOKING`, `REQUESTING_SERVICE`, `SERVICE_IN_PROGRESS`, `COMPLETED`, `SUPPORT`.
 
+### Removed
+
+- Remove the retired `WHATSAPP_WEB_JS` WhatsApp transport option from the connection settings (no view referenced it); the API now only supports the Official and Baileys transports.
+
 ## [2.2.1(2026-09-09)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.1...2.2.0)
 
 ### Changed
