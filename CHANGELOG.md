@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.2(2026-10-16)](https://github.com/DevAlexandreCR/admin-driver/compare/2.2.2...2.2.1)
+
 ### Added
 
 - Add an "agent in trip" toggle to the Conexiones WhatsApp line settings (`enableAgentInTrip` repository/store method, checkbox in `Connection.vue`, ES/EN strings), controlling `WpClient.agentInTrip`.
+- Add `ASK_FOR_PHONE_NUMBER` to `MessagesEnum` so the new Official (Cloud API) phone-request catalog message can be resolved and edited from Settings → Messages.
 
 ### Changed
 
